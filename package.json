@@ -1,7 +1,7 @@
 {
-  "name": "ts-react-webpack-hmr-boilerplate",
+  "name": "pg-ui",
   "version": "1.0.0",
-  "description": "Typescript, React, Redux and Webpack-HMR boilerplate",
+  "description": "UI for the Portfolio Generation project",
   "main": "index.js",
   "scripts": {
     "build": "webpack",
@@ -9,14 +9,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/RingLeaderSolutions/ts-react-webpack-hmr-boilerplate.git"
+    "url": "git+https://github.com/RingLeaderSolutions/pg-ui.git"
   },
   "author": "Daniel May <daniel.may@ringleadersolutions.com>",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/RingLeaderSolutions/ts-react-webpack-hmr-boilerplate/issues"
+    "url": "https://github.com/RingLeaderSolutions/pg-ui/issues"
   },
-  "homepage": "https://github.com/RingLeaderSolutions/ts-react-webpack-hmr-boilerplate#readme",
+  "homepage": "https://github.com/RingLeaderSolutions/pg-ui#readme",
   "devDependencies": {
     "@types/node": "^8.0.3",
     "@types/react": "^15.0.24",
