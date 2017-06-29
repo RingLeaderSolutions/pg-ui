@@ -1,11 +1,11 @@
 import * as React from "react";
 import { MapDispatchToPropsFunction, connect, MapStateToProps } from 'react-redux';
 
-interface HelloProps {
+interface HeaderProps {
   title: string;
 }
 
-export default class Hello extends React.Component<HelloProps, {}> {
+export default class Hello extends React.Component<HeaderProps, {}> {
   render() {
     return (
         <div className="header">
