@@ -6,6 +6,8 @@ html, body, .root, .app-container {
 
 .app-container {
     display: flex;
+    padding: 0px !important;
+    margin: 0px !important;
 }
 
 .sidebar {
@@ -15,9 +17,5 @@ html, body, .root, .app-container {
 
 .content-container {
     flex-grow: 1;
-    padding: 20px;
-}
-
-.content-portfolios, .content-dashboard {
-    display: inline-block;
+    padding: 32px 0px 20px 20px;
 }
