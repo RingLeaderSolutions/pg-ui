@@ -9,6 +9,7 @@ import {
 import configureStore from './store/configureStore'
 import Home from "./components/Home";
 
+require('./styles/styles.scss');
 
 declare global {
     interface NodeModule {

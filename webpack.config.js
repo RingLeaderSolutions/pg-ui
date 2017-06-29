@@ -23,6 +23,10 @@ var config = {
         test: /\.tsx?$/,
         loader: "ts-loader",
         exclude: /node_modules/
+      },
+      { 
+        test: /\.s?css$/, 
+        loaders: ["style-loader", "css-loader", "sass-loader"]
       }
     ]
   },

@@ -24,7 +24,7 @@ class Hello extends React.Component<HelloProps & StateProps & DispatchProps, {}>
 
   render() {
     const name = this.props.otherName ? this.props.otherName : this.props.name;
-    return <div>Hello, {name}!</div>;
+    return <div className='home'>Hello, {name}!</div>;
   }
 }
 
