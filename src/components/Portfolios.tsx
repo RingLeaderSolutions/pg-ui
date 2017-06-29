@@ -1,7 +1,7 @@
 import * as React from "react";
 
 const Portfolios : React.SFC<{}> = () => {
-    return <div>Hi, I'm the portfolios page!</div>
+    return <div className="content-portfolio">Hi, I'm the portfolios page!</div>
 }
 
 export default Portfolios;

@@ -9,7 +9,11 @@ import {
 import configureStore from './store/configureStore'
 import Home from "./components/Home";
 
+
+require('uikit');
+require('uikit/dist/js/uikit-icons');
 require('./styles/styles.scss');
+require('./styles/uikit.css');
 
 declare global {
     interface NodeModule {
@@ -43,11 +47,15 @@ class App extends React.Component<{}, {}> {
     }
 }
 
+function mapStateToProps(state: any, ownProps: any) {
+    return {};
+}
 
-const WrappedApp = connect(
-    (state: any, ownProps: any) => { },
-    (dispatch: any) => { }
-)(App);
+function mapDispatchToProps(dispatch: any) {
+    return {};
+}
+
+const WrappedApp = connect(mapStateToProps, mapDispatchToProps)(App);
 
 
 ReactDOM.render(
