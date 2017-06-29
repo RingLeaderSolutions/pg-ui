@@ -1,0 +1,44 @@
+{
+  "name": "ts-react-webpack-hmr-boilerplate",
+  "version": "1.0.0",
+  "description": "Typescript, React, Redux and Webpack-HMR boilerplate",
+  "main": "index.js",
+  "scripts": {
+    "build": "webpack",
+    "start": "nodemon -e js,env -i /build -V ./server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/RingLeaderSolutions/ts-react-webpack-hmr-boilerplate.git"
+  },
+  "author": "Daniel May <daniel.may@ringleadersolutions.com>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/RingLeaderSolutions/ts-react-webpack-hmr-boilerplate/issues"
+  },
+  "homepage": "https://github.com/RingLeaderSolutions/ts-react-webpack-hmr-boilerplate#readme",
+  "devDependencies": {
+    "@types/node": "^8.0.3",
+    "@types/react": "^15.0.24",
+    "@types/react-dom": "^15.5.1",
+    "@types/react-redux": "^4.4.45",
+    "@types/react-router": "^4.0.12",
+    "@types/react-router-dom": "^4.0.5",
+    "express": "^4.15.3",
+    "html-webpack-plugin": "^2.29.0",
+    "nodemon": "^1.11.0",
+    "ts-loader": "^2.2.0",
+    "typescript": "^2.3.4",
+    "webpack": "^3.0.0",
+    "webpack-dev-middleware": "^1.11.0",
+    "webpack-hot-middleware": "^2.18.0"
+  },
+  "dependencies": {
+    "react": "^15.6.1",
+    "react-dom": "^15.6.1",
+    "react-redux": "^5.0.5",
+    "react-router": "^4.1.1",
+    "react-router-dom": "^4.1.1",
+    "redux-thunk": "^2.2.0"
+  }
+}
