@@ -12,7 +12,15 @@ html, body, .root, .app-container {
 
 .sidebar {
     padding: 20px;
-    width: 20%;
+    .app-title {
+        h1 {
+            margin-bottom: 0px;
+        }
+        p {
+            text-align: right;
+            margin-top: 0px;
+        }
+    }
 }
 
 .content-container {
