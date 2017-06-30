@@ -7,6 +7,10 @@
         min-width: 150px;
         height: 100%;
         border-right: 1px solid $grey-border;
+        margin-top: $margin-medium;
+        li:first-child {
+            margin: 0px;
+        }
         li {
             margin: $margin-large 0px 0px 0px;
             a {
@@ -19,13 +23,21 @@
                     margin: $margin-medium;         
                 }
             }
-            
         }
     }
     .table-portfolios {
         flex-grow: 1;
+        table {
+            a {
+                color: $text-color;
+                display: block;
+            }
+            a:hover {
+                text-decoration: none;
+            }
+        }
         .search-portfolios {
-            margin: 0px $margin-medium;
+            margin: $margin-medium $margin-medium;
             display: flex;
             .uk-search {
                 flex-grow: 1;

@@ -1,4 +1,5 @@
 import * as React from "react";
+import { Link } from "react-router-dom";
 import Header from "./Header";
 
 const Portfolios : React.SFC<{}> = () => {
@@ -42,15 +43,15 @@ const Portfolios : React.SFC<{}> = () => {
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td>B4B Energy 17/18</td>
-                                    <td><div className="circle circle-orange" /></td>
-                                    <td>Aiden Day</td>
-                                    <td>Miles O'Brien</td>
-                                    <td>01/04/17</td>
-                                    <td>31/04/18</td>
-                                    <td>3</td>
-                                    <td>3</td>
-                                    <td>6</td>
+                                    <td><Link to="/portfolio">B4B Energy 17/18</Link></td>
+                                    <td><Link to="/portfolio"><div className="circle circle-orange" /></Link></td>
+                                    <td><Link to="/portfolio">Aiden Day</Link></td>
+                                    <td><Link to="/portfolio">Miles O'Brien</Link></td>
+                                    <td><Link to="/portfolio">01/04/17</Link></td>
+                                    <td><Link to="/portfolio">31/04/18</Link></td>
+                                    <td><Link to="/portfolio">3</Link></td>
+                                    <td><Link to="/portfolio">3</Link></td>
+                                    <td><Link to="/portfolio">6</Link></td>
                                 </tr>
                                 <tr>
                                     <td>Capalona 18/19</td>

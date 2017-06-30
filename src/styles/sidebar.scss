@@ -13,4 +13,8 @@
             margin-top: 0px;
         }
     }
+
+    li {
+        margin: $margin-large $margin-medium;
+    }
 }
