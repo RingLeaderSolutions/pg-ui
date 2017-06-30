@@ -1,0 +1,38 @@
+@import "variables";
+
+.content-portfolios {
+    height: 100%;
+    display: flex;
+    .filters-portfolios {
+        min-width: 150px;
+        height: 100%;
+        border-right: 1px solid $grey-border;
+        li {
+            margin: $margin-large 0px 0px 0px;
+            a {
+                display: flex;
+                .circle {
+                    margin: auto;
+                }
+                p {
+                    flex-grow: 1;
+                    margin: $margin-medium;         
+                }
+            }
+            
+        }
+    }
+    .table-portfolios {
+        flex-grow: 1;
+        .search-portfolios {
+            margin: 0px $margin-medium;
+            display: flex;
+            .uk-search {
+                flex-grow: 1;
+            }
+            .actions-portfolios {
+                margin-left: $margin-medium;
+            }
+        }
+    }
+}
