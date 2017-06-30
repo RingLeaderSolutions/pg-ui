@@ -7,6 +7,13 @@ const Portfolio : React.SFC<{}> = () => {
     return (
         <div className="content-inner">
             <Header title="Portfolios: B4B Energy 17/18" />
+            <ul data-uk-tab>
+                <li className="uk-active"><a href="#">Summary</a></li>
+                <li className="uk-disabled"><a href="#">MPANs</a></li>
+                <li className="uk-disabled"><a href="#">Forecast</a></li>
+                <li className="uk-disabled"><a href="#">Quotes</a></li>
+                <li><a href="#">Uploads</a></li>
+            </ul>
             <div className="content-portfolio">
                 <div className="uk-child-width-expand@s uk-grid-match uk-text-center" data-uk-grid>
                     <CounterCard title="B4B Energy" label="TPI" small/>
@@ -27,7 +34,7 @@ const Portfolio : React.SFC<{}> = () => {
                 <div className="uk-child-width-expand@s uk-grid-match uk-text-center" data-uk-grid>
                     <div>
                         <div className="uk-card uk-card-default uk-card-body">
-                            <h3>MPAN Status</h3>
+                            <h4>MPAN Status</h4>
                             <table className="uk-table uk-table-divider">
                                 <thead>
                                     <tr>
@@ -59,7 +66,7 @@ const Portfolio : React.SFC<{}> = () => {
                     </div>
                     <div>
                         <div className="uk-card uk-card-default uk-card-body">
-                            <h3>Change History</h3>
+                            <h4>Change History</h4>
                             <table className="uk-table uk-table-divider">
                                 <thead>
                                     <tr>

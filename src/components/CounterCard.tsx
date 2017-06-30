@@ -13,15 +13,15 @@ export default class Hello extends React.Component<HelloProps, {}> {
     if(this.props.small){
       content = (
         <div className="uk-card uk-card-default uk-card-body">
-          <h3>{this.props.title}</h3>
-          <p className="uk-text-small">{this.props.label}</p>
+          <h4><strong>{this.props.title}</strong></h4>
+          <p className="uk-text-meta">{this.props.label}</p>
         </div>
       )
     }
     else {
       content = (
         <div className="uk-card uk-card-default uk-card-body">
-          <h1>{this.props.title}</h1>
+          <h1><strong>{this.props.title}</strong></h1>
           <p>{this.props.label}</p>
         </div>
       )
