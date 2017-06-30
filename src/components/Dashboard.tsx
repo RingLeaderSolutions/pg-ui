@@ -60,7 +60,7 @@ const Dashboard : React.SFC<{}> = () => {
                     <CounterCard title="4,583" label="Total MPANs" />
                     <CounterCard title="TPI" label="Your Team" />
                 </div>
-                <div className="uk-child-width-expand@s uk-text-center" data-uk-grid>
+                <div className="uk-child-width-expand@s uk-grid-match uk-text-center" data-uk-grid>
                     <div>
                         <div className="uk-card uk-card-default uk-card-body">
                             <h3>Portfolio Status</h3>
