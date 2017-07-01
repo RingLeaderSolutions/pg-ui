@@ -1,4 +1,25 @@
 @import "variables";
 
-.content-portfolio {
+.content-inner-portfolio {
+    .table-uploads {
+        .search-uploads {
+            margin: $margin-medium $margin-medium;
+            display: flex;
+            .uk-search {
+                flex-grow: 1;
+            }
+            .actions-uploads {
+                margin-left: $margin-medium;
+                button {
+                    margin-left: $margin-small;
+                }
+            }
+        }
+
+        table {
+            td {
+                vertical-align: middle;
+            }
+        }
+    }
 }
