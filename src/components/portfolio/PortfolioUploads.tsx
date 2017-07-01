@@ -44,6 +44,14 @@ const PortfolioUploads : React.SFC<{}> = () => {
                                     <td>Topline data insertion</td>
                                     <td><button className="uk-button uk-button-default">View</button></td>
                                 </tr>
+                                <tr>
+                                    <td><div className="circle circle-red" /></td>
+                                    <td>Wesley Crusher</td>
+                                    <td>A week ago</td>
+                                    <td>2 Anomalies detected</td>
+                                    <td>First attempt at topline insertion</td>
+                                    <td><button className="uk-button uk-button-primary">Resolve</button></td>
+                                </tr>
                             </tbody>
                         </table>
                     </div>
