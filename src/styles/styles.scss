@@ -2,6 +2,7 @@
 @import "portfolios";
 @import "portfolio";
 @import "graphics";
+@import "header";
 
 html, body, .root, .app-container {
   min-height: 100%;
@@ -17,14 +18,10 @@ html, body, .root, .app-container {
 
 .content-container {
     flex-grow: 1;
-    padding: 32px 0px 20px 20px;
+    padding: $margin-large 0px 20px 20px;
 }
 
 .content-inner {
     height: 92%;
     padding-right: 20px;
-}
-
-.content-dashboard {
-    
 }

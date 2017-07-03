@@ -9,7 +9,10 @@ export default class Hello extends React.Component<HeaderProps, {}> {
   render() {
     return (
         <div className="header">
-            <h3>{this.props.title}</h3>
+            <div className="header-content">
+              <h3>{this.props.title}</h3>
+              <img className="avatar avatar-large" src={require('../images/avatar.jpg')} />
+            </div>
             <hr />
         </div>);
   }

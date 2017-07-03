@@ -1,0 +1,10 @@
+@import "variables";
+
+.header {
+    .header-content {
+        display: flex;
+        h3 {
+            flex-grow: 1;
+        }
+    }
+}

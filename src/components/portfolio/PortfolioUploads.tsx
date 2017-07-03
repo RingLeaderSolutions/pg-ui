@@ -31,7 +31,12 @@ const PortfolioUploads : React.SFC<{}> = () => {
                         <tbody>
                             <tr>
                                 <td><div className="circle circle-blue" /></td>
-                                <td>Tony Walsh</td>
+                                <td>
+                                    <div className="user">
+                                        <img className="avatar" src={require('../../images/user1.png')} />
+                                        <p>Tony Walsh</p>
+                                    </div>
+                                </td>
                                 <td>10 minutes ago</td>
                                 <td>1 of 2 MPANs updated</td>
                                 <td>HH data for St Albans MPANs</td>
@@ -39,7 +44,12 @@ const PortfolioUploads : React.SFC<{}> = () => {
                             </tr>
                             <tr>
                                 <td><div className="circle circle-green" /></td>
-                                <td>Deanna Troi</td>
+                                <td>
+                                    <div className="user">
+                                        <img className="avatar" src={require('../../images/user3.png')} />
+                                        <p>Deanna Troi</p>
+                                    </div>
+                                </td>
                                 <td>4 hours ago</td>
                                 <td>Completed</td>
                                 <td>Topline data insertion</td>
@@ -47,7 +57,12 @@ const PortfolioUploads : React.SFC<{}> = () => {
                             </tr>
                             <tr>
                                 <td><div className="circle circle-red" /></td>
-                                <td>Wesley Crusher</td>
+                                <td>
+                                    <div className="user">
+                                        <img className="avatar" src={require('../../images/user6.png')} />
+                                        <p>Aiden Day</p>
+                                    </div>
+                                </td>
                                 <td>A week ago</td>
                                 <td>2 Anomalies detected</td>
                                 <td>First attempt at topline insertion</td>

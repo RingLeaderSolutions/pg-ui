@@ -24,3 +24,29 @@
 .circle-blue {
     background-color: $color-primary;
 }
+
+.avatar {
+    width: 30px;
+    height: 30px;
+    background-size: cover;
+    background-position: center;
+    border-radius: 50%;
+}
+
+.avatar-small {
+    width: 15px;
+    height: 15px;
+}
+
+.avatar-large {
+    width: 45px;
+    height: 45px;
+}
+
+.user {
+    display: flex;
+    p {
+        flex-grow: 1;
+        margin: 2px 0px 0px $margin-medium;
+    }
+}
