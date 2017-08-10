@@ -16,7 +16,7 @@ function fetchFailed(errorMessage : string) {
 }
 
 function fetchSuccessful(portfolio: Portfolio[]) {
-    console.log(`fetchSuccessful: Received [${portfolio.length}] prices.`);
+    console.log(`fetchSuccessful: Received [${portfolio.length}] portfolios.`);
     return { type: types.FETCH_PORTFOLIO_SUCCESSFUL, portfolio };
 }
 

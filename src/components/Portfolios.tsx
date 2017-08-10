@@ -6,6 +6,7 @@ import { getAllPortfolios } from '../actions/portfolioActions';
 import { ApplicationState } from '../applicationState';
 import Header from "./Header";
 import { Portfolio } from '../model/Models';
+import NewPortfolioDialog from './portfolio/NewPortfolioDialog';
 
 interface PortfoliosProps extends RouteComponentProps<void> {
   portfolios: Portfolio[];
@@ -45,7 +46,7 @@ class Portfolios extends React.Component<PortfoliosProps & StateProps & Dispatch
                                 <input className="uk-search-input" type="search" placeholder="Search..." />
                             </form>
                             <div className="actions-portfolios">
-                                <button className="uk-button uk-button-primary">New portfolio</button>
+                                <button className="uk-button uk-button-primary" data-uk-toggle="target: #modal-new-portfolio">New portfolio</button>
                             </div>
                         </div>
                         <div>
@@ -135,6 +136,9 @@ class Portfolios extends React.Component<PortfoliosProps & StateProps & Dispatch
                             </table>
                         </div>
                     </div>
+                </div>
+                <div id="modal-new-portfolio" data-uk-modal="center: true">
+                    <NewPortfolioDialog />
                 </div>
             </div>)
     }

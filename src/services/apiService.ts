@@ -9,7 +9,8 @@ export interface IApiService {
 export class ApiService implements IApiService {
     baseApiUri: string;
     constructor(){
-        this.baseApiUri = "http://mpanupload242007.northeurope.cloudapp.azure.com:8080";
+        this.baseApiUri = "http://81.147.87.33:8080";
+        //this.baseApiUri = "http://mpanupload242007.northeurope.cloudapp.azure.com:8080";
     }
     getRequestConfig() {
         // let authorisation = "";
