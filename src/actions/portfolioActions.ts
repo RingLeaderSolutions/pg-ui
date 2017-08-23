@@ -1,5 +1,5 @@
 import ApiService from "../services/ApiService";
-import { Portfolio, PortfoliosSummary, PortfoliosStatus } from "../Model/Models";
+import { Portfolio, PortfoliosSummary, PortfoliosStatus, PortfoliosTimeline } from "../Model/Models";
 
 import * as types from "./actionTypes";
 import { makeApiRequest } from "./Common";
@@ -53,6 +53,23 @@ export function getPortfoliosStatus(){
             }, 
             error => {
                 return { type: types.FETCH_PORTFOLIOS_STATUS_FAILED, errorMessage: error };
+            });
+    };
+}
+
+export function getPortfoliosTimeline(){
+    return (dispatch: Dispatch<any>) => {
+        let fetchPromise = ApiService.getAllPortfolioTimeline();
+        dispatch({ type: types.FETCH_PORTFOLIOS_TIMELINE_WORKING });
+        
+        makeApiRequest(dispatch,
+            fetchPromise,
+            200, 
+            data => {
+                return { type: types.FETCH_PORTFOLIOS_TIMELINE_SUCCESSFUL, data: data as PortfoliosTimeline };
+            }, 
+            error => {
+                return { type: types.FETCH_PORTFOLIOS_TIMELINE_FAILED, errorMessage: error };
             });
     };
 }

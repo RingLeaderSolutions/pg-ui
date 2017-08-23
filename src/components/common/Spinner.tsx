@@ -1,13 +1,26 @@
 import * as React from "react";
 import { MapDispatchToPropsFunction, connect, MapStateToProps } from 'react-redux';
 
-export default class Hello extends React.Component<{}, {}> {
+interface SpinnerProps{
+    hasMargin?: boolean;
+}
+
+export default class Spinner extends React.Component<SpinnerProps, {}> {
   render() {
-    return (
+    var spinner = (
         <div className="spinner">
             <div className="cube1"></div>
             <div className="cube2"></div>
         </div>
-    )
+    );
+
+    if(this.props.hasMargin){
+        return (
+            <div className="spinner-parent">
+                {spinner}
+            </div>
+        )
+    }
+    return spinner;
   }
 }

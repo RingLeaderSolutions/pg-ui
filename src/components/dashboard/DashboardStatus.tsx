@@ -28,7 +28,7 @@ class DashboardStatus extends React.Component<StatusProps & StateProps & Dispatc
         this.props.getStatus();
     }
     render() {
-        var content = (<Spinner />);
+        var content = (<Spinner hasMargin={true} />);
         if(!this.props.working){
             var config = ChartConfig;
             

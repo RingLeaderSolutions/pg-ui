@@ -1,8 +1,5 @@
 import * as React from "react";
-import Header from "../Header";
 import CounterCard from "../common/CounterCard";
-import Spinner from "../common/Spinner";
-import { RouteComponentProps } from 'react-router';
 import { MapDispatchToPropsFunction, connect, MapStateToProps } from 'react-redux';
 import { getPortfoliosSummary } from '../../actions/portfolioActions';
 import { ApplicationState } from '../../applicationState';
@@ -26,7 +23,6 @@ class DashboardSummary extends React.Component<SummaryProps & StateProps & Dispa
     }
     render() {
         var portfolioCount, siteCount, mpanCount = "";
-        console.log(this.props.working);
         if(!this.props.working){
             portfolioCount = String(this.props.summary.portfolioCount);
             siteCount = String(this.props.summary.siteCount);
