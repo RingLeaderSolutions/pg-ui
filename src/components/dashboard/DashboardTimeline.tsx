@@ -2,15 +2,15 @@ import * as React from "react";
 import Spinner from "../common/Spinner";
 import { RouteComponentProps } from 'react-router';
 import { MapDispatchToPropsFunction, connect, MapStateToProps } from 'react-redux';
-import { getPortfoliosTimeline } from '../../actions/portfolioActions';
+import { getDashboardTimeline } from '../../actions/dashboardActions';
 import { ApplicationState } from '../../applicationState';
-import { PortfoliosTimeline } from '../../model/Models';
+import { DashboardPortfolioTimeline } from '../../model/Models';
 
 interface TimelineProps {
 }
 
 interface StateProps {
-    timeline: PortfoliosTimeline;
+    timeline: DashboardPortfolioTimeline;
     working: boolean;
 }
 
@@ -71,14 +71,14 @@ class DashboardSummary extends React.Component<TimelineProps & StateProps & Disp
 
 const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, TimelineProps> = (dispatch) => {
     return {
-        getTimeline: () => dispatch(getPortfoliosTimeline())
+        getTimeline: () => dispatch(getDashboardTimeline())
     };
 };
 
 const mapStateToProps: MapStateToProps<StateProps, TimelineProps> = (state: ApplicationState) => {
     return {
-        timeline: state.portfolio.timeline,
-        working: state.portfolio.timeline_working
+        timeline: state.dashboard.timeline,
+        working: state.dashboard.timeline_working
     };
 };
 

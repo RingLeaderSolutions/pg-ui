@@ -1,1 +1,6 @@
-export { Portfolio, PortfoliosSummary, PortfoliosTimeline, PortfoliosStatus, PortfolioStatusEntry, PortfolioTimelineEntry } from './Portfolio';
+export { Portfolio } from './Portfolio';
+export { DashboardPortfolioSummary,
+         DashboardPortfolioTimeline,
+         PortfolioTimelineEntry, 
+         DashboardPortfolioStatus, 
+         PortfolioStatusEntry } from './Dashboard';

@@ -4,10 +4,10 @@ import { Portfolio } from "../model/Models";
 
 export interface IApiService {
   getAllPortfolios(): Promise<AxiosResponse>;
-  getAllPortfolioSummary(): Promise<AxiosResponse>;
-  getAllPortfolioTimeline(): Promise<AxiosResponse>;
-  getAllPortfolioStatus(): Promise<AxiosResponse>;
 
+  getDashboardSummary(): Promise<AxiosResponse>;
+  getDashboardTimeline(): Promise<AxiosResponse>;
+  getDashboardStatus(): Promise<AxiosResponse>;
 }
 
 export class ApiService implements IApiService {
@@ -37,15 +37,15 @@ export class ApiService implements IApiService {
         return axios.get(`${this.baseApiUri}/portfolios/all`, this.getRequestConfig());
     }
 
-    getAllPortfolioSummary(){
+    getDashboardSummary(){
         return axios.get(`${this.baseApiUri}/portfolios/summary${this.contextQuery}`, this.getRequestConfig());        
     }
 
-    getAllPortfolioTimeline(){
+    getDashboardTimeline(){
         return axios.get(`${this.baseApiUri}/portfolios/timeline${this.contextQuery}`, this.getRequestConfig());        
     }
 
-    getAllPortfolioStatus(){
+    getDashboardStatus(){
         return axios.get(`${this.baseApiUri}/portfolios/status${this.contextQuery}`, this.getRequestConfig());        
     }
 }

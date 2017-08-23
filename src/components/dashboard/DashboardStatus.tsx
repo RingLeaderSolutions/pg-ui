@@ -1,12 +1,10 @@
 import * as React from "react";
-import Header from "../Header";
-import CounterCard from "../common/CounterCard";
 import Spinner from "../common/Spinner";
 import { RouteComponentProps } from 'react-router';
 import { MapDispatchToPropsFunction, connect, MapStateToProps } from 'react-redux';
-import { getPortfoliosStatus } from '../../actions/portfolioActions';
+import { getDashboardStatus } from '../../actions/dashboardActions';
 import { ApplicationState } from '../../applicationState';
-import { PortfoliosStatus, PortfolioStatusEntry } from '../../model/Models';
+import { DashboardPortfolioStatus } from '../../model/Models';
 import { ChartConfig } from "./DashboardStatusChartConfig";
 
 var ReactHighCharts = require("react-highcharts");
@@ -15,7 +13,7 @@ interface StatusProps {
 }
 
 interface StateProps {
-    status: PortfoliosStatus;
+    status: DashboardPortfolioStatus;
     working: boolean;
 }
 
@@ -49,14 +47,14 @@ class DashboardStatus extends React.Component<StatusProps & StateProps & Dispatc
 }
 const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, StatusProps> = (dispatch) => {
     return {
-        getStatus: () => dispatch(getPortfoliosStatus())
+        getStatus: () => dispatch(getDashboardStatus())
     };
 };
 
 const mapStateToProps: MapStateToProps<StateProps, StatusProps> = (state: ApplicationState) => {
     return {
-        status: state.portfolio.status,
-        working: state.portfolio.status_working
+        status: state.dashboard.status,
+        working: state.dashboard.status_working
     };
 };
 

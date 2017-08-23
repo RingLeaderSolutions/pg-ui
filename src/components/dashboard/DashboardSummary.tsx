@@ -1,15 +1,15 @@
 import * as React from "react";
 import CounterCard from "../common/CounterCard";
 import { MapDispatchToPropsFunction, connect, MapStateToProps } from 'react-redux';
-import { getPortfoliosSummary } from '../../actions/portfolioActions';
+import { getDashboardSummary } from '../../actions/dashboardActions';
 import { ApplicationState } from '../../applicationState';
-import { PortfoliosSummary } from '../../model/Models';
+import { DashboardPortfolioSummary } from '../../model/Models';
 
 interface SummaryProps {
 }
 
 interface StateProps {
-    summary: PortfoliosSummary;
+    summary: DashboardPortfolioSummary;
     working: boolean;
 }
 
@@ -41,14 +41,14 @@ class DashboardSummary extends React.Component<SummaryProps & StateProps & Dispa
 
 const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, SummaryProps> = (dispatch) => {
     return {
-        getSummary: () => dispatch(getPortfoliosSummary())
+        getSummary: () => dispatch(getDashboardSummary())
     };
 };
 
 const mapStateToProps: MapStateToProps<StateProps, SummaryProps> = (state: ApplicationState) => {
     return {
-        summary: state.portfolio.summary,
-        working: state.portfolio.summary_working
+        summary: state.dashboard.summary,
+        working: state.dashboard.summary_working
     };
 };
 
