@@ -1,6 +1,6 @@
 import * as React from "react";
 
-import Dashboard from "./Dashboard";
+import Dashboard from "./dashboard/Dashboard";
 import Portfolios from "./Portfolios";
 import Portfolio from "./portfolio/Portfolio";
 

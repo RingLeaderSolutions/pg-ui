@@ -1,16 +1,25 @@
 import * as React from "react";
+import Spinner from './Spinner';
 import { MapDispatchToPropsFunction, connect, MapStateToProps } from 'react-redux';
 
-interface HelloProps {
+interface CounterCardProps {
   title: string;
   label: string;
   small?: boolean;
+  loaded?: boolean;
 }
 
-export default class Hello extends React.Component<HelloProps, {}> {
+export default class CounterCard extends React.Component<CounterCardProps, {}> {
   render() {
     var content = null;
-    if(this.props.small){
+    if(this.props.loaded != null && !this.props.loaded){
+      content = (
+        <div className="uk-card uk-card-default uk-card-body">
+          <Spinner />
+        </div>
+      )
+    }
+    else if(this.props.small){
       content = (
         <div className="uk-card uk-card-default uk-card-body">
           <h4><strong>{this.props.title}</strong></h4>

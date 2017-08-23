@@ -1,1 +1,1 @@
-export { Portfolio } from './Portfolio';
+export { Portfolio, PortfoliosSummary, PortfoliosTimeline, PortfoliosStatus, PortfolioStatusEntry, PortfolioTimelineEntry } from './Portfolio';

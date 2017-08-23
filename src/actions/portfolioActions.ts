@@ -1,29 +1,58 @@
 import ApiService from "../services/ApiService";
-import { Portfolio } from "../Model/Models";
+import { Portfolio, PortfoliosSummary, PortfoliosStatus } from "../Model/Models";
 
 import * as types from "./actionTypes";
 import { makeApiRequest } from "./Common";
 
 import { Dispatch } from 'redux';
 
-function fetching() {
-    return { type: types.FETCH_PORTFOLIO_WORKING };
-}
-
-function fetchFailed(errorMessage : string) {
-    console.log(`fetchFailed: Failed to fetch portfolio`);
-    return { type: types.FETCH_PORTFOLIO_FAILED, errorMessage };
-}
-
-function fetchSuccessful(portfolio: Portfolio[]) {
-    console.log(`fetchSuccessful: Received [${portfolio.length}] portfolios.`);
-    return { type: types.FETCH_PORTFOLIO_SUCCESSFUL, portfolio };
-}
-
 export function getAllPortfolios(){
     return (dispatch: Dispatch<any>) => {
         let fetchPromise = ApiService.getAllPortfolios();
-        dispatch(fetching());
-        makeApiRequest(dispatch, fetchPromise, 200, data => fetchSuccessful(data as Portfolio[]), error => fetchFailed(error));
+        dispatch( { type: types.FETCH_PORTFOLIOS_WORKING });
+
+        makeApiRequest(dispatch,
+            fetchPromise,
+            200, 
+            data => {
+                return { type: types.FETCH_PORTFOLIOS_SUCCESSFUL, data: data as Portfolio[] };
+            }, 
+            error => {
+                return { type: types.FETCH_PORTFOLIOS_FAILED, errorMessage: error };
+            });
+    };
+}
+
+export function getPortfoliosSummary(){
+    return (dispatch: Dispatch<any>) => {
+        let fetchPromise = ApiService.getAllPortfolioSummary();
+        dispatch({ type: types.FETCH_PORTFOLIOS_SUMMARY_WORKING });
+        
+        makeApiRequest(dispatch,
+            fetchPromise,
+            200, 
+            data => {
+                return { type: types.FETCH_PORTFOLIOS_SUMMARY_SUCCESSFUL, data: data as PortfoliosSummary };
+            }, 
+            error => {
+                return { type: types.FETCH_PORTFOLIOS_SUMMARY_FAILED, errorMessage: error };
+            });
+    };
+}
+
+export function getPortfoliosStatus(){
+    return (dispatch: Dispatch<any>) => {
+        let fetchPromise = ApiService.getAllPortfolioStatus();
+        dispatch({ type: types.FETCH_PORTFOLIOS_STATUS_WORKING });
+        
+        makeApiRequest(dispatch,
+            fetchPromise,
+            200, 
+            data => {
+                return { type: types.FETCH_PORTFOLIOS_STATUS_SUCCESSFUL, data: data as PortfoliosStatus };
+            }, 
+            error => {
+                return { type: types.FETCH_PORTFOLIOS_STATUS_FAILED, errorMessage: error };
+            });
     };
 }

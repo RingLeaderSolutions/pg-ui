@@ -1,6 +1,6 @@
 import * as React from "react";
 import Header from "../Header";
-import CounterCard from "../CounterCard";
+import CounterCard from "../common/CounterCard";
 
 const PortfolioSummary : React.SFC<{}> = () => {
     return (
