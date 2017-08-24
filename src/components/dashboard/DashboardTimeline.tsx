@@ -36,7 +36,7 @@ class DashboardSummary extends React.Component<TimelineProps & StateProps & Disp
                     labelClass = "uk-label uk-label-warning";
                 }
                 return (
-                    <tr>
+                    <tr key={timelineItem.id}>
                         <td>{timelineItem.contractStart} - {timelineItem.contractEnd}</td>
                         <td><strong>{timelineItem.title}</strong></td>
                         <td><span className={labelClass}>{timelineItem.workload}/{totalActions}</span></td>
