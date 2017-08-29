@@ -26,7 +26,8 @@
 }
 
 .avatar {
-    width: 30px;
+    flex: 0 0 30px;
+    background-color: grey;
     height: 30px;
     background-size: cover;
     background-position: center;

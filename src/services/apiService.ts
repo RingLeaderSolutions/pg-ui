@@ -13,10 +13,12 @@ export interface IApiService {
 export class ApiService implements IApiService {
     baseApiUri: string;
     contextQuery: string;
+    teamId: string;
     constructor(){
         //this.baseApiUri = "http://81.147.87.33:8080";
         this.baseApiUri = "http://mpanupload242007.northeurope.cloudapp.azure.com:8080";
-        this.contextQuery = "?context=team&value=989";
+        this.teamId = "1";
+        this.contextQuery = `?context=team&value=${this.teamId}`;
     }
     getRequestConfig() {
         // let authorisation = "";
@@ -34,7 +36,7 @@ export class ApiService implements IApiService {
     }
 
     getAllPortfolios() {
-        return axios.get(`${this.baseApiUri}/portfolios/all`, this.getRequestConfig());
+        return axios.get(`${this.baseApiUri}/portfolios/team/${this.teamId}`, this.getRequestConfig());
     }
 
     getDashboardSummary(){

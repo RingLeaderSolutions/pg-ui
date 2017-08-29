@@ -4,6 +4,7 @@
 @import "graphics";
 @import "header";
 @import "spinner";
+@import "dashboard";
 
 html, body, .root, .app-container {
   min-height: 100%;
@@ -24,5 +25,9 @@ html, body, .root, .app-container {
 
 .content-inner {
     height: 92%;
-    padding-right: 20px;
+}
+
+// UIKit Table hover override (yellow->grey)
+.uk-table-hover > tr:hover, .uk-table-hover tbody tr:hover {
+    background: $grey-border !important;
 }

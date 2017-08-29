@@ -4,8 +4,7 @@
     height: 100%;
     display: flex;
     .filters-portfolios {
-        min-width: 150px;
-        height: 100%;
+        width: 150px;
         border-right: 1px solid $grey-border;
         margin-top: $margin-medium;
         li:first-child {
@@ -26,17 +25,22 @@
         }
     }
     .table-portfolios {
-        flex-grow: 1;
-        table {
-            a {
-                color: $text-color;
-                display: block;
-            }
-            a:hover {
-                text-decoration: none;
+        flex-grow: 1;      
+        display: flex;
+        flex-direction: column;
+        .container-table-portfolios {
+            flex: 1;
+            overflow-y: auto;
+            table {
+                height: 100%;
+                width: 100%;
             }
         }
+        .table-warning {
+            text-align: center;
+        }
         .search-portfolios {
+            flex: none;
             margin: $margin-medium $margin-medium;
             display: flex;
             .uk-search {

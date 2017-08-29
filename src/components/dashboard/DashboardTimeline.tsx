@@ -44,18 +44,20 @@ class DashboardSummary extends React.Component<TimelineProps & StateProps & Disp
                 );
             });
             content = (
-                <table className="uk-table uk-table-divider">
-                    <thead>
-                        <tr>
-                            <th>Contract Dates</th>
-                            <th>Portfolios</th>
-                            <th>MPAN Workload</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {tableContent}
-                    </tbody>
-                </table>
+                <div className="dashboard-timeline">
+                    <table className="uk-table uk-table-divider">
+                        <thead>
+                            <tr>
+                                <th>Contract Dates</th>
+                                <th>Portfolios</th>
+                                <th>MPAN Workload</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {tableContent}
+                        </tbody>
+                    </table>
+                </div>
             )
         }
         

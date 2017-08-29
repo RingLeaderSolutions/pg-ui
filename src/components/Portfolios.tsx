@@ -7,13 +7,14 @@ import { ApplicationState } from '../applicationState';
 import Header from "./Header";
 import { Portfolio } from '../model/Models';
 import NewPortfolioDialog from './portfolio/NewPortfolioDialog';
+import Spinner from './common/Spinner';
 
 interface PortfoliosProps extends RouteComponentProps<void> {
-  portfolios: Portfolio[];
 }
 
 interface StateProps {
   portfolios: Portfolio[];
+  working: boolean;
 }
 
 interface DispatchProps {
@@ -26,6 +27,52 @@ class Portfolios extends React.Component<PortfoliosProps & StateProps & Dispatch
     }
 
     render() {
+        var tableContent;
+        
+        if(this.props.working){
+            tableContent =  (<tr><td colSpan={9}><Spinner /></td></tr>);
+        }
+        else if(this.props.portfolios == null){
+            tableContent =  (<tr><td colSpan={9}><p className="table-warning">There are no portfolios for this team yet. You can create one using the "New Portfolio" button above!</p></td></tr>)
+        }
+        else {
+            tableContent = this.props.portfolios.map(portfolio => {
+                var hasSalesLead = portfolio.salesLead != null;
+                var hasSupportOwner = portfolio.supportExec != null;
+                
+                var salesLead = hasSalesLead ? 
+                    (<div className="user">
+                        <img className="avatar" src={portfolio.salesLead.avatarUrl} />
+                        <p>{portfolio.salesLead.firstName} {portfolio.salesLead.lastName}</p>
+                    </div>) : (<p>None</p>);
+
+                var supportOwner = hasSupportOwner ? 
+                    (<div className="user">
+                        <img className="avatar" src={portfolio.supportExec.avatarUrl} />
+                        <p>{portfolio.supportExec.firstName} {portfolio.supportExec.lastName}</p>
+                    </div>) : (<p>None</p>);
+
+                return (
+                    <tr key={portfolio.id}>
+                        <td className="uk-table-link"><Link to="/portfolio" className="uk-link-reset">{portfolio.title}</Link></td>
+                        <td className="uk-table-link">
+                            <Link to="/portfolio" className="uk-link-reset">
+                                {/* <div className="circle circle-orange" />< */}
+                                {portfolio.status}
+                            </Link>
+                        </td>
+                        <td>{salesLead}</td>
+                        <td className="uk-table-link"><Link to="/portfolio" className="uk-link-reset">{supportOwner}</Link></td>
+                        <td className="uk-table-link"><Link to="/portfolio" className="uk-link-reset">{portfolio.contractStart}</Link></td>
+                        <td className="uk-table-link"><Link to="/portfolio" className="uk-link-reset">{portfolio.contractEnd}</Link></td>
+                        <td className="uk-table-link"><Link to="/portfolio" className="uk-link-reset">{portfolio.accounts}</Link></td>
+                        <td className="uk-table-link"><Link to="/portfolio" className="uk-link-reset">{portfolio.sites}</Link></td>
+                        <td className="uk-table-link"><Link to="/portfolio" className="uk-link-reset">{portfolio.mpans}</Link></td>
+                    </tr>
+                );
+            });
+        }
+
         return (
             <div className="content-inner">
                 <Header title="Portfolios" />
@@ -49,8 +96,8 @@ class Portfolios extends React.Component<PortfoliosProps & StateProps & Dispatch
                                 <button className="uk-button uk-button-primary" data-uk-toggle="target: #modal-new-portfolio">New portfolio</button>
                             </div>
                         </div>
-                        <div>
-                            <table className="uk-table uk-table-divider">
+                        <div className="container-table-portfolios">
+                            <table className="uk-table uk-table-divider uk-table-hover">
                                 <thead>
                                     <tr>
                                         <th>Name</th>
@@ -65,73 +112,7 @@ class Portfolios extends React.Component<PortfoliosProps & StateProps & Dispatch
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr>
-                                        <td><Link to="/portfolio">B4B Energy 17/18</Link></td>
-                                        <td><Link to="/portfolio"><div className="circle circle-orange" /></Link></td>
-                                        <td>
-                                            <Link to="/portfolio">
-                                                <div className="user">
-                                                    <img className="avatar" src={require('../images/user6.png')} />
-                                                    <p>Aiden Day</p>
-                                                </div>
-                                            </Link>
-                                        </td>
-                                        <td>
-                                            <Link to="/portfolio">
-                                                <div className="user">
-                                                    <img className="avatar" src={require('../images/user7.png')} />
-                                                    <p>Miles O'Brien</p>
-                                                </div>
-                                            </Link>
-                                        </td>
-                                        <td><Link to="/portfolio">01/04/17</Link></td>
-                                        <td><Link to="/portfolio">31/04/18</Link></td>
-                                        <td><Link to="/portfolio">3</Link></td>
-                                        <td><Link to="/portfolio">3</Link></td>
-                                        <td><Link to="/portfolio">6</Link></td>
-                                    </tr>
-                                    <tr>
-                                        <td>Capalona 18/19</td>
-                                        <td><div className="circle circle-green" /></td>
-                                        <td>
-                                            <div className="user">
-                                                <img className="avatar" src={require('../images/user1.png')} />
-                                                <p>Tony Walsh</p>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <div className="user">
-                                                <img className="avatar" src={require('../images/user3.png')} />
-                                                <p>Deanna Troi</p>
-                                            </div>
-                                        </td>
-                                        <td>01/04/18</td>
-                                        <td>31/04/19</td>
-                                        <td>7</td>
-                                        <td>7</td>
-                                        <td>384</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Zenergi Ltd 18/19</td>
-                                        <td><div className="circle circle-blue" /></td>
-                                        <td>
-                                            <div className="user">
-                                                <img className="avatar" src={require('../images/user2.png')} />
-                                                <p>Wesley Crusher</p>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <div className="user">
-                                                <img className="avatar" src={require('../images/user4.png')} />
-                                                <p>William Riker</p>
-                                            </div>
-                                        </td>
-                                        <td>01/07/19</td>
-                                        <td>30/06/10</td>
-                                        <td>18</td>
-                                        <td>18</td>
-                                        <td>1054</td>
-                                    </tr>
+                                    {tableContent}
                                 </tbody>
                             </table>
                         </div>
@@ -153,6 +134,7 @@ const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, PortfoliosPr
 const mapStateToProps: MapStateToProps<StateProps, PortfoliosProps> = (state: ApplicationState) => {
   return {
     portfolios: state.portfolio.portfolios,
+    working: state.portfolio.portfolios_working
   };
 };
 
