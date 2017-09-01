@@ -1,6 +1,12 @@
 @import "variables";
 
 .content-inner-portfolio {
+    margin-right: $margin-large;
+    .portfolio-history {
+        overflow: auto;
+        max-height: 300px;
+    }
+
     .table-uploads {
         .search-uploads {
             margin: $margin-medium $margin-medium;

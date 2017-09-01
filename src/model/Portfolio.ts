@@ -28,3 +28,24 @@ export interface Client {
     name: string;
     contact: User;
 }
+
+export interface MpanSummary {
+    stage: string;
+    completed: number;
+    incomplete: number;
+}
+
+export interface PortfolioHistoryEntry {
+    id: string;
+    parent: string;
+    category: string;
+    entityType: string;
+    entityId: string;
+    description: string;
+    actionRequired: boolean;
+    owner: number;
+    documentId: string;
+    documentType: string;
+    created: number;
+    children: PortfolioHistoryEntry[];
+}

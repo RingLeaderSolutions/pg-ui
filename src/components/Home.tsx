@@ -2,7 +2,7 @@ import * as React from "react";
 
 import Dashboard from "./dashboard/Dashboard";
 import Portfolios from "./Portfolios";
-import Portfolio from "./portfolio/Portfolio";
+import PortfolioDetail from "./portfolio/PortfolioDetail";
 
 import {
     BrowserRouter as Router,
@@ -32,7 +32,7 @@ const Home : React.SFC<{}> = () => {
             <div className="content-container">
                 <Route exact path="/" component={Dashboard} />
                 <Route path="/portfolios" component={Portfolios} />
-                <Route path="/portfolio" component={Portfolio} />
+                <Route path="/portfolio" component={PortfolioDetail} />
             </div>
         </div>
     );

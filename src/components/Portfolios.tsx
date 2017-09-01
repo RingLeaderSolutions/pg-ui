@@ -32,42 +32,44 @@ class Portfolios extends React.Component<PortfoliosProps & StateProps & Dispatch
         if(this.props.working){
             tableContent =  (<tr><td colSpan={9}><Spinner /></td></tr>);
         }
-        else if(this.props.portfolios == null){
+        else if(this.props.portfolios == null || this.props.portfolios.length == 0){
             tableContent =  (<tr><td colSpan={9}><p className="table-warning">There are no portfolios for this team yet. You can create one using the "New Portfolio" button above!</p></td></tr>)
         }
         else {
             tableContent = this.props.portfolios.map(portfolio => {
+                var link = { pathname: `/portfolio/${portfolio.id}`, state: { portfolioId: portfolio.id }};
                 var hasSalesLead = portfolio.salesLead != null;
                 var hasSupportOwner = portfolio.supportExec != null;
-                
+                var noUser = (<p style={ { margin: '0px' } }>None</p>);
+
                 var salesLead = hasSalesLead ? 
                     (<div className="user">
                         <img className="avatar" src={portfolio.salesLead.avatarUrl} />
                         <p>{portfolio.salesLead.firstName} {portfolio.salesLead.lastName}</p>
-                    </div>) : (<p>None</p>);
+                    </div>) : noUser;
 
                 var supportOwner = hasSupportOwner ? 
                     (<div className="user">
                         <img className="avatar" src={portfolio.supportExec.avatarUrl} />
                         <p>{portfolio.supportExec.firstName} {portfolio.supportExec.lastName}</p>
-                    </div>) : (<p>None</p>);
+                    </div>) : noUser;
 
                 return (
                     <tr key={portfolio.id}>
-                        <td className="uk-table-link"><Link to="/portfolio" className="uk-link-reset">{portfolio.title}</Link></td>
+                        <td className="uk-table-link"><Link to={link} className="uk-link-reset">{portfolio.title}</Link></td>
                         <td className="uk-table-link">
-                            <Link to="/portfolio" className="uk-link-reset">
+                            <Link to={link} className="uk-link-reset">
                                 {/* <div className="circle circle-orange" />< */}
                                 {portfolio.status}
                             </Link>
                         </td>
-                        <td>{salesLead}</td>
-                        <td className="uk-table-link"><Link to="/portfolio" className="uk-link-reset">{supportOwner}</Link></td>
-                        <td className="uk-table-link"><Link to="/portfolio" className="uk-link-reset">{portfolio.contractStart}</Link></td>
-                        <td className="uk-table-link"><Link to="/portfolio" className="uk-link-reset">{portfolio.contractEnd}</Link></td>
-                        <td className="uk-table-link"><Link to="/portfolio" className="uk-link-reset">{portfolio.accounts}</Link></td>
-                        <td className="uk-table-link"><Link to="/portfolio" className="uk-link-reset">{portfolio.sites}</Link></td>
-                        <td className="uk-table-link"><Link to="/portfolio" className="uk-link-reset">{portfolio.mpans}</Link></td>
+                        <td className="uk-table-link"><Link to={link} className="uk-link-reset">{salesLead}</Link></td>
+                        <td className="uk-table-link"><Link to={link} className="uk-link-reset">{supportOwner}</Link></td>
+                        <td className="uk-table-link"><Link to={link} className="uk-link-reset">{portfolio.contractStart}</Link></td>
+                        <td className="uk-table-link"><Link to={link} className="uk-link-reset">{portfolio.contractEnd}</Link></td>
+                        <td className="uk-table-link"><Link to={link} className="uk-link-reset">{portfolio.accounts}</Link></td>
+                        <td className="uk-table-link"><Link to={link} className="uk-link-reset">{portfolio.sites}</Link></td>
+                        <td className="uk-table-link"><Link to={link} className="uk-link-reset">{portfolio.mpans}</Link></td>
                     </tr>
                 );
             });

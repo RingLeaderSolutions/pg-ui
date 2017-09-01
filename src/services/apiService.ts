@@ -8,6 +8,9 @@ export interface IApiService {
   getDashboardSummary(): Promise<AxiosResponse>;
   getDashboardTimeline(): Promise<AxiosResponse>;
   getDashboardStatus(): Promise<AxiosResponse>;
+
+  getPortfolioMpanSummary(portfolioId: string): Promise<AxiosResponse>;
+  getPortfolioHistory(portfolioId: string): Promise<AxiosResponse>;
 }
 
 export class ApiService implements IApiService {
@@ -49,6 +52,14 @@ export class ApiService implements IApiService {
 
     getDashboardStatus(){
         return axios.get(`${this.baseApiUri}/portfolios/status${this.contextQuery}`, this.getRequestConfig());        
+    }
+
+    getPortfolioMpanSummary(portfolioId: string){
+        return axios.get(`${this.baseApiUri}/portfolio/${portfolioId}/mpans/summary`, this.getRequestConfig());
+    }
+
+    getPortfolioHistory(portfolioId: string) {
+        return axios.get(`${this.baseApiUri}/portfolio/${portfolioId}/history`, this.getRequestConfig());        
     }
 }
 
