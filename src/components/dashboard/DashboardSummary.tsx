@@ -47,8 +47,8 @@ const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, SummaryProps
 
 const mapStateToProps: MapStateToProps<StateProps, SummaryProps> = (state: ApplicationState) => {
     return {
-        summary: state.dashboard.summary,
-        working: state.dashboard.summary_working
+        summary: state.dashboard.summary.value,
+        working: state.dashboard.summary.working
     };
 };
 

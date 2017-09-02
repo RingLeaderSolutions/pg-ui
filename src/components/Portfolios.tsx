@@ -91,7 +91,7 @@ class Portfolios extends React.Component<PortfoliosProps & StateProps & Dispatch
                     <div className="table-portfolios">
                         <div className="search-portfolios">
                             <form className="uk-search uk-search-default">
-                                <span className="uk-search-icon-flip" data-uk-search-icon></span>
+                                {/*<span className="uk-search-icon-flip" data-uk-search-icon></span>*/}
                                 <input className="uk-search-input" type="search" placeholder="Search..." />
                             </form>
                             <div className="actions-portfolios">
@@ -135,8 +135,8 @@ const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, PortfoliosPr
 
 const mapStateToProps: MapStateToProps<StateProps, PortfoliosProps> = (state: ApplicationState) => {
   return {
-    portfolios: state.portfolio.portfolios,
-    working: state.portfolio.portfolios_working
+    portfolios: state.portfolios.value,
+    working: state.portfolios.working
   };
 };
 

@@ -53,8 +53,8 @@ const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, StatusProps>
 
 const mapStateToProps: MapStateToProps<StateProps, StatusProps> = (state: ApplicationState) => {
     return {
-        status: state.dashboard.status,
-        working: state.dashboard.status_working
+        status: state.dashboard.status.value,
+        working: state.dashboard.status.working
     };
 };
 

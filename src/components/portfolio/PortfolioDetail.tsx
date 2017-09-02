@@ -68,8 +68,8 @@ const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, PortfolioDet
   
 const mapStateToProps: MapStateToProps<StateProps, PortfolioDetailProps> = (state: ApplicationState) => {
     return {
-        portfolio: state.portfolio.selected_portfolio,
-        working: state.portfolio.select_portfolio_working
+        portfolio: state.portfolio.selected.value,
+        working: state.portfolio.selected.working
     };
 };
   

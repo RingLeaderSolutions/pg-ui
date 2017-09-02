@@ -6,11 +6,16 @@ import { ApplicationState } from '../applicationState';
 
 export default function configureStore(initialState?: ApplicationState) {
 
-  // Enable React devToolsExtension
-  //   compose(applyMiddleware(thunk, logger), window.devToolsExtension ? window.devToolsExtension() : f => f)
-  return createStore(
-    rootReducer,
-    initialState,
+  // Specific set up with enhancer to enable redux browser devtools
+  const composeEnhancers = (<any>window).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+  return createStore(rootReducer, initialState, composeEnhancers(
     applyMiddleware(thunk)
-  );
+  ));
+  
+  // Disabled redux dev tools:
+  // return createStore(
+  //   rootReducer,
+  //   initialState,
+  //   applyMiddleware(thunk)
+  // );
 }

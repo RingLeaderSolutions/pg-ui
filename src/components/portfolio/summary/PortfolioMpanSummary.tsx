@@ -34,7 +34,7 @@ class PortfolioMpanSummary extends React.Component<PortfolioMpanSummaryProps & S
 
     createSummaryTable(){
         var tableHeaders = this.props.mpanSummary.map(ms => {
-            return (<th className="uk-text-center">{ms.stage}</th>)
+            return (<th key={ms.stage} className="uk-text-center">{ms.stage}</th>)
         });
 
         var completeRow = this.props.mpanSummary.map(ms => {
@@ -45,7 +45,8 @@ class PortfolioMpanSummary extends React.Component<PortfolioMpanSummaryProps & S
                 cellClass = "uk-text-danger";
             }
 
-            return (<td className={cellClass}>{complete}</td>);
+            var key = `complete-${ms.stage}`;
+            return (<td key={key} className={cellClass}>{complete}</td>);
         });
 
         var incompleteRow = this.props.mpanSummary.map(ms => {
@@ -56,7 +57,8 @@ class PortfolioMpanSummary extends React.Component<PortfolioMpanSummaryProps & S
                 cellClass = "uk-text-success";
             }
 
-            return (<td className={cellClass}>{incomplete}</td>);
+            var key = `complete-${ms.stage}`;
+            return (<td key={key} className={cellClass}>{incomplete}</td>);
         })
 
         return (
@@ -106,8 +108,8 @@ const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, PortfolioMpa
   
 const mapStateToProps: MapStateToProps<StateProps, PortfolioMpanSummaryProps> = (state: ApplicationState) => {
     return {
-        mpanSummary: state.portfolio.portfolio_mpanSummary,
-        working: state.portfolio.portfolio_mpanSummary_working
+        mpanSummary: state.portfolio.mpan_summary.value,
+        working: state.portfolio.mpan_summary.working
     };
 };
   

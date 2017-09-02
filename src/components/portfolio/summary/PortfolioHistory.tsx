@@ -44,7 +44,7 @@ class PortfolioHistory extends React.Component<PortfolioHistoryProps & StateProp
             .map(h => {
                 var time = moment.utc(h.created).local().fromNow();            
                 return ( 
-                    <tr>
+                    <tr key={h.id}>
                         <td>{time}</td>
                         <td>-</td>
                         <td>-</td>
@@ -97,8 +97,8 @@ const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, PortfolioHis
   
 const mapStateToProps: MapStateToProps<StateProps, PortfolioHistoryProps> = (state: ApplicationState) => {
     return {
-        history: state.portfolio.portfolio_history,
-        working: state.portfolio.portfolio_history_working
+        history: state.portfolio.history.value,
+        working: state.portfolio.history.working
     };
 };
   

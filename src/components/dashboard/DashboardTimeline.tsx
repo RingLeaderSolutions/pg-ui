@@ -79,8 +79,8 @@ const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, TimelineProp
 
 const mapStateToProps: MapStateToProps<StateProps, TimelineProps> = (state: ApplicationState) => {
     return {
-        timeline: state.dashboard.timeline,
-        working: state.dashboard.timeline_working
+        timeline: state.dashboard.timeline.value,
+        working: state.dashboard.timeline.working
     };
 };
 
