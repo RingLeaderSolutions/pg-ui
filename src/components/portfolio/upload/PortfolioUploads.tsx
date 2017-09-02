@@ -1,5 +1,4 @@
 import * as React from "react";
-import Header from "../Header";
 
 const PortfolioUploads : React.SFC<{}> = () => {
     return (
@@ -33,7 +32,7 @@ const PortfolioUploads : React.SFC<{}> = () => {
                                 <td><div className="circle circle-blue" /></td>
                                 <td>
                                     <div className="user">
-                                        <img className="avatar" src={require('../../images/user1.png')} />
+                                        <img className="avatar" src={require('../../../images/user1.png')} />
                                         <p>Tony Walsh</p>
                                     </div>
                                 </td>
@@ -46,7 +45,7 @@ const PortfolioUploads : React.SFC<{}> = () => {
                                 <td><div className="circle circle-green" /></td>
                                 <td>
                                     <div className="user">
-                                        <img className="avatar" src={require('../../images/user3.png')} />
+                                        <img className="avatar" src={require('../../../images/user3.png')} />
                                         <p>Deanna Troi</p>
                                     </div>
                                 </td>
@@ -59,7 +58,7 @@ const PortfolioUploads : React.SFC<{}> = () => {
                                 <td><div className="circle circle-red" /></td>
                                 <td>
                                     <div className="user">
-                                        <img className="avatar" src={require('../../images/user6.png')} />
+                                        <img className="avatar" src={require('../../../images/user6.png')} />
                                         <p>Aiden Day</p>
                                     </div>
                                 </td>

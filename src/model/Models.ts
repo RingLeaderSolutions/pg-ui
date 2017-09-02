@@ -8,3 +8,9 @@ export { DashboardPortfolioSummary,
          PortfolioTimelineEntry, 
          DashboardPortfolioStatus, 
          PortfolioStatusEntry } from './Dashboard';
+
+export { Mpan } from './Mpan';
+
+export { Site } from './Site';
+
+export { Client } from './Client';

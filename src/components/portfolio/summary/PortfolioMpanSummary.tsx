@@ -1,11 +1,11 @@
 import * as React from "react";
-import Header from "../Header";
+import Header from "../../common/Header";
 import { MapDispatchToPropsFunction, connect, MapStateToProps } from 'react-redux';
-import { ApplicationState } from '../../applicationState';
-import { Portfolio, MpanSummary } from '../../model/Models';
-import Spinner from '../common/Spinner';
+import { ApplicationState } from '../../../applicationState';
+import { Portfolio, MpanSummary } from '../../../model/Models';
+import Spinner from '../../common/Spinner';
 
-import { getPortfolioMpanSummary } from '../../actions/portfolioActions';
+import { getPortfolioMpanSummary } from '../../../actions/portfolioActions';
 
 interface PortfolioMpanSummaryProps {
     portfolio: Portfolio;

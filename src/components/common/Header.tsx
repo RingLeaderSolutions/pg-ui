@@ -11,7 +11,7 @@ export default class Header extends React.Component<HeaderProps, {}> {
         <div className="header">
             <div className="header-content">
               <h3>{this.props.title}</h3>
-              <img className="avatar avatar-large" src={require('../images/avatar.jpg')} />
+              <img className="avatar avatar-large" src={require('../../images/avatar.jpg')} />
             </div>
             <hr />
         </div>);

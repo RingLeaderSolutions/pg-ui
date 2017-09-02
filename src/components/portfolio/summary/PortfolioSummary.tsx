@@ -1,7 +1,7 @@
 import * as React from "react";
-import Header from "../Header";
-import CounterCard from "../common/CounterCard";
-import { Portfolio } from '../../model/Models';
+import Header from "../../common/Header";
+import CounterCard from "../../common/CounterCard";
+import { Portfolio } from '../../../model/Models';
 import PortfolioMpanSummary from "./PortfolioMpanSummary";
 import PortfolioHistory from "./PortfolioHistory";
 

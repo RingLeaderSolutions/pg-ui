@@ -1,13 +1,13 @@
 import * as React from "react";
-import Header from "../Header";
+import Header from "../common/Header";
 import { RouteComponentProps } from 'react-router';
 import { MapDispatchToPropsFunction, connect, MapStateToProps } from 'react-redux';
 import { ApplicationState } from '../../applicationState';
 import { Portfolio } from '../../model/Models';
 import Spinner from '../common/Spinner';
 
-import PortfolioSummary from "./PortfolioSummary";
-import PortfolioUploads from "./PortfolioUploads";
+import PortfolioSummary from "./summary/PortfolioSummary";
+import PortfolioUploads from "./upload/PortfolioUploads";
 
 import { getSinglePortfolio } from '../../actions/portfolioActions';
 

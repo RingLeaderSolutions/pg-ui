@@ -1,12 +1,12 @@
 import * as React from "react";
-import Header from "../Header";
+import Header from "../../common/Header";
 import { MapDispatchToPropsFunction, connect, MapStateToProps } from 'react-redux';
-import { ApplicationState } from '../../applicationState';
-import { Portfolio, PortfolioHistoryEntry } from '../../model/Models';
-import Spinner from '../common/Spinner';
+import { ApplicationState } from '../../../applicationState';
+import { Portfolio, PortfolioHistoryEntry } from '../../../model/Models';
+import Spinner from '../../common/Spinner';
 import * as moment from 'moment';
 
-import { getPortfolioHistory } from '../../actions/portfolioActions';
+import { getPortfolioHistory } from '../../../actions/portfolioActions';
 
 interface PortfolioHistoryProps {
     portfolio: Portfolio;

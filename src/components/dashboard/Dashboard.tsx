@@ -1,5 +1,5 @@
 import * as React from "react";
-import Header from "../Header";
+import Header from "../common/Header";
 import { RouteComponentProps } from 'react-router';
 
 import DashboardSummary from "./DashboardSummary";

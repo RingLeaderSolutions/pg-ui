@@ -4,7 +4,7 @@ import { RouteComponentProps } from 'react-router';
 import { MapDispatchToPropsFunction, connect, MapStateToProps } from 'react-redux';
 import { getAllPortfolios } from '../actions/portfolioActions';
 import { ApplicationState } from '../applicationState';
-import Header from "./Header";
+import Header from "./common/Header";
 import { Portfolio } from '../model/Models';
 import NewPortfolioDialog from './portfolio/NewPortfolioDialog';
 import Spinner from './common/Spinner';
