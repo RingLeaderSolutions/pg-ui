@@ -85,7 +85,7 @@ class Portfolios extends React.Component<PortfoliosProps & StateProps & Dispatch
             <div className="content-inner">
                 <Header title="Portfolios" />
                 <div className="content-portfolios">
-                    <div className="filters-portfolios">
+                    {/* <div className="filters-portfolios">
                         <ul className="uk-tab-right" data-uk-tab>
                             <li><a>All Portfolios</a></li>
                             <li><a><div className="circle circle-grey" /><p>Qualified</p></a></li>
@@ -93,7 +93,7 @@ class Portfolios extends React.Component<PortfoliosProps & StateProps & Dispatch
                             <li><a><div className="circle circle-orange" /><p>Proposal</p></a></li>
                             <li><a><div className="circle circle-green" /><p>Priced</p></a></li>
                         </ul>
-                    </div>
+                    </div> */}
                     <div className="table-portfolios">
                         <div className="search-portfolios">
                             <form className="uk-search uk-search-default">
