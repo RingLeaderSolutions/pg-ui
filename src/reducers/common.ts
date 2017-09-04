@@ -24,14 +24,16 @@ export const requestResponseReducer = (
         case workingActionType:
           return {
             ...state,
-            working: true
+            working: true,
+            error: false
           };
 
         case failureActionType:
           return {
             ...state,
             working: false,
-            error: action.error
+            error: true,
+            errorMessage: action.error
           };
 
         case successActionType:

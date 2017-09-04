@@ -14,7 +14,8 @@ const selectedPortfolioReducer = requestResponseReducer(
     (state, action) => {
         return {
             ...state,
-            working: false,            
+            working: false,         
+            error: false,   
             value: action.data
         };
     }

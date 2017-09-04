@@ -15,6 +15,7 @@ const dashboardTimelineReducer = requestResponseReducer(
         return {
             ...state,
             working: false,            
+            error: false,
             value: action.data
         };
     }

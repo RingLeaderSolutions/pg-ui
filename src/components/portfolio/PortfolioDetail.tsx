@@ -1,5 +1,6 @@
 import * as React from "react";
 import Header from "../common/Header";
+import ErrorMessage from "../common/ErrorMessage";
 import { RouteComponentProps } from 'react-router';
 import { MapDispatchToPropsFunction, connect, MapStateToProps } from 'react-redux';
 import { ApplicationState } from '../../applicationState';
@@ -17,6 +18,8 @@ interface PortfolioDetailProps extends RouteComponentProps<void> {
 interface StateProps {
   portfolio: Portfolio;
   working: boolean;
+  error: boolean;
+  errorMessage: string;
 }
 
 interface DispatchProps {
@@ -34,6 +37,9 @@ class PortfolioDetail extends React.Component<PortfolioDetailProps & StateProps 
     }
 
     render() {
+        if(this.props.error){
+            return (<ErrorMessage errorMessage={this.props.errorMessage} />);
+        }
         if(this.props.working || this.props.portfolio == null){
             return (<Spinner />);
         }
@@ -69,7 +75,9 @@ const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, PortfolioDet
 const mapStateToProps: MapStateToProps<StateProps, PortfolioDetailProps> = (state: ApplicationState) => {
     return {
         portfolio: state.portfolio.selected.value,
-        working: state.portfolio.selected.working
+        working: state.portfolio.selected.working,
+        error: state.portfolio.selected.error,
+        errorMessage: state.portfolio.selected.errorMessage
     };
 };
   

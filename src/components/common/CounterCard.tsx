@@ -1,5 +1,6 @@
 import * as React from "react";
 import Spinner from './Spinner';
+import ErrorMessage from './ErrorMessage';
 import { MapDispatchToPropsFunction, connect, MapStateToProps } from 'react-redux';
 
 interface CounterCardProps {
@@ -7,12 +8,21 @@ interface CounterCardProps {
   label: string;
   small?: boolean;
   loaded?: boolean;
+  error?: boolean;
+  errorMessage?: string;
 }
 
 export default class CounterCard extends React.Component<CounterCardProps, {}> {
   render() {
     var content = null;
-    if(this.props.loaded != null && !this.props.loaded){
+    if(this.props.error){
+      content = (
+        <div className="uk-card uk-card-default uk-card-body">
+          <ErrorMessage errorMessage={this.props.errorMessage} />
+        </div>
+      )
+    }
+    else if(this.props.loaded != null && !this.props.loaded){
       content = (
         <div className="uk-card uk-card-default uk-card-body">
           <Spinner />

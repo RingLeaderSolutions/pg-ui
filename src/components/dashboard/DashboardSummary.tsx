@@ -11,6 +11,8 @@ interface SummaryProps {
 interface StateProps {
     summary: DashboardPortfolioSummary;
     working: boolean;
+    error: boolean;
+    errorMessage: string;
 }
 
 interface DispatchProps {
@@ -23,7 +25,7 @@ class DashboardSummary extends React.Component<SummaryProps & StateProps & Dispa
     }
     render() {
         var portfolioCount, siteCount, mpanCount = "";
-        if(!this.props.working){
+        if(!this.props.working && !this.props.error){
             portfolioCount = String(this.props.summary.portfolioCount);
             siteCount = String(this.props.summary.siteCount);
             mpanCount = String(this.props.summary.mpanCount);
@@ -31,10 +33,26 @@ class DashboardSummary extends React.Component<SummaryProps & StateProps & Dispa
         
         return (
             <div className="uk-child-width-expand@s uk-text-center uk-grid" data-uk-grid data-uk-height-match="target: > div > .uk-card">
-                <CounterCard title={portfolioCount} loaded={!this.props.working} label="Total Portfolios" />
-                <CounterCard title={siteCount} loaded={!this.props.working} label="Total Sites" />
-                <CounterCard title={mpanCount} loaded={!this.props.working} label="Total MPANs" />
-                <CounterCard title="TPI" label="Your Team" />
+                <CounterCard title={portfolioCount}
+                             error={this.props.error} 
+                             errorMessage={this.props.errorMessage}
+                             loaded={!this.props.working} 
+                             label="Total Portfolios" />
+
+                <CounterCard title={siteCount} 
+                             error={this.props.error} 
+                             errorMessage={this.props.errorMessage}
+                             loaded={!this.props.working} 
+                             label="Total Sites" />
+
+                <CounterCard title={mpanCount} 
+                             error={this.props.error} 
+                             errorMessage={this.props.errorMessage}
+                             loaded={!this.props.working} 
+                             label="Total MPANs" />
+                             
+                <CounterCard title="TPI" 
+                             label="Your Team" />
             </div>)
         }
     }
@@ -48,7 +66,9 @@ const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, SummaryProps
 const mapStateToProps: MapStateToProps<StateProps, SummaryProps> = (state: ApplicationState) => {
     return {
         summary: state.dashboard.summary.value,
-        working: state.dashboard.summary.working
+        working: state.dashboard.summary.working,
+        error: state.dashboard.summary.error,
+        errorMessage: state.dashboard.summary.errorMessage
     };
 };
 

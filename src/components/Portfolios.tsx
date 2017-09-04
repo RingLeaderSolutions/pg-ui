@@ -5,6 +5,7 @@ import { MapDispatchToPropsFunction, connect, MapStateToProps } from 'react-redu
 import { getAllPortfolios } from '../actions/portfolioActions';
 import { ApplicationState } from '../applicationState';
 import Header from "./common/Header";
+import ErrorMessage from "./common/ErrorMessage";
 import { Portfolio } from '../model/Models';
 import NewPortfolioDialog from './portfolio/NewPortfolioDialog';
 import Spinner from './common/Spinner';
@@ -15,6 +16,8 @@ interface PortfoliosProps extends RouteComponentProps<void> {
 interface StateProps {
   portfolios: Portfolio[];
   working: boolean;
+  error: boolean;
+  errorMessage: string;
 }
 
 interface DispatchProps {
@@ -29,7 +32,10 @@ class Portfolios extends React.Component<PortfoliosProps & StateProps & Dispatch
     render() {
         var tableContent;
         
-        if(this.props.working){
+        if(this.props.error){
+            tableContent = (<tr><td colSpan={9}><ErrorMessage errorMessage={this.props.errorMessage}/></td></tr>);
+        }
+        else if(this.props.working){
             tableContent =  (<tr><td colSpan={9}><Spinner /></td></tr>);
         }
         else if(this.props.portfolios == null || this.props.portfolios.length == 0){
@@ -136,7 +142,9 @@ const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, PortfoliosPr
 const mapStateToProps: MapStateToProps<StateProps, PortfoliosProps> = (state: ApplicationState) => {
   return {
     portfolios: state.portfolios.value,
-    working: state.portfolios.working
+    working: state.portfolios.working,
+    error: state.portfolios.error,
+    errorMessage: state.portfolios.errorMessage
   };
 };
 
