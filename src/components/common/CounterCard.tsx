@@ -18,7 +18,7 @@ export default class CounterCard extends React.Component<CounterCardProps, {}> {
     if(this.props.error){
       content = (
         <div className="uk-card uk-card-default uk-card-body">
-          <ErrorMessage errorMessage={this.props.errorMessage} />
+          <ErrorMessage content={this.props.errorMessage} />
         </div>
       )
     }

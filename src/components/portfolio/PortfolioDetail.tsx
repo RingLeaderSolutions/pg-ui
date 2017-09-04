@@ -38,7 +38,7 @@ class PortfolioDetail extends React.Component<PortfolioDetailProps & StateProps 
 
     render() {
         if(this.props.error){
-            return (<ErrorMessage errorMessage={this.props.errorMessage} />);
+            return (<ErrorMessage content={this.props.errorMessage} />);
         }
         if(this.props.working || this.props.portfolio == null){
             return (<Spinner />);

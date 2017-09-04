@@ -2,14 +2,14 @@ import * as React from "react";
 import { MapDispatchToPropsFunction, connect, MapStateToProps } from 'react-redux';
 
 interface ErrorMessageProps {
-  errorMessage: string;
+  content: string;
 }
 
 export default class ErrorMessage extends React.Component<ErrorMessageProps, {}> {
   render() {
     var errorMessage = "Sorry! There was an error retrieving data for this component.";
-    if(this.props.errorMessage != undefined && this.props.errorMessage != ""){
-      errorMessage = this.props.errorMessage;
+    if(this.props.content != undefined && this.props.content != ""){
+      errorMessage = this.props.content;
     }
     return (
         <div className="uk-alert-danger" data-uk-alert>

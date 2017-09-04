@@ -18,7 +18,6 @@ export function getDashboardSummary(){
                 return { type: types.FETCH_DASHBOARD_SUMMARY_SUCCESSFUL, data: data as DashboardPortfolioSummary };
             }, 
             error => {
-                console.log("error");
                 return { type: types.FETCH_DASHBOARD_SUMMARY_FAILED, errorMessage: error };
             });
     };

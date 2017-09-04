@@ -70,7 +70,7 @@ class DashboardSummary extends React.Component<TimelineProps & StateProps & Disp
             content = (<Spinner hasMargin={true}/>);
         }
         else if(this.props.error){
-            content = (<ErrorMessage errorMessage={this.props.errorMessage}/>);            
+            content = (<ErrorMessage content={this.props.errorMessage}/>);            
         }
         else {
             if(this.props.timeline.timelineList.length == 0){

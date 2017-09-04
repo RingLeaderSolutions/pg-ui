@@ -33,7 +33,7 @@ class Portfolios extends React.Component<PortfoliosProps & StateProps & Dispatch
         var tableContent;
         
         if(this.props.error){
-            tableContent = (<tr><td colSpan={9}><ErrorMessage errorMessage={this.props.errorMessage}/></td></tr>);
+            tableContent = (<tr><td colSpan={9}><ErrorMessage content={this.props.errorMessage}/></td></tr>);
         }
         else if(this.props.working){
             tableContent =  (<tr><td colSpan={9}><Spinner /></td></tr>);

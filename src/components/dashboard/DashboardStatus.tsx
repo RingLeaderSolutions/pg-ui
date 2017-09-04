@@ -44,7 +44,7 @@ class DashboardStatus extends React.Component<StatusProps & StateProps & Dispatc
             content = (<Spinner hasMargin={true}/>);
         }
         else if(this.props.error){
-            content = (<ErrorMessage errorMessage={this.props.errorMessage}/>);            
+            content = (<ErrorMessage content={this.props.errorMessage}/>);            
         }
         else {
             if(this.props.status.statusList.length == 0){
@@ -54,7 +54,7 @@ class DashboardStatus extends React.Component<StatusProps & StateProps & Dispatc
                 content = this.renderChart();
             }
         }
-        
+
         return (
             <div>
                 <div className="uk-card uk-card-default uk-card-body">

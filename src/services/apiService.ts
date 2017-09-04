@@ -1,6 +1,7 @@
 import { AxiosResponse } from 'axios';
 import axios from 'axios';
 import { Portfolio } from "../model/Models";
+import { FakeApiService } from './fakeApiService';
 
 export interface IApiService {
   getAllPortfolios(): Promise<AxiosResponse>;
@@ -63,4 +64,5 @@ export class ApiService implements IApiService {
     }
 }
 
-export default new ApiService();
+export default new FakeApiService();
+//export default new ApiService();
