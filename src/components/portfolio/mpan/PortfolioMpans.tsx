@@ -37,10 +37,10 @@ class PortfolioMpans extends React.Component<PortfolioMpansProps & StateProps & 
         if(this.props.working || this.props.portfolio == null){
             return (<Spinner />);
         }
-        var content = this.props.sites.map(site => {
+        var content = this.props.sites.map((site,index) => {
             var mpanRows = site.mpans.map(mp => {
                 return (
-                    <tr>
+                    <tr key={mp.id}>
                         <td></td>
                         <td>{mp.mpanCore}</td>
                         <td></td>
@@ -50,7 +50,8 @@ class PortfolioMpans extends React.Component<PortfolioMpansProps & StateProps & 
                 }
             );
 
-            return(<tbody>
+            return (
+                <tbody key={index}>
                     <tr>
                         <td colSpan={4}>{site.name}</td>
                     </tr>
