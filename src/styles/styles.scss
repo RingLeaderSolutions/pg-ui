@@ -32,6 +32,6 @@ html, body, .root, .app-container {
     background: $grey-border !important;
 }
 
-.uk-icon {
+h3 > .uk-icon, h4 > .uk-icon {
     cursor: default !important;
 }

@@ -28,4 +28,14 @@
             }
         }
     }
+
+    .table-mpans {
+        .search-mpans {
+            margin: $margin-medium $margin-medium;
+            display: flex;
+            .uk-search {
+                flex-grow: 1;
+            }
+        }
+    }
 }

@@ -37,14 +37,50 @@ class PortfolioMpans extends React.Component<PortfolioMpansProps & StateProps & 
         if(this.props.working || this.props.portfolio == null){
             return (<Spinner />);
         }
+        var content = this.props.sites.map(site => {
+            var mpanRows = site.mpans.map(mp => {
+                return (
+                    <tr>
+                        <td></td>
+                        <td>{mp.mpanCore}</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                );
+                }
+            );
+
+            return(<tbody>
+                    <tr>
+                        <td colSpan={4}>{site.name}</td>
+                    </tr>
+                    {mpanRows}
+                </tbody>)
+        });
+
         return (
             <div className="content-inner-portfolio">
-                {this.props.sites.map(site => {
-                    return site.mpans.map(mp => {
-                        return (<p key={mp.id}>{mp.mpanCore}</p>);
-                    }
-                    );
-                })}
+                <div className="table-mpans">
+                    <div className="search-mpans">
+                        <form className="uk-search uk-search-default">
+                            <span data-uk-search-icon="search"></span>
+                            <input className="uk-search-input" type="search" placeholder="Search..." />
+                        </form>
+                    </div>
+                    <div>
+                        <table className="uk-table uk-table-divider">
+                            <thead>
+                                <tr>
+                                    <th>Site</th>
+                                    <th>Mpan Core</th>
+                                    <th>Topline</th>
+                                    <th>HH Data</th>
+                                </tr>
+                            </thead>
+                            {content}
+                        </table>
+                    </div>
+                </div>
             </div>)
     }
 }
