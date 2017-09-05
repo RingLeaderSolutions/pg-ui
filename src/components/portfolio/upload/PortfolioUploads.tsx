@@ -7,7 +7,7 @@ const PortfolioUploads : React.SFC<{}> = () => {
             <div className="table-uploads">
                 <div className="search-uploads">
                     <form className="uk-search uk-search-default">
-                        <span className="uk-search-icon-flip" data-uk-search-icon></span>
+                        <span data-uk-icon="icon: search" data-uk-search-icon></span>
                         <input className="uk-search-input" type="search" placeholder="Search..." />
                     </form>
                     <div className="actions-uploads">
