@@ -97,11 +97,14 @@ class Portfolios extends React.Component<PortfoliosProps & StateProps & Dispatch
                     <div className="table-portfolios">
                         <div className="search-portfolios">
                             <form className="uk-search uk-search-default">
-                                {/*<span className="uk-search-icon-flip" data-uk-search-icon></span>*/}
+                                <span className="uk-search-icon-flip" data-uk-search-icon></span>
                                 <input className="uk-search-input" type="search" placeholder="Search..." />
                             </form>
                             <div className="actions-portfolios">
-                                <button className="uk-button uk-button-primary" data-uk-toggle="target: #modal-new-portfolio">New portfolio</button>
+                                <button className="uk-button uk-button-primary" data-uk-toggle="target: #modal-new-portfolio">
+                                    <span className="uk-margin-small-right" data-uk-icon="icon: plus-circle"></span>
+                                    New portfolio
+                                </button>
                             </div>
                         </div>
                         <div className="container-table-portfolios">

@@ -84,7 +84,7 @@ class DashboardSummary extends React.Component<TimelineProps & StateProps & Disp
         return (
             <div>
                 <div className="uk-card uk-card-default uk-card-body">
-                    <h3>Portfolio Timeline</h3>
+                    <h3><span className="uk-margin-small-right" data-uk-icon="icon: clock"></span>Portfolio Timeline</h3>
                     {content}
                 </div>
             </div>)

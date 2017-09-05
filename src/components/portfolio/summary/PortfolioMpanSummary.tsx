@@ -92,7 +92,7 @@ class PortfolioMpanSummary extends React.Component<PortfolioMpanSummaryProps & S
         return (
             <div>
                 <div className="uk-card uk-card-default uk-card-body">
-                    <h4>MPAN Status</h4>
+                    <h4><span className="uk-margin-small-right" data-uk-icon="icon: list"></span>MPAN Status</h4>
                     {content}
                 </div>
             </div>

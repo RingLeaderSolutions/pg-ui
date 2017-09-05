@@ -31,3 +31,7 @@ html, body, .root, .app-container {
 .uk-table-hover > tr:hover, .uk-table-hover tbody tr:hover {
     background: $grey-border !important;
 }
+
+.uk-icon {
+    cursor: default !important;
+}

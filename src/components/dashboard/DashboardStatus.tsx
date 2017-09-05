@@ -58,7 +58,7 @@ class DashboardStatus extends React.Component<StatusProps & StateProps & Dispatc
         return (
             <div>
                 <div className="uk-card uk-card-default uk-card-body">
-                    <h3>Portfolio Status</h3>
+                    <h3><span className="uk-margin-small-right" data-uk-icon="icon: world"></span>Portfolio Status</h3>
                     {content}
                 </div>
             </div>)

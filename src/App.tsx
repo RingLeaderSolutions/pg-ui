@@ -10,8 +10,11 @@ import configureStore from './store/configureStore'
 import Home from "./components/Home";
 
 
-require('uikit');
-require('uikit/dist/js/uikit-icons');
+// NOTE: Unable to get proper TS definitions working with UIkit.
+const UIkit = require('uikit');
+const Icons = require('uikit/dist/js/uikit-icons');
+UIkit.use(Icons);
+
 require('./styles/styles.scss');
 require('./styles/uikit.css');
 

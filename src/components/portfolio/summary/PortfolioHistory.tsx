@@ -79,7 +79,7 @@ class PortfolioHistory extends React.Component<PortfolioHistoryProps & StateProp
         return (
             <div>
                 <div className="uk-card uk-card-default uk-card-body">
-                    <h4>Change History</h4>
+                    <h4><span className="uk-margin-small-right" data-uk-icon="icon: history"></span>Change History</h4>
                     <div className="portfolio-history">
                         {content}
                     </div>

@@ -20,13 +20,13 @@ const Home : React.SFC<{}> = () => {
                 </div>
                 <ul className="uk-nav-default uk-nav-parent-icon" data-uk-nav>
                     <li className="uk-nav-header">Navigation</li>
-                    <li><Link to="/"><span className="uk-margin-small-right" data-uk-icon="icon: table"></span>Dashboard</Link></li>
+                    <li><Link to="/"><span className="uk-margin-small-right" data-uk-icon="icon: thumbnails"></span>Dashboard</Link></li>
                     <li className="uk-nav-divider"></li>                    
-                    <li><Link to="/portfolios"><span className="uk-margin-small-right" data-uk-icon="icon: thumbnails"></span>Portfolios</Link></li>
+                    <li><Link to="/portfolios"><span className="uk-margin-small-right" data-uk-icon="icon: table"></span>Portfolios</Link></li>
                     <li className="uk-nav-divider"></li>
-                    <li><Link to="/calendar"><span className="uk-margin-small-right" data-uk-icon="icon: trash"></span>Calendar</Link></li>
+                    <li><Link to="/calendar"><span className="uk-margin-small-right" data-uk-icon="icon: calendar"></span>Calendar</Link></li>
                     <li className="uk-nav-divider"></li>                    
-                    <li><Link to="/uploads"><span className="uk-margin-small-right" data-uk-icon="icon: trash"></span>Uploads</Link></li>
+                    <li><Link to="/uploads"><span className="uk-margin-small-right" data-uk-icon="icon: upload"></span>Uploads</Link></li>
                 </ul>
             </div>
             <div className="content-container">
