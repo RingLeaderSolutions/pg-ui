@@ -2,7 +2,7 @@ import * as React from "react";
 import { RouteComponentProps } from 'react-router';
 import { MapDispatchToPropsFunction, connect, MapStateToProps } from 'react-redux';
 import { ApplicationState } from '../../../applicationState';
-import { Portfolio, Site } from '../../../model/Models';
+import { Portfolio, Site, MpanDocument } from '../../../model/Models';
 import Spinner from '../../common/Spinner';
 
 import { getPortfolioSiteMpans } from '../../../actions/portfolioActions';
@@ -33,6 +33,13 @@ class PortfolioMpans extends React.Component<PortfolioMpansProps & StateProps & 
         }
     }
 
+    renderDocumentAction(document: MpanDocument){
+        if(document == null){
+            return (<span data-uk-icon="icon: close" style={{ "color" : "red"}}/>);
+        }
+        return (<span data-uk-icon="icon: check"  style={{ "color" : "green"}}/>);
+    }
+
     render() {
         if(this.props.working || this.props.portfolio == null){
             return (<Spinner />);
@@ -43,8 +50,10 @@ class PortfolioMpans extends React.Component<PortfolioMpansProps & StateProps & 
                     <tr key={mp.id}>
                         <td></td>
                         <td>{mp.mpanCore}</td>
-                        <td></td>
-                        <td></td>
+                        <td className="uk-text-center">{this.renderDocumentAction(mp.proposedTopline)}</td>
+                        <td className="uk-text-center">{this.renderDocumentAction(mp.currentTopline)}</td>
+                        <td className="uk-text-center">{this.renderDocumentAction(mp.proposedHistorical)}</td>
+                        <td className="uk-text-center">{this.renderDocumentAction(mp.currentHistorical)}</td>
                     </tr>
                 );
                 }
@@ -53,7 +62,7 @@ class PortfolioMpans extends React.Component<PortfolioMpansProps & StateProps & 
             return (
                 <tbody key={index}>
                     <tr>
-                        <td colSpan={4}>{site.name}</td>
+                        <td colSpan={6}>{site.name}</td>
                     </tr>
                     {mpanRows}
                 </tbody>)
@@ -74,8 +83,10 @@ class PortfolioMpans extends React.Component<PortfolioMpansProps & StateProps & 
                                 <tr>
                                     <th>Site</th>
                                     <th>Mpan Core</th>
-                                    <th>Topline</th>
-                                    <th>HH Data</th>
+                                    <th className="uk-text-center">Topline (Proposed)</th>
+                                    <th className="uk-text-center">Topline (Current)</th>
+                                    <th className="uk-text-center">HH Data (Proposed)</th>
+                                    <th className="uk-text-center">HH Data (Current)</th>
                                 </tr>
                             </thead>
                             {content}
