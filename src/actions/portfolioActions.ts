@@ -1,5 +1,5 @@
 import ApiService from "../services/ApiService";
-import { Portfolio, MpanSummary, PortfolioHistoryEntry } from "../Model/Models";
+import { Portfolio, MpanSummary, PortfolioHistoryEntry, Site } from "../Model/Models";
 
 import * as types from "./actionTypes";
 import { makeApiRequest } from "./Common";
@@ -80,6 +80,24 @@ export function getPortfolioHistory(portfolioId: string){
             }, 
             error => {
                 return { type: types.FETCH_PORTFOLIO_HISTORY_FAILED, errorMessage: error };
+            });
+    };
+}
+
+export function getPortfolioSiteMpans(portfolioId: string){
+    return (dispatch: Dispatch<any>) => {
+        let fetchPromise = ApiService.getPortfolioSiteMpans(portfolioId);
+        dispatch( { type: types.FETCH_PORTFOLIO_SITE_MPANS_WORKING });
+
+        makeApiRequest(dispatch,
+            fetchPromise,
+            200, 
+            data => {
+                return { type: types.FETCH_PORTFOLIO_SITE_MPANS_SUCCESSFUL, data: data as Site[]};
+                
+            }, 
+            error => {
+                return { type: types.FETCH_PORTFOLIO_SITE_MPANS_FAILED, errorMessage: error };
             });
     };
 }

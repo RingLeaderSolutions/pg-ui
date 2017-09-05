@@ -23,11 +23,13 @@ import { PortfolioState } from './portfolio/PortfolioState';
 import selectedPortfolioReducer from './portfolio/selectedPortfolioReducer';
 import portfolioHistoryReducer from './portfolio/portfolioHistoryReducer';
 import portfolioMpanSummaryReducer from './portfolio/portfolioMpanSummaryReducer';
+import portfolioSiteMpansReducer from './portfolio/portfolioSiteMpansReducer';
 
 const portfolioReducer: Reducer<PortfolioState> = combineReducers<PortfolioState>({
     selected: selectedPortfolioReducer,
     history: portfolioHistoryReducer,
-    mpan_summary: portfolioMpanSummaryReducer
+    mpan_summary: portfolioMpanSummaryReducer,
+    sites: portfolioSiteMpansReducer
 });
 
 // Combine all reducers to form the master ApplicationState

@@ -9,7 +9,7 @@ export { DashboardPortfolioSummary,
          DashboardPortfolioStatus, 
          PortfolioStatusEntry } from './Dashboard';
 
-export { Mpan } from './Mpan';
+export { Mpan, MpanDocument } from './Mpan';
 
 export { Site } from './Site';
 

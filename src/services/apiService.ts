@@ -12,6 +12,7 @@ export interface IApiService {
 
   getPortfolioMpanSummary(portfolioId: string): Promise<AxiosResponse>;
   getPortfolioHistory(portfolioId: string): Promise<AxiosResponse>;
+  getPortfolioSiteMpans(portfolioId: string): Promise<AxiosResponse>;
 }
 
 export class ApiService implements IApiService {
@@ -62,7 +63,11 @@ export class ApiService implements IApiService {
     getPortfolioHistory(portfolioId: string) {
         return axios.get(`${this.baseApiUri}/portfolio/${portfolioId}/history`, this.getRequestConfig());        
     }
+    
+    getPortfolioSiteMpans(portfolioId: string){
+        return axios.get(`${this.baseApiUri}/portfolio/${portfolioId}/mpans/detail`, this.getRequestConfig());                
+    }
 }
 
-export default new FakeApiService();
-//export default new ApiService();
+//export default new FakeApiService();
+export default new ApiService();

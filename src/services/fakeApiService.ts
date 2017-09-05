@@ -5,7 +5,8 @@ import { Portfolio,
          DashboardPortfolioTimeline,
          DashboardPortfolioStatus,
          MpanSummary,
-         PortfolioHistoryEntry } from "../model/Models";
+         PortfolioHistoryEntry,
+         Site } from "../model/Models";
 
 import { IApiService } from "./ApiService";
 
@@ -172,6 +173,52 @@ export class FakeApiService implements IApiService {
         ]
 
         return OK(history);
+    }
+
+    getPortfolioSiteMpans(portfolioId: string){
+        var mpans: Site[] = 
+        [{
+            id: "1",
+            name: "Test site",
+            effectiveFrom: "15/01/2017",
+            effectiveTo: "16/01/2017",
+            mpans: [
+                {
+                    id: "1",
+                    mpanCore: "12345678901",
+                    currentTopline: null,
+                    currentHistorical: null,
+                    proposedTopline: {
+                        documentId: "1",
+                        status: "proposed",
+                        validFrom: "15/06/2017"
+                    },
+                    proposedHistorical: {
+                        documentId: "1",
+                        status: "proposed",
+                        validFrom: "15/06/2017"
+                    }
+                },
+                {
+                    id: "2",
+                    mpanCore: "23456789012",
+                    currentTopline: {
+                        documentId: "3",
+                        status: "validated",
+                        validFrom: "17/06/2017"
+                    },
+                    currentHistorical: {
+                        documentId: "4",
+                        status: "validated",
+                        validFrom: "17/06/2017"
+                    },
+                    proposedTopline: null,
+                    proposedHistorical: null,
+                }
+            ]
+        }];
+
+        return OK(mpans);
     }
 }
 
