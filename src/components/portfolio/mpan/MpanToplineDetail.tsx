@@ -24,9 +24,9 @@ interface DispatchProps {
 }
 
 class MpanToplineDetail extends React.Component<MpanToplineDetailProps & StateProps & DispatchProps, {}> {
-    sharedOptions: string[] = ["EELC","EMEB","ETCL","GUCL","HYDE","IPNL","LENG","LOND","MANW","MIDE","NEED","NORW","SEEB","SOUT","SPOW","SWAE","SWEB","UKDC","YELG",
+    agentOptions: string[] = ["EELC","EMEB","ETCL","GUCL","HYDE","IPNL","LENG","LOND","MANW","MIDE","NEED","NORW","SEEB","SOUT","SPOW","SWAE","SWEB","UKDC","YELG",
     "DASL","SSIL","UDMS"];
-
+    retrievalMethods: string[] = [ "Visual", "Manual", "Not Known", "Unmetered", "Remote"];
     componentDidMount(){
         var toplineId = this.props.location.pathname.split('/')[2];        
         this.props.getTopline(toplineId);
@@ -41,13 +41,34 @@ class MpanToplineDetail extends React.Component<MpanToplineDetailProps & StatePr
         }
     }
 
+    parseRetrievalMethod(){
+        var firstChar = this.props.topline.retrievalMethod.substr(0, 1);
+        
+        var retrievalMethod;
+        this.retrievalMethods.forEach(element => {
+            if(element.substr(0, 1) == firstChar){
+                retrievalMethod = element;
+                return;
+            }
+        });
+
+        return retrievalMethod;
+    }
+
+    createOption(value: string, index: number){
+        return (<option key={index}>{value}</option>);
+    }
+
     render() {
         if(this.props.working || this.props.topline == null){
             return (<Spinner />);
         }
 
-        var options = this.sharedOptions.map((o, index) => (<option key={index}>{o}</option>));
+        var agentOptions = this.agentOptions.map((o, index) => this.createOption(o, index));
+        var retrievalOptions = this.retrievalMethods.map((o, index) => this.createOption(o, index));
         var headerTitle = `MPAN Topline: ${this.props.topline.mpanCore}`;
+
+        var retrievalMethod = this.parseRetrievalMethod();
 
         return (
             <div className="content-inner-portfolio">
@@ -104,9 +125,11 @@ class MpanToplineDetail extends React.Component<MpanToplineDetailProps & StatePr
                             </div>
                         </div>
                         <div className="uk-width-1-6@s">
-                            <label className="uk-form-label" data-for="input-retrieval-method">Retrieval Method</label>
+                            <label className="uk-form-label" data-for="select-retrieval-method">Retrieval Method</label>
                             <div className="uk-form-controls">
-                                <input className="uk-input" id="input-retrieval-method" type="text" defaultValue={this.props.topline.retrievalMethod} />
+                                <select className="uk-select" id="select-retrieval-method" defaultValue={retrievalMethod}>
+                                    {retrievalOptions}
+                                </select>
                             </div>
                         </div>
                         <div className="uk-width-1-6@s">
@@ -145,6 +168,18 @@ class MpanToplineDetail extends React.Component<MpanToplineDetailProps & StatePr
                             </div>
                         </div>
 
+                        <div className="uk-width-1-6@s">
+                            <label className="uk-form-label" data-for="select-voltage">Voltage</label>
+                            <div className="uk-form-controls">
+                                <select className="uk-select" id="select-voltage" defaultValue={this.props.topline.voltage}>
+                                    <option>Low</option>
+                                    <option>Medium</option>
+                                    <option>High</option>
+                                    <option>Extra High</option>
+                                </select>
+                            </div>
+                        </div>
+
                         <div className="uk-width-1-2">
                             <div className="uk-card uk-card-default uk-card-body">
                                 <h4>Agents</h4>
@@ -153,7 +188,7 @@ class MpanToplineDetail extends React.Component<MpanToplineDetailProps & StatePr
                                     <label className="uk-form-label" data-for="select-da">Energisation</label>
                                     <div className="uk-form-controls">
                                         <select className="uk-select" id="select-da" defaultValue={this.props.topline.da}>
-                                            {options}
+                                            {agentOptions}
                                         </select>
                                     </div>
                                 </div>
@@ -162,7 +197,7 @@ class MpanToplineDetail extends React.Component<MpanToplineDetailProps & StatePr
                                     <label className="uk-form-label" data-for="select-dc">Energisation</label>
                                     <div className="uk-form-controls">
                                         <select className="uk-select" id="select-dc" defaultValue={this.props.topline.dc}>
-                                            {options}                                        
+                                            {agentOptions}                                        
                                         </select>
                                     </div>
                                 </div>
@@ -171,19 +206,27 @@ class MpanToplineDetail extends React.Component<MpanToplineDetailProps & StatePr
                                     <label className="uk-form-label" data-for="select-mo">Energisation</label>
                                     <div className="uk-form-controls">
                                         <select className="uk-select" id="select-mo" defaultValue={this.props.topline.mo}>
-                                            {options}
+                                            {agentOptions}
                                         </select>
                                     </div>
                                 </div>
                             </div>
                         </div>
 
-                        <div className="uk-width-1-4">
-
+                        <div className="uk-width-1-2">
                             <div className="uk-margin">
-                                <label className="uk-form-label" data-for="checkbox-duos-fixed">DUoS Fixed Charges</label>
+                                <label className="uk-form-label" data-for="select-connection">Connection</label>
                                 <div className="uk-form-controls">
-                                    <input className="uk-checkbox" id="checkbox-duos-fixed" type="checkbox" checked={this.props.topline.duosFixed} />
+                                    <select className="uk-select" id="select-connection" defaultValue={this.props.topline.connection}>
+                                        <option>Network</option>
+                                        <option>Substation</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div className="uk-margin">
+                                <div className="uk-form-controls">
+                                    <label>
+                                        <input className="uk-checkbox" id="checkbox-duos-fixed" type="checkbox" checked={this.props.topline.duosFixed} /> DUoS Fixed Charges</label>
                                 </div>
                             </div>
 
@@ -200,23 +243,21 @@ class MpanToplineDetail extends React.Component<MpanToplineDetailProps & StatePr
                                     <input className="uk-input" id="input-ssc" type="text" defaultValue={this.props.topline.ssc} disabled />
                                 </div>
                             </div>
+                            <div className="uk-margin">
+                                <div className="uk-form-controls">
+                                    <label><input className="uk-checkbox" id="checkbox-mop" type="checkbox" /> MOP in place</label>
+                                </div>
+                            </div>
+
+                            <div className="uk-margin">
+                                <div className="uk-form-controls">
+                                    <label><input className="uk-checkbox" id="checkbox-dcda" type="checkbox" /> DC/DA contract in place</label>
+                                </div>
+                            </div>
                         </div>
 
                         <div className="uk-width-1-4">
-
-                            <div className="uk-margin">
-                                <label className="uk-form-label" data-for="checkbox-mop">MOP in place</label>
-                                <div className="uk-form-controls">
-                                    <input className="uk-checkbox" id="checkbox-mop" type="checkbox" />
-                                </div>
-                            </div>
-
-                            <div className="uk-margin">
-                                <label className="uk-form-label" data-for="checkbox-dcda">DC/DA contract in place</label>
-                                <div className="uk-form-controls">
-                                    <input className="uk-checkbox" id="checkbox-dcda" type="checkbox" />
-                                </div>
-                            </div>
+                            
                         </div>
 
                         <div className="uk-width-1-1 topline-actions uk-text-right">

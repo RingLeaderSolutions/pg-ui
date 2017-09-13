@@ -94,11 +94,11 @@ export function getPortfolioSiteMpans(portfolioId: string){
         let fetchPromise = ApiService.getPortfolioSiteMpans(portfolioId);
         dispatch( { type: types.FETCH_PORTFOLIO_SITE_MPANS_WORKING });
 
-        makeApiRequest(dispatch,
+        makeApiRequest<{sites:Site[]}>(dispatch,
             fetchPromise,
             200, 
             data => {
-                return { type: types.FETCH_PORTFOLIO_SITE_MPANS_SUCCESSFUL, data: data as Site[]};
+                return { type: types.FETCH_PORTFOLIO_SITE_MPANS_SUCCESSFUL, data: data.sites as Site[]};
                 
             }, 
             error => {

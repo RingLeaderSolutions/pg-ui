@@ -177,7 +177,7 @@ export class FakeApiService implements IApiService {
     }
 
     getPortfolioSiteMpans(portfolioId: string){
-        var mpans: Site[] = 
+        var sites: Site[] = 
         [{
             id: "1",
             name: "Test site",
@@ -219,7 +219,10 @@ export class FakeApiService implements IApiService {
             ]
         }];
 
-        return OK(mpans);
+        var wrapper = {
+            sites
+        };
+        return OK(wrapper);
     }
 
     getMpanTopline(documentId: string){
