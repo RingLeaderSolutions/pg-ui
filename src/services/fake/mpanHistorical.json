@@ -1,5 +1,13 @@
 {
     "clock": "UTC",
+    "created": "2017-09-13T11:48:44.616",
+    "creator": {
+        "avatarUrl": null,
+        "firstName": "Peter",
+        "id": 1,
+        "lastName": "Parker",
+        "status": "active"
+    },
     "entries": [
         {
             "data": [
@@ -19347,7 +19355,8 @@
             "date": "2017-12-31"
         }
     ],
+    "group": "PROPOSED",
     "mpanCore": "0612047862007",
-    "source": null,
+    "source": "upload",
     "type": "HISTORICAL"
 }

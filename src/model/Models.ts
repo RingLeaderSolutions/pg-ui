@@ -1,7 +1,8 @@
 export { Portfolio,
-         User,
          MpanSummary,
          PortfolioHistoryEntry } from './Portfolio';
+
+export { User } from './User';
 
 export { DashboardPortfolioSummary,
          DashboardPortfolioTimeline,

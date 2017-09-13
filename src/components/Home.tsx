@@ -17,7 +17,7 @@ const Home : React.SFC<{}> = () => {
         <div className="app-container">
             <div className="sidebar">
                 <div className="app-title">
-                    <h1><strong>全備 ZENBI</strong></h1>
+                    <h1><strong>PROTOTYPE #1</strong></h1>
                     <p>Retail</p>
                 </div>
                 <ul className="uk-nav-default uk-nav-parent-icon" data-uk-nav>

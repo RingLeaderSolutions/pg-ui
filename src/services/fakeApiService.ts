@@ -154,7 +154,7 @@ export class FakeApiService implements IApiService {
                 owner: 1,
                 documentId: "",
                 documentType: "",
-                created: 1415463675,
+                created: 1505333410318,
                 children: null
             },
             {
@@ -168,7 +168,7 @@ export class FakeApiService implements IApiService {
                 owner: 1,
                 documentId: "",
                 documentType: "",
-                created: 1504514597,
+                created: 1505333100000,
                 children: null
             }
         ]

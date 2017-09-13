@@ -1,9 +1,10 @@
 import * as React from "react";
 import Header from "../../common/Header";
+import CounterCard from "../../common/CounterCard";
 import { RouteComponentProps } from 'react-router';
 import { MapDispatchToPropsFunction, connect, MapStateToProps } from 'react-redux';
 import { ApplicationState } from '../../../applicationState';
-import { MpanHistorical, Portfolio } from '../../../model/Models';
+import { MpanHistorical, Portfolio, DocumentGroup } from '../../../model/Models';
 import Spinner from '../../common/Spinner';
 import { ChartConfig } from "./MpanHistoricalChartConfig";
 import * as moment from 'moment';
@@ -61,7 +62,7 @@ class MpanHistoricalDetail extends React.Component<MpanHistoricalDetailProps & S
                     }
                 }
                 
-                var fullDateString = `${entry.date} ${hour}:${minute}`;
+                var fullDateString = hour < 10 ? `${entry.date} 0${hour}:${minute}` : `${entry.date} ${hour}:${minute}`;
                 var date = moment(fullDateString);
                 var unixDate = date.format('x');
                 return [Number(unixDate), data];
@@ -73,18 +74,56 @@ class MpanHistoricalDetail extends React.Component<MpanHistoricalDetailProps & S
     }
 
     render() {
-        if(this.props.working || this.props.historical == null){
+
+        var { historical } = this.props;
+        if(this.props.working || historical == null){
             return (<Spinner />);
         }
-        
-        var headerTitle = `MPAN Historical: ${this.props.historical.mpanCore}`;
+
+        var group = historical.group == DocumentGroup.Proposed ? "Proposed" : "Current";
+        var headerTitle = `${group} MPAN Historical: ${historical.mpanCore}`;
+
+        var creatorName = `${historical.creator.firstName} ${historical.creator.lastName}`;
+        var creationTime = moment.utc(historical.created).local().fromNow();   
+
         var chart = this.renderChart();
         return (
             <div className="content-inner-portfolio">
                 <Header title={headerTitle} />
-                <ul>
-                {chart}
-                </ul>
+                <button className="uk-button uk-button-default uk-button-small uk-margin" onClick={() => this.returnToPortfolio()}><span data-uk-icon="icon: reply" />  Return to portfolio</button>
+                <div className="uk-child-width-expand@s uk-text-center uk-grid" data-uk-grid data-uk-height-match="target: > div > .uk-card">
+                    <CounterCard title={creatorName}
+                                error={this.props.error} 
+                                errorMessage={this.props.errorMessage}
+                                loaded={!this.props.working} 
+                                label="Uploader" 
+                                small />
+
+                    <CounterCard title={creationTime} 
+                                error={this.props.error} 
+                                errorMessage={this.props.errorMessage}
+                                loaded={!this.props.working} 
+                                label="Uploaded"
+                                small />
+
+                    <CounterCard title={historical.clock} 
+                                error={this.props.error} 
+                                errorMessage={this.props.errorMessage}
+                                loaded={!this.props.working} 
+                                label="Timezone"
+                                small />
+                                
+                    <CounterCard title={group} 
+                                label="Status" 
+                                error={this.props.error} 
+                                errorMessage={this.props.errorMessage}
+                                loaded={!this.props.working} 
+                                small />
+                </div>
+                <hr />
+                <div className="historical-chart uk-margin-large-top">
+                    {chart}
+                </div>
             </div>)
     }
 }

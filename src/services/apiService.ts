@@ -80,5 +80,5 @@ export class ApiService implements IApiService {
     }
 }
 
-//export default new FakeApiService();
-export default new ApiService();
+export default new FakeApiService();
+//export default new ApiService();

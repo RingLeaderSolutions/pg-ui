@@ -1,3 +1,5 @@
+import { User } from './User';
+
 export interface Portfolio {
     id: string;
     title: string;
@@ -13,14 +15,6 @@ export interface Portfolio {
     approvalStatus: string;
     salesLead: User;
     supportExec: User;
-}
-
-export interface User {
-    id: string;
-    firstName: string;
-    lastName: string;
-    status: string;
-    avatarUrl: string;
 }
 
 export interface Client {

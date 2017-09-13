@@ -1,16 +1,15 @@
 export var ChartConfig = {
     chart: {
-        zoomType: 'x'
-    },
-    title: {
-        text: 'Historic Generation'
-    },
-    subtitle: {
-        text: document.ontouchstart === undefined ?
-                'Click and drag in the plot area to zoom in' : 'Pinch the chart to zoom in'
+        zoomType: 'x',
+        height: '33%',
+        backgroundColor: '#FEFEFE'
     },
     rangeSelector: {
+        enabled: true,
         selected: 1
+    },
+    navigator: {
+        enabled: true
     },
     xAxis: {
         type: 'datetime'
@@ -34,7 +33,7 @@ export var ChartConfig = {
                     y2: 1
                 },
                 stops: [
-                    [0, '#ffffff'],
+                    [0, '#a0beef'],
                     [1, '#ffffff']
                 ]
             },
@@ -62,7 +61,8 @@ export var ChartConfig = {
             [Date.UTC(2013,5,7),0.7562]
         ],
         tooltip: {
-            valueDecimals: 2
+            valueDecimals: 2,
+            crosshairs: [true]
         }
     }]
 }

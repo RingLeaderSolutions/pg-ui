@@ -1,3 +1,5 @@
+import { User } from './User';
+
 export interface Mpan {
     id: string;
     mpanCore: string;
@@ -41,6 +43,9 @@ export interface MpanHistorical {
     type: string;
     source: string;
     clock: string;
+    creator: User;
+    created: string
+    group: string;
     entries: MpanHistoricalEntry[];
 }
 
