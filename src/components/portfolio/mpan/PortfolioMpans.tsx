@@ -1,9 +1,9 @@
 import * as React from "react";
-import { RouteComponentProps } from 'react-router';
 import { MapDispatchToPropsFunction, connect, MapStateToProps } from 'react-redux';
 import { ApplicationState } from '../../../applicationState';
 import { Portfolio, Site, MpanDocument } from '../../../model/Models';
 import Spinner from '../../common/Spinner';
+import { Link } from 'react-router-dom';
 
 import { getPortfolioSiteMpans } from '../../../actions/portfolioActions';
 
@@ -33,25 +33,32 @@ class PortfolioMpans extends React.Component<PortfolioMpansProps & StateProps & 
         }
     }
 
-    renderDocumentAction(document: MpanDocument){
+    renderDocumentAction(document: MpanDocument, isTopline: boolean = false){
         if(document == null){
             return (<span data-uk-icon="icon: close" style={{ "color" : "red"}}/>);
         }
-        return (<span data-uk-icon="icon: check"  style={{ "color" : "green"}}/>);
+        var prefix = isTopline ? "topline" : "historical";
+
+        var link = `/${prefix}/${document.documentId}`;
+        return (
+            <Link to={link}>
+                <span data-uk-icon="icon: check"  style={{ "color" : "green"}}/>
+            </Link>);
     }
 
     render() {
-        if(this.props.working || this.props.portfolio == null){
+        if(this.props.working || this.props.sites == null){
             return (<Spinner />);
         }
+
         var content = this.props.sites.map((site,index) => {
             var mpanRows = site.mpans.map(mp => {
                 return (
                     <tr key={mp.id}>
                         <td></td>
                         <td>{mp.mpanCore}</td>
-                        <td className="uk-text-center">{this.renderDocumentAction(mp.proposedTopline)}</td>
-                        <td className="uk-text-center">{this.renderDocumentAction(mp.currentTopline)}</td>
+                        <td className="uk-text-center">{this.renderDocumentAction(mp.proposedTopline, true)}</td>
+                        <td className="uk-text-center">{this.renderDocumentAction(mp.currentTopline, true)}</td>
                         <td className="uk-text-center">{this.renderDocumentAction(mp.proposedHistorical)}</td>
                         <td className="uk-text-center">{this.renderDocumentAction(mp.currentHistorical)}</td>
                     </tr>

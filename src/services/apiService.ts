@@ -13,6 +13,9 @@ export interface IApiService {
   getPortfolioMpanSummary(portfolioId: string): Promise<AxiosResponse>;
   getPortfolioHistory(portfolioId: string): Promise<AxiosResponse>;
   getPortfolioSiteMpans(portfolioId: string): Promise<AxiosResponse>;
+
+  getMpanTopline(documentId: string): Promise<AxiosResponse>;
+  getMpanHistorical(documentId: string): Promise<AxiosResponse>;
 }
 
 export class ApiService implements IApiService {
@@ -22,7 +25,7 @@ export class ApiService implements IApiService {
     constructor(){
         //this.baseApiUri = "http://81.147.87.33:8080";
         this.baseApiUri = "http://mpanupload242007.northeurope.cloudapp.azure.com:8080";
-        this.teamId = "1";
+        this.teamId = "989";
         this.contextQuery = `?context=team&value=${this.teamId}`;
     }
     getRequestConfig() {
@@ -67,7 +70,15 @@ export class ApiService implements IApiService {
     getPortfolioSiteMpans(portfolioId: string){
         return axios.get(`${this.baseApiUri}/portfolio/${portfolioId}/mpans/detail`, this.getRequestConfig());                
     }
+
+    getMpanTopline(documentId: string){
+        return axios.get(`${this.baseApiUri}/topline/${documentId}`, this.getRequestConfig());                        
+    }
+
+    getMpanHistorical(documentId: string){
+        return axios.get(`${this.baseApiUri}/historical/${documentId}`, this.getRequestConfig());                        
+    }
 }
 
-//export default new FakeApiService();
-export default new ApiService();
+export default new FakeApiService();
+//export default new ApiService();

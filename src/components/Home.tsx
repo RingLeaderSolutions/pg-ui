@@ -3,6 +3,8 @@ import * as React from "react";
 import Dashboard from "./dashboard/Dashboard";
 import Portfolios from "./Portfolios";
 import PortfolioDetail from "./portfolio/PortfolioDetail";
+import MpanToplineDetail from "./portfolio/mpan/MpanToplineDetail";
+import MpanHistoricalDetail from "./portfolio/mpan/MpanHistoricalDetail";
 
 import {
     BrowserRouter as Router,
@@ -33,6 +35,8 @@ const Home : React.SFC<{}> = () => {
                 <Route exact path="/" component={Dashboard} />
                 <Route path="/portfolios" component={Portfolios} />
                 <Route path="/portfolio" component={PortfolioDetail} />
+                <Route path="/topline" component={MpanToplineDetail} />
+                <Route path="/historical" component={MpanHistoricalDetail} />
             </div>
         </div>
     );

@@ -5,12 +5,13 @@ import { Portfolio,
          DashboardPortfolioTimeline,
          DashboardPortfolioStatus,
          MpanSummary,
+         MpanTopline,
          PortfolioHistoryEntry,
          Site } from "../model/Models";
 
 import { IApiService } from "./ApiService";
 
-const responseDelay = 2000;
+const responseDelay = 1000;
 const defer = (callback: () => void) => new Promise((resolve, reject) => setTimeout(() => callback(), responseDelay));
 const respondWithSuccess = (statusCode: number, data: any) => {
   return new Promise<AxiosResponse>((resolve:(data:any) => void, reject:() => void) => {
@@ -190,12 +191,12 @@ export class FakeApiService implements IApiService {
                     currentHistorical: null,
                     proposedTopline: {
                         documentId: "1",
-                        status: "proposed",
+                        status: "UPLOADED",
                         validFrom: "15/06/2017"
                     },
                     proposedHistorical: {
                         documentId: "1",
-                        status: "proposed",
+                        status: "UPLOADED",
                         validFrom: "15/06/2017"
                     }
                 },
@@ -204,12 +205,12 @@ export class FakeApiService implements IApiService {
                     mpanCore: "23456789012",
                     currentTopline: {
                         documentId: "3",
-                        status: "validated",
+                        status: "CURRENT",
                         validFrom: "17/06/2017"
                     },
                     currentHistorical: {
                         documentId: "4",
-                        status: "validated",
+                        status: "CURRENT",
                         validFrom: "17/06/2017"
                     },
                     proposedTopline: null,
@@ -219,6 +220,38 @@ export class FakeApiService implements IApiService {
         }];
 
         return OK(mpans);
+    }
+
+    getMpanTopline(documentId: string){
+        var topline: MpanTopline = {
+            _id : "59aeffcdb1a0d819811eede1",
+            connection: "Network",
+            cot: false,
+            da: "UKDC",
+            dc: "UKDC",
+            duosFixed: true,
+            eac: "null",
+            energisation: "E",
+            gspGroup: "_A",
+            llf: "86",
+            measurementClass: "C",
+            meterType: "HH",
+            mo: "EELC",
+            mpanCore: "1640000432138",
+            mtc: "845",
+            newConnection: false,
+            profileClass: "0",
+            retrievalMethod: "R",
+            ssc: "null",
+            voltage: "High"
+        };
+
+        return OK(topline);
+    }
+
+    getMpanHistorical(documentId: string){
+        let historical = require("json-loader!./fake/mpanHistorical.json");    
+        return OK(historical);
     }
 }
 

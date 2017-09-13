@@ -81,8 +81,8 @@ const PortfolioUploads : React.SFC<{}> = () => {
                         <p>Drag files into the location below to upload.</p>
                     </div>
                     <div className="uk-modal-footer uk-text-right">
-                        <button className="uk-button uk-button-default uk-modal-close" type="button">Cancel</button>
-                        <button className="uk-button uk-button-primary uk-modal-close" type="button">Upload</button>
+                        <button className="uk-button uk-button-primary uk-modal-close" type="button"><span data-uk-icon="icon: cloud-upload" /> Upload</button>
+                        <button className="uk-button uk-button-secondary uk-modal-close uk-margin-left" type="button"><span data-uk-icon="icon: close" /> Cancel</button>
                     </div>
                 </div>
             </div>

@@ -1,5 +1,10 @@
 import ApiService from "../services/ApiService";
-import { Portfolio, MpanSummary, PortfolioHistoryEntry, Site } from "../Model/Models";
+import { Portfolio,
+         MpanSummary,
+         PortfolioHistoryEntry,
+         Site,  
+         MpanTopline,
+         MpanHistorical } from "../Model/Models";
 
 import * as types from "./actionTypes";
 import { makeApiRequest } from "./Common";
@@ -98,6 +103,43 @@ export function getPortfolioSiteMpans(portfolioId: string){
             }, 
             error => {
                 return { type: types.FETCH_PORTFOLIO_SITE_MPANS_FAILED, errorMessage: error };
+            });
+    };
+}
+
+// TODO: Move topline & historical calls to own Actions
+export function getMpanTopline(documentId: string){
+    return (dispatch: Dispatch<any>) => {
+        let fetchPromise = ApiService.getMpanTopline(documentId);
+        dispatch( { type: types.FETCH_MPAN_TOPLINE_WORKING });
+
+        makeApiRequest(dispatch,
+            fetchPromise,
+            200, 
+            data => {
+                return { type: types.FETCH_MPAN_TOPLINE_SUCCESSFUL, data: data as MpanTopline};
+                
+            }, 
+            error => {
+                return { type: types.FETCH_MPAN_TOPLINE_FAILED, errorMessage: error };
+            });
+    };
+}
+
+export function getMpanHistorical(documentId: string){
+    return (dispatch: Dispatch<any>) => {
+        let fetchPromise = ApiService.getMpanHistorical(documentId);
+        dispatch( { type: types.FETCH_MPAN_HISTORICAL_WORKING });
+
+        makeApiRequest(dispatch,
+            fetchPromise,
+            200, 
+            data => {
+                return { type: types.FETCH_MPAN_HISTORICAL_SUCCESSFUL, data: data as MpanHistorical};
+                
+            }, 
+            error => {
+                return { type: types.FETCH_MPAN_HISTORICAL_FAILED, errorMessage: error };
             });
     };
 }

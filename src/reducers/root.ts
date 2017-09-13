@@ -25,11 +25,16 @@ import portfolioHistoryReducer from './portfolio/portfolioHistoryReducer';
 import portfolioMpanSummaryReducer from './portfolio/portfolioMpanSummaryReducer';
 import portfolioSiteMpansReducer from './portfolio/portfolioSiteMpansReducer';
 
+import mpanToplineReducer from './portfolio/mpanToplineReducer';
+import mpanHistoricalReducer from './portfolio/mpanHistoricalReducer';
+
 const portfolioReducer: Reducer<PortfolioState> = combineReducers<PortfolioState>({
     selected: selectedPortfolioReducer,
     history: portfolioHistoryReducer,
     mpan_summary: portfolioMpanSummaryReducer,
-    sites: portfolioSiteMpansReducer
+    sites: portfolioSiteMpansReducer,
+    topline: mpanToplineReducer,
+    historical: mpanHistoricalReducer
 });
 
 // Combine all reducers to form the master ApplicationState

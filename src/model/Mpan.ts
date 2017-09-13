@@ -12,3 +12,39 @@ export interface MpanDocument {
     status: string;
     validFrom: string;
 }
+
+export interface MpanTopline {
+    _id: string;
+    connection: string;
+    cot: boolean;
+    da: string;
+    dc: string;
+    duosFixed: boolean;
+    eac: string;
+    energisation: string;
+    gspGroup: string;
+    llf: string;
+    measurementClass: string;
+    meterType: string;
+    mo: string;
+    mpanCore: string;
+    mtc: string;
+    newConnection: boolean;
+    profileClass: string;
+    retrievalMethod: string;
+    ssc: string;
+    voltage: string;
+}
+
+export interface MpanHistorical {
+    mpanCore: string;
+    type: string;
+    source: string;
+    clock: string;
+    entries: MpanHistoricalEntry[];
+}
+
+export interface MpanHistoricalEntry {
+    data: number[];
+    date: string;
+}
