@@ -36,6 +36,10 @@ export interface MpanTopline {
     retrievalMethod: string;
     ssc: string;
     voltage: string;
+
+    group: string;
+    created: string;
+    creator: User;
 }
 
 export interface MpanHistorical {

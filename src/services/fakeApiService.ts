@@ -246,7 +246,16 @@ export class FakeApiService implements IApiService {
             profileClass: "0",
             retrievalMethod: "R",
             ssc: "null",
-            voltage: "High"
+            voltage: "High",
+            group: "PROPOSED",
+            created: "2017-09-13T11:45:33.446",
+            creator: {
+                id: "1",
+                firstName: "Daniel",
+                lastName: "May",
+                status: "active",
+                avatarUrl: ""
+            }
         };
 
         return OK(topline);

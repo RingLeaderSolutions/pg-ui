@@ -76,9 +76,10 @@ export class ApiService implements IApiService {
     }
 
     getMpanHistorical(documentId: string){
-        return axios.get(`${this.baseApiUri}/historical/${documentId}`, this.getRequestConfig());                        
+        return new FakeApiService().getMpanHistorical(documentId);
+        //return axios.get(`${this.baseApiUri}/historical/${documentId}`, this.getRequestConfig());                        
     }
 }
 
-export default new FakeApiService();
-//export default new ApiService();
+//export default new FakeApiService();
+export default new ApiService();

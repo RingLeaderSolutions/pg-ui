@@ -1,12 +1,15 @@
 import * as React from "react";
 import Header from "../../common/Header";
+import CounterCard from "../../common/CounterCard";
 import { RouteComponentProps } from 'react-router';
 import { MapDispatchToPropsFunction, connect, MapStateToProps } from 'react-redux';
 import { ApplicationState } from '../../../applicationState';
-import { MpanTopline, Portfolio } from '../../../model/Models';
+import { MpanTopline, Portfolio, DocumentGroup } from '../../../model/Models';
 import Spinner from '../../common/Spinner';
 
 import { getMpanTopline } from '../../../actions/portfolioActions';
+
+import * as moment from 'moment';
 
 interface MpanToplineDetailProps extends RouteComponentProps<void> {
 }
@@ -60,13 +63,19 @@ class MpanToplineDetail extends React.Component<MpanToplineDetailProps & StatePr
     }
 
     render() {
-        if(this.props.working || this.props.topline == null){
+        var { topline } = this.props;
+        if(this.props.working || topline == null){
             return (<Spinner />);
         }
 
+        var group = topline.group == DocumentGroup.Proposed ? "Proposed" : "Current";
+        var headerTitle = `${group} MPAN Topline: ${topline.mpanCore}`;
+
+        var creatorName = topline.creator == null ? "Unknown" : `${topline.creator.firstName} ${topline.creator.lastName}`;
+        var creationTime = moment.utc(topline.created).local().fromNow();   
+
         var agentOptions = this.agentOptions.map((o, index) => this.createOption(o, index));
         var retrievalOptions = this.retrievalMethods.map((o, index) => this.createOption(o, index));
-        var headerTitle = `MPAN Topline: ${this.props.topline.mpanCore}`;
 
         var retrievalMethod = this.parseRetrievalMethod();
 
@@ -75,7 +84,28 @@ class MpanToplineDetail extends React.Component<MpanToplineDetailProps & StatePr
                 <Header title={headerTitle} />
                 <div className="content-topline">
                     <button className="uk-button uk-button-default uk-button-small" onClick={() => this.returnToPortfolio()}><span data-uk-icon="icon: reply" />  Return to portfolio</button>
-    
+                    <div className="uk-child-width-expand@s uk-text-center uk-grid uk-margin-top" data-uk-grid data-uk-height-match="target: > div > .uk-card">
+                        <CounterCard title={creatorName}
+                                    error={this.props.error} 
+                                    errorMessage={this.props.errorMessage}
+                                    loaded={!this.props.working} 
+                                    label="Uploader" 
+                                    small />
+
+                        <CounterCard title={creationTime} 
+                                    error={this.props.error} 
+                                    errorMessage={this.props.errorMessage}
+                                    loaded={!this.props.working} 
+                                    label="Uploaded"
+                                    small />
+                                    
+                        <CounterCard title={group} 
+                                    label="Status" 
+                                    error={this.props.error} 
+                                    errorMessage={this.props.errorMessage}
+                                    loaded={!this.props.working} 
+                                    small />
+                    </div>
                     <h3>Data</h3>
                     <form className="uk-grid" data-uk-grid>
                         <div className="uk-width-1-6@s">
