@@ -23,8 +23,7 @@ export class ApiService implements IApiService {
     contextQuery: string;
     teamId: string;
     constructor(){
-        //this.baseApiUri = "http://81.147.87.33:8080";
-        this.baseApiUri = "http://mpanupload242007.northeurope.cloudapp.azure.com:8080";
+        this.baseApiUri = appConfig.baseApiUri;
         this.teamId = "989";
         this.contextQuery = `?context=team&value=${this.teamId}`;
     }

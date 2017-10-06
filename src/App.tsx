@@ -6,6 +6,8 @@ import {
     Route
 } from 'react-router-dom';
 
+import connectSignalR from './helpers/SignalRController';
+
 import configureStore from './store/configureStore'
 import Home from "./components/Home";
 
@@ -32,7 +34,7 @@ if (module.hot) {
 
 const store = configureStore();
 
-
+connectSignalR(store);
 
 class App extends React.Component<{}, {}> {
     constructor() {
