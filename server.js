@@ -2,8 +2,17 @@ var express = require('express');
 var webpack = require('webpack');
 var devServer = require('webpack-dev-middleware');
 var hotServer = require('webpack-hot-middleware');
+var fs = require('fs');
 
 var app = express();
+
+var configFileContents = fs.readFileSync('./appConfig.js', 'utf-8');
+
+var applyStaticRoutes = function (app) {
+    app.get('/appConfig.js', function (request, response) {
+        response.send(configFileContents)
+    });
+}
 
 if (process.env.npm_lifecycle_event === 'start') {
     var webpackConfig = require('./webpack.config.js');
@@ -25,6 +34,8 @@ if (process.env.npm_lifecycle_event === 'start') {
     app.use(hotServer(compiler, {
         log: console.log, path: '/__webpack_hmr', heartbeat: 10 * 1000
     }));
+
+    applyStaticRoutes(app);
 }
 else {
     app.use(express.static(__dirname + '/build'));
@@ -33,7 +44,9 @@ else {
     // a script tag to your application's JavaScript file(s).
     app.get('/*', function (request, response) {
         response.sendFile(path.resolve(__dirname, 'build', 'index.html'))
-    })
+    });
+
+    applyStaticRoutes(app);
 }
 
 var port = 8585;
