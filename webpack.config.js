@@ -8,6 +8,7 @@ var config = {
     "webpack-hot-middleware/client",
     "./src/App.tsx"],
 
+  devtool: "source-map",
   output: {
     path: path.resolve(__dirname, "build"),
     filename: "bundle.js",

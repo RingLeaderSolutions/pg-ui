@@ -12,7 +12,7 @@ if (process.env.npm_lifecycle_event === 'start') {
     const CONTENT_TYPE_HTML = "text/html";
 
     app.use(function (req, res, next) {
-        if (req.headers.accept.substr(0, CONTENT_TYPE_HTML.length) === CONTENT_TYPE_HTML) {
+        if (req.headers.accept && req.headers.accept.substr(0, CONTENT_TYPE_HTML.length) === CONTENT_TYPE_HTML) {
             req.url = '/index.html';
         }
         next();
