@@ -7,7 +7,7 @@ import { Link } from 'react-router-dom';
 
 import { getPortfolioSiteMpans } from '../../../actions/portfolioActions';
 
-interface PortfolioMpansProps {
+interface PortfolioMetersProps {
     portfolio: Portfolio;
 }
 
@@ -22,7 +22,7 @@ interface DispatchProps {
     getSitesAndMpans: (portfolioId: string) => void;
 }
 
-class PortfolioMpans extends React.Component<PortfolioMpansProps & StateProps & DispatchProps, {}> {
+class PortfolioMeters extends React.Component<PortfolioMetersProps & StateProps & DispatchProps, {}> {
     constructor() {
         super();
     }
@@ -104,13 +104,13 @@ class PortfolioMpans extends React.Component<PortfolioMpansProps & StateProps & 
     }
 }
 
-const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, PortfolioMpansProps> = (dispatch) => {
+const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, PortfolioMetersProps> = (dispatch) => {
     return {
         getSitesAndMpans: (portfolioId: string) => dispatch(getPortfolioSiteMpans(portfolioId))        
     };
 };
   
-const mapStateToProps: MapStateToProps<StateProps, PortfolioMpansProps> = (state: ApplicationState) => {
+const mapStateToProps: MapStateToProps<StateProps, PortfolioMetersProps> = (state: ApplicationState) => {
     return {
         sites: state.portfolio.sites.value,
         working: state.portfolio.sites.working,
@@ -119,4 +119,4 @@ const mapStateToProps: MapStateToProps<StateProps, PortfolioMpansProps> = (state
     };
 };
   
-export default connect(mapStateToProps, mapDispatchToProps)(PortfolioMpans);
+export default connect(mapStateToProps, mapDispatchToProps)(PortfolioMeters);

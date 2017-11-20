@@ -49,7 +49,7 @@ class DashboardSummary extends React.Component<SummaryProps & StateProps & Dispa
                              error={this.props.error} 
                              errorMessage={this.props.errorMessage}
                              loaded={!this.props.working} 
-                             label="Total MPANs" />
+                             label="Total Meters" />
                              
                 <CounterCard title="TPI" 
                              label="Your Team" />

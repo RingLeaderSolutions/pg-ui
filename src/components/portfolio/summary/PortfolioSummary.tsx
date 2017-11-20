@@ -47,7 +47,7 @@ class PortfolioSummary extends React.Component<PortfolioSummaryProps, {}> {
                     <CounterCard title={this.missingFieldText} label="Consumption" small/>
                     <CounterCard title={this.missingFieldText} label="Upload Activity" small/>
                     <CounterCard title={String(portfolio.accounts)} label="Accounts" small/>
-                    <CounterCard title={String(portfolio.mpans)} label="MPANs" small />
+                    <CounterCard title={String(portfolio.mpans)} label="Meters" small />
                 </div>
                 <div className="uk-child-width-expand@s uk-grid-match uk-text-center" data-uk-grid>
                     <PortfolioMpanSummary portfolio={portfolio} />

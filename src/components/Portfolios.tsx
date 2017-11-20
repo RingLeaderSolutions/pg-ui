@@ -119,7 +119,7 @@ class Portfolios extends React.Component<PortfoliosProps & StateProps & Dispatch
                                         <th>End</th>
                                         <th>Accounts</th>
                                         <th>Sites</th>
-                                        <th>MPANs</th>
+                                        <th>Meters</th>
                                     </tr>
                                 </thead>
                                 <tbody>
