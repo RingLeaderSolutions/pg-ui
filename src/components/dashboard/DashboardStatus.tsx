@@ -1,7 +1,6 @@
 import * as React from "react";
 import Spinner from "../common/Spinner";
 import ErrorMessage from "../common/ErrorMessage";
-import { RouteComponentProps } from 'react-router';
 import { MapDispatchToPropsFunction, connect, MapStateToProps } from 'react-redux';
 import { getDashboardStatus } from '../../actions/dashboardActions';
 import { ApplicationState } from '../../applicationState';

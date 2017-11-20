@@ -18,6 +18,8 @@
   },
   "homepage": "https://github.com/RingLeaderSolutions/pg-ui#readme",
   "devDependencies": {
+    "@types/auth0-js": "^8.10.2",
+    "@types/jwt-decode": "^2.2.1",
     "@types/node": "^8.0.3",
     "@types/react": "^15.0.24",
     "@types/react-dom": "^15.5.1",
@@ -41,9 +43,11 @@
   },
   "dependencies": {
     "@aspnet/signalr-client": "^1.0.0-alpha1-final",
+    "auth0-js": "^8.11.3",
     "axios": "^0.16.2",
     "highcharts": "^5.0.12",
     "jquery": "^3.2.1",
+    "jwt-decode": "^2.2.0",
     "moment": "^2.18.1",
     "react": "^15.6.1",
     "react-dom": "^15.6.1",

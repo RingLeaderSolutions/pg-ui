@@ -10,6 +10,11 @@ import connectSignalR from './helpers/SignalRController';
 
 import configureStore from './store/configureStore'
 import Home from "./components/Home";
+import Login from "./components/auth/Login";
+import Logout from "./components/auth/Logout";
+import AuthenticatedRoute from "./components/auth/AuthenticatedRoute";
+import LoginComplete from "./components/auth/LoginComplete";
+import { Switch } from "react-router";
 
 
 // NOTE: Unable to get proper TS definitions working with UIkit.
@@ -45,7 +50,22 @@ class App extends React.Component<{}, {}> {
         return (
             <Provider store={store}>
                 <Router>
-                    <Route path="/" component={Home} />
+                    <div>
+                        <Switch>
+                            <AuthenticatedRoute exact path="/" component={Home} />
+                            
+                            <Route exact path="/login" component={Login} />
+                            <Route exact path="/login_complete" component={LoginComplete} />
+                            <Route exact path="/logout" component={Logout} />                        
+
+                            <AuthenticatedRoute path="/portfolios" component={Home} />
+                            <AuthenticatedRoute path="/portfolio" component={Home} />
+                            <AuthenticatedRoute path="/topline" component={Home} />
+                            <AuthenticatedRoute path="/historical" component={Home} />
+                            <AuthenticatedRoute path="/calendar" component={Home} />
+                            <AuthenticatedRoute path="/uploads" component={Home} />
+                        </Switch>
+                    </div>
                 </Router>
             </Provider>
         );

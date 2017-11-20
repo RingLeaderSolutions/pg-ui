@@ -1,6 +1,5 @@
 import * as React from "react";
 import Header from "../common/Header";
-import { RouteComponentProps } from 'react-router';
 
 import DashboardSummary from "./DashboardSummary";
 import DashboardStatus from "./DashboardStatus";

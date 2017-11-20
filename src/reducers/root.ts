@@ -27,7 +27,6 @@ import portfolioSiteMpansReducer from './portfolio/portfolioSiteMpansReducer';
 
 import mpanToplineReducer from './portfolio/mpanToplineReducer';
 import mpanHistoricalReducer from './portfolio/mpanHistoricalReducer';
-import notificationMessageReducer from './notifications/notificationMessageReducer';
 
 const portfolioReducer: Reducer<PortfolioState> = combineReducers<PortfolioState>({
     selected: selectedPortfolioReducer,
@@ -38,12 +37,22 @@ const portfolioReducer: Reducer<PortfolioState> = combineReducers<PortfolioState
     historical: mpanHistoricalReducer    
 });
 
+import notificationMessageReducer from './notifications/notificationMessageReducer';
+
+import { AuthState } from './auth/AuthState'
+import loginReducer from './auth/loginReducer';
+
+const authReducer: Reducer<AuthState> = combineReducers<AuthState>({
+    login: loginReducer
+});
+
 // Combine all reducers to form the master ApplicationState
 const rootReducer: Reducer<ApplicationState> = combineReducers<ApplicationState>({
     portfolio: portfolioReducer,
     dashboard: dashboardReducer,
     portfolios: portfoliosReducer,
-    notifications: notificationMessageReducer
+    notifications: notificationMessageReducer,
+    auth: authReducer
 });
 
 export default rootReducer;

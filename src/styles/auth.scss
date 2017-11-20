@@ -1,0 +1,11 @@
+@import "variables";
+
+.uk-inline {
+    display: block !important;
+}
+
+.uk-alert-danger {
+    p {
+        word-wrap: break-word;
+    }
+}
