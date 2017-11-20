@@ -2,6 +2,7 @@ import { AxiosResponse } from 'axios';
 import axios from 'axios';
 import { Portfolio } from "../model/Models";
 import { FakeApiService } from './fakeApiService';
+import StorageService from './storageService';
 
 export interface IApiService {
   getAllPortfolios(): Promise<AxiosResponse>;
@@ -22,21 +23,26 @@ export class ApiService implements IApiService {
     baseApiUri: string;
     contextQuery: string;
     teamId: string;
+    storage: StorageService;
+
     constructor(){
         this.baseApiUri = appConfig.baseApiUri;
+        this.storage = new StorageService();
+
         this.teamId = "989";
         this.contextQuery = `?context=team&value=${this.teamId}`;
     }
+
     getRequestConfig() {
-        // let authorisation = "";
-        // let token = localStorage.getItem("id_token");
-        // if (token) {
-        //     authorisation = `Bearer ${token}`;
-        // }
+        let authorisation = "";
+        let token = this.storage.getToken();
+        if (token) {
+            authorisation = `Bearer ${token}`;
+        }
 
         return {
             headers: {
-                // "Authorization": authorisation,
+                "Authorization": authorisation,
                 "Content-Type": "application/json"
             }
         };
