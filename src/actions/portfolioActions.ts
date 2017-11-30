@@ -4,7 +4,8 @@ import { Portfolio,
          PortfolioHistoryEntry,
          Site,  
          MpanTopline,
-         MpanHistorical } from "../Model/Models";
+         MpanHistorical,
+         CompanyInfo } from "../Model/Models";
 
 import * as types from "./actionTypes";
 import { makeApiRequest } from "./Common";
@@ -141,5 +142,29 @@ export function getMpanHistorical(documentId: string){
             error => {
                 return { type: types.FETCH_MPAN_HISTORICAL_FAILED, errorMessage: error };
             });
+    };
+}
+
+export function searchCompany(registrationNumber: string){
+    return (dispatch: Dispatch<any>) => {
+        let searchPromise = ApiService.searchCompany(registrationNumber);
+        dispatch( { type: types.COMPANY_SEARCH_WORKING });
+
+        makeApiRequest(dispatch,
+            searchPromise,
+            200, 
+            data => {
+                return { type: types.COMPANY_SEARCH_SUCCESSFUL, data: data as CompanyInfo};
+                
+            }, 
+            error => {
+                return { type: types.COMPANY_SEARCH_FAILED, errorMessage: error };
+            });
+    };
+}
+
+export function clearCompany(){
+    return (dispatch: Dispatch<any>) => {
+        dispatch( { type: types.COMPANY_SEARCH_CLEAR });
     };
 }

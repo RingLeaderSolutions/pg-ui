@@ -11,3 +11,10 @@ export const initialRequestState: RequestState = {
     error: false,
     errorMessage: ""
 }
+
+export const idleInitialRequestState: RequestState = {
+    value: null,
+    working: false,
+    error: false,
+    errorMessage: ""
+}

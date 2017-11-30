@@ -50,6 +50,7 @@ class PortfolioDetail extends React.Component<PortfolioDetailProps & StateProps 
             <div className="content-inner">
                 <Header title={headerTitle} />
                 <ul data-uk-tab>
+                    <li><a href="#">Setup</a></li>
                     <li className="uk-active"><a href="#">Summary</a></li>
                     <li><a href="#">Meters</a></li>
                     <li><a href="#">Forecast</a></li>
@@ -57,6 +58,7 @@ class PortfolioDetail extends React.Component<PortfolioDetailProps & StateProps 
                     <li><a href="#">Uploads</a></li>
                 </ul>
                 <ul className="uk-switcher">
+                    <li>Setup tab not yet built.</li>
                     <li><PortfolioSummary portfolio={portfolio}/></li>
                     <li><PortfolioMeters portfolio={portfolio}/></li>
                     <li>Forecast tab not yet built.</li>

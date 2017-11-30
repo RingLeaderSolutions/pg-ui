@@ -10,6 +10,7 @@ import { Portfolio,
          Site } from "../model/Models";
 
 import { IApiService } from "./ApiService";
+import { CompanyInfo } from '../model/CompanyInfo';
 
 const responseDelay = 1000;
 const defer = (callback: () => void) => new Promise((resolve, reject) => setTimeout(() => callback(), responseDelay));
@@ -264,6 +265,23 @@ export class FakeApiService implements IApiService {
     getMpanHistorical(documentId: string){
         let historical = require("json-loader!./fake/mpanHistorical.json");    
         return OK(historical);
+    }
+
+    searchCompany(companyNumber: string){
+        var company: CompanyInfo = {
+            companyName: "ZENITH PRINT (UK) LIMITED",
+            companyNumber: "02050399",
+            addressLine1: "15 LON UCHAF",
+            addressLine2: "LON UCHAF",
+            companyStatus: "Active",
+            countryOfOrigin: "United Kingdom",
+            county: "MID GLAMORGAN",
+            incorporationDate: "28/08/1986",
+            postcode: "CF83 1BR",
+            postTown: "CAERPHILLY"
+        };
+
+        return OK(company);
     }
 }
 
