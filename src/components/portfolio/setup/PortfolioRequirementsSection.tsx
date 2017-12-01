@@ -23,6 +23,13 @@ interface DispatchProps {
 }
 
 class PortfolioRequirementsSection extends React.Component<PortfolioRequirementsSectionProps & StateProps & DispatchProps, {}> {
+    constructor(){
+        super();
+        this.saveRequirements = this.saveRequirements.bind(this);
+    }
+    saveRequirements(){
+        //this.updatePortfolioRequirements();
+    }
     render() {
         if(this.props.error){
             return (<ErrorMessage content={this.props.errorMessage} />);
@@ -99,6 +106,12 @@ class PortfolioRequirementsSection extends React.Component<PortfolioRequirements
                                     </div>
                                 </div>
                             </div>
+                        </div>
+                        <div className="uk-margin uk-float-right">
+                        <button className="uk-button uk-button-primary" type="button" onClick={this.saveRequirements} disabled>
+                            <span className="uk-margin-small-right" data-uk-icon="icon: cog" />
+                            Update
+                        </button>
                         </div>
                     </fieldset>
                 </form>
