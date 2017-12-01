@@ -283,6 +283,32 @@ export class FakeApiService implements IApiService {
 
         return OK(company);
     }
+
+    createAccount(company: CompanyInfo){
+        var response = {
+            id: "4dbd3fb8-c598-4d33-a0f6-b12da7b8b0d0"
+        };
+
+        return OK(response);
+    }
+
+    createPortfolio(accountId: string, company: CompanyInfo){
+        var response = {
+            id: "a1b01d44-5971-4be0-a197-0226c44372ea",
+            title: company.companyName,
+            status: "onboard",
+            category: "direct",
+            teamId: 989,
+            ownerId: 1,
+            supportOwner: 7,
+            accountId: accountId,
+            //contact: null,
+            contractStart: "2017-12-01T00:00:00",
+            contractEnd: "2018-03-01T00:00:00"
+        }
+
+        return OK(response);
+    }
 }
 
 export default new FakeApiService();

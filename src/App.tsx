@@ -50,22 +50,20 @@ class App extends React.Component<{}, {}> {
         return (
             <Provider store={store}>
                 <Router>
-                    <div>
-                        <Switch>
-                            <AuthenticatedRoute exact path="/" component={Home} />
-                            
-                            <Route exact path="/login" component={Login} />
-                            <Route exact path="/login_complete" component={LoginComplete} />
-                            <Route exact path="/logout" component={Logout} />                        
+                    <Switch>
+                        <AuthenticatedRoute exact path="/" component={Home} />
+                        
+                        <Route exact path="/login" component={Login} />
+                        <Route exact path="/login_complete" component={LoginComplete} />
+                        <Route exact path="/logout" component={Logout} />                        
 
-                            <AuthenticatedRoute path="/portfolios" component={Home} />
-                            <AuthenticatedRoute path="/portfolio" component={Home} />
-                            <AuthenticatedRoute path="/topline" component={Home} />
-                            <AuthenticatedRoute path="/historical" component={Home} />
-                            <AuthenticatedRoute path="/calendar" component={Home} />
-                            <AuthenticatedRoute path="/uploads" component={Home} />
-                        </Switch>
-                    </div>
+                        <AuthenticatedRoute path="/portfolios" component={Home} />
+                        <AuthenticatedRoute path="/portfolio" component={Home} />
+                        <AuthenticatedRoute path="/topline" component={Home} />
+                        <AuthenticatedRoute path="/historical" component={Home} />
+                        <AuthenticatedRoute path="/calendar" component={Home} />
+                        <AuthenticatedRoute path="/uploads" component={Home} />
+                    </Switch>
                 </Router>
             </Provider>
         );
