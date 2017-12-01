@@ -309,6 +309,12 @@ export class FakeApiService implements IApiService {
 
         return OK(response);
     }
+
+    getPortfolioDetails(portfolioId: string) {
+        var portfolioDetails = {};
+
+        return OK(portfolioDetails);
+    }
 }
 
 export default new FakeApiService();

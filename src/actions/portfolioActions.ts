@@ -5,7 +5,8 @@ import { Portfolio,
          Site,  
          MpanTopline,
          MpanHistorical,
-         CompanyInfo } from "../Model/Models";
+         CompanyInfo,
+         PortfolioDetails } from "../Model/Models";
 
 import * as types from "./actionTypes";
 import { makeApiRequest } from "./Common";
@@ -25,6 +26,23 @@ export function getAllPortfolios(){
             }, 
             error => {
                 return { type: types.FETCH_PORTFOLIOS_FAILED, errorMessage: error };
+            });
+    };
+}
+
+export function getPortfolioDetails(portfolioId: string){
+    return (dispatch: Dispatch<any>) => {
+        let fetchPromise = ApiService.getPortfolioDetails(portfolioId);
+        dispatch( { type: types.FETCH_PORTFOLIO_DETAILS_WORKING });
+
+        makeApiRequest(dispatch,
+            fetchPromise,
+            200, 
+            data => {
+                return { type: types.FETCH_PORTFOLIO_DETAILS_SUCCESSFUL, data: data as PortfolioDetails };
+            }, 
+            error => {
+                return { type: types.FETCH_PORTFOLIO_DETAILS_FAILED, errorMessage: error };
             });
     };
 }

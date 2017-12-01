@@ -6,6 +6,7 @@ import StorageService from './storageService';
 
 export interface IApiService {
   getAllPortfolios(): Promise<AxiosResponse>;
+  getPortfolioDetails(portfolioId: string): Promise<AxiosResponse>;
 
   getDashboardSummary(): Promise<AxiosResponse>;
   getDashboardTimeline(): Promise<AxiosResponse>;
@@ -13,7 +14,7 @@ export interface IApiService {
 
   searchCompany(companyNumber: string): Promise<AxiosResponse>;
   createAccount(company: CompanyInfo) : Promise<AxiosResponse>;
-  createPortfolio(accountId: string, company: CompanyInfo) : Promise<AxiosResponse>;
+  createPortfolio(accountId: string, company: CompanyInfo): Promise<AxiosResponse>;
 
   getPortfolioMpanSummary(portfolioId: string): Promise<AxiosResponse>;
   getPortfolioHistory(portfolioId: string): Promise<AxiosResponse>;
@@ -80,8 +81,11 @@ export class ApiService implements IApiService {
     }
 
     getAllPortfolios() {
-        //return axios.get(`${this.baseApiUri}/portman-web/tpis`, this.getRequestConfig());
         return axios.get(`${this.baseApiUri}/portman-web/portfolios/team/${this.teamId}`, this.getRequestConfig());
+    }
+
+    getPortfolioDetails(portfolioId: string) {
+        return axios.get(`${this.baseApiUri}/portman-web/portfolios/details/${portfolioId}`, this.getRequestConfig());
     }
 
     getDashboardSummary(){

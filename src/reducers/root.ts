@@ -34,6 +34,7 @@ const portfoliosReducer: Reducer<PortfoliosState> = combineReducers<PortfoliosSt
 // Combine portfolio reducers to form the PortfolioState
 import { PortfolioState } from './portfolio/PortfolioState';
 
+import portfolioDetailsReducer from './portfolio/portfolioDetailsReducer';
 import selectedPortfolioReducer from './portfolio/selectedPortfolioReducer';
 import portfolioHistoryReducer from './portfolio/portfolioHistoryReducer';
 import portfolioMpanSummaryReducer from './portfolio/portfolioMpanSummaryReducer';
@@ -43,6 +44,7 @@ import mpanToplineReducer from './portfolio/mpanToplineReducer';
 import mpanHistoricalReducer from './portfolio/mpanHistoricalReducer';
 
 const portfolioReducer: Reducer<PortfolioState> = combineReducers<PortfolioState>({
+    details: portfolioDetailsReducer,
     selected: selectedPortfolioReducer,
     history: portfolioHistoryReducer,
     mpan_summary: portfolioMpanSummaryReducer,

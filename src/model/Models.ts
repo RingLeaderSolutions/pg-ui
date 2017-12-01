@@ -2,6 +2,11 @@ export { Portfolio,
          MpanSummary,
          PortfolioHistoryEntry } from './Portfolio';
 
+export { PortfolioDetails,
+         PortfolioContact,
+         PortfolioRequirements,
+         PortfolioDocument } from './PortfolioDetails'
+
 export { User } from './User';
 
 export { DashboardPortfolioSummary,
