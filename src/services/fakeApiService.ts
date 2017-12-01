@@ -265,6 +265,85 @@ export class FakeApiService implements IApiService {
         let historical = require("json-loader!./fake/mpanHistorical.json");    
         return OK(historical);
     }
+
+    getAllMeters(portfolioId: string){
+        var data = {
+            portfolioId: "guid",
+            meters: [
+                {
+                    meterSupplyData: {
+                        mpanCore: "123456798",
+                        utility: "electricity",
+                        meterType: "HH",
+                        newConnection: false,
+                        MTC: "845",
+                        LLF: "86",
+                        profileClass: "0",
+                        retrievalMethod: "R",
+                        GSPGroup: "_A",
+                        measurementClass: "C",
+                        energised: true,
+                        da: "UKDC",
+                        dc: "UKDC",
+                        mo: "EELC",
+                        voltage: "low",
+                        connection: "network",
+                        serialNumber: "AO9X031482",
+                        capacity: 2.0,
+                        EAC: "abc"
+                    }
+                },
+                {
+                    meterSupplyData: {
+                        mpanCore: "123456798",
+                        utility: "electricity",
+                        meterType: "HH",
+                        newConnection: false,
+                        MTC: "845",
+                        LLF: "86",
+                        profileClass: "0",
+                        retrievalMethod: "R",
+                        GSPGroup: "_A",
+                        measurementClass: "C",
+                        energised: true,
+                        da: "UKDC",
+                        dc: "UKDC",
+                        mo: "EELC",
+                        voltage: "low",
+                        connection: "network",
+                        serialNumber: "AO9X031482",
+                        capacity: 2.0,
+                        EAC: "abc"
+                    }
+                },
+                {
+                    meterSupplyData: {
+                        mpanCore: "123456798",
+                        utility: "gas",
+                        meterType: "HH",
+                        newConnection: false,
+                        MTC: "845",
+                        LLF: "86",
+                        profileClass: "0",
+                        retrievalMethod: "R",
+                        GSPGroup: "_A",
+                        measurementClass: "C",
+                        energised: true,
+                        da: "UKDC",
+                        dc: "UKDC",
+                        mo: "EELC",
+                        voltage: "low",
+                        connection: "network",
+                        serialNumber: "AO9X031482",
+                        capacity: 2.0,
+                        EAC: "abc"
+                    }
+                }
+            ]
+        };
+        
+        return OK(data);
+    }
 }
 
 export default new FakeApiService();

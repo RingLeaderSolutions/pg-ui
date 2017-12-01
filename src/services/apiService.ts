@@ -17,6 +17,8 @@ export interface IApiService {
 
   getMpanTopline(documentId: string): Promise<AxiosResponse>;
   getMpanHistorical(documentId: string): Promise<AxiosResponse>;
+
+  getAllMeters(portfolioId: string): Promise<AxiosResponse>;
 }
 
 export class ApiService implements IApiService {
@@ -84,7 +86,11 @@ export class ApiService implements IApiService {
         return new FakeApiService().getMpanHistorical(documentId);
         //return axios.get(`${this.baseApiUri}/historical/${documentId}`, this.getRequestConfig());                        
     }
+
+    getAllMeters(portfolioId: string){
+        return axios.get(`${this.baseApiUri}/meters/portfolio/${portfolioId}`, this.getRequestConfig());
+    }
 }
 
-//export default new FakeApiService();
-export default new ApiService();
+export default new FakeApiService();
+//export default new ApiService();

@@ -10,6 +10,7 @@ import Spinner from '../common/Spinner';
 import PortfolioSummary from "./summary/PortfolioSummary";
 import PortfolioUploads from "./upload/PortfolioUploads";
 import PortfolioMeters from "./mpan/PortfolioMeters";
+import PortfolioMeters2 from "./mpan/PortfolioMeters2";
 
 import { getSinglePortfolio } from '../../actions/portfolioActions';
 
@@ -58,7 +59,7 @@ class PortfolioDetail extends React.Component<PortfolioDetailProps & StateProps 
                 </ul>
                 <ul className="uk-switcher">
                     <li><PortfolioSummary portfolio={portfolio}/></li>
-                    <li><PortfolioMeters portfolio={portfolio}/></li>
+                    <li className='uk-active'><PortfolioMeters2 portfolio={portfolio}/></li>
                     <li>Forecast tab not yet built.</li>
                     <li>Tenders tab not yet built.</li>
                     <li><PortfolioUploads /></li>

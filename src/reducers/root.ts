@@ -28,13 +28,15 @@ import portfolioSiteMpansReducer from './portfolio/portfolioSiteMpansReducer';
 import mpanToplineReducer from './portfolio/mpanToplineReducer';
 import mpanHistoricalReducer from './portfolio/mpanHistoricalReducer';
 
+import meterReducer from './meters/meterReducer';
+
 const portfolioReducer: Reducer<PortfolioState> = combineReducers<PortfolioState>({
     selected: selectedPortfolioReducer,
     history: portfolioHistoryReducer,
     mpan_summary: portfolioMpanSummaryReducer,
     sites: portfolioSiteMpansReducer,
     topline: mpanToplineReducer,
-    historical: mpanHistoricalReducer    
+    historical: mpanHistoricalReducer
 });
 
 import notificationMessageReducer from './notifications/notificationMessageReducer';
@@ -51,8 +53,9 @@ const rootReducer: Reducer<ApplicationState> = combineReducers<ApplicationState>
     portfolio: portfolioReducer,
     dashboard: dashboardReducer,
     portfolios: portfoliosReducer,
-    notifications: notificationMessageReducer,
-    auth: authReducer
+    notifications: notificationMessageReducer,    
+    auth: authReducer,
+    meters: meterReducer,
 });
 
 export default rootReducer;
