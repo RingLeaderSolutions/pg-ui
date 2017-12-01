@@ -85,7 +85,7 @@ export class ApiService implements IApiService {
     }
 
     getPortfolioDetails(portfolioId: string) {
-        return axios.get(`${this.baseApiUri}/portman-web/portfolios/details/${portfolioId}`, this.getRequestConfig());
+        return axios.get(`${this.baseApiUri}/portman-web/portfolio/details/${portfolioId}`, this.getRequestConfig());
     }
 
     getDashboardSummary(){
