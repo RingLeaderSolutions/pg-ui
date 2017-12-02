@@ -1,6 +1,7 @@
 import { AxiosResponse } from 'axios';
 import axios from 'axios';
 import { Portfolio,
+         PortfolioContact,
          DashboardPortfolioSummary,
          DashboardPortfolioTimeline,
          DashboardPortfolioStatus,
@@ -314,6 +315,10 @@ export class FakeApiService implements IApiService {
         var portfolioDetails = {};
 
         return OK(portfolioDetails);
+    }
+
+    updatePortfolioContact(contact: PortfolioContact){
+        return OK();
     }
 }
 

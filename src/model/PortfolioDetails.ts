@@ -1,5 +1,5 @@
 export interface PortfolioContact {
-    id: string;
+    id?: string;
     firstName: string;
     lastName: string;
     email: string;
@@ -46,7 +46,7 @@ export interface PortfolioDocument {
 
 export interface PortfolioDetails {
     portfolio: PortfolioSummary;
-    requirements: PortfolioRequirements;
-    documentation: PortfolioDocument[];
+    requirements?: PortfolioRequirements;
+    documentation?: PortfolioDocument[];
     siteCount: number;
 }

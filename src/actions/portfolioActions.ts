@@ -6,7 +6,8 @@ import { Portfolio,
          MpanTopline,
          MpanHistorical,
          CompanyInfo,
-         PortfolioDetails } from "../Model/Models";
+         PortfolioDetails,
+         PortfolioContact } from "../Model/Models";
 
 import * as types from "./actionTypes";
 import { makeApiRequest } from "./Common";
@@ -184,5 +185,23 @@ export function searchCompany(registrationNumber: string){
 export function clearCompany(){
     return (dispatch: Dispatch<any>) => {
         dispatch( { type: types.COMPANY_SEARCH_CLEAR });
+    };
+}
+
+export function createPortfolioContact(contact: PortfolioContact){
+    return (dispatch: Dispatch<any>) => {
+        let searchPromise = ApiService.updatePortfolioContact(contact);
+        dispatch({ type: types.CREATE_PORTFOLIO_CONTACT_WORKING });
+
+        makeApiRequest(dispatch,
+            searchPromise,
+            200, 
+            data => {
+                return { type: types.CREATE_PORTFOLIO_CONTACT_SUCCESSFUL, data: null};
+                
+            }, 
+            error => {
+                return { type: types.CREATE_PORTFOLIO_CONTACT_FAILED, errorMessage: error };
+            });
     };
 }

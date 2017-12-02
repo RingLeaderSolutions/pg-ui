@@ -6,7 +6,7 @@ import { ApplicationState } from '../../../applicationState';
 import { PortfolioDetails, PortfolioContact } from '../../../model/Models';
 import Spinner from '../../common/Spinner';
 
-//import { addPortfolioContact } from '../../../actions/portfolioActions';
+import { createPortfolioContact } from '../../../actions/portfolioActions';
 
 interface AddContactDialogProps {
     details: PortfolioDetails;
@@ -19,7 +19,7 @@ interface StateProps {
 }
 
 interface DispatchProps {
-    // addPortfolioContact: (contact: PortfolioContact) => void;
+    createPortfolioContact: (contact: PortfolioContact) => void;
 }
 
 class AddContactDialog extends React.Component<AddContactDialogProps & StateProps & DispatchProps, {}> {
@@ -28,8 +28,26 @@ class AddContactDialog extends React.Component<AddContactDialogProps & StateProp
         this.addContact = this.addContact.bind(this);
     }
 
+    firstName: HTMLInputElement;
+    lastName: HTMLInputElement;
+    email: HTMLInputElement;
+    phone: HTMLInputElement;
+    role: HTMLInputElement;
+
     addContact() {
-        // TODO: Add contact.
+        var { details } = this.props;
+        var contact: PortfolioContact = {
+            accountId: details.portfolio.accountId,
+            portfolioId: details.portfolio.id,
+
+            firstName: this.firstName.value,
+            lastName: this.lastName.value,
+            email: this.email.value,
+            phoneNumber: this.phone.value,
+            role: this.role.value
+        };
+
+        this.props.createPortfolioContact(contact);
     }
 
     render() {
@@ -46,23 +64,23 @@ class AddContactDialog extends React.Component<AddContactDialogProps & StateProp
                         <form>
                             <fieldset className="uk-fieldset">
                                 <div className="uk-margin">
-                                    <input className="uk-input" type="text" placeholder="First Name" />
+                                    <input className="uk-input" type="text" placeholder="First Name" ref={ref => this.firstName = ref} />
                                 </div>
 
                                 <div className="uk-margin">
-                                    <input className="uk-input" type="text" placeholder="Last Name" />
+                                    <input className="uk-input" type="text" placeholder="Last Name" ref={ref => this.lastName = ref}/>
                                 </div>
 
                                 <div className="uk-margin">
-                                    <input className="uk-input" type="text" placeholder="Email" />
+                                    <input className="uk-input" type="text" placeholder="Email" ref={ref => this.email = ref}/>
                                 </div>
 
                                 <div className="uk-margin">
-                                    <input className="uk-input" type="text" placeholder="Phone #" />
+                                    <input className="uk-input" type="text" placeholder="Phone #" ref={ref => this.phone = ref}/>
                                 </div>
 
                                 <div className="uk-margin">
-                                    <input className="uk-input" type="text" placeholder="Role" />
+                                    <input className="uk-input" type="text" placeholder="Role" ref={ref => this.role = ref}/>
                                 </div>
                             </fieldset>
                         </form>
@@ -70,7 +88,7 @@ class AddContactDialog extends React.Component<AddContactDialogProps & StateProp
                 </div>
                 <div className="uk-modal-footer uk-text-right">
                     <button className="uk-button uk-button-default uk-margin-right uk-modal-close" type="button">Cancel</button>
-                    <button className="uk-button uk-button-primary" type="button">Save</button>
+                    <button className="uk-button uk-button-primary uk-modal-close" type="button" onClick={this.addContact}>Save</button>
                 </div>
             </div>)
     }
@@ -78,7 +96,7 @@ class AddContactDialog extends React.Component<AddContactDialogProps & StateProp
 
 const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, AddContactDialogProps> = (dispatch) => {
     return {
-        //addPortfolioContact: (contact: PortfolioContact) => dispatch(addPortfolioContact(contact))        
+        createPortfolioContact: (contact: PortfolioContact) => dispatch(createPortfolioContact(contact))        
     };
 };
   
