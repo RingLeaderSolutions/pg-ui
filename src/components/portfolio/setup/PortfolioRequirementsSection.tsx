@@ -5,6 +5,10 @@ import { MapDispatchToPropsFunction, connect, MapStateToProps } from 'react-redu
 import { ApplicationState } from '../../../applicationState';
 import { PortfolioDetails, PortfolioRequirements } from '../../../model/Models';
 import Spinner from '../../common/Spinner';
+import DatePicker from 'react-datepicker';
+import * as moment from 'moment';
+
+import 'react-datepicker/dist/react-datepicker.css';
 
 //import { updatePortfolioRequirements } from '../../../actions/portfolioActions';
 
@@ -22,10 +26,23 @@ interface DispatchProps {
     //updatePortfolioRequirements: (requirements: PortfolioRequirements) => void;
 }
 
-class PortfolioRequirementsSection extends React.Component<PortfolioRequirementsSectionProps & StateProps & DispatchProps, {}> {
+interface PortfolioRequirementsState {
+    contractStart: moment.Moment;
+}
+
+class PortfolioRequirementsSection extends React.Component<PortfolioRequirementsSectionProps & StateProps & DispatchProps, PortfolioRequirementsState> {
     constructor(){
         super();
+        this.state = {
+            contractStart: moment()
+        }
         this.saveRequirements = this.saveRequirements.bind(this);
+        this.handleContractStartChange = this.handleContractStartChange.bind(this);
+    }
+    handleContractStartChange(date: moment.Moment){
+        this.setState({
+            contractStart: date
+        })
     }
     saveRequirements(){
         //this.updatePortfolioRequirements();
@@ -71,7 +88,10 @@ class PortfolioRequirementsSection extends React.Component<PortfolioRequirements
                                 <div className="uk-margin">
                                     <label className="uk-form-label" data-for="contract-start-input">Contract Start</label>
                                     <div className="uk-form-controls">
-                                        <input className="uk-input" id="contract-start-input" type="text" placeholder="14/01/2018" />
+                                        <DatePicker id="contract-start-input"
+                                                    className="uk-input"
+                                                    selected={this.state.contractStart}
+                                                    onChange={this.handleContractStartChange} />
                                     </div>
                                 </div>
                             </div>
@@ -108,10 +128,10 @@ class PortfolioRequirementsSection extends React.Component<PortfolioRequirements
                             </div>
                         </div>
                         <div className="uk-margin-small uk-float-right">
-                        <button className="uk-button uk-button-primary" type="button" onClick={this.saveRequirements} disabled>
-                            <span className="uk-margin-small-right" data-uk-icon="icon: cog" />
-                            Update
-                        </button>
+                            <button className="uk-button uk-button-primary" type="button" onClick={this.saveRequirements} disabled>
+                                <span className="uk-margin-small-right" data-uk-icon="icon: cog" />
+                                Update
+                            </button>
                         </div>
                     </fieldset>
                 </form>

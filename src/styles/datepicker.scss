@@ -1,0 +1,8 @@
+@import "variables";
+
+// extend the width of the basic datepicker
+.react-datepicker-wrapper,
+.react-datepicker__input-container,
+.react-datepicker__input-container > input {
+    width: 100%;
+}
