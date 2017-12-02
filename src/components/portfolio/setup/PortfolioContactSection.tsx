@@ -5,6 +5,7 @@ import { MapDispatchToPropsFunction, connect, MapStateToProps } from 'react-redu
 import { ApplicationState } from '../../../applicationState';
 import { PortfolioDetails } from '../../../model/Models';
 import Spinner from '../../common/Spinner';
+import AddContactDialog from "./AddContactDialog";
 
 interface PortfolioContactSectionProps {
     details: PortfolioDetails;
@@ -38,7 +39,7 @@ class PortfolioContactSection extends React.Component<PortfolioContactSectionPro
                 <div>
                     <div data-uk-grid>
                         <div className="uk-width-auto@m">
-                            <span data-uk-icon="icon: check; ratio: 1.5"></span>
+                            <span className="icon-standard-cursor" data-uk-icon="icon: check; ratio: 1.5"></span>
                         </div>
                         <div className="uk-width-expand@m">
                             <h3>Contact provided</h3>
@@ -58,15 +59,15 @@ class PortfolioContactSection extends React.Component<PortfolioContactSectionPro
                 <div>
                     <div data-uk-grid>
                         <div className="uk-width-auto@m">
-                            <span data-uk-icon="icon: close; ratio: 1.5"></span>
+                            <span className="icon-standard-cursor" data-uk-icon="icon: close; ratio: 1.5"></span>
                         </div>
                         <div className="uk-width-expand@m">
                             <h3>Requires contact details</h3>
                         </div>
                     </div>
                     <div className="uk-margin-small uk-float-right">
-                        <button className="uk-button uk-button-primary" type="button">
-                            <span className="uk-margin-small-right" data-uk-icon="icon: user" />
+                        <button className="uk-button uk-button-primary" type="button" data-uk-toggle="target: #modal-new-contact">
+                            <span className="uk-margin-small-right icon-standard-cursor" data-uk-icon="icon: user" />
                             Add contact
                         </button>
                     </div>
@@ -76,6 +77,10 @@ class PortfolioContactSection extends React.Component<PortfolioContactSectionPro
         return (
             <div className="uk-card uk-card-default uk-card-body">
                 {content}
+
+                <div id="modal-new-contact" data-uk-modal="center: true">
+                    <AddContactDialog details={this.props.details} />
+                </div>
             </div>)
     }
 }

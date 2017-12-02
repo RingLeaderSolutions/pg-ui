@@ -35,7 +35,7 @@ class PortfolioDocumentationSection extends React.Component<PortfolioDocumentati
             loaContent = (
                 <div data-uk-grid>
                     <div className="uk-width-auto@m">
-                        <span data-uk-icon="icon: check; ratio: 1.5"></span>
+                        <span className="icon-standard-cursor" data-uk-icon="icon: check; ratio: 1.5"></span>
                     </div>
                     <div className="uk-width-expand@m">
                         <h3>Letter of Authority provided</h3>
@@ -43,7 +43,7 @@ class PortfolioDocumentationSection extends React.Component<PortfolioDocumentati
                     <div className="uk-width-auto@m">
                         <div className="uk-margin-small uk-float-right">
                             <button className="uk-button uk-button-default" type="button">
-                                <span className="uk-margin-small-right" data-uk-icon="icon: info" />
+                                <span className="uk-margin-small-right icon-standard-cursor" data-uk-icon="icon: info" />
                                 View
                             </button>
                         </div>  
@@ -54,7 +54,7 @@ class PortfolioDocumentationSection extends React.Component<PortfolioDocumentati
             loaContent = (
                 <div data-uk-grid>
                     <div className="uk-width-auto@m">
-                        <span data-uk-icon="icon: close; ratio: 1.5"></span>
+                        <span className="icon-standard-cursor" data-uk-icon="icon: close; ratio: 1.5"></span>
                     </div>
                     <div className="uk-width-expand@m">
                         <h3>Requires Letter of Authority</h3>
@@ -62,7 +62,7 @@ class PortfolioDocumentationSection extends React.Component<PortfolioDocumentati
                     <div className="uk-width-auto@m">
                         <div className="uk-margin-small uk-float-right">
                             <button className="uk-button uk-button-primary" type="button">
-                                <span className="uk-margin-small-right" data-uk-icon="icon: upload" />
+                                <span className="icon-standard-cursor uk-margin-small-right" data-uk-icon="icon: upload" />
                                 Upload LOA
                             </button>
                         </div>
@@ -76,7 +76,7 @@ class PortfolioDocumentationSection extends React.Component<PortfolioDocumentati
             siteListContent = (
                 <div data-uk-grid>
                     <div className="uk-width-auto@m">
-                        <span data-uk-icon="icon: check; ratio: 1.5"></span>
+                        <span className="icon-standard-cursor" data-uk-icon="icon: check; ratio: 1.5"></span>
                     </div>
                     <div className="uk-width-expand@m">
                         <h3>Site list provided</h3>
@@ -87,7 +87,7 @@ class PortfolioDocumentationSection extends React.Component<PortfolioDocumentati
             siteListContent = (
                 <div data-uk-grid>
                     <div className="uk-width-auto@m">
-                        <span data-uk-icon="icon: close; ratio: 1.5"></span>
+                        <span className="icon-standard-cursor" data-uk-icon="icon: close; ratio: 1.5"></span>
                     </div>
                     <div className="uk-width-expand@m">
                         <h3>Requires Site List Upload</h3>
@@ -95,7 +95,7 @@ class PortfolioDocumentationSection extends React.Component<PortfolioDocumentati
                     <div className="uk-width-auto@m">
                         <div className="uk-margin-small uk-float-right">
                             <button className="uk-button uk-button-primary" type="button">
-                                <span className="uk-margin-small-right" data-uk-icon="icon: upload" />
+                                <span className="uk-margin-small-right icon-standard-cursor" data-uk-icon="icon: upload" />
                                 Upload Site List
                             </button>
                         </div>

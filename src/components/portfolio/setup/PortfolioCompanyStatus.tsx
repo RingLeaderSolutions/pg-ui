@@ -65,7 +65,7 @@ class PortfolioCompanyStatus extends React.Component<PortfolioCompanyStatusProps
                         </div>
                         <div className="uk-margin-small uk-float-right">
                         <button className="uk-button uk-button-primary" type="button" onClick={this.saveCompanyStatus} disabled>
-                            <span className="uk-margin-small-right" data-uk-icon="icon: cog" />
+                            <span className="uk-margin-small-right icon-standard-cursor"  data-uk-icon="icon: cog" />
                             Update
                         </button>
                         </div>
