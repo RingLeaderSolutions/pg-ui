@@ -9,6 +9,7 @@ import Spinner from '../../common/Spinner';
 import { getPortfolioDetails } from '../../../actions/portfolioActions';
 import PortfolioRequirementsSection from "./PortfolioRequirementsSection";
 import PortfolioCompanyStatus from "./PortfolioCompanyStatus";
+import PortfolioContactSection from "./PortfolioContactSection";
 
 interface PortfolioSetupProps {
     portfolio: Portfolio;
@@ -46,7 +47,8 @@ class PortfolioSetup extends React.Component<PortfolioSetupProps & StateProps & 
         return (
             <div className="content-inner-portfolio">
                 <h1> {details.portfolio.title}</h1>
-                <div><PortfolioRequirementsSection details={details} /></div>
+                <div className="uk-margin"><PortfolioContactSection details={details} /></div>
+                <div className="uk-margin"><PortfolioRequirementsSection details={details} /></div>
                 <div className="uk-margin"><PortfolioCompanyStatus details={details} /></div>
             </div>)
     }
