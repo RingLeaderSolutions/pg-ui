@@ -107,7 +107,7 @@ class PortfolioRequirementsSection extends React.Component<PortfolioRequirements
                                 </div>
                             </div>
                         </div>
-                        <div className="uk-margin uk-float-right">
+                        <div className="uk-margin-small uk-float-right">
                         <button className="uk-button uk-button-primary" type="button" onClick={this.saveRequirements} disabled>
                             <span className="uk-margin-small-right" data-uk-icon="icon: cog" />
                             Update
