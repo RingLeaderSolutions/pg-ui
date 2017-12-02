@@ -3,7 +3,7 @@ import Header from "../../common/Header";
 import ErrorMessage from "../../common/ErrorMessage";
 import { MapDispatchToPropsFunction, connect, MapStateToProps } from 'react-redux';
 import { ApplicationState } from '../../../applicationState';
-import { PortfolioDetails, PortfolioRequirements } from '../../../model/Models';
+import { PortfolioDetails } from '../../../model/Models';
 import Spinner from '../../common/Spinner';
 
 interface PortfolioContactSectionProps {
@@ -48,7 +48,7 @@ class PortfolioContactSection extends React.Component<PortfolioContactSectionPro
                         <div>{contact.firstName}</div>
                         <div>{contact.lastName}</div>
                         <div>{contact.email}</div>
-                        <div>{contact.firstName}</div>
+                        <div>{contact.phoneNumber}</div>
                     </div>
                 </div>
             )
@@ -56,9 +56,13 @@ class PortfolioContactSection extends React.Component<PortfolioContactSectionPro
         else {
             content = (
                 <div>
-                    <div>
-                        <span data-uk-icon="icon: close; ratio: 3.5"></span>
-                        <h3>Requires contact details</h3>
+                    <div data-uk-grid>
+                        <div className="uk-width-auto@m">
+                            <span data-uk-icon="icon: close; ratio: 1.5"></span>
+                        </div>
+                        <div className="uk-width-expand@m">
+                            <h3>Requires contact details</h3>
+                        </div>
                     </div>
                     <div className="uk-margin-small uk-float-right">
                         <button className="uk-button uk-button-primary" type="button">

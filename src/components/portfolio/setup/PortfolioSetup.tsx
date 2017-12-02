@@ -10,6 +10,7 @@ import { getPortfolioDetails } from '../../../actions/portfolioActions';
 import PortfolioRequirementsSection from "./PortfolioRequirementsSection";
 import PortfolioCompanyStatus from "./PortfolioCompanyStatus";
 import PortfolioContactSection from "./PortfolioContactSection";
+import PortfolioDocumentationSection from "./PortfolioDocumentationSection";
 
 interface PortfolioSetupProps {
     portfolio: Portfolio;
@@ -46,9 +47,18 @@ class PortfolioSetup extends React.Component<PortfolioSetupProps & StateProps & 
         var { details } = this.props;
         return (
             <div className="content-inner-portfolio">
-                <div className="uk-margin"><PortfolioContactSection details={details} /></div>
+                <div className="uk-grid uk-child-width-expand@s uk-grid-match" data-uk-grid>
+                    <div>
+                        <PortfolioContactSection details={details} />
+                    </div>
+                    <div>
+                        <PortfolioCompanyStatus details={details} />
+                    </div>
+                </div>
+                
                 <div className="uk-margin"><PortfolioRequirementsSection details={details} /></div>
-                <div className="uk-margin"><PortfolioCompanyStatus details={details} /></div>
+                
+                <div className="uk-margin"><PortfolioDocumentationSection details={details} /></div>
             </div>)
     }
 }
