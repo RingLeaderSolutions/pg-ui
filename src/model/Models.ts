@@ -1,3 +1,4 @@
+// Data model
 export { Portfolio,
          MpanSummary,
          PortfolioHistoryEntry } from './Portfolio';
@@ -33,3 +34,8 @@ import * as DocumentGroup from "./DocumentGroup";
 export { DocumentType };
 export { DocumentStatus };
 export { DocumentGroup };
+
+
+// Application data model
+
+export { PortfolioCreationStage } from './app/PortfolioCreationStage';

@@ -189,6 +189,48 @@ export function clearCompany(){
     };
 }
 
+export function selectCompany(){
+    return (dispatch: Dispatch<any>) => {
+        dispatch( { type: types.COMPANY_SEARCH_SELECTED });
+    };
+}
+
+export function createAccount(company: CompanyInfo){
+    return (dispatch: Dispatch<any>) => {
+        let searchPromise = ApiService.createAccount(company);
+        dispatch( { type: types.CREATE_ACCOUNT_WORKING });
+
+        makeApiRequest(dispatch,
+            searchPromise,
+            201, 
+            data => {
+                return { type: types.CREATE_ACCOUNT_SUCCESSFUL, data};
+                
+            }, 
+            error => {
+                return { type: types.CREATE_ACCOUNT_FAILED, errorMessage: error };
+            });
+    };
+}
+
+export function createPortfolio(accountId: string, company: CompanyInfo){
+    return (dispatch: Dispatch<any>) => {
+        let searchPromise = ApiService.createPortfolio(accountId, company);
+        dispatch( { type: types.CREATE_PORTFOLIO_WORKING });
+
+        makeApiRequest(dispatch,
+            searchPromise,
+            200, 
+            data => {
+                return { type: types.CREATE_PORTFOLIO_SUCCESSFUL, data: data as PortfolioDetails};
+                
+            }, 
+            error => {
+                return { type: types.CREATE_PORTFOLIO_FAILED, errorMessage: error };
+            });
+    };
+}
+
 export function createPortfolioContact(contact: PortfolioContact){
     return (dispatch: Dispatch<any>) => {
         let searchPromise = ApiService.updatePortfolioContact(contact);

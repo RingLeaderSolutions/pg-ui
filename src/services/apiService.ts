@@ -3,6 +3,7 @@ import axios from 'axios';
 import { Portfolio, CompanyInfo, PortfolioContact, PortfolioRequirements } from "../model/Models";
 import { FakeApiService } from './fakeApiService';
 import StorageService from './storageService';
+import * as moment from 'moment';
 
 export interface IApiService {
   getAllPortfolios(): Promise<AxiosResponse>;
@@ -35,7 +36,7 @@ export class ApiService implements IApiService {
 
     constructor(){
         this.baseApiUri = appConfig.baseApiUri;
-        this.hierarchyApiUri = appConfig.heirarchyApiUri;
+        this.hierarchyApiUri = appConfig.hierarchyApiUri;
         this.storage = new StorageService();
 
         this.teamId = "989";
@@ -128,6 +129,8 @@ export class ApiService implements IApiService {
     }
 
     createAccount(company: CompanyInfo) {
+        let dateToFormat = moment(company.incorporationDate, "DD/MM/YYYY");
+        let incorporationDate = dateToFormat.format();
         let account = {
             companyName: company.companyName,
             companyRegistrationNumber: company.companyNumber,
@@ -135,7 +138,7 @@ export class ApiService implements IApiService {
             postcode: company.postcode,
             countryOfOrigin: company.countryOfOrigin,
             // TODO: change format of incorporationdate
-            incorporationDate: company.incorporationDate,
+            incorporationDate: incorporationDate,
             companyStatus: company.companyStatus,
 
             // accountNumber: null,

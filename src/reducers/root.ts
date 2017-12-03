@@ -17,10 +17,17 @@ const dashboardReducer: Reducer<DashboardState> = combineReducers<DashboardState
 // Portfolios - contains all portfolios and manages creation state
 import { CreatePortfolioState } from './portfolios/create/CreatePortfolioState';
 import companySearchReducer from './portfolios/create/companySearchReducer';
+import createAccountReducer from './portfolios/create/createAccountReducer';
+import createPortfolioReducer from './portfolios/create/createPortfolioReducer';
+import creationStageReducer from './portfolios/create/creationStageReducer';
 
-const createPortfolioReducer: Reducer<CreatePortfolioState> = combineReducers<CreatePortfolioState>({
-    company: companySearchReducer
-})
+const portfolioCreationReducer: Reducer<CreatePortfolioState> = combineReducers<CreatePortfolioState>({
+    stage: creationStageReducer,
+    
+    company: companySearchReducer,
+    account: createAccountReducer,
+    portfolio: createPortfolioReducer
+});
 
 import allPortfoliosReducer from './portfolios/allPortfoliosReducer';
 import { AllPortfoliosState } from './portfolios/allPortfoliosReducer';
@@ -28,8 +35,8 @@ import { PortfoliosState } from './portfolios/PortfoliosState';
 
 const portfoliosReducer: Reducer<PortfoliosState> = combineReducers<PortfoliosState>({
     all: allPortfoliosReducer,
-    create: createPortfolioReducer
-})
+    create: portfolioCreationReducer
+});
 
 // Combine portfolio reducers to form the PortfolioState
 import { PortfolioState } from './portfolio/PortfolioState';
