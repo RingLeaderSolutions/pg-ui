@@ -2,6 +2,7 @@ import { AxiosResponse } from 'axios';
 import axios from 'axios';
 import { Portfolio,
          PortfolioContact,
+         PortfolioRequirements,
          DashboardPortfolioSummary,
          DashboardPortfolioTimeline,
          DashboardPortfolioStatus,
@@ -318,6 +319,10 @@ export class FakeApiService implements IApiService {
     }
 
     updatePortfolioContact(contact: PortfolioContact){
+        return OK();
+    }
+
+    updatePortfolioRequirements(requirements: PortfolioRequirements){
         return OK();
     }
 }

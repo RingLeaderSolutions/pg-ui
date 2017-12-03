@@ -13,6 +13,7 @@ import * as types from "./actionTypes";
 import { makeApiRequest } from "./Common";
 
 import { Dispatch } from 'redux';
+import { PortfolioRequirements } from "../model/PortfolioDetails";
 
 export function getAllPortfolios(){
     return (dispatch: Dispatch<any>) => {
@@ -202,6 +203,24 @@ export function createPortfolioContact(contact: PortfolioContact){
             }, 
             error => {
                 return { type: types.CREATE_PORTFOLIO_CONTACT_FAILED, errorMessage: error };
+            });
+    };
+}
+
+export function updatePortfolioRequirements(requirements: PortfolioRequirements){
+    return (dispatch: Dispatch<any>) => {
+        let searchPromise = ApiService.updatePortfolioRequirements(requirements);
+        dispatch({ type: types.UPDATE_PORTFOLIO_REQUIREMENTS_WORKING });
+
+        makeApiRequest(dispatch,
+            searchPromise,
+            200, 
+            data => {
+                return { type: types.UPDATE_PORTFOLIO_REQUIREMENTS_SUCCESSFUL, data: null};
+                
+            }, 
+            error => {
+                return { type: types.UPDATE_PORTFOLIO_REQUIREMENTS_FAILED, errorMessage: error };
             });
     };
 }

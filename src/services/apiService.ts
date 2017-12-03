@@ -1,6 +1,6 @@
 import { AxiosResponse } from 'axios';
 import axios from 'axios';
-import { Portfolio, CompanyInfo, PortfolioContact } from "../model/Models";
+import { Portfolio, CompanyInfo, PortfolioContact, PortfolioRequirements } from "../model/Models";
 import { FakeApiService } from './fakeApiService';
 import StorageService from './storageService';
 
@@ -16,6 +16,7 @@ export interface IApiService {
   createAccount(company: CompanyInfo) : Promise<AxiosResponse>;
   createPortfolio(accountId: string, company: CompanyInfo): Promise<AxiosResponse>;
   updatePortfolioContact(contact: PortfolioContact): Promise<AxiosResponse>;
+  updatePortfolioRequirements(requirements: PortfolioRequirements): Promise<AxiosResponse>;
   
   getPortfolioMpanSummary(portfolioId: string): Promise<AxiosResponse>;
   getPortfolioHistory(portfolioId: string): Promise<AxiosResponse>;
@@ -81,16 +82,21 @@ export class ApiService implements IApiService {
         };
     }
 
-    getAllPortfolios() {
+    getAllPortfolios(){
         return axios.get(`${this.baseApiUri}/portman-web/portfolios/team/${this.teamId}`, this.getRequestConfig());
     }
 
-    getPortfolioDetails(portfolioId: string) {
+    getPortfolioDetails(portfolioId: string){
         return axios.get(`${this.baseApiUri}/portman-web/portfolio/details/${portfolioId}`, this.getRequestConfig());
     }
 
     updatePortfolioContact(contact: PortfolioContact){
-        return axios.post(`${this.baseApiUri}/portman-web/portfolio/contact`, contact, this.getRequestConfig());                                
+        return axios.post(`${this.baseApiUri}/portman-web/portfolio/contact`, contact, this.getRequestConfig());
+    }
+
+    updatePortfolioRequirements(requirements: PortfolioRequirements){
+        let portfolioId = requirements.portfolioId;
+        return axios.post(`${this.baseApiUri}/portman-web/portfolio/requirements/${portfolioId}`, requirements, this.getRequestConfig());
     }
 
     getDashboardSummary(){

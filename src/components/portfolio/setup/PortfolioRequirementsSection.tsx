@@ -10,7 +10,7 @@ import * as moment from 'moment';
 
 import 'react-datepicker/dist/react-datepicker.css';
 
-//import { updatePortfolioRequirements } from '../../../actions/portfolioActions';
+import { updatePortfolioRequirements } from '../../../actions/portfolioActions';
 
 interface PortfolioRequirementsSectionProps {
     details: PortfolioDetails;
@@ -23,7 +23,7 @@ interface StateProps {
 }
 
 interface DispatchProps {
-    //updatePortfolioRequirements: (requirements: PortfolioRequirements) => void;
+    updatePortfolioRequirements: (requirements: PortfolioRequirements) => void;
 }
 
 interface PortfolioRequirementsState {
@@ -39,14 +39,40 @@ class PortfolioRequirementsSection extends React.Component<PortfolioRequirements
         this.saveRequirements = this.saveRequirements.bind(this);
         this.handleContractStartChange = this.handleContractStartChange.bind(this);
     }
+
+    paymentTerms: HTMLSelectElement;
+    product: HTMLSelectElement;
+    contractLength: HTMLSelectElement;
+    greenPercentage: HTMLInputElement;
+    gas: HTMLInputElement;
+    electricity: HTMLInputElement;
+
     handleContractStartChange(date: moment.Moment){
         this.setState({
             contractStart: date
-        })
+        });
     }
+
     saveRequirements(){
-        //this.updatePortfolioRequirements();
+        let { details } = this.props;
+        let requirements: PortfolioRequirements = {
+            portfolioId: details.portfolio.id,
+
+            paymentTerms: Number(this.paymentTerms.value),
+            durationMonths: Number(this.contractLength.value),
+            greenPercentage: Number(this.greenPercentage.value),
+
+            electricityRequired: this.electricity.checked,
+            gasRequired: this.gas.checked,
+            product: this.product.value,
+            startDate: this.state.contractStart.unix().toString(),
+            // TODO: stodId
+            stodId: "day/night"
+        };
+
+        this.props.updatePortfolioRequirements(requirements);
     }
+    
     render() {
         if(this.props.error){
             return (<ErrorMessage content={this.props.errorMessage} />);
@@ -65,7 +91,7 @@ class PortfolioRequirementsSection extends React.Component<PortfolioRequirements
                                 <div className="uk-margin">
                                     <label className="uk-form-label" data-for="payment-terms-select">Payment Terms</label>
                                     <div className="uk-form-controls">
-                                        <select className="uk-select" id="payment-terms-select">
+                                        <select className="uk-select" id="payment-terms-select" ref={ref => this.paymentTerms = ref}>
                                             <option>7</option>
                                             <option>14</option>
                                             <option>21</option>
@@ -77,7 +103,7 @@ class PortfolioRequirementsSection extends React.Component<PortfolioRequirements
                                 <div className="uk-margin">
                                     <label className="uk-form-label" data-for="product-select">Product</label>
                                     <div className="uk-form-controls">
-                                        <select className="uk-select" id="product-select">
+                                        <select className="uk-select" id="product-select" ref={ref => this.product = ref}>
                                             <option>Fixed</option>
                                             <option>Semi Flex</option>
                                             <option>Flex</option>
@@ -98,24 +124,24 @@ class PortfolioRequirementsSection extends React.Component<PortfolioRequirements
 
                             <div className="">
                                 <div className="uk-margin">
-                                    <label><input className="uk-checkbox" type="checkbox" checked /> Electricity</label>
+                                    <label><input className="uk-checkbox" type="checkbox" checked ref={ref => this.electricity = ref}/> Electricity</label>
                                 </div>
 
                                 <div className="uk-margin">
-                                    <label><input className="uk-checkbox" type="checkbox" /> Gas</label>
+                                    <label><input className="uk-checkbox" type="checkbox" ref={ref => this.gas = ref}/> Gas</label>
                                 </div>
 
                                 <div className="uk-margin">
                                     <label className="uk-form-label" data-for="green-perc-input">Green %</label>
                                     <div className="uk-form-controls">
-                                        <input className="uk-input" id="green-perc-input" type="text" placeholder="20" />
+                                        <input className="uk-input" id="green-perc-input" type="text" placeholder="20" ref={ref => this.greenPercentage = ref} />
                                     </div>
                                 </div>
 
                                 <div className="uk-margin">
                                     <label className="uk-form-label" data-for="contract-length-select">Length</label>
                                     <div className="uk-form-controls">
-                                        <select className="uk-select" id="contract-length-select">
+                                        <select className="uk-select" id="contract-length-select" ref={ref => this.contractLength = ref}>
                                             <option>6</option>
                                             <option>12</option>
                                             <option>18</option>
@@ -128,7 +154,7 @@ class PortfolioRequirementsSection extends React.Component<PortfolioRequirements
                             </div>
                         </div>
                         <div className="uk-margin-small uk-float-right">
-                            <button className="uk-button uk-button-primary" type="button" onClick={this.saveRequirements} disabled>
+                            <button className="uk-button uk-button-primary" type="button" onClick={this.saveRequirements}>
                                 <span className="uk-margin-small-right" data-uk-icon="icon: cog" />
                                 Update
                             </button>
@@ -141,7 +167,7 @@ class PortfolioRequirementsSection extends React.Component<PortfolioRequirements
 
 const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, PortfolioRequirementsSectionProps> = (dispatch) => {
     return {
-        //updatePortfolioRequirements: (requirements: PortfolioRequirements) => dispatch(updatePortfolioRequirements(requirements))        
+        updatePortfolioRequirements: (requirements: PortfolioRequirements) => dispatch(updatePortfolioRequirements(requirements))        
     };
 };
   

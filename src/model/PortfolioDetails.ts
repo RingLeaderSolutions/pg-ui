@@ -23,7 +23,7 @@ export interface PortfolioSummary {
 }
 
 export interface PortfolioRequirements {
-    id: string;
+    id?: string;
     portfolioId: string;
     product: string;
     paymentTerms: number;
