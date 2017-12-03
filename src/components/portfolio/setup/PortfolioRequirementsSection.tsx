@@ -72,7 +72,7 @@ class PortfolioRequirementsSection extends React.Component<PortfolioRequirements
 
         this.props.updatePortfolioRequirements(requirements);
     }
-    
+
     render() {
         if(this.props.error){
             return (<ErrorMessage content={this.props.errorMessage} />);
@@ -124,7 +124,7 @@ class PortfolioRequirementsSection extends React.Component<PortfolioRequirements
 
                             <div className="">
                                 <div className="uk-margin">
-                                    <label><input className="uk-checkbox" type="checkbox" checked ref={ref => this.electricity = ref}/> Electricity</label>
+                                    <label><input className="uk-checkbox" type="checkbox" ref={ref => this.electricity = ref}/> Electricity</label>
                                 </div>
 
                                 <div className="uk-margin">
