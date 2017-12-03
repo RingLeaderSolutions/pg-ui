@@ -146,7 +146,7 @@ export class ApiService implements IApiService {
             isVATEligible: true,
             isRegisteredCharity: false,
             hasFiTException: false,
-            hasCCLException: false
+            hasCCLException: false,
 
             creditRating: "A+"
         };
