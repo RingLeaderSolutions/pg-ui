@@ -49,7 +49,7 @@ class PortfolioCompanyStatus extends React.Component<PortfolioCompanyStatusProps
                     <fieldset className="uk-fieldset">
                         <h3>Company Status</h3>
                         <div className="uk-margin">
-                            <label><input className="uk-checkbox" type="checkbox" checked /> Registered Charity</label>
+                            <label><input className="uk-checkbox" type="checkbox" /> Registered Charity</label>
                         </div>
 
                         <div className="uk-margin">

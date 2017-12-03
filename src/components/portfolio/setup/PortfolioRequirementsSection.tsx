@@ -33,6 +33,8 @@ interface PortfolioRequirementsState {
 class PortfolioRequirementsSection extends React.Component<PortfolioRequirementsSectionProps & StateProps & DispatchProps, PortfolioRequirementsState> {
     constructor(){
         super();
+        // var {requirements} = this.props.details;
+        // var contractStart = requirements == null ? moment() : moment(requirements.startDate);
         this.state = {
             contractStart: moment()
         }
@@ -81,17 +83,35 @@ class PortfolioRequirementsSection extends React.Component<PortfolioRequirements
             return (<Spinner />);
         }
         var { details } = this.props;
+
+        // default values if not yet provided
+        var { requirements, portfolio } = details;
+        if(requirements == null){
+            requirements = {
+                portfolioId: portfolio.id,
+                durationMonths: 0,
+                product: "",
+                electricityRequired: true,
+                gasRequired: false,
+                stodId: "day/night",
+                paymentTerms: 0,
+                greenPercentage: 0,
+                startDate: this.state.contractStart.unix().toString()
+            }
+        }
         return (
             <div className="uk-card uk-card-default uk-card-body">
                 <form>
                     <fieldset className="uk-fieldset">
                         <h3>Portfolio Requirements</h3>
                         <div className="uk-grid uk-child-width-expand" data-uk-grid>
-                            <div className="">
+                            <div>
                                 <div className="uk-margin">
                                     <label className="uk-form-label" data-for="payment-terms-select">Payment Terms</label>
                                     <div className="uk-form-controls">
-                                        <select className="uk-select" id="payment-terms-select" ref={ref => this.paymentTerms = ref}>
+                                        <select className="uk-select" id="payment-terms-select" ref={ref => this.paymentTerms = ref} 
+                                                defaultValue={requirements.paymentTerms.toString()}>
+                                            <option value="0" disabled>Select terms</option>
                                             <option>7</option>
                                             <option>14</option>
                                             <option>21</option>
@@ -103,7 +123,9 @@ class PortfolioRequirementsSection extends React.Component<PortfolioRequirements
                                 <div className="uk-margin">
                                     <label className="uk-form-label" data-for="product-select">Product</label>
                                     <div className="uk-form-controls">
-                                        <select className="uk-select" id="product-select" ref={ref => this.product = ref}>
+                                        <select className="uk-select" id="product-select" ref={ref => this.product = ref}
+                                                defaultValue={requirements.product.toString()}>
+                                            <option value="" disabled>Select product</option>
                                             <option>Fixed</option>
                                             <option>Semi Flex</option>
                                             <option>Flex</option>
@@ -117,31 +139,33 @@ class PortfolioRequirementsSection extends React.Component<PortfolioRequirements
                                         <DatePicker id="contract-start-input"
                                                     className="uk-input"
                                                     selected={this.state.contractStart}
-                                                    onChange={this.handleContractStartChange} />
+                                                    onChange={this.handleContractStartChange}/>
                                     </div>
                                 </div>
                             </div>
 
-                            <div className="">
+                            <div>
                                 <div className="uk-margin">
-                                    <label><input className="uk-checkbox" type="checkbox" ref={ref => this.electricity = ref}/> Electricity</label>
+                                    <label><input className="uk-checkbox" type="checkbox" ref={ref => this.electricity = ref} defaultChecked={requirements.electricityRequired}/> Electricity</label>
                                 </div>
 
                                 <div className="uk-margin">
-                                    <label><input className="uk-checkbox" type="checkbox" ref={ref => this.gas = ref}/> Gas</label>
+                                    <label><input className="uk-checkbox" type="checkbox" ref={ref => this.gas = ref} defaultChecked={requirements.gasRequired}/> Gas</label>
                                 </div>
 
                                 <div className="uk-margin">
                                     <label className="uk-form-label" data-for="green-perc-input">Green %</label>
                                     <div className="uk-form-controls">
-                                        <input className="uk-input" id="green-perc-input" type="text" placeholder="20" ref={ref => this.greenPercentage = ref} />
+                                        <input className="uk-input" id="green-perc-input" type="text" placeholder="20" ref={ref => this.greenPercentage = ref} defaultValue={requirements.greenPercentage.toString()}/>
                                     </div>
                                 </div>
 
                                 <div className="uk-margin">
                                     <label className="uk-form-label" data-for="contract-length-select">Length</label>
                                     <div className="uk-form-controls">
-                                        <select className="uk-select" id="contract-length-select" ref={ref => this.contractLength = ref}>
+                                        <select className="uk-select" id="contract-length-select" ref={ref => this.contractLength = ref} 
+                                                defaultValue={requirements.durationMonths.toString()}>
+                                            <option value="0" disabled>Select length</option>                                            
                                             <option>6</option>
                                             <option>12</option>
                                             <option>18</option>
