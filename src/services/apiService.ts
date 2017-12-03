@@ -143,6 +143,11 @@ export class ApiService implements IApiService {
 
             // accountNumber: null,
             // contact: null,
+            isVATEligible: true,
+            isRegisteredCharity: false,
+            hasFiTException: false,
+            hasCCLException: false
+
             creditRating: "A+"
         };
         return axios.post(`${this.hierarchyApiUri}/api/Account`, account, this.getRequestConfig());                        
