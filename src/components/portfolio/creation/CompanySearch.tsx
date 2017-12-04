@@ -105,7 +105,7 @@ class CompanySearch extends React.Component<DispatchProps & StateProps, {}> {
         }
 
         return (
-            <div className="uk-modal-dialog">
+            <div>
                 <button className="uk-modal-close-default" type="button" data-uk-close></button>
                 <div className="uk-modal-header">
                     <h2 className="uk-modal-title">New Prospect</h2>
