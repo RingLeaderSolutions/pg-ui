@@ -162,7 +162,6 @@ export class ApiService implements IApiService {
     }
 
     createPortfolio(accountId: string, company: CompanyInfo){
-        console.log(accountId);
         let portfolio = {
             title: company.companyName,
             accountId,
