@@ -4,6 +4,7 @@ var appConfig = {
     signalRUri: 'http://localhost:51891/NotificationServiceHub',
     //signalRUri: 'http://portfoliogenerationnotificationservice.azurewebsites.net/NotificationServiceHub',
     hierarchyApiUri: 'http://localhost:60258',
+    uploadApiUri: 'http://localhost:60564',
     auth0_clientId: 'BpcgVW1USg0wspNuWgJNrJIVqzQUZ2wa',
     auth0_domain: 'ringleader.eu.auth0.com',
     auth0_callbackUrl: 'http://localhost:8585/login_complete',

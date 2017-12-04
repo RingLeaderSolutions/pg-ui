@@ -309,3 +309,21 @@ export function updatePortfolioRequirements(requirements: PortfolioRequirements)
             });
     };
 }
+
+export function uploadLetterOfAuthority(portfolioId: string, file: Blob){
+    return (dispatch: Dispatch<any>) => {
+        let updatePromise = ApiService.uploadLoa(portfolioId, file);
+        dispatch({ type: types.UPLOAD_LOA_WORKING });
+
+        makeApiRequest(dispatch,
+            updatePromise,
+            200, 
+            data => {
+                return { type: types.UPLOAD_LOA_SUCCESSFUL, data: null};
+                
+            }, 
+            error => {
+                return { type: types.UPLOAD_LOA_FAILED, errorMessage: error };
+            });
+    };
+}

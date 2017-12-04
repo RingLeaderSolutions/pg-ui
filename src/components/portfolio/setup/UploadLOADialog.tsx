@@ -7,7 +7,7 @@ import { PortfolioDetails, PortfolioContact } from '../../../model/Models';
 import Spinner from '../../common/Spinner';
 import { FormEvent } from "react";
 
-//import { uploadLoa } from '../../../actions/portfolioActions';
+import { uploadLetterOfAuthority } from '../../../actions/portfolioActions';
 
 interface UploadLOADialogProps {
     details: PortfolioDetails;
@@ -20,11 +20,11 @@ interface StateProps {
 }
 
 interface DispatchProps {
-    //uploadLoa: (file: any) => void;
+    uploadLetterOfAuthority: (portfolioId: string, file: Blob) => void;
 }
 
 interface UploadLOAState {
-    file: File;
+    file: Blob;
 }
 
 class UploadLOADialog extends React.Component<UploadLOADialogProps & StateProps & DispatchProps, UploadLOAState> {
@@ -39,7 +39,8 @@ class UploadLOADialog extends React.Component<UploadLOADialogProps & StateProps 
     }
     
     upload() {
-        //this.props.uploadLoa();
+        var portfolioId = this.props.details.portfolio.id;
+        this.props.uploadLetterOfAuthority(portfolioId, this.state.file);
     }
 
     onFileChosen(e: any){
@@ -79,7 +80,7 @@ class UploadLOADialog extends React.Component<UploadLOADialogProps & StateProps 
 
 const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, UploadLOADialogProps> = (dispatch) => {
     return {
-        //uploadLoa: (file: any) => dispatch(uploadLoa(file))        
+        uploadLetterOfAuthority: (portfolioId: string, file: Blob) => dispatch(uploadLetterOfAuthority(portfolioId, file))        
     };
 };
   

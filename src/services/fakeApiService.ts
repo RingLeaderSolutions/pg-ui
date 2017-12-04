@@ -353,6 +353,10 @@ export class FakeApiService implements IApiService {
     updatePortfolioRequirements(requirements: PortfolioRequirements){
         return OK();
     }
+
+    uploadLoa(portfolioId: string, file: Blob){
+        return OK();
+    }
 }
 
 export default new FakeApiService();
