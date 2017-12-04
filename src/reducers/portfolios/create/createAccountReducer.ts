@@ -1,6 +1,7 @@
 import * as types from '../../../actions/actionTypes';
 import { reduceReducers, requestResponseReducer } from '../../common';
 import { RequestState, idleInitialRequestState } from '../../RequestState';
+import { clearPortfolioCreation } from '../../../actions/portfolioActions';
 
 export interface AccountCreationState extends RequestState {
     value: string;
@@ -20,4 +21,16 @@ const createAccountReducer = requestResponseReducer(
     }
 );
 
-export default reduceReducers((state = idleInitialRequestState) => state, createAccountReducer);
+const clearCreationReducer = (state: AccountCreationState, action: any) => {
+    switch(action.type){
+        case types.CLEAR_PORTFOLIO_CREATION:
+          return {
+              ...state,
+              value: null
+          }
+        default:
+          return state;
+      }
+};
+
+export default reduceReducers((state = idleInitialRequestState) => state, createAccountReducer, clearPortfolioCreation);

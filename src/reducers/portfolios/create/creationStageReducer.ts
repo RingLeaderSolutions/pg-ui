@@ -6,6 +6,10 @@ export interface CreationStageState {
     stage: PortfolioCreationStage;
 }
 
+// This reducer is responsible for maintaining some composite request based state
+// based on the progression through the portfolio creation screen.
+// e.g. User searches for company -> Selects company (agrees to create) 
+//      -> Account is created -> Portfolio is created
 const creationStageReducer = (state: CreationStageState, action: any) => {
     switch(action.type){
         case types.COMPANY_SEARCH_SELECTED:
@@ -22,6 +26,11 @@ const creationStageReducer = (state: CreationStageState, action: any) => {
           return {
               ...state,
               stage: PortfolioCreationStage.Complete
+          };
+        case types.CLEAR_PORTFOLIO_CREATION:
+          return {
+              ...state,
+              stage: PortfolioCreationStage.CompanySearch
           };
         default:
           return state;

@@ -231,6 +231,12 @@ export function createPortfolio(accountId: string, company: CompanyInfo){
     };
 }
 
+export function clearPortfolioCreation(){
+    return (dispatch: Dispatch<any>) => {
+        dispatch( { type: types.CLEAR_PORTFOLIO_CREATION });
+    };
+}
+
 export function createPortfolioContact(contact: PortfolioContact){
     return (dispatch: Dispatch<any>) => {
         let searchPromise = ApiService.updatePortfolioContact(contact);

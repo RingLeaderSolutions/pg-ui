@@ -23,6 +23,7 @@ const searchCompanyReducer = requestResponseReducer(
 
 const clearCompanyReducer = (state: CompanySearchState, action: any) => {
     switch(action.type){
+        case types.CLEAR_PORTFOLIO_CREATION:
         case types.COMPANY_SEARCH_CLEAR:
           return {
               ...state,

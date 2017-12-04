@@ -6,7 +6,7 @@ import Spinner from '../../common/Spinner';
 
 import { PortfolioCreationStage } from '../../../model/Models';
 
-import { getAllPortfolios } from '../../../actions/portfolioActions';
+import { getAllPortfolios, clearPortfolioCreation } from '../../../actions/portfolioActions';
 import CompanySearch from './CompanySearch';
 import AccountCreation from './AccountCreation';
 import PortfolioCreation from "./PortfolioCreation";
@@ -17,10 +17,18 @@ interface StateProps {
   
 interface DispatchProps {
     refreshPortfolios: () => void;
+    completeCreation: () => void;
 }
 
 class NewPortfolioDialog extends React.Component<DispatchProps & StateProps, {}> {
+    constructor(props:DispatchProps & StateProps){
+        super(props);
+
+        this.finishCreation = this.finishCreation.bind(this);
+    }
+
     finishCreation(){
+        this.props.completeCreation();
         this.props.refreshPortfolios();
     }
 
@@ -33,7 +41,7 @@ class NewPortfolioDialog extends React.Component<DispatchProps & StateProps, {}>
             case PortfolioCreationStage.PortfolioCreation:
                 return (<PortfolioCreation />);
         };
-        
+
         return (
             <div className="uk-modal-dialog">
             <button className="uk-modal-close-default" type="button" data-uk-close></button>
@@ -44,7 +52,7 @@ class NewPortfolioDialog extends React.Component<DispatchProps & StateProps, {}>
                 Your portfolio has been created! Click below to exit this screen.
             </div>
             <div className="uk-modal-footer uk-text-right">
-                <button className="uk-button uk-button-primary" type="button" onClick={this.finishCreation}>Continue</button>
+                <button className="uk-button uk-button-primary uk-modal-close" type="button" onClick={this.finishCreation}>Continue</button>
             </div>
             </div>
         );
@@ -54,7 +62,8 @@ class NewPortfolioDialog extends React.Component<DispatchProps & StateProps, {}>
 
 const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, {}> = (dispatch) => {
     return {
-        refreshPortfolios: () => dispatch(getAllPortfolios())
+        refreshPortfolios: () => dispatch(getAllPortfolios()),
+        completeCreation: () => dispatch(clearPortfolioCreation())
     }
 }
 

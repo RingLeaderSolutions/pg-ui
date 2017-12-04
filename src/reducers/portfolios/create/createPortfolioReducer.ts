@@ -21,4 +21,16 @@ const createPortfolioReducer = requestResponseReducer(
     }
 );
 
-export default reduceReducers((state = idleInitialRequestState) => state, createPortfolioReducer);
+const clearCreationReducer = (state: PortfolioCreationState, action: any) => {
+    switch(action.type){
+        case types.CLEAR_PORTFOLIO_CREATION:
+          return {
+              ...state,
+              value: null
+          }
+        default:
+          return state;
+      }
+};
+
+export default reduceReducers((state = idleInitialRequestState) => state, createPortfolioReducer, clearCreationReducer);
