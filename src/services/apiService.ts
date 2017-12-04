@@ -121,7 +121,7 @@ export class ApiService implements IApiService {
     }
 
     getPortfolioHistory(portfolioId: string) {
-        return axios.get(`${this.baseApiUri}/portman-web/portfolio/${portfolioId}/history`, this.getRequestConfig());        
+        return axios.get(`${this.baseApiUri}/portman-web/portfolio/history/${portfolioId}`, this.getRequestConfig());        
     }
     
     getPortfolioSiteMpans(portfolioId: string){
@@ -145,12 +145,8 @@ export class ApiService implements IApiService {
             address: `${company.addressLine1}, ${company.addressLine2}, ${company.postTown}, ${company.county}`,
             postcode: company.postcode,
             countryOfOrigin: company.countryOfOrigin,
-            // TODO: change format of incorporationdate
             incorporationDate: incorporationDate,
             companyStatus: company.companyStatus,
-
-            // accountNumber: null,
-            // contact: null,
             isVATEligible: true,
             isRegisteredCharity: false,
             hasFiTException: false,
