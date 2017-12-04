@@ -8,6 +8,9 @@ export { PortfolioDetails,
          PortfolioRequirements,
          PortfolioDocument } from './PortfolioDetails'
 
+export { Account,
+         AccountCompanyStatusFlags } from './Account';
+         
 export { User } from './User';
 
 export { DashboardPortfolioSummary,

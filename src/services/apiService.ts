@@ -1,6 +1,6 @@
 import { AxiosResponse } from 'axios';
 import axios from 'axios';
-import { Portfolio, CompanyInfo, PortfolioContact, PortfolioRequirements } from "../model/Models";
+import { Portfolio, CompanyInfo, PortfolioContact, PortfolioRequirements, Account, AccountCompanyStatusFlags } from "../model/Models";
 import { FakeApiService } from './fakeApiService';
 import StorageService from './storageService';
 import * as moment from 'moment';
@@ -14,10 +14,14 @@ export interface IApiService {
   getDashboardStatus(): Promise<AxiosResponse>;
 
   searchCompany(companyNumber: string): Promise<AxiosResponse>;
-  createAccount(company: CompanyInfo) : Promise<AxiosResponse>;
+  
   createPortfolio(accountId: string, company: CompanyInfo): Promise<AxiosResponse>;
   updatePortfolioContact(contact: PortfolioContact): Promise<AxiosResponse>;
   updatePortfolioRequirements(requirements: PortfolioRequirements): Promise<AxiosResponse>;
+  
+  retrieveAccount(accountId: string): Promise<AxiosResponse>;
+  createAccount(company: CompanyInfo) : Promise<AxiosResponse>;
+  updateAccountFlags(accountId: string, accountFlags: AccountCompanyStatusFlags): Promise<AxiosResponse>;
   
   getPortfolioMpanSummary(portfolioId: string): Promise<AxiosResponse>;
   getPortfolioHistory(portfolioId: string): Promise<AxiosResponse>;
@@ -37,7 +41,7 @@ export class ApiService implements IApiService {
     constructor(){
         this.baseApiUri = appConfig.baseApiUri;
         this.hierarchyApiUri = appConfig.hierarchyApiUri;
-        this.storage = new StorageService();
+        this.storage = new StorageService(); 
 
         this.teamId = "989";
         this.contextQuery = `?context=team&value=${this.teamId}`;
@@ -128,6 +132,10 @@ export class ApiService implements IApiService {
         return axios.get(`${this.baseApiUri}/portman-web/company/search/fields/${companyNumber}`, this.getRequestConfig());                        
     }
 
+    retrieveAccount(accountId: string){
+        return axios.get(`${this.hierarchyApiUri}/api/Account/${accountId}`, this.getRequestConfig());                        
+    }
+
     createAccount(company: CompanyInfo) {
         let dateToFormat = moment(company.incorporationDate, "DD/MM/YYYY");
         let incorporationDate = dateToFormat.format();
@@ -153,7 +161,12 @@ export class ApiService implements IApiService {
         return axios.post(`${this.hierarchyApiUri}/api/Account`, account, this.getRequestConfig());                        
     }
 
+    updateAccountFlags(accountId: string, accountFlags: AccountCompanyStatusFlags){
+        return axios.put(`${this.hierarchyApiUri}/api/Account/status/${accountId}`, accountFlags, this.getRequestConfig());          
+    }
+
     createPortfolio(accountId: string, company: CompanyInfo){
+        console.log(accountId);
         let portfolio = {
             title: company.companyName,
             accountId,

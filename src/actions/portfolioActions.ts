@@ -14,6 +14,7 @@ import { makeApiRequest } from "./Common";
 
 import { Dispatch } from 'redux';
 import { PortfolioRequirements } from "../model/PortfolioDetails";
+import { AccountCompanyStatusFlags } from "../model/Account";
 
 export function getAllPortfolios(){
     return (dispatch: Dispatch<any>) => {
@@ -195,13 +196,31 @@ export function selectCompany(){
     };
 }
 
+export function retrieveAccount(accountId: string){
+    return (dispatch: Dispatch<any>) => {
+        let updatePromise = ApiService.retrieveAccount(accountId);
+        dispatch( { type: types.RETRIEVE_ACCOUNT_WORKING });
+
+        makeApiRequest(dispatch,
+            updatePromise,
+            200, 
+            data => {
+                return { type: types.RETRIEVE_ACCOUNT_SUCCESSFUL, data: data as Account };
+                
+            }, 
+            error => {
+                return { type: types.RETRIEVE_ACCOUNT_FAILED, errorMessage: error };
+            });
+    };
+}
+
 export function createAccount(company: CompanyInfo){
     return (dispatch: Dispatch<any>) => {
-        let searchPromise = ApiService.createAccount(company);
+        let createPromise = ApiService.createAccount(company);
         dispatch( { type: types.CREATE_ACCOUNT_WORKING });
 
         makeApiRequest(dispatch,
-            searchPromise,
+            createPromise,
             201, 
             data => {
                 return { type: types.CREATE_ACCOUNT_SUCCESSFUL, data};
@@ -213,13 +232,31 @@ export function createAccount(company: CompanyInfo){
     };
 }
 
+export function updateCompanyStatus(accountId: string, statusFlags: AccountCompanyStatusFlags){
+    return (dispatch: Dispatch<any>) => {
+        let updatePromise = ApiService.updateAccountFlags(accountId, statusFlags);
+        dispatch( { type: types.UPDATE_COMPANY_STATUS_WORKING });
+
+        makeApiRequest(dispatch,
+            updatePromise,
+            200, 
+            data => {
+                return { type: types.UPDATE_COMPANY_STATUS_SUCCESSFUL, data: data as Account };
+                
+            }, 
+            error => {
+                return { type: types.UPDATE_COMPANY_STATUS_FAILED, errorMessage: error };
+            });
+    };
+}
+
 export function createPortfolio(accountId: string, company: CompanyInfo){
     return (dispatch: Dispatch<any>) => {
-        let searchPromise = ApiService.createPortfolio(accountId, company);
+        let createPromise = ApiService.createPortfolio(accountId, company);
         dispatch( { type: types.CREATE_PORTFOLIO_WORKING });
 
         makeApiRequest(dispatch,
-            searchPromise,
+            createPromise,
             200, 
             data => {
                 return { type: types.CREATE_PORTFOLIO_SUCCESSFUL, data: data as PortfolioDetails};
@@ -239,11 +276,11 @@ export function clearPortfolioCreation(){
 
 export function createPortfolioContact(contact: PortfolioContact){
     return (dispatch: Dispatch<any>) => {
-        let searchPromise = ApiService.updatePortfolioContact(contact);
+        let createPromise = ApiService.updatePortfolioContact(contact);
         dispatch({ type: types.CREATE_PORTFOLIO_CONTACT_WORKING });
 
         makeApiRequest(dispatch,
-            searchPromise,
+            createPromise,
             200, 
             data => {
                 return { type: types.CREATE_PORTFOLIO_CONTACT_SUCCESSFUL, data: null};
@@ -257,11 +294,11 @@ export function createPortfolioContact(contact: PortfolioContact){
 
 export function updatePortfolioRequirements(requirements: PortfolioRequirements){
     return (dispatch: Dispatch<any>) => {
-        let searchPromise = ApiService.updatePortfolioRequirements(requirements);
+        let updatePromise = ApiService.updatePortfolioRequirements(requirements);
         dispatch({ type: types.UPDATE_PORTFOLIO_REQUIREMENTS_WORKING });
 
         makeApiRequest(dispatch,
-            searchPromise,
+            updatePromise,
             200, 
             data => {
                 return { type: types.UPDATE_PORTFOLIO_REQUIREMENTS_SUCCESSFUL, data: null};

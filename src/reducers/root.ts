@@ -23,7 +23,7 @@ import creationStageReducer from './portfolios/create/creationStageReducer';
 
 const portfolioCreationReducer: Reducer<CreatePortfolioState> = combineReducers<CreatePortfolioState>({
     stage: creationStageReducer,
-    
+
     company: companySearchReducer,
     account: createAccountReducer,
     portfolio: createPortfolioReducer
@@ -41,6 +41,7 @@ const portfoliosReducer: Reducer<PortfoliosState> = combineReducers<PortfoliosSt
 // Combine portfolio reducers to form the PortfolioState
 import { PortfolioState } from './portfolio/PortfolioState';
 
+import portfolioAccountReducer from './portfolio/portfolioAccountReducer';
 import portfolioDetailsReducer from './portfolio/portfolioDetailsReducer';
 import selectedPortfolioReducer from './portfolio/selectedPortfolioReducer';
 import portfolioHistoryReducer from './portfolio/portfolioHistoryReducer';
@@ -51,6 +52,7 @@ import mpanToplineReducer from './portfolio/mpanToplineReducer';
 import mpanHistoricalReducer from './portfolio/mpanHistoricalReducer';
 
 const portfolioReducer: Reducer<PortfolioState> = combineReducers<PortfolioState>({
+    account: portfolioAccountReducer,
     details: portfolioDetailsReducer,
     selected: selectedPortfolioReducer,
     history: portfolioHistoryReducer,

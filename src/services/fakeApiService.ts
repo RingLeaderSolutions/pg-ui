@@ -9,7 +9,9 @@ import { Portfolio,
          MpanSummary,
          MpanTopline,
          PortfolioHistoryEntry,
-         Site } from "../model/Models";
+         Site,
+         Account,
+         AccountCompanyStatusFlags } from "../model/Models";
 
 import { IApiService } from "./ApiService";
 import { CompanyInfo } from '../model/CompanyInfo';
@@ -292,6 +294,32 @@ export class FakeApiService implements IApiService {
         };
 
         return OK(response);
+    }
+
+    retrieveAccount(accountId: string){
+        var account: Account = {
+            id: accountId,
+            accountNumber: "1",
+            address: "123 Fake St",
+            companyName: "ABC XYZ Ltd",
+            companyRegistrationNumber: "124567890",
+            companyStatus: "Active",
+            contact: "AB CD",
+            countryOfOrigin: "United Kingdom",
+            creditRating: "A+++",
+            hasCCLException: true,
+            hasFiTException: false,
+            incorporationDate: "12/04/2012",
+            isRegisteredCharity: false,
+            isVATEligible: true,
+            postcode: "AB12 CD2"
+        };
+        
+        return OK(account);
+    }
+
+    updateAccountFlags(accountId: string, accountFlags: AccountCompanyStatusFlags){
+        return OK();
     }
 
     createPortfolio(accountId: string, company: CompanyInfo){
