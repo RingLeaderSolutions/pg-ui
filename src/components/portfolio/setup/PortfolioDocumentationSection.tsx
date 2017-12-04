@@ -5,6 +5,7 @@ import { MapDispatchToPropsFunction, connect, MapStateToProps } from 'react-redu
 import { ApplicationState } from '../../../applicationState';
 import { PortfolioDetails } from '../../../model/Models';
 import Spinner from '../../common/Spinner';
+import UploadLOADialog from "./UploadLOADialog";
 
 interface PortfolioDocumentationSectionProps {
     details: PortfolioDetails;
@@ -61,7 +62,7 @@ class PortfolioDocumentationSection extends React.Component<PortfolioDocumentati
                     </div>
                     <div className="uk-width-auto@m">
                         <div className="uk-margin-small uk-float-right">
-                            <button className="uk-button uk-button-primary" type="button">
+                            <button className="uk-button uk-button-primary" type="button"  data-uk-toggle="target: #modal-upload-loa">
                                 <span className="icon-standard-cursor uk-margin-small-right" data-uk-icon="icon: upload" />
                                 Upload LOA
                             </button>
@@ -108,6 +109,10 @@ class PortfolioDocumentationSection extends React.Component<PortfolioDocumentati
                 <h3>Documentation</h3>
                 {siteListContent}
                 <div className="uk-margin">{loaContent}</div>
+
+                <div id="modal-upload-loa" data-uk-modal="center: true">
+                    <UploadLOADialog details={this.props.details} />
+                </div>
             </div>)
     }
 }
