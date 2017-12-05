@@ -1,6 +1,5 @@
 import ApiService from "../services/ApiService";
 import { Portfolio,
-         MpanSummary,
          PortfolioHistoryEntry,
          Site,  
          MpanTopline,
@@ -71,24 +70,6 @@ export function getSinglePortfolio(portfolioId: string){
             }, 
             error => {
                 return { type: types.FETCH_SINGLE_PORTFOLIO_FAILED, errorMessage: error };
-            });
-    };
-}
-
-export function getPortfolioMpanSummary(portfolioId: string){
-    return (dispatch: Dispatch<any>) => {
-        let fetchPromise = ApiService.getPortfolioMpanSummary(portfolioId);
-        dispatch( { type: types.FETCH_PORTFOLIO_MPANSUMMARY_WORKING });
-
-        makeApiRequest(dispatch,
-            fetchPromise,
-            200, 
-            data => {
-                return { type: types.FETCH_PORTFOLIO_MPANSUMMARY_SUCCESSFUL, data: data as MpanSummary[]};
-                
-            }, 
-            error => {
-                return { type: types.FETCH_PORTFOLIO_MPANSUMMARY_FAILED, errorMessage: error };
             });
     };
 }

@@ -1,6 +1,5 @@
 // Data model
 export { Portfolio,
-         MpanSummary,
          PortfolioHistoryEntry } from './Portfolio';
 
 export { PortfolioDetails,

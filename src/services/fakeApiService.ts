@@ -6,7 +6,6 @@ import { Portfolio,
          DashboardPortfolioSummary,
          DashboardPortfolioTimeline,
          DashboardPortfolioStatus,
-         MpanSummary,
          MpanTopline,
          PortfolioHistoryEntry,
          Site,
@@ -128,24 +127,7 @@ export class FakeApiService implements IApiService {
 
         return OK(status);
     }
-
-    getPortfolioMpanSummary(portfolioId: string){
-        var mpanSummary: MpanSummary[] = [
-            {
-                stage: "HH",
-                completed: 25,
-                incomplete: 3654
-            },
-            {
-                stage: "Topline",
-                completed: 15,
-                incomplete: 3254
-            }
-        ]
-
-        return OK(mpanSummary);
-    }
-
+    
     getPortfolioHistory(portfolioId: string) {
         var history: PortfolioHistoryEntry[] = [
             {

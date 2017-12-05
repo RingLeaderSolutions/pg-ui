@@ -45,7 +45,6 @@ import portfolioAccountReducer from './portfolio/portfolioAccountReducer';
 import portfolioDetailsReducer from './portfolio/portfolioDetailsReducer';
 import selectedPortfolioReducer from './portfolio/selectedPortfolioReducer';
 import portfolioHistoryReducer from './portfolio/portfolioHistoryReducer';
-import portfolioMpanSummaryReducer from './portfolio/portfolioMpanSummaryReducer';
 import portfolioSiteMpansReducer from './portfolio/portfolioSiteMpansReducer';
 
 import mpanToplineReducer from './portfolio/mpanToplineReducer';
@@ -56,7 +55,6 @@ const portfolioReducer: Reducer<PortfolioState> = combineReducers<PortfolioState
     details: portfolioDetailsReducer,
     selected: selectedPortfolioReducer,
     history: portfolioHistoryReducer,
-    mpan_summary: portfolioMpanSummaryReducer,
     sites: portfolioSiteMpansReducer,
     topline: mpanToplineReducer,
     historical: mpanHistoricalReducer    

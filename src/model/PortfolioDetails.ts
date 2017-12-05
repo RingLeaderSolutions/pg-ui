@@ -44,8 +44,17 @@ export interface PortfolioDocument {
     expiry: string;
 }
 
+export interface MeterGroup {
+    groupName: string,
+    meterCount: number,
+    supplyDataCount: number,
+    historicalCount: number,
+    forecastCount: number
+}
+
 export interface PortfolioDetails {
     portfolio: PortfolioSummary;
+    meterGroups: MeterGroup[];
     requirements?: PortfolioRequirements;
     documentation?: PortfolioDocument[];
     siteCount: number;

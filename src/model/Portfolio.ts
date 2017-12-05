@@ -23,13 +23,7 @@ export interface Client {
     contact: User;
 }
 
-export interface MpanSummary {
-    stage: string;
-    completed: number;
-    incomplete: number;
-}
-
-export interface PortfolioHistoryEntry {
+export interface  PortfolioHistoryEntry {
     id: string;
     parent: string;
     category: string;

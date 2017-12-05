@@ -23,7 +23,6 @@ export interface IApiService {
   createAccount(company: CompanyInfo) : Promise<AxiosResponse>;
   updateAccountFlags(accountId: string, accountFlags: AccountCompanyStatusFlags): Promise<AxiosResponse>;
   
-  getPortfolioMpanSummary(portfolioId: string): Promise<AxiosResponse>;
   getPortfolioHistory(portfolioId: string): Promise<AxiosResponse>;
   getPortfolioSiteMpans(portfolioId: string): Promise<AxiosResponse>;
 
@@ -126,10 +125,6 @@ export class ApiService implements IApiService {
 
     getDashboardStatus(){
         return axios.get(`${this.baseApiUri}/portman-web/portfolios/status${this.contextQuery}`, this.getRequestConfig());        
-    }
-
-    getPortfolioMpanSummary(portfolioId: string){
-        return axios.get(`${this.baseApiUri}/portman-web/portfolio/${portfolioId}/mpans/summary`, this.getRequestConfig());
     }
 
     getPortfolioHistory(portfolioId: string) {
