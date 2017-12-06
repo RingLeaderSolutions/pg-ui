@@ -1,6 +1,5 @@
 import { PortfolioHistoryState } from './portfolioHistoryReducer';
 import { SelectedPortfolioState } from './selectedPortfolioReducer';
-import { PortfolioSiteMpansState } from './portfolioSiteMpansReducer';
 import { MpanToplineState } from './mpanToplineReducer';
 import { MpanHistoricalState } from './mpanHistoricalReducer';
 import { PortfolioDetailsState } from './portfolioDetailsReducer';
@@ -11,7 +10,6 @@ export interface PortfolioState {
     details: PortfolioDetailsState;
     history: PortfolioHistoryState;
     selected: SelectedPortfolioState;
-    sites: PortfolioSiteMpansState;
     topline: MpanToplineState;
     historical: MpanHistoricalState;
 }

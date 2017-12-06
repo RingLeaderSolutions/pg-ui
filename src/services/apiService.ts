@@ -24,14 +24,16 @@ export interface IApiService {
   updateAccountFlags(accountId: string, accountFlags: AccountCompanyStatusFlags): Promise<AxiosResponse>;
   
   getPortfolioHistory(portfolioId: string): Promise<AxiosResponse>;
-  getPortfolioSiteMpans(portfolioId: string): Promise<AxiosResponse>;
 
   getMpanTopline(documentId: string): Promise<AxiosResponse>;
   getMpanHistorical(documentId: string): Promise<AxiosResponse>;
 
-
   getAllMeters(portfolioId: string): Promise<AxiosResponse>;
-  uploadLoa(portfolioId: string, file: Blob): Promise<AxiosResponse>;
+  
+  uploadLoa(portfolioId: string, accountId: string, file: Blob): Promise<AxiosResponse>;
+  uploadSupplyMeterData(portfolioId: string, accountId: string, file: Blob): Promise<AxiosResponse>;
+  uploadHistorical(portfolioId: string, file: Blob): Promise<AxiosResponse>;
+  uploadSiteList(portfolioId: string, accountId: string, file: Blob): Promise<AxiosResponse>;
 }
 
 export class ApiService implements IApiService {
@@ -91,10 +93,7 @@ export class ApiService implements IApiService {
             }
         };
     }
-
-    getAllPortfolios() {
-        //return axios.get(`${this.baseApiUri}/portman-web/tpis`, this.getRequestConfig());
-        return axios.get(`${this.baseApiUri}/portman-web/portfolios/team/${this.teamId}`, this.getRequestConfig());
+    
     getUploadFileConfig(){
         return {
             headers: {
@@ -138,13 +137,6 @@ export class ApiService implements IApiService {
 
     getPortfolioHistory(portfolioId: string) {
         return axios.get(`${this.baseApiUri}/portman-web/portfolio/history/${portfolioId}`, this.getRequestConfig());        
-    }
-    
-    getPortfolioSiteMpans(portfolioId: string){
-    }
-    
-    getPortfolioSiteMpans(portfolioId: string){
-        return axios.get(`${this.baseApiUri}/portman-web/portfolio/${portfolioId}/mpans/detail`, this.getRequestConfig());                
     }
 
     searchCompany(companyNumber: string){
@@ -201,11 +193,35 @@ export class ApiService implements IApiService {
         return axios.get(`${this.baseApiUri}/portman-web/topline/${documentId}`, this.getRequestConfig());                        
     }
 
-    uploadLoa(portfolioId: string, file: Blob){
+    uploadLoa(portfolioId: string, accountId: string, file: Blob){
         var formData = new FormData();
-        formData.append('file', file);
+        formData.append('files', file);
+        formData.append('accountId', accountId);
 
         return axios.post(`${this.uploadApiUri}/api/upload/loa/${portfolioId}`, formData, this.getUploadFileConfig());
+    }
+
+    uploadSupplyMeterData(portfolioId: string, accountId: string, file: Blob){
+        var formData = new FormData();
+        formData.append('files', file);
+        formData.append('accountId', accountId);
+
+        return axios.post(`${this.uploadApiUri}/api/upload/supply/${portfolioId}`, formData, this.getUploadFileConfig());
+    }
+
+    uploadHistorical(portfolioId: string, file: Blob){
+        var formData = new FormData();
+        formData.append('files', file);
+
+        return axios.post(`${this.uploadApiUri}/api/upload/historic/${portfolioId}`, formData, this.getUploadFileConfig());
+    }
+
+    uploadSiteList(portfolioId: string, accountId: string, file: Blob){
+        var formData = new FormData();
+        formData.append('files', file);
+        formData.append('accountId', accountId);
+
+        return axios.post(`${this.uploadApiUri}/api/upload/sites/${portfolioId}`, formData, this.getUploadFileConfig());
     }
 
     getMpanHistorical(documentId: string){

@@ -92,24 +92,6 @@ export function getPortfolioHistory(portfolioId: string){
     };
 }
 
-export function getPortfolioSiteMpans(portfolioId: string){
-    return (dispatch: Dispatch<any>) => {
-        let fetchPromise = ApiService.getPortfolioSiteMpans(portfolioId);
-        dispatch( { type: types.FETCH_PORTFOLIO_SITE_MPANS_WORKING });
-
-        makeApiRequest<{sites:Site[]}>(dispatch,
-            fetchPromise,
-            200, 
-            data => {
-                return { type: types.FETCH_PORTFOLIO_SITE_MPANS_SUCCESSFUL, data: data.sites as Site[]};
-                
-            }, 
-            error => {
-                return { type: types.FETCH_PORTFOLIO_SITE_MPANS_FAILED, errorMessage: error };
-            });
-    };
-}
-
 // TODO: Move topline & historical calls to own Actions
 export function getMpanTopline(documentId: string){
     return (dispatch: Dispatch<any>) => {
@@ -291,13 +273,13 @@ export function updatePortfolioRequirements(requirements: PortfolioRequirements)
     };
 }
 
-export function uploadLetterOfAuthority(portfolioId: string, file: Blob){
+export function uploadLetterOfAuthority(portfolioId: string, accountId: string, file: Blob){
     return (dispatch: Dispatch<any>) => {
-        let updatePromise = ApiService.uploadLoa(portfolioId, file);
+        let uploadPromise = ApiService.uploadLoa(portfolioId, accountId, file);
         dispatch({ type: types.UPLOAD_LOA_WORKING });
 
         makeApiRequest(dispatch,
-            updatePromise,
+            uploadPromise,
             200, 
             data => {
                 return { type: types.UPLOAD_LOA_SUCCESSFUL, data: null};
@@ -305,6 +287,60 @@ export function uploadLetterOfAuthority(portfolioId: string, file: Blob){
             }, 
             error => {
                 return { type: types.UPLOAD_LOA_FAILED, errorMessage: error };
+            });
+    };
+}
+
+export function uploadSiteList(portfolioId: string, accountId: string, file: Blob){
+    return (dispatch: Dispatch<any>) => {
+        let uploadPromise = ApiService.uploadSiteList(portfolioId, accountId, file);
+        dispatch({ type: types.UPLOAD_SITELIST_WORKING });
+
+        makeApiRequest(dispatch,
+            uploadPromise,
+            200, 
+            data => {
+                return { type: types.UPLOAD_SITELIST_SUCCESSFUL, data: null};
+                
+            }, 
+            error => {
+                return { type: types.UPLOAD_SITELIST_FAILED, errorMessage: error };
+            });
+    };
+}
+
+export function uploadSupplyMeterData(portfolioId: string, accountId: string, file: Blob){
+    return (dispatch: Dispatch<any>) => {
+        let uploadPromise = ApiService.uploadSupplyMeterData(portfolioId, accountId, file);
+        dispatch({ type: types.UPLOAD_SUPPLY_METER_DATA_WORKING });
+
+        makeApiRequest(dispatch,
+            uploadPromise,
+            200, 
+            data => {
+                return { type: types.UPLOAD_SUPPLY_METER_DATA_SUCCESSFUL, data: null};
+                
+            }, 
+            error => {
+                return { type: types.UPLOAD_SUPPLY_METER_DATA_FAILED, errorMessage: error };
+            });
+    };
+}
+
+export function uploadHistoric(portfolioId: string, file: Blob){
+    return (dispatch: Dispatch<any>) => {
+        let uploadPromise = ApiService.uploadHistorical(portfolioId, file);
+        dispatch({ type: types.UPLOAD_HISTORICAL_WORKING });
+
+        makeApiRequest(dispatch,
+            uploadPromise,
+            200, 
+            data => {
+                return { type: types.UPLOAD_HISTORICAL_SUCCESSFUL, data: null};
+                
+            }, 
+            error => {
+                return { type: types.UPLOAD_HISTORICAL_FAILED, errorMessage: error };
             });
     };
 }

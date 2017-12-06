@@ -20,7 +20,7 @@ interface StateProps {
 }
 
 interface DispatchProps {
-    uploadLetterOfAuthority: (portfolioId: string, file: Blob) => void;
+    uploadLetterOfAuthority: (portfolioId: string, accountId: string, file: Blob) => void;
 }
 
 interface UploadLOAState {
@@ -40,7 +40,8 @@ class UploadLOADialog extends React.Component<UploadLOADialogProps & StateProps 
     
     upload() {
         var portfolioId = this.props.details.portfolio.id;
-        this.props.uploadLetterOfAuthority(portfolioId, this.state.file);
+        var accountId = this.props.details.portfolio.accountId;
+        this.props.uploadLetterOfAuthority(portfolioId, accountId, this.state.file);
     }
 
     onFileChosen(e: any){
@@ -80,7 +81,7 @@ class UploadLOADialog extends React.Component<UploadLOADialogProps & StateProps 
 
 const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, UploadLOADialogProps> = (dispatch) => {
     return {
-        uploadLetterOfAuthority: (portfolioId: string, file: Blob) => dispatch(uploadLetterOfAuthority(portfolioId, file))        
+        uploadLetterOfAuthority: (portfolioId: string, accountId: string, file: Blob) => dispatch(uploadLetterOfAuthority(portfolioId, accountId, file))        
     };
 };
   

@@ -336,7 +336,7 @@ export class FakeApiService implements IApiService {
         return OK();
     }
 
-    uploadLoa(portfolioId: string, file: Blob){
+    uploadLoa(portfolioId: string, accountId: string, file: Blob){
         return OK();
     }
 
@@ -417,6 +417,18 @@ export class FakeApiService implements IApiService {
         };
         
         return OK(data);
+	}
+		
+    uploadSupplyMeterData(portfolioId: string, accountId: string, file: Blob){
+        return OK();
+    }
+
+    uploadHistorical(portfolioId: string, file: Blob){
+        return OK();
+    }
+
+    uploadSiteList(portfolioId: string, accountId: string, file: Blob){
+        return OK();
     }
 }
 
