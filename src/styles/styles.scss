@@ -6,6 +6,7 @@
 @import "spinner";
 @import "dashboard";
 @import "auth";
+@import "datepicker";
 
 html, body, .root, .app-container {
   min-height: 100%;
@@ -33,7 +34,7 @@ html, body, .root, .app-container {
     background: $grey-border !important;
 }
 
-h3 > .uk-icon, h4 > .uk-icon {
+h3 > .uk-icon, h4 > .uk-icon, .icon-standard-cursor {
     cursor: default !important;
 }
 

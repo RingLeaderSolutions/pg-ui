@@ -1,7 +1,15 @@
+// Data model
 export { Portfolio,
-         MpanSummary,
          PortfolioHistoryEntry } from './Portfolio';
 
+export { PortfolioDetails,
+         PortfolioContact,
+         PortfolioRequirements,
+         PortfolioDocument } from './PortfolioDetails'
+
+export { Account,
+         AccountCompanyStatusFlags } from './Account';
+         
 export { User } from './User';
 
 export { DashboardPortfolioSummary,
@@ -19,6 +27,8 @@ export { Site } from './Site';
 
 export { Client } from './Client';
 
+export { CompanyInfo } from './CompanyInfo';
+
 import * as DocumentType from "./DocumentType";
 import * as DocumentStatus from "./DocumentStatus";
 import * as DocumentGroup from "./DocumentGroup";
@@ -26,3 +36,8 @@ import * as DocumentGroup from "./DocumentGroup";
 export { DocumentType };
 export { DocumentStatus };
 export { DocumentGroup };
+
+
+// Application data model
+
+export { PortfolioCreationStage } from './app/PortfolioCreationStage';

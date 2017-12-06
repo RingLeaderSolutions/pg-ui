@@ -1,15 +1,19 @@
 import { AxiosResponse } from 'axios';
 import axios from 'axios';
 import { Portfolio,
+         PortfolioContact,
+         PortfolioRequirements,
          DashboardPortfolioSummary,
          DashboardPortfolioTimeline,
          DashboardPortfolioStatus,
-         MpanSummary,
          MpanTopline,
          PortfolioHistoryEntry,
-         Site } from "../model/Models";
+         Site,
+         Account,
+         AccountCompanyStatusFlags } from "../model/Models";
 
 import { IApiService } from "./ApiService";
+import { CompanyInfo } from '../model/CompanyInfo';
 
 const responseDelay = 1000;
 const defer = (callback: () => void) => new Promise((resolve, reject) => setTimeout(() => callback(), responseDelay));
@@ -123,24 +127,7 @@ export class FakeApiService implements IApiService {
 
         return OK(status);
     }
-
-    getPortfolioMpanSummary(portfolioId: string){
-        var mpanSummary: MpanSummary[] = [
-            {
-                stage: "HH",
-                completed: 25,
-                incomplete: 3654
-            },
-            {
-                stage: "Topline",
-                completed: 15,
-                incomplete: 3254
-            }
-        ]
-
-        return OK(mpanSummary);
-    }
-
+    
     getPortfolioHistory(portfolioId: string) {
         var history: PortfolioHistoryEntry[] = [
             {
@@ -264,6 +251,93 @@ export class FakeApiService implements IApiService {
     getMpanHistorical(documentId: string){
         let historical = require("json-loader!./fake/mpanHistorical.json");    
         return OK(historical);
+    }
+
+    searchCompany(companyNumber: string){
+        var company: CompanyInfo = {
+            companyName: "ZENITH PRINT (UK) LIMITED",
+            companyNumber: "02050399",
+            addressLine1: "15 LON UCHAF",
+            addressLine2: "LON UCHAF",
+            companyStatus: "Active",
+            countryOfOrigin: "United Kingdom",
+            county: "MID GLAMORGAN",
+            incorporationDate: "28/08/1986",
+            postcode: "CF83 1BR",
+            postTown: "CAERPHILLY"
+        };
+
+        return OK(company);
+    }
+
+    createAccount(company: CompanyInfo){
+        var response = {
+            id: "4dbd3fb8-c598-4d33-a0f6-b12da7b8b0d0"
+        };
+
+        return OK(response);
+    }
+
+    retrieveAccount(accountId: string){
+        var account: Account = {
+            id: accountId,
+            accountNumber: "1",
+            address: "123 Fake St",
+            companyName: "ABC XYZ Ltd",
+            companyRegistrationNumber: "124567890",
+            companyStatus: "Active",
+            contact: "AB CD",
+            countryOfOrigin: "United Kingdom",
+            creditRating: "A+++",
+            hasCCLException: true,
+            hasFiTException: false,
+            incorporationDate: "12/04/2012",
+            isRegisteredCharity: false,
+            isVATEligible: true,
+            postcode: "AB12 CD2"
+        };
+        
+        return OK(account);
+    }
+
+    updateAccountFlags(accountId: string, accountFlags: AccountCompanyStatusFlags){
+        return OK();
+    }
+
+    createPortfolio(accountId: string, company: CompanyInfo){
+        var response = {
+            id: "a1b01d44-5971-4be0-a197-0226c44372ea",
+            title: company.companyName,
+            status: "onboard",
+            category: "direct",
+            teamId: 989,
+            ownerId: 1,
+            supportOwner: 7,
+            accountId: accountId,
+            //contact: null,
+            contractStart: "2017-12-01T00:00:00",
+            contractEnd: "2018-03-01T00:00:00"
+        }
+
+        return OK(response);
+    }
+
+    getPortfolioDetails(portfolioId: string) {
+        var portfolioDetails = {};
+
+        return OK(portfolioDetails);
+    }
+
+    updatePortfolioContact(contact: PortfolioContact){
+        return OK();
+    }
+
+    updatePortfolioRequirements(requirements: PortfolioRequirements){
+        return OK();
+    }
+
+    uploadLoa(portfolioId: string, file: Blob){
+        return OK();
     }
 
     getAllMeters(portfolioId: string){

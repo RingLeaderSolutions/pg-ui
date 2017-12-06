@@ -23,8 +23,8 @@ interface DispatchProps {
 }
 
 class PortfolioMeters extends React.Component<PortfolioMetersProps & StateProps & DispatchProps, {}> {
-    constructor() {
-        super();
+    constructor(props: PortfolioMetersProps & StateProps & DispatchProps) {
+        super(props);
     }
 
     componentDidMount(){
