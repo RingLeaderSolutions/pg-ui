@@ -24,3 +24,22 @@ export function getMeters(portfolioId: string){
             });
     }
 };
+
+
+export function editMeter(meter: Meter){
+    return (dispatch: Dispatch<any>) => {
+        dispatch({ 
+            type: types.EDIT_METER,
+            meter: meter
+        });
+    };
+};
+
+
+export function cancelEditMeter(){
+    return (dispatch: Dispatch<any>) => {
+        dispatch({ 
+            type: types.CANCEL_EDIT_METER
+        });
+    };
+};

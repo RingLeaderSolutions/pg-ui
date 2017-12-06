@@ -51,35 +51,36 @@ export class ApiService implements IApiService {
     }
 
     getAllPortfolios() {
-        return axios.get(`${this.baseApiUri}/portfolios/team/${this.teamId}`, this.getRequestConfig());
+        //return axios.get(`${this.baseApiUri}/portman-web/tpis`, this.getRequestConfig());
+        return axios.get(`${this.baseApiUri}/portman-web/portfolios/team/${this.teamId}`, this.getRequestConfig());
     }
 
     getDashboardSummary(){
-        return axios.get(`${this.baseApiUri}/portfolios/summary${this.contextQuery}`, this.getRequestConfig());        
+        return axios.get(`${this.baseApiUri}/portman-web/portfolios/summary${this.contextQuery}`, this.getRequestConfig());        
     }
 
     getDashboardTimeline(){
-        return axios.get(`${this.baseApiUri}/portfolios/timeline${this.contextQuery}`, this.getRequestConfig());        
+        return axios.get(`${this.baseApiUri}/portman-web/portfolios/timeline${this.contextQuery}`, this.getRequestConfig());        
     }
 
     getDashboardStatus(){
-        return axios.get(`${this.baseApiUri}/portfolios/status${this.contextQuery}`, this.getRequestConfig());        
+        return axios.get(`${this.baseApiUri}/portman-web/portfolios/status${this.contextQuery}`, this.getRequestConfig());        
     }
 
     getPortfolioMpanSummary(portfolioId: string){
-        return axios.get(`${this.baseApiUri}/portfolio/${portfolioId}/mpans/summary`, this.getRequestConfig());
+        return axios.get(`${this.baseApiUri}/portman-web/portfolio/${portfolioId}/mpans/summary`, this.getRequestConfig());
     }
 
     getPortfolioHistory(portfolioId: string) {
-        return axios.get(`${this.baseApiUri}/portfolio/${portfolioId}/history`, this.getRequestConfig());        
+        return axios.get(`${this.baseApiUri}/portman-web/portfolio/${portfolioId}/history`, this.getRequestConfig());        
     }
     
     getPortfolioSiteMpans(portfolioId: string){
-        return axios.get(`${this.baseApiUri}/portfolio/${portfolioId}/mpans/detail`, this.getRequestConfig());                
+        return axios.get(`${this.baseApiUri}/portman-web/portfolio/${portfolioId}/mpans/detail`, this.getRequestConfig());                
     }
 
     getMpanTopline(documentId: string){
-        return axios.get(`${this.baseApiUri}/topline/${documentId}`, this.getRequestConfig());                        
+        return axios.get(`${this.baseApiUri}/portman-web/topline/${documentId}`, this.getRequestConfig());                        
     }
 
     getMpanHistorical(documentId: string){
@@ -88,9 +89,9 @@ export class ApiService implements IApiService {
     }
 
     getAllMeters(portfolioId: string){
-        return axios.get(`${this.baseApiUri}/meters/portfolio/${portfolioId}`, this.getRequestConfig());
+        return axios.get(`${this.baseApiUri}/portman-web/meters/portfolio/${portfolioId}`, this.getRequestConfig());
     }
 }
 
-export default new FakeApiService();
-//export default new ApiService();
+//export default new FakeApiService();
+export default new ApiService();

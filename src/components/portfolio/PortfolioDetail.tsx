@@ -9,7 +9,7 @@ import Spinner from '../common/Spinner';
 
 import PortfolioSummary from "./summary/PortfolioSummary";
 import PortfolioUploads from "./upload/PortfolioUploads";
-import PortfolioMeters from "./mpan/PortfolioMeters";
+//import PortfolioMeters from "./mpan/PortfolioMeters";
 import PortfolioMeters2 from "./mpan/PortfolioMeters2";
 
 import { getSinglePortfolio } from '../../actions/portfolioActions';
