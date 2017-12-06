@@ -6,6 +6,7 @@ import { ApplicationState } from '../../../applicationState';
 import { PortfolioDetails } from '../../../model/Models';
 import Spinner from '../../common/Spinner';
 import UploadLOADialog from "./UploadLOADialog";
+import UploadSiteListDialog from "./UploadSiteListDialog";
 
 interface PortfolioDocumentationSectionProps {
     details: PortfolioDetails;
@@ -40,14 +41,6 @@ class PortfolioDocumentationSection extends React.Component<PortfolioDocumentati
                     </div>
                     <div className="uk-width-expand@m">
                         <h3>Letter of Authority provided</h3>
-                    </div>
-                    <div className="uk-width-auto@m">
-                        <div className="uk-margin-small uk-float-right">
-                            <button className="uk-button uk-button-default" type="button">
-                                <span className="uk-margin-small-right icon-standard-cursor" data-uk-icon="icon: info" />
-                                View
-                            </button>
-                        </div>  
                     </div>
                 </div>);
         }
@@ -95,7 +88,7 @@ class PortfolioDocumentationSection extends React.Component<PortfolioDocumentati
                     </div>
                     <div className="uk-width-auto@m">
                         <div className="uk-margin-small uk-float-right">
-                            <button className="uk-button uk-button-primary" type="button">
+                            <button className="uk-button uk-button-primary" type="button" data-uk-toggle="target: #modal-upload-sitelist">
                                 <span className="uk-margin-small-right icon-standard-cursor" data-uk-icon="icon: upload" />
                                 Upload Site List
                             </button>
@@ -112,6 +105,10 @@ class PortfolioDocumentationSection extends React.Component<PortfolioDocumentati
 
                 <div id="modal-upload-loa" data-uk-modal="center: true">
                     <UploadLOADialog details={this.props.details} />
+                </div>
+
+                <div id="modal-upload-sitelist" data-uk-modal="center: true">
+                    <UploadSiteListDialog details={this.props.details} />
                 </div>
             </div>)
     }
