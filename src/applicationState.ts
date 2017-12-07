@@ -3,6 +3,7 @@ import { PortfoliosState } from './reducers/portfolios/PortfoliosState';
 import { DashboardState } from './reducers/dashboard/DashboardState';
 import { NotificationState } from './reducers/notifications/NotificationState';
 import { AuthState } from './reducers/auth/AuthState';
+import { MeterState } from './reducers/meters/MeterState';
 
 export interface ApplicationState {    
     portfolio: PortfolioState;
@@ -10,4 +11,5 @@ export interface ApplicationState {
     portfolios: PortfoliosState;
     notifications: NotificationState;
     auth: AuthState;
+    meters: MeterState;
 }

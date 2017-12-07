@@ -2,7 +2,7 @@ import * as React from "react";
 import Header from "../../common/Header";
 import CounterCard from "../../common/CounterCard";
 import { Portfolio } from '../../../model/Models';
-import PortfolioMpanSummary from "./PortfolioMpanSummary";
+import PortfolioMeterStatus from "./PortfolioMeterStatus";
 import PortfolioHistory from "./PortfolioHistory";
 
 interface PortfolioSummaryProps {
@@ -50,7 +50,7 @@ class PortfolioSummary extends React.Component<PortfolioSummaryProps, {}> {
                     <CounterCard title={String(portfolio.mpans)} label="Meters" small />
                 </div>
                 <div className="uk-child-width-expand@s uk-grid-match uk-text-center" data-uk-grid>
-                    <PortfolioMpanSummary portfolio={portfolio} />
+                    <PortfolioMeterStatus portfolio={portfolio} />
                     <PortfolioHistory portfolio={portfolio} />
                 </div>
             </div>)

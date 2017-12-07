@@ -1,10 +1,14 @@
 import * as types from '../../actions/actionTypes';
 import { reduceReducers, requestResponseReducer } from '../common';
 import { Portfolio } from '../../model/Models';
-import { PortfoliosState } from './PortfoliosState';
 import { initialRequestState } from '../RequestState';
+import { RequestState } from '../RequestState';
 
-const portfoliosReducer = requestResponseReducer(
+export interface AllPortfoliosState extends RequestState {
+    value: Portfolio[];
+}
+
+const allPortfoliosReducer = requestResponseReducer(
     types.FETCH_PORTFOLIOS_WORKING,
     types.FETCH_PORTFOLIOS_SUCCESSFUL,
     types.FETCH_PORTFOLIOS_FAILED,
@@ -18,4 +22,4 @@ const portfoliosReducer = requestResponseReducer(
     }
 );
 
-export default reduceReducers((state = initialRequestState) => state, portfoliosReducer);
+export default reduceReducers((state = initialRequestState) => state, allPortfoliosReducer);

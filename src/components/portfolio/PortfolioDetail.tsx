@@ -7,6 +7,7 @@ import { ApplicationState } from '../../applicationState';
 import { Portfolio } from '../../model/Models';
 import Spinner from '../common/Spinner';
 
+import PortfolioSetup from "./setup/PortfolioSetup";
 import PortfolioSummary from "./summary/PortfolioSummary";
 import PortfolioUploads from "./upload/PortfolioUploads";
 import PortfolioMeters from "./mpan/PortfolioMeters";
@@ -50,18 +51,16 @@ class PortfolioDetail extends React.Component<PortfolioDetailProps & StateProps 
             <div className="content-inner">
                 <Header title={headerTitle} />
                 <ul data-uk-tab>
+                    <li><a href="#">Setup</a></li>
                     <li className="uk-active"><a href="#">Summary</a></li>
                     <li><a href="#">Meters</a></li>
-                    <li><a href="#">Forecast</a></li>
                     <li><a href="#">Tenders</a></li>
-                    <li><a href="#">Uploads</a></li>
                 </ul>
                 <ul className="uk-switcher">
+                    <li><PortfolioSetup portfolio={portfolio}/></li>
                     <li><PortfolioSummary portfolio={portfolio}/></li>
                     <li><PortfolioMeters portfolio={portfolio}/></li>
-                    <li>Forecast tab not yet built.</li>
                     <li>Tenders tab not yet built.</li>
-                    <li><PortfolioUploads /></li>
                 </ul>
             </div>)
     }

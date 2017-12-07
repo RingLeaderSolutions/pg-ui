@@ -7,7 +7,7 @@ import { ApplicationState } from '../applicationState';
 import Header from "./common/Header";
 import ErrorMessage from "./common/ErrorMessage";
 import { Portfolio } from '../model/Models';
-import NewPortfolioDialog from './portfolio/NewPortfolioDialog';
+import NewPortfolioDialog from './portfolio/creation/NewPortfolioDialog';
 import Spinner from './common/Spinner';
 
 interface PortfoliosProps extends RouteComponentProps<void> {
@@ -144,10 +144,10 @@ const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, PortfoliosPr
 
 const mapStateToProps: MapStateToProps<StateProps, PortfoliosProps> = (state: ApplicationState) => {
   return {
-    portfolios: state.portfolios.value,
-    working: state.portfolios.working,
-    error: state.portfolios.error,
-    errorMessage: state.portfolios.errorMessage
+    portfolios: state.portfolios.all.value,
+    working: state.portfolios.all.working,
+    error: state.portfolios.all.error,
+    errorMessage: state.portfolios.all.errorMessage
   };
 };
 
