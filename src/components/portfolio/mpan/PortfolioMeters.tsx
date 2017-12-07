@@ -1,11 +1,13 @@
 import * as React from "react";
 import { MapDispatchToPropsFunction, connect, MapStateToProps } from 'react-redux';
 import { ApplicationState } from '../../../applicationState';
-import { Portfolio } from '../../../model/Models';
-import { MeterPortfolio, Meter } from '../../../model/Meter';
+import { Portfolio, PortfolioDetails } from '../../../model/Models';
+import { MeterPortfolio, Meter,  } from '../../../model/Meter';
 import Spinner from '../../common/Spinner';
 import { Link } from 'react-router-dom';
 import MeterDetails from './MeterDetails';
+import UploadHistoricDialog from './UploadHistoricDialog';
+import UploadSupplyDataDialog from './UploadSupplyDataDialog';
 
 import { getMeters, editMeter, cancelEditMeter } from '../../../actions/meterActions';
 
@@ -14,6 +16,7 @@ interface PortfolioMetersProps {
 }
 
 interface StateProps {
+    details: PortfolioDetails;
     meterPortfolio: MeterPortfolio
     working: boolean
     error: boolean
@@ -140,11 +143,12 @@ class PortfolioMeters extends React.Component<PortfolioMetersProps & StateProps 
         const gas =  this.filterByUtility(this.props.meterPortfolio.meters, 'GAS');
 
         return (
+            <div>
             <div className='uk-flex uk-flex-column portfolio-meters'>
                 <div>
                     <p className='uk-text-right'>
-                        <button className='uk-button uk-button-primary uk-button-small'><span data-uk-icon='icon: upload' />Supply Data</button>
-                        <button className='uk-button uk-button-primary uk-button-small'><span data-uk-icon='icon: upload' />Consumption</button>
+                        <button className='uk-button uk-button-primary uk-button-small' data-uk-toggle="target: #modal-upload-supply-data"><span data-uk-icon='icon: upload' />Supply Data</button>
+                        <button className='uk-button uk-button-primary uk-button-small' data-uk-toggle="target: #modal-upload-consumption"><span data-uk-icon='icon: upload' />Consumption</button>
                     </p>
                 </div>
                 <div id='meter-modal' className='uk-flex-top' data-uk-modal>
@@ -169,6 +173,14 @@ class PortfolioMeters extends React.Component<PortfolioMetersProps & StateProps 
                     </ul>
                 </div>
             </div>
+            
+            <div id="modal-upload-supply-data" data-uk-modal="center: true">
+                <UploadSupplyDataDialog details={this.props.details} />
+            </div>
+            <div id="modal-upload-consumption" data-uk-modal="center: true">
+                <UploadHistoricDialog details={this.props.details} />
+            </div>
+            </div>
         );
     }
 }
@@ -182,6 +194,7 @@ const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, PortfolioMet
   
 const mapStateToProps: MapStateToProps<StateProps, PortfolioMetersProps> = (state: ApplicationState) => {
     return {
+        details: state.portfolio.details.value,
         meterPortfolio: state.meters.value,
         working: state.meters.working,
         error: state.meters.error,
