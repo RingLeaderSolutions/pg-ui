@@ -57,7 +57,7 @@ class MeterDetails extends React.Component<MeterDetailsProps & StateProps & Disp
     render() {
         const meter = this.props.meter;
         if(meter == null){
-            return (<Spinner />);
+            return (<div className="uk-modal-dialog uk-modal-body"><Spinner /></div>);
         }
 
         const supplyData = meter.meterSupplyData;
@@ -131,7 +131,7 @@ class MeterDetails extends React.Component<MeterDetailsProps & StateProps & Disp
                                             meterTimeSwitchCode: e.target.value
                                         }))}>
                                         { MeterTimeSwitchCodes.map(m => {
-                                            return <option value={m}>{m}</option>
+                                            return <option key={m} value={m}>{m}</option>
                                         })}
                                     </select>
                                 </div>
@@ -169,7 +169,7 @@ class MeterDetails extends React.Component<MeterDetailsProps & StateProps & Disp
                                             retrievalMethod: e.target.value
                                         }))}>
                                         { RetrievalMethods.map(m => {
-                                            return <option value={m}>{m}</option>
+                                            return <option key={m} value={m}>{m}</option>
                                         })}
                                     </select>
                                 </div>
@@ -183,7 +183,7 @@ class MeterDetails extends React.Component<MeterDetailsProps & StateProps & Disp
                                             gspGroup: e.target.value
                                         }))}>
                                         { GspGroups.map(m => {
-                                            return <option value={m}>{m}</option>
+                                            return <option key={m} value={m}>{m}</option>
                                         })}
                                     </select>
                                 </div>
@@ -197,7 +197,7 @@ class MeterDetails extends React.Component<MeterDetailsProps & StateProps & Disp
                                             measurementClass: e.target.value
                                         }))}>
                                         { MeasurementClasses.map(m => {
-                                            return <option value={m}>{m}</option>
+                                            return <option key={m} value={m}>{m}</option>
                                         })}
                                     </select>                                    
                                 </div>
@@ -227,7 +227,7 @@ class MeterDetails extends React.Component<MeterDetailsProps & StateProps & Disp
                                             daAgent: e.target.value
                                         }))}>
                                         { AggregatorCollectors.map(m => {
-                                            return <option value={m}>{m}</option>
+                                            return <option key={m} value={m}>{m}</option>
                                         })}
                                     </select>
                                 </div>
@@ -241,7 +241,7 @@ class MeterDetails extends React.Component<MeterDetailsProps & StateProps & Disp
                                             dcAgent: e.target.value
                                         }))}>
                                         { AggregatorCollectors.map(m => {
-                                            return <option value={m}>{m}</option>
+                                            return <option  key={m} value={m}>{m}</option>
                                         })}
                                     </select>
                                 </div>
@@ -255,7 +255,7 @@ class MeterDetails extends React.Component<MeterDetailsProps & StateProps & Disp
                                             moAgent: e.target.value
                                         }))}>
                                         { MeterOperators.map(m => {
-                                            return <option value={m}>{m}</option>
+                                            return <option key={m} value={m}>{m}</option>
                                         })}
                                     </select>
                                 </div>

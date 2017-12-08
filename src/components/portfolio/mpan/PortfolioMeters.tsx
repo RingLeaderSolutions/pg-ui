@@ -2,7 +2,7 @@ import * as React from "react";
 import { MapDispatchToPropsFunction, connect, MapStateToProps } from 'react-redux';
 import { ApplicationState } from '../../../applicationState';
 import { Portfolio, PortfolioDetails } from '../../../model/Models';
-import { MeterPortfolio, Meter,  } from '../../../model/Meter';
+import { MeterPortfolio, Meter, MeterType } from '../../../model/Meter';
 import Spinner from '../../common/Spinner';
 import { Link } from 'react-router-dom';
 import MeterDetails from './MeterDetails';
@@ -17,10 +17,10 @@ interface PortfolioMetersProps {
 
 interface StateProps {
     details: PortfolioDetails;
-    meterPortfolio: MeterPortfolio
-    working: boolean
-    error: boolean
-    errorMessage: string
+    meterPortfolio: MeterPortfolio;
+    working: boolean;
+    error: boolean;
+    errorMessage: string;
 }
 
 interface DispatchProps {
@@ -51,42 +51,64 @@ class PortfolioMeters extends React.Component<PortfolioMetersProps & StateProps 
         this.props.editMeter(meter);
     }
 
-    renderMeters(meters: Meter[])
-    {
-        return (
-            <tbody>
-                {meters.map((meter, index) =>{
-                    return (
-                        <tr key={index} data-uk-toggle='target: #meter-modal' onClick={()=> this.editMeter(meter)}>
-                            <td>{meter.meterSupplyData.mpanCore}</td>
-                            <td>{meter.meterSupplyData.meterType}</td>
-                            <td>{meter.meterSupplyData.meterTimeSwitchCode}</td>
-                            <td>{meter.meterSupplyData.llf}</td>
-                            <td>{meter.meterSupplyData.profileClass}</td>
-                            <td>{meter.meterSupplyData.retrievalMethod}</td>
-                            <td>{meter.meterSupplyData.gspGroup}</td>
-                            <td>{meter.meterSupplyData.measurementClass}</td>
-                            <td>{meter.meterSupplyData.serialNumber}</td>
-                            <td>{meter.meterSupplyData.daAgent}</td>
-                            <td>{meter.meterSupplyData.dcAgent}</td>
-                            <td>{meter.meterSupplyData.moAgent}</td>
-                            <td>{meter.meterSupplyData.voltage}</td>
-                            <td>{meter.meterSupplyData.connection}</td>
-                            <td>{meter.meterSupplyData.postcode}</td>
-                            <td>{meter.meterSupplyData.rec}</td>
-                            <td>{meter.meterSupplyData.eac}</td>
-                            <td>{meter.meterSupplyData.capacity}</td>
-                            <td>{meter.meterSupplyData.energized}</td>
-                            <td>{meter.meterSupplyData.newConnection}</td>
-                        </tr>
-                    );
-                })}
-            </tbody>
-        );
+    renderMeters(meters: Meter[]){
+        return meters.map((meter, index) =>{
+            var supplyData = meter.meterSupplyData;
+            if(supplyData == null){
+                return;
+            }
+            
+            return (
+                <tr key={index} data-uk-toggle='target: #meter-modal' onClick={()=> this.editMeter(meter)}>
+                    <td></td>
+                    <td>{supplyData.mpanCore}</td>
+                    <td>{supplyData.meterType}</td>
+                    <td>{supplyData.meterTimeSwitchCode}</td>
+                    <td>{supplyData.llf}</td>
+                    <td>{supplyData.profileClass}</td>
+                    <td>{supplyData.retrievalMethod}</td>
+                    <td>{supplyData.gspGroup}</td>
+                    <td>{supplyData.measurementClass}</td>
+                    <td>{supplyData.serialNumber}</td>
+                    <td>{supplyData.daAgent}</td>
+                    <td>{supplyData.dcAgent}</td>
+                    <td>{supplyData.moAgent}</td>
+                    <td>{supplyData.voltage}</td>
+                    <td>{supplyData.connection}</td>
+                    <td>{supplyData.postcode}</td>
+                    <td>{supplyData.rec}</td>
+                    <td>{supplyData.eac}</td>
+                    <td>{supplyData.capacity}</td>
+                    <td>{supplyData.energized}</td>
+                    <td>{supplyData.newConnection}</td>
+                </tr>
+            );
+        })
     }
 
-    renderTable(meters: Meter[]) {
-        if(meters.length === 0){
+    renderSitesAndMeters(type: MeterType)
+    {
+        var sites = this.props.meterPortfolio.sites;
+        return sites.map((site, index) => {
+                if(site.siteCode == null){
+                    return;
+                }
+                var isElectricity = type == MeterType.Electricity;
+                var meters = isElectricity ? this.renderMeters(site.mpans) : this.renderMeters(site.mprns);
+                return (
+                        <tbody>
+                            <tr>
+                                <td colSpan={21}>{site.siteCode}</td>
+                            </tr>
+                            {meters}
+                        </tbody>
+                    
+                )
+            });
+    }
+
+    renderTable(type: MeterType) {
+        if(this.props.meterPortfolio.sites.length === 0){
             return (<div>No meter data uploaded yet.</div>);
         }
 
@@ -94,6 +116,7 @@ class PortfolioMeters extends React.Component<PortfolioMetersProps & StateProps 
             <table className='uk-table uk-table-divider meter-table'>
                 <thead>
                     <tr>
+                        <th>Site</th>
                         <th>Meter</th>
                         <th>Meter Type</th>
                         <th>Meter Time Switch Code</th>
@@ -116,16 +139,9 @@ class PortfolioMeters extends React.Component<PortfolioMetersProps & StateProps 
                         <th>New Connection</th>
                     </tr>
                 </thead>
-                {this.renderMeters(meters)}
+                {this.renderSitesAndMeters(type)}
             </table>
         );
-    }
-
-    filterByUtility(meters: Meter[], utility: string ){
-        return meters            
-            .filter(m => m.meterSupplyData 
-                && m.meterSupplyData.utility 
-                && m.meterSupplyData.utility === utility);
     }
 
     selectTab(tab:string){
@@ -138,48 +154,45 @@ class PortfolioMeters extends React.Component<PortfolioMetersProps & StateProps 
         if(this.props.working || this.props.meterPortfolio == null){
             return (<Spinner />);
         }
-        
-        const elec = this.filterByUtility(this.props.meterPortfolio.meters, 'ELECTRICITY' );
-        const gas =  this.filterByUtility(this.props.meterPortfolio.meters, 'GAS');
 
         return (
             <div>
-            <div className='uk-flex uk-flex-column portfolio-meters'>
-                <div>
-                    <p className='uk-text-right'>
-                        <button className='uk-button uk-button-primary uk-button-small' data-uk-toggle="target: #modal-upload-supply-data"><span data-uk-icon='icon: upload' />Supply Data</button>
-                        <button className='uk-button uk-button-primary uk-button-small' data-uk-toggle="target: #modal-upload-consumption"><span data-uk-icon='icon: upload' />Consumption</button>
-                    </p>
+                <div className='uk-flex uk-flex-column portfolio-meters'>
+                    <div>
+                        <p className='uk-text-right'>
+                            <button className='uk-button uk-button-primary uk-button-small' data-uk-toggle="target: #modal-upload-supply-data"><span data-uk-icon='icon: upload' />Supply Data</button>
+                            <button className='uk-button uk-button-primary uk-button-small' data-uk-toggle="target: #modal-upload-consumption"><span data-uk-icon='icon: upload' />Consumption</button>
+                        </p>
+                    </div>
+                    <div id='meter-modal' className='uk-flex-top' data-uk-modal>
+                        <MeterDetails portfolio={this.props.portfolio}/>
+                    </div>
+                    <div>
+                        <ul data-uk-tab>
+                            <li className={this.state.tab === 'electricity' ? 'uk-active' : null}>
+                                <a href='#' onClick={() =>this.selectTab('electricity')}>Electricity</a>
+                            </li>
+                            <li className={this.state.tab === 'gas' ? 'uk-active' : null}>
+                                <a href='#' onClick={() =>this.selectTab('gas')}>Gas</a>
+                            </li>
+                        </ul>
+                        <ul className='uk-switcher'>
+                            <li className={this.state.tab === 'electricity' ? 'uk-active' : null}>
+                                {this.renderTable(MeterType.Electricity)}
+                            </li>
+                            <li className={this.state.tab === 'gas' ? 'uk-active' : null}>
+                                {this.renderTable(MeterType.Gas)}
+                            </li>
+                        </ul>
+                    </div>
                 </div>
-                <div id='meter-modal' className='uk-flex-top' data-uk-modal>
-                    <MeterDetails portfolio={this.props.portfolio}/>
+                
+                <div id="modal-upload-supply-data" data-uk-modal="center: true">
+                    <UploadSupplyDataDialog details={this.props.details} />
                 </div>
-                <div>
-                    <ul data-uk-tab>
-                        <li className={this.state.tab === 'electricity' ? 'uk-active' : null}>
-                            <a href='#' onClick={() =>this.selectTab('electricity')}>Electricity</a>
-                        </li>
-                        <li className={this.state.tab === 'gas' ? 'uk-active' : null}>
-                            <a href='#' onClick={() =>this.selectTab('gas')}>Gas</a>
-                        </li>
-                    </ul>
-                    <ul className='uk-switcher'>
-                        <li className={this.state.tab === 'electricity' ? 'uk-active' : null}>
-                            {this.renderTable(elec)}
-                        </li>
-                        <li className={this.state.tab === 'gas' ? 'uk-active' : null}>
-                            {this.renderTable(gas)}
-                        </li>
-                    </ul>
+                <div id="modal-upload-consumption" data-uk-modal="center: true">
+                    <UploadHistoricDialog details={this.props.details} />
                 </div>
-            </div>
-            
-            <div id="modal-upload-supply-data" data-uk-modal="center: true">
-                <UploadSupplyDataDialog details={this.props.details} />
-            </div>
-            <div id="modal-upload-consumption" data-uk-modal="center: true">
-                <UploadHistoricDialog details={this.props.details} />
-            </div>
             </div>
         );
     }

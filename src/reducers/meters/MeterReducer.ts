@@ -22,7 +22,6 @@ const meterReducer = requestResponseReducer(
 const meterEditor = (state: MeterState, action: any): MeterState => {
     switch (action.type) {
         case types.EDIT_METER:
-        console.log(action.meter);
             return {
                 ...state,
                 meter: action.meter

@@ -67,7 +67,7 @@ class PortfolioRequirementsSection extends React.Component<PortfolioRequirements
             electricityRequired: this.electricity.checked,
             gasRequired: this.gas.checked,
             product: this.product.value,
-            startDate: this.state.contractStart.format(),
+            startDate: this.state.contractStart.format("YYYY-MM-DDTHH:mm:ss"),
             // TODO: stodId
             stodId: "day/night"
         };

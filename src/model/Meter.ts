@@ -2,7 +2,13 @@ import { Decipher } from "crypto";
 
 export interface MeterPortfolio {
     portfolioId: string;
-    meters: Meter[];
+    sites: MeterSite[];
+}
+
+export interface MeterSite {
+    siteCode: string;
+    mpans: Meter[];
+    mprns: Meter[];
 }
 
 export interface Meter {
@@ -33,6 +39,11 @@ export interface MeterSupplyData {
     utility: string;
     energized: boolean;
     newConnection: boolean;
+}
+
+export enum MeterType{
+    Gas,
+    Electricity
 }
 
 export const AggregatorCollectors = [
