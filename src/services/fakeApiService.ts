@@ -11,7 +11,7 @@ import { Portfolio,
          Site,
          Account,
          AccountCompanyStatusFlags } from "../model/Models";
-
+import { Meter } from '../model/Meter';
 import { IApiService } from "./ApiService";
 import { CompanyInfo } from '../model/CompanyInfo';
 
@@ -428,6 +428,10 @@ export class FakeApiService implements IApiService {
     }
 
     uploadSiteList(portfolioId: string, accountId: string, file: Blob){
+        return OK();
+    }
+
+    updateMeter(portfolioId: string, meter: Meter){
         return OK();
     }
 }

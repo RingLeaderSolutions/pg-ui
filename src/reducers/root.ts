@@ -1,5 +1,7 @@
 import { combineReducers, Reducer } from 'redux';
 import { ApplicationState } from '../applicationState';
+import { reduceReducers, requestResponseReducer } from './common';
+import { RequestState, initialRequestState } from './RequestState';
 
 // Combine dashboard reducers to form the DashboardState
 import { DashboardState } from './dashboard/DashboardState';
@@ -49,7 +51,6 @@ import portfolioHistoryReducer from './portfolio/portfolioHistoryReducer';
 import mpanToplineReducer from './portfolio/mpanToplineReducer';
 import mpanHistoricalReducer from './portfolio/mpanHistoricalReducer';
 
-import meterReducer from './meters/meterReducer';
 
 const portfolioReducer: Reducer<PortfolioState> = combineReducers<PortfolioState>({
     account: portfolioAccountReducer,
@@ -69,6 +70,23 @@ const authReducer: Reducer<AuthState> = combineReducers<AuthState>({
     login: loginReducer
 });
 
+import { MeterState } from './meters/MeterState'
+
+import metersRetrievalReducer from './meters/metersRetrievalReducer';
+import meterUpdateReducer from './meters/meterUpdateReducer';
+import meterEditReducer from './meters/meterEditReducer';
+
+var meterReducer : Reducer<MeterState> = combineReducers<MeterState>({
+    all: metersRetrievalReducer,
+    update: meterUpdateReducer
+});
+
+var completeMeterReducer = reduceReducers((state: MeterState = {
+    all: initialRequestState,
+    update: initialRequestState,
+    editedMeter: null
+}) => state, meterReducer, meterEditReducer);
+
 // Combine all reducers to form the master ApplicationState
 const rootReducer: Reducer<ApplicationState> = combineReducers<ApplicationState>({
     portfolio: portfolioReducer,
@@ -76,7 +94,7 @@ const rootReducer: Reducer<ApplicationState> = combineReducers<ApplicationState>
     portfolios: portfoliosReducer,
     notifications: notificationMessageReducer,    
     auth: authReducer,
-    meters: meterReducer,
+    meters: completeMeterReducer,
 });
 
 export default rootReducer;

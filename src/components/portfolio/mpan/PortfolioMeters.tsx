@@ -208,10 +208,11 @@ const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, PortfolioMet
 const mapStateToProps: MapStateToProps<StateProps, PortfolioMetersProps> = (state: ApplicationState) => {
     return {
         details: state.portfolio.details.value,
-        meterPortfolio: state.meters.value,
-        working: state.meters.working,
-        error: state.meters.error,
-        errorMessage: state.meters.errorMessage
+        
+        meterPortfolio: state.meters.all.value,
+        working: state.meters.all.working,
+        error: state.meters.all.error,
+        errorMessage: state.meters.all.errorMessage
     };
 };
   

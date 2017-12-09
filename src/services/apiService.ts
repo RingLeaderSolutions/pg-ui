@@ -3,6 +3,7 @@ import axios from 'axios';
 import { Portfolio, CompanyInfo, PortfolioContact, PortfolioRequirements, Account, AccountCompanyStatusFlags } from "../model/Models";
 import { FakeApiService } from './fakeApiService';
 import StorageService from './storageService';
+import { Meter } from '../model/Meter';
 import * as moment from 'moment';
 
 export interface IApiService {
@@ -29,7 +30,8 @@ export interface IApiService {
   getMpanHistorical(documentId: string): Promise<AxiosResponse>;
 
   getAllMeters(portfolioId: string): Promise<AxiosResponse>;
-  
+  updateMeter(portfolioId: string, meter: Meter): Promise<AxiosResponse>;
+
   uploadLoa(portfolioId: string, accountId: string, file: Blob): Promise<AxiosResponse>;
   uploadSupplyMeterData(portfolioId: string, accountId: string, file: Blob): Promise<AxiosResponse>;
   uploadHistorical(portfolioId: string, file: Blob): Promise<AxiosResponse>;
@@ -231,6 +233,10 @@ export class ApiService implements IApiService {
 
     getAllMeters(portfolioId: string){
         return axios.get(`${this.baseApiUri}/portman-web/meters/portfolio/${portfolioId}`, this.getRequestConfig());
+    }
+
+    updateMeter(portfolioId: string, meter: Meter){
+        return axios.put(`${this.baseApiUri}/portman-web/meters/electricity/portfolio/${portfolioId}`, meter.meterSupplyData, this.getRequestConfig());
     }
 }
 

@@ -2,7 +2,7 @@ import * as React from "react";
 import { MapDispatchToPropsFunction, connect, MapStateToProps } from 'react-redux';
 import { ApplicationState } from '../../../applicationState';
 
-import { Portfolio } from '../../../model/Models';
+import { Portfolio, PortfolioDetails } from '../../../model/Models';
 import { 
     MeterPortfolio, 
     Meter,
@@ -18,19 +18,21 @@ import {
 import Spinner from '../../common/Spinner';
 import { Link } from 'react-router-dom';
 
-import { cancelEditMeter, editMeter } from '../../../actions/meterActions';
+import { cancelEditMeter, editMeter, updateMeter } from '../../../actions/meterActions';
 
 interface MeterDetailsProps {
     portfolio: Portfolio;
 }
 
 interface StateProps {
-    meter: Meter
+    meter: Meter;
+    details: PortfolioDetails;
 }
 
 interface DispatchProps {
-    updateMeter: (meter: Meter) => void;
+    editMeter: (meter: Meter) => void;
     cancelEditMeter: () => void;
+    updateMeter: (portfolioId: string, meter: Meter) => void;
 }
 
 
@@ -48,10 +50,15 @@ class MeterDetails extends React.Component<MeterDetailsProps & StateProps & Disp
     }
 
     updateMeter(meterSupplyData: MeterSupplyData){
-        this.props.updateMeter({
+        this.props.editMeter({
             ...this.props.meter,
             meterSupplyData: { ...meterSupplyData}
         });
+    }
+
+    save(){
+        var portfolioId = this.props.details.portfolio.id;
+        this.props.updateMeter(portfolioId, this.props.meter);
     }
 
     render() {
@@ -77,7 +84,7 @@ class MeterDetails extends React.Component<MeterDetailsProps & StateProps & Disp
                                             className='uk-radio' 
                                             type='radio' 
                                             name='meter-type' 
-                                            checked={supplyData.meterType === 'HH'}
+                                            defaultChecked={supplyData.meterType === 'HH'}
                                             onClick={()=> this.updateMeter({
                                                     ...supplyData,
                                                     meterType: 'HH'
@@ -88,7 +95,7 @@ class MeterDetails extends React.Component<MeterDetailsProps & StateProps & Disp
                                             className='uk-radio' 
                                             type='radio' 
                                             name='meter-type' 
-                                            checked={supplyData.meterType === 'NHH'}
+                                            defaultChecked={supplyData.meterType === 'NHH'}
                                             onClick={()=> this.updateMeter({
                                                     ...supplyData,
                                                     meterType: 'NHH'
@@ -101,7 +108,7 @@ class MeterDetails extends React.Component<MeterDetailsProps & StateProps & Disp
                                         <input 
                                             className='uk-checkbox'
                                             type='checkbox' 
-                                            checked={supplyData.newConnection}
+                                            defaultChecked={supplyData.newConnection}
                                             onClick={() => this.updateMeter({
                                                     ...supplyData,
                                                     newConnection: !supplyData.newConnection
@@ -114,7 +121,7 @@ class MeterDetails extends React.Component<MeterDetailsProps & StateProps & Disp
                                         <input 
                                             className='uk-checkbox' 
                                             type='checkbox' 
-                                            checked={supplyData.energized}
+                                            defaultChecked={supplyData.energized}
                                             onClick={() => this.updateMeter({
                                                     ...supplyData,
                                                     energized: !supplyData.energized
@@ -124,16 +131,12 @@ class MeterDetails extends React.Component<MeterDetailsProps & StateProps & Disp
 
                                 <div className='uk-margin'>
                                     <label className='uk-form-label'>Meter Time Switch Code</label>
-                                    <select className='uk-select' 
-                                        value={supplyData.meterTimeSwitchCode}
+                                    <input className='uk-input' 
+                                        defaultValue={supplyData.meterTimeSwitchCode}
                                         onChange={(e => this.updateMeter({
                                             ...supplyData,
                                             meterTimeSwitchCode: e.target.value
-                                        }))}>
-                                        { MeterTimeSwitchCodes.map(m => {
-                                            return <option key={m} value={m}>{m}</option>
-                                        })}
-                                    </select>
+                                        }))}/>
                                 </div>
 
                                 <div className='uk-margin'>
@@ -141,7 +144,7 @@ class MeterDetails extends React.Component<MeterDetailsProps & StateProps & Disp
                                     <input 
                                         className='uk-input' 
                                         type='text' 
-                                        value={supplyData.llf} 
+                                        defaultValue={supplyData.llf} 
                                         onChange={(e => this.updateMeter({
                                             ...supplyData,
                                             llf: e.target.value
@@ -153,7 +156,7 @@ class MeterDetails extends React.Component<MeterDetailsProps & StateProps & Disp
                                     <input 
                                         className='uk-input' 
                                         type='text' 
-                                        value={supplyData.profileClass} 
+                                        defaultValue={supplyData.profileClass} 
                                         onChange={(e => this.updateMeter({
                                             ...supplyData,
                                             profileClass: e.target.value
@@ -163,7 +166,7 @@ class MeterDetails extends React.Component<MeterDetailsProps & StateProps & Disp
                                 <div className='uk-margin'>
                                     <label className='uk-form-label'>Retrieval Method</label>
                                     <select className='uk-select' 
-                                        value={supplyData.retrievalMethod}
+                                        defaultValue={supplyData.retrievalMethod}
                                         onChange={(e => this.updateMeter({
                                             ...supplyData,
                                             retrievalMethod: e.target.value
@@ -177,7 +180,7 @@ class MeterDetails extends React.Component<MeterDetailsProps & StateProps & Disp
                                 <div className='uk-margin'>
                                     <label className='uk-form-label'>GSP Group</label>
                                     <select className='uk-select' 
-                                        value={supplyData.gspGroup}
+                                        defaultValue={supplyData.gspGroup}
                                         onChange={(e => this.updateMeter({
                                             ...supplyData,
                                             gspGroup: e.target.value
@@ -191,7 +194,7 @@ class MeterDetails extends React.Component<MeterDetailsProps & StateProps & Disp
                                 <div className='uk-margin'>
                                     <label className='uk-form-label'>Measurement Class</label>
                                     <select className='uk-select' 
-                                        value={supplyData.measurementClass}
+                                        defaultValue={supplyData.measurementClass}
                                         onChange={(e => this.updateMeter({
                                             ...supplyData,
                                             measurementClass: e.target.value
@@ -207,7 +210,7 @@ class MeterDetails extends React.Component<MeterDetailsProps & StateProps & Disp
                                     <input 
                                         className='uk-input' 
                                         type='text' 
-                                        value={supplyData.serialNumber} 
+                                        defaultValue={supplyData.serialNumber} 
                                         onChange={(e => this.updateMeter({
                                             ...supplyData,
                                             serialNumber: e.target.value
@@ -221,7 +224,7 @@ class MeterDetails extends React.Component<MeterDetailsProps & StateProps & Disp
                                 <div className='uk-margin'>
                                     <label className='uk-form-label'>DA Agent</label>
                                     <select className='uk-select' 
-                                        value={supplyData.daAgent}
+                                        defaultValue={supplyData.daAgent}
                                         onChange={(e => this.updateMeter({
                                             ...supplyData,
                                             daAgent: e.target.value
@@ -235,7 +238,7 @@ class MeterDetails extends React.Component<MeterDetailsProps & StateProps & Disp
                                 <div className='uk-margin'>
                                     <label className='uk-form-label'>DC Agent</label>
                                     <select className='uk-select' 
-                                        value={supplyData.dcAgent}
+                                        defaultValue={supplyData.dcAgent}
                                         onChange={(e => this.updateMeter({
                                             ...supplyData,
                                             dcAgent: e.target.value
@@ -249,7 +252,7 @@ class MeterDetails extends React.Component<MeterDetailsProps & StateProps & Disp
                                 <div className='uk-margin'>
                                     <label className='uk-form-label'>MO Agent</label>
                                     <select className='uk-select' 
-                                        value={supplyData.moAgent}
+                                        defaultValue={supplyData.moAgent}
                                         onChange={(e => this.updateMeter({
                                             ...supplyData,
                                             moAgent: e.target.value
@@ -267,7 +270,7 @@ class MeterDetails extends React.Component<MeterDetailsProps & StateProps & Disp
                                             className='uk-radio' 
                                             type='radio' 
                                             name='voltage' 
-                                            checked={supplyData.voltage === 'High'}
+                                            defaultChecked={supplyData.voltage === 'High'}
                                             onClick={()=> this.updateMeter({
                                                     ...supplyData,
                                                     voltage: 'High'
@@ -278,7 +281,7 @@ class MeterDetails extends React.Component<MeterDetailsProps & StateProps & Disp
                                             className='uk-radio' 
                                             type='radio' 
                                             name='voltage' 
-                                            checked={supplyData.voltage === 'Low'}
+                                            defaultChecked={supplyData.voltage === 'Low'}
                                             onClick={()=> this.updateMeter({
                                                     ...supplyData,
                                                     voltage: 'Low'
@@ -293,7 +296,7 @@ class MeterDetails extends React.Component<MeterDetailsProps & StateProps & Disp
                                             className='uk-radio' 
                                             type='radio' 
                                             name='connection' 
-                                            checked={supplyData.connection === 'Network'}
+                                            defaultChecked={supplyData.connection === 'Network'}
                                             onClick={()=> this.updateMeter({
                                                     ...supplyData,
                                                     connection: 'Network'
@@ -304,7 +307,7 @@ class MeterDetails extends React.Component<MeterDetailsProps & StateProps & Disp
                                             className='uk-radio' 
                                             type='radio' 
                                             name='connection' 
-                                            checked={supplyData.connection === 'Substation'}
+                                            defaultChecked={supplyData.connection === 'Substation'}
                                             onClick={()=> this.updateMeter({
                                                     ...supplyData,
                                                     connection: 'Substation'
@@ -317,7 +320,7 @@ class MeterDetails extends React.Component<MeterDetailsProps & StateProps & Disp
                                     <input 
                                         className='uk-input' 
                                         type='text' 
-                                        value={supplyData.postcode} 
+                                        defaultValue={supplyData.postcode} 
                                         onChange={(e => this.updateMeter({
                                             ...supplyData,
                                             postcode: e.target.value
@@ -329,7 +332,7 @@ class MeterDetails extends React.Component<MeterDetailsProps & StateProps & Disp
                                     <input 
                                         className='uk-input' 
                                         type='text' 
-                                        value={supplyData.rec} 
+                                        defaultValue={supplyData.rec.toString()} 
                                         onChange={(e => this.updateMeter({
                                             ...supplyData,
                                             rec: parseInt(e.target.value)
@@ -341,7 +344,7 @@ class MeterDetails extends React.Component<MeterDetailsProps & StateProps & Disp
                                     <input 
                                         className='uk-input' 
                                         type='text' 
-                                        value={supplyData.eac} 
+                                        defaultValue={supplyData.eac.toString()} 
                                         onChange={(e => this.updateMeter({
                                             ...supplyData,
                                             eac: parseFloat(e.target.value)
@@ -353,7 +356,7 @@ class MeterDetails extends React.Component<MeterDetailsProps & StateProps & Disp
                                     <input 
                                         className='uk-input' 
                                         type='text' 
-                                        value={supplyData.capacity} 
+                                        defaultValue={supplyData.capacity.toString()} 
                                         onChange={(e => this.updateMeter({
                                             ...supplyData,
                                             capacity: parseFloat(e.target.value)
@@ -365,8 +368,8 @@ class MeterDetails extends React.Component<MeterDetailsProps & StateProps & Disp
                     
                 </form>
                 <p className='uk-text-right'>
-                    <button 
-                        className='uk-button uk-button-default uk-modal-close' type='button' onClick={() => this.close()}>Close</button>                            
+                    <button className='uk-button uk-button-default uk-modal-close' type='button' onClick={() => this.close()}>Close</button>                            
+                    <button className='uk-button uk-button-primary uk-modal-close' type='button' onClick={() => this.save()}>Save Meter</button>                            
                 </p>
             </div>
         );
@@ -376,14 +379,16 @@ class MeterDetails extends React.Component<MeterDetailsProps & StateProps & Disp
 
 const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, MeterDetailsProps> = (dispatch) => {
     return {
-        updateMeter: (meter: Meter) => dispatch(editMeter(meter)),
-        cancelEditMeter: () => dispatch(cancelEditMeter())
+        editMeter: (meter: Meter) => dispatch(editMeter(meter)),
+        cancelEditMeter: () => dispatch(cancelEditMeter()),
+        updateMeter: (portfolioId: string, meter: Meter) => dispatch(updateMeter(portfolioId, meter))
     };
 };
   
 const mapStateToProps: MapStateToProps<StateProps, MeterDetailsProps> = (state: ApplicationState) => {
     return {
-        meter: state.meters.meter
+        meter: state.meters.editedMeter,
+        details: state.portfolio.details.value
     };
 };
   

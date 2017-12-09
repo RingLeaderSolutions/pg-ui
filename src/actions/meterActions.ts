@@ -43,3 +43,21 @@ export function cancelEditMeter(){
         });
     };
 };
+
+export function updateMeter(portfolioId: string, meter: Meter){
+    return (dispatch: Dispatch<any>) => {
+        let createPromise = ApiService.updateMeter(portfolioId, meter);
+        dispatch({ type: types.UPDATE_PORTFOLIO_METER_WORKING });
+
+        makeApiRequest(dispatch,
+            createPromise,
+            200, 
+            data => {
+                return { type: types.UPDATE_PORTFOLIO_METER_SUCCESSFUL, data: null};
+                
+            }, 
+            error => {
+                return { type: types.UPDATE_PORTFOLIO_METER_FAILED, errorMessage: error };
+            });
+    };
+}
