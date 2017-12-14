@@ -96,7 +96,7 @@ class PortfolioMeters extends React.Component<PortfolioMetersProps & StateProps 
                 var isElectricity = type == MeterType.Electricity;
                 var meters = isElectricity ? this.renderMeters(site.mpans) : this.renderMeters(site.mprns);
                 return (
-                        <tbody>
+                        <tbody key={site.siteCode}>
                             <tr>
                                 <td colSpan={21}>{site.siteCode}</td>
                             </tr>
