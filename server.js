@@ -3,7 +3,7 @@ var webpack = require('webpack');
 var devServer = require('webpack-dev-middleware');
 var hotServer = require('webpack-hot-middleware');
 var fs = require('fs');
-
+var path = require("path");
 var app = express();
 
 var configFileContents = fs.readFileSync('./appConfig.js', 'utf-8');
@@ -40,16 +40,17 @@ if (process.env.npm_lifecycle_event === 'start') {
 else {
     app.use(express.static(__dirname + '/build'));
 
+    applyStaticRoutes(app);
+
     // handle every other route with index.html, which will contain
     // a script tag to your application's JavaScript file(s).
     app.get('/*', function (request, response) {
         response.sendFile(path.resolve(__dirname, 'build', 'index.html'))
     });
-
-    applyStaticRoutes(app);
 }
 
-var port = 8585;
+console.log('passed port: ' + process.env.PORT);
+var port = process.env.PORT || 8585;
 app.listen(port);
 
 console.log('Express server running on port: ' + port);
