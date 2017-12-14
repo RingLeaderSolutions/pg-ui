@@ -39,7 +39,7 @@ var config = {
     plugins: [
         new webpack.HotModuleReplacementPlugin(),
         new HtmlWebpackPlugin({
-            title: 'Portfolio Generation',
+            title: 'TPI Flow',
             template: './index.ejs'
         })]
 };
