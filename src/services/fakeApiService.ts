@@ -12,6 +12,7 @@ import { Portfolio,
          Account,
          AccountCompanyStatusFlags } from "../model/Models";
 import { Meter } from '../model/Meter';
+import { Tender, TenderContract, TenderSupplier } from '../model/Tender';
 import { IApiService } from "./ApiService";
 import { CompanyInfo } from '../model/CompanyInfo';
 
@@ -432,6 +433,86 @@ export class FakeApiService implements IApiService {
     }
 
     updateMeter(portfolioId: string, meter: Meter){
+        return OK();
+    }
+
+    getPortfolioTenders(portfolioId: string){
+        var data: Tender[] = [
+            {
+                tenderId: "5122951b-b942-4f25-8ee0-5f2e255a5f50",
+                portfolioId: "4d584e81-91c2-47b4-85f9-411db125af51",
+                created: "2017-12-19T00:12:07.167",
+                deadline: null,
+                deadlineNotes: null,
+                status: "CREATED",
+                quotes: [],
+                assignedSuppliers: [
+                    {
+                        supplierId: "4",
+                        name: "Eon",
+                        acctMgrId: "004",
+                        gasSupplier: true,
+                        electricitySupplier: true,
+                        paymentTerms: 28,
+                        logoUri: "EonLogoMainLogo.svg"
+                    },
+                    {
+                        supplierId: "1",
+                        name: "Haven Power",
+                        acctMgrId: "001",
+                        gasSupplier: true,
+                        electricitySupplier: true,
+                        paymentTerms: 28,
+                        logoUri: "haven.png"
+                    }
+                ],
+                packs: [],
+                existingContract: {
+                    contractId: "bc6f7888-d4cf-443b-aa28-e79c58ba14bb",
+                    supplierId: "1",
+                    accountId: "493e1708-2457-48ba-8925-09856d6e9732",
+                    contractStart: "2016-12-19T00:12:07.167",
+                    contractEnd: "2019-01-19T00:12:07.167",
+                    product: "fixed",
+                    reference: "havenGas16",
+                    utility: "GAS",
+                    incumbent: true,
+                    uploaded: null,
+                    status: null
+                },
+                utility: "GAS"
+            }
+        ];
+
+        return OK(data);
+    }
+
+    getTenderSuppliers(){
+        var data: TenderSupplier[] = [
+            {
+                supplierId: "1",
+                name: "Haven Power",
+                acctMgrId: "001",
+                gasSupplier: true,
+                electricitySupplier: true,
+                paymentTerms: 28,
+                logoUri: "haven.png"
+            },
+            {
+                supplierId: "4",
+                name: "Eon",
+                acctMgrId: "004",
+                gasSupplier: true,
+                electricitySupplier: true,
+                paymentTerms: 28,
+                logoUri: "EonLogoMainLogo.svg"
+            }
+        ];
+
+        return OK(data);
+    }
+
+    addExistingContract(contract: TenderContract, portfolioId: string, tenderId: string) {
         return OK();
     }
 }

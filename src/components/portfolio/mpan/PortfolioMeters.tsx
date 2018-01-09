@@ -167,7 +167,7 @@ class PortfolioMeters extends React.Component<PortfolioMetersProps & StateProps 
                     <div id='meter-modal' className='uk-flex-top' data-uk-modal>
                         <MeterDetails portfolio={this.props.portfolio}/>
                     </div>
-                    <div>
+                    <div className="uk-overflow-auto">
                         <ul data-uk-tab>
                             <li className={this.state.tab === 'electricity' ? 'uk-active' : null}>
                                 <a href='#' onClick={() =>this.selectTab('electricity')}>Electricity</a>

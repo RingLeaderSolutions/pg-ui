@@ -13,6 +13,7 @@ import PortfolioUploads from "./upload/PortfolioUploads";
 import PortfolioMeters from "./mpan/PortfolioMeters";
 
 import { getSinglePortfolio } from '../../actions/portfolioActions';
+import TenderSummary from "./tender/TenderSummary";
 
 interface PortfolioDetailProps extends RouteComponentProps<void> {
 }
@@ -60,7 +61,7 @@ class PortfolioDetail extends React.Component<PortfolioDetailProps & StateProps 
                     <li><PortfolioSetup portfolio={portfolio}/></li>
                     <li><PortfolioSummary portfolio={portfolio}/></li>
                     <li><PortfolioMeters portfolio={portfolio}/></li>
-                    <li>Tenders tab not yet built.</li>
+                    <li><TenderSummary portfolio={portfolio}/></li>
                 </ul>
             </div>)
     }

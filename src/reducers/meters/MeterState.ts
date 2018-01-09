@@ -5,6 +5,6 @@ import { MetersRetrievalState } from './metersRetrievalReducer';
 
 export interface MeterState {
     all: MetersRetrievalState;
-    editedMeter: Meter;
+    editedMeter?: Meter;
     update: MeterUpdateState;
 }

@@ -4,6 +4,7 @@ import { MpanToplineState } from './mpanToplineReducer';
 import { MpanHistoricalState } from './mpanHistoricalReducer';
 import { PortfolioDetailsState } from './portfolioDetailsReducer';
 import { PortfolioAccountState } from './portfolioAccountReducer';
+import { TenderState } from '../tender/TenderState';
 
 export interface PortfolioState {
     account: PortfolioAccountState;
@@ -12,4 +13,5 @@ export interface PortfolioState {
     selected: SelectedPortfolioState;
     topline: MpanToplineState;
     historical: MpanHistoricalState;
+    tender: TenderState;
 }

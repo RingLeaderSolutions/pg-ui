@@ -37,6 +37,10 @@ export { DocumentType };
 export { DocumentStatus };
 export { DocumentGroup };
 
+export enum UtilityType {
+    Gas,
+    Electricity
+}
 
 // Application data model
 

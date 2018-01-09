@@ -40,6 +40,18 @@ const portfoliosReducer: Reducer<PortfoliosState> = combineReducers<PortfoliosSt
     create: portfolioCreationReducer
 });
 
+import { TenderState } from './tender/TenderState';
+
+import addExistingContractReducer from './tender/addExistingContractReducer';
+import tendersReducer from './tender/tendersReducer';
+import tenderSuppliersReducer from './tender/tenderSuppliersReducer';
+
+const tenderReducer: Reducer<TenderState> = combineReducers<TenderState>({
+    tenders: tendersReducer,
+    suppliers: tenderSuppliersReducer,
+    addExistingContract: addExistingContractReducer
+});
+
 // Combine portfolio reducers to form the PortfolioState
 import { PortfolioState } from './portfolio/PortfolioState';
 
@@ -58,7 +70,8 @@ const portfolioReducer: Reducer<PortfolioState> = combineReducers<PortfolioState
     selected: selectedPortfolioReducer,
     history: portfolioHistoryReducer,
     topline: mpanToplineReducer,
-    historical: mpanHistoricalReducer
+    historical: mpanHistoricalReducer,
+    tender: tenderReducer
 });
 
 import notificationMessageReducer from './notifications/notificationMessageReducer';
@@ -84,7 +97,6 @@ var meterReducer : Reducer<MeterState> = combineReducers<MeterState>({
 var completeMeterReducer = reduceReducers((state: MeterState = {
     all: initialRequestState,
     update: initialRequestState,
-    editedMeter: null
 }) => state, meterReducer, meterEditReducer);
 
 // Combine all reducers to form the master ApplicationState

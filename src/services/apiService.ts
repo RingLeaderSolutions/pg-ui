@@ -4,6 +4,7 @@ import { Portfolio, CompanyInfo, PortfolioContact, PortfolioRequirements, Accoun
 import { FakeApiService } from './fakeApiService';
 import StorageService from './storageService';
 import { Meter } from '../model/Meter';
+import { Tender, TenderContract, TenderSupplier } from '../model/Tender';
 import * as moment from 'moment';
 
 export interface IApiService {
@@ -36,6 +37,10 @@ export interface IApiService {
   uploadSupplyMeterData(portfolioId: string, accountId: string, file: Blob): Promise<AxiosResponse>;
   uploadHistorical(portfolioId: string, file: Blob): Promise<AxiosResponse>;
   uploadSiteList(portfolioId: string, accountId: string, file: Blob): Promise<AxiosResponse>;
+
+  getTenderSuppliers(): Promise<AxiosResponse>;
+  getPortfolioTenders(portfolioId: string): Promise<AxiosResponse>;
+  addExistingContract(contract: TenderContract, portfolioId: string, tenderId: string): Promise<AxiosResponse>;
 }
 
 export class ApiService implements IApiService {
@@ -237,6 +242,18 @@ export class ApiService implements IApiService {
 
     updateMeter(portfolioId: string, meter: Meter){
         return axios.put(`${this.baseApiUri}/portman-web/meters/electricity/portfolio/${portfolioId}`, meter.meterSupplyData, this.getRequestConfig());
+    }
+
+    getPortfolioTenders(portfolioId: string){
+        return axios.get(`${this.baseApiUri}/portman-web/tender/portfolio/${portfolioId}`, this.getRequestConfig());        
+    }
+
+    getTenderSuppliers(){
+        return axios.get(`${this.baseApiUri}/portman-web/tender/suppliers`, this.getRequestConfig());        
+    }
+
+    addExistingContract(contract: TenderContract, portfolioId: string, tenderId: string){
+        return axios.post(`${this.baseApiUri}/portman-web/tender/${tenderId}/portfolio/${portfolioId}`, contract, this.getRequestConfig());        
     }
 }
 
