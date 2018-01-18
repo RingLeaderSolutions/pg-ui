@@ -42,7 +42,6 @@ export function getTenderSuppliers(){
     }
 };
 
-
 export function addExistingContract(portfolioId: string, tenderId: string, contract: TenderContract){
     return (dispatch: Dispatch<any>) => {
         let createPromise = ApiService.addExistingContract(contract, portfolioId, tenderId);
@@ -60,3 +59,149 @@ export function addExistingContract(portfolioId: string, tenderId: string, contr
             });
     };
 }
+
+export function deleteTender(portfolioId: string, tenderId: string){
+    return (dispatch: Dispatch<any>) => {
+        let createPromise = ApiService.deleteTender(portfolioId, tenderId);
+        dispatch({ type: types.DELETE_TENDER_WORKING });
+
+        makeApiRequest(dispatch,
+            createPromise,
+            200, 
+            data => {
+                return { type: types.DELETE_TENDER_SUCCESSFUL, data: null};
+                
+            }, 
+            error => {
+                return { type: types.DELETE_TENDER_FAILED, errorMessage: error };
+            });
+    };
+}
+
+export function createElectricityTender(portfolioId: string){
+    return (dispatch: Dispatch<any>) => {
+        let createPromise = ApiService.createElectricityTender(portfolioId);
+        dispatch({ type: types.CREATE_ELECTRICITY_TENDER_WORKING });
+
+        makeApiRequest(dispatch,
+            createPromise,
+            200, 
+            data => {
+                return { type: types.CREATE_ELECTRICITY_TENDER_SUCCESSFUL, data: null};
+                
+            }, 
+            error => {
+                return { type: types.CREATE_ELECTRICITY_TENDER_FAILED, errorMessage: error };
+            });
+    };
+}
+
+export function createGasTender(portfolioId: string){
+    return (dispatch: Dispatch<any>) => {
+        let createPromise = ApiService.createGasTender(portfolioId);
+        dispatch({ type: types.CREATE_GAS_TENDER_WORKING });
+
+        makeApiRequest(dispatch,
+            createPromise,
+            200, 
+            data => {
+                return { type: types.CREATE_GAS_TENDER_SUCCESSFUL, data: null};
+                
+            }, 
+            error => {
+                return { type: types.CREATE_GAS_TENDER_FAILED, errorMessage: error };
+            });
+    };
+}
+
+export function assignTenderSupplier(tenderId: string, supplierId: string){
+    return (dispatch: Dispatch<any>) => {
+        let createPromise = ApiService.assignTenderSupplier(tenderId, supplierId);
+        dispatch({ type: types.ASSIGN_TENDER_SUPPLIER_WORKING });
+
+        makeApiRequest(dispatch,
+            createPromise,
+            200, 
+            data => {
+                return { type: types.ASSIGN_TENDER_SUPPLIER_SUCCESSFUL, data: null};
+                
+            }, 
+            error => {
+                return { type: types.ASSIGN_TENDER_SUPPLIER_FAILED, errorMessage: error };
+            });
+    };
+}
+
+export function unassignTenderSupplier(tenderId: string, supplierId: string){
+    return (dispatch: Dispatch<any>) => {
+        let createPromise = ApiService.unassignTenderSupplier(tenderId, supplierId);
+        dispatch({ type: types.UNASSIGN_TENDER_SUPPLIER_WORKING });
+
+        makeApiRequest(dispatch,
+            createPromise,
+            200, 
+            data => {
+                return { type: types.UNASSIGN_TENDER_SUPPLIER_SUCCESSFUL, data: null};
+                
+            }, 
+            error => {
+                return { type: types.UNASSIGN_TENDER_SUPPLIER_FAILED, errorMessage: error };
+            });
+    };
+}
+
+export function uploadBackingSheet(tenderId: string, file: Blob){
+    return (dispatch: Dispatch<any>) => {
+        let uploadPromise = ApiService.uploadBackingSheet(tenderId, file);
+        dispatch({ type: types.UPLOAD_BACKING_SHEET_WORKING });
+
+        makeApiRequest(dispatch,
+            uploadPromise,
+            200, 
+            data => {
+                return { type: types.UPLOAD_BACKING_SHEET_SUCCESSFUL, data: null};
+                
+            }, 
+            error => {
+                return { type: types.UPLOAD_BACKING_SHEET_FAILED, errorMessage: error };
+            });
+    };
+}
+
+export function updateTender(tenderId: string, tender: Tender){
+    return (dispatch: Dispatch<any>) => {
+        let uploadPromise = ApiService.updateTender(tenderId, tender);
+        dispatch({ type: types.UPDATE_TENDER_WORKING });
+
+        makeApiRequest(dispatch,
+            uploadPromise,
+            200, 
+            data => {
+                return { type: types.UPDATE_TENDER_SUCCESSFUL, data: null};
+                
+            }, 
+            error => {
+                return { type: types.UPDATE_TENDER_FAILED, errorMessage: error };
+            });
+    };
+}
+
+export function generateTenderPack(portfolioId: string, tenderId: string){
+    return (dispatch: Dispatch<any>) => {
+        let uploadPromise = ApiService.generateTenderPack(tenderId, portfolioId);
+        dispatch({ type: types.GENERATE_TENDER_PACK_WORKING });
+
+        makeApiRequest(dispatch,
+            uploadPromise,
+            200, 
+            data => {
+                return { type: types.GENERATE_TENDER_PACK_SUCCESSFUL, data: null};
+                
+            }, 
+            error => {
+                return { type: types.GENERATE_TENDER_PACK_FAILED, errorMessage: error };
+            });
+    };
+}
+
+

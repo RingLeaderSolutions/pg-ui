@@ -21,12 +21,25 @@ interface DispatchProps {
 }
 
 class PortfolioContactSection extends React.Component<PortfolioContactSectionProps & StateProps & DispatchProps, {}> {
+    renderCard(content: any){
+        return (
+            <div className="uk-card uk-card-default uk-card-body">
+                {content}
+
+                <div id="modal-new-contact" data-uk-modal="center: true">
+                    <AddContactDialog details={this.props.details} />
+                </div>
+            </div>);
+    }
+
     render() {
         if(this.props.error){
-            return (<ErrorMessage content={this.props.errorMessage} />);
+            var error = (<ErrorMessage content={this.props.errorMessage} />);
+            return this.renderCard(error);
         }
         if(this.props.working || this.props.details == null){
-            return (<Spinner />);
+            var spinner = (<Spinner hasMargin={true}/>);
+            return this.renderCard(spinner);
         }
         
         var { portfolio } = this.props.details;
@@ -74,14 +87,7 @@ class PortfolioContactSection extends React.Component<PortfolioContactSectionPro
                 </div>
             )
         }
-        return (
-            <div className="uk-card uk-card-default uk-card-body">
-                {content}
-
-                <div id="modal-new-contact" data-uk-modal="center: true">
-                    <AddContactDialog details={this.props.details} />
-                </div>
-            </div>)
+        return this.renderCard(content);
     }
 }
 
@@ -92,9 +98,9 @@ const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, PortfolioCon
   
 const mapStateToProps: MapStateToProps<StateProps, PortfolioContactSectionProps> = (state: ApplicationState) => {
     return {
-        working: state.portfolio.details.working,
-        error: state.portfolio.details.error,
-        errorMessage: state.portfolio.details.errorMessage
+        working: state.portfolio.details.working || state.portfolio.create_contact.working,
+        error: state.portfolio.create_contact.error,
+        errorMessage: state.portfolio.create_contact.errorMessage
     };
 };
   

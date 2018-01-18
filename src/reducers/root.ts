@@ -45,11 +45,25 @@ import { TenderState } from './tender/TenderState';
 import addExistingContractReducer from './tender/addExistingContractReducer';
 import tendersReducer from './tender/tendersReducer';
 import tenderSuppliersReducer from './tender/tenderSuppliersReducer';
+import deleteTenderReducer from './tender/deleteTenderReducer';
+import createGasTenderReducer from './tender/createGasTenderReducer';
+import createElectricityTenderReducer from './tender/createElectricityTenderReducer';
+import assignTenderSupplierReducer from './tender/assignTenderSupplierReducer';
+import unassignTenderSupplierReducer from './tender/unassignTenderSupplierReducer';
+import updateTenderReducer from './tender/updateTenderReducer';
+import generateTenderPackReducer from './tender/generateTenderPackReducer';
 
 const tenderReducer: Reducer<TenderState> = combineReducers<TenderState>({
     tenders: tendersReducer,
     suppliers: tenderSuppliersReducer,
-    addExistingContract: addExistingContractReducer
+    addExistingContract: addExistingContractReducer,
+    delete_tender: deleteTenderReducer,
+    create_electricity_tender: createElectricityTenderReducer,
+    create_gas_tender: createGasTenderReducer,
+    assign_tender_supplier: assignTenderSupplierReducer,
+    unassign_tender_supplier: unassignTenderSupplierReducer,
+    update_tender: updateTenderReducer,
+    generate_pack: generateTenderPackReducer
 });
 
 // Combine portfolio reducers to form the PortfolioState
@@ -62,6 +76,8 @@ import portfolioHistoryReducer from './portfolio/portfolioHistoryReducer';
 
 import mpanToplineReducer from './portfolio/mpanToplineReducer';
 import mpanHistoricalReducer from './portfolio/mpanHistoricalReducer';
+import updateRequirementsReducer from './portfolio/updateRequirementsReducer';
+import createContactReducer from './portfolio/createContactReducer';
 
 
 const portfolioReducer: Reducer<PortfolioState> = combineReducers<PortfolioState>({
@@ -71,7 +87,9 @@ const portfolioReducer: Reducer<PortfolioState> = combineReducers<PortfolioState
     history: portfolioHistoryReducer,
     topline: mpanToplineReducer,
     historical: mpanHistoricalReducer,
-    tender: tenderReducer
+    tender: tenderReducer,
+    update_requirements: updateRequirementsReducer,
+    create_contact: createContactReducer
 });
 
 import notificationMessageReducer from './notifications/notificationMessageReducer';

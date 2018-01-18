@@ -5,8 +5,8 @@ import { ApplicationState } from '../../../applicationState';
 import { Portfolio, PortfolioDetails } from '../../../model/Models';
 import { 
     MeterPortfolio, 
-    Meter,
-    MeterSupplyData, 
+    Mpan,
+    MpanSupplyData, 
     AggregatorCollectors,
     MeterOperators, 
     MeterTimeSwitchCodes,
@@ -25,14 +25,14 @@ interface MeterDetailsProps {
 }
 
 interface StateProps {
-    meter: Meter;
+    meter: Mpan;
     details: PortfolioDetails;
 }
 
 interface DispatchProps {
-    editMeter: (meter: Meter) => void;
+    editMeter: (meter: Mpan) => void;
     cancelEditMeter: () => void;
-    updateMeter: (portfolioId: string, meter: Meter) => void;
+    updateMeter: (portfolioId: string, meter: Mpan) => void;
 }
 
 
@@ -49,7 +49,7 @@ class MeterDetails extends React.Component<MeterDetailsProps & StateProps & Disp
         this.props.cancelEditMeter();
     }
 
-    updateMeter(meterSupplyData: MeterSupplyData){
+    updateMeter(meterSupplyData: MpanSupplyData){
         this.props.editMeter({
             ...this.props.meter,
             meterSupplyData: { ...meterSupplyData}
@@ -369,7 +369,7 @@ class MeterDetails extends React.Component<MeterDetailsProps & StateProps & Disp
                 </form>
                 <p className='uk-text-right'>
                     <button className='uk-button uk-button-default uk-modal-close' type='button' onClick={() => this.close()}>Close</button>                            
-                    <button className='uk-button uk-button-primary uk-modal-close' type='button' onClick={() => this.save()}>Save Meter</button>                            
+                    <button className='uk-button uk-button-primary uk-modal-close uk-margin-left' type='button' onClick={() => this.save()}>Save Meter</button>                            
                 </p>
             </div>
         );
@@ -379,9 +379,9 @@ class MeterDetails extends React.Component<MeterDetailsProps & StateProps & Disp
 
 const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, MeterDetailsProps> = (dispatch) => {
     return {
-        editMeter: (meter: Meter) => dispatch(editMeter(meter)),
+        editMeter: (meter: Mpan) => dispatch(editMeter(meter)),
         cancelEditMeter: () => dispatch(cancelEditMeter()),
-        updateMeter: (portfolioId: string, meter: Meter) => dispatch(updateMeter(portfolioId, meter))
+        updateMeter: (portfolioId: string, meter: Mpan) => dispatch(updateMeter(portfolioId, meter))
     };
 };
   

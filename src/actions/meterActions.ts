@@ -1,6 +1,6 @@
 import ApiService from "../services/ApiService";
 
-import { Meter } from "../Model/Meter";
+import { Mpan, MeterPortfolio } from "../Model/Meter";
 
 import * as types from "./actionTypes";
 import { Dispatch } from 'redux';
@@ -17,7 +17,7 @@ export function getMeters(portfolioId: string){
             fetchPromise,
             200, 
             data => {
-                return { type: types.FETCH_METERS_SUCCESSFUL, data: data as Meter[] };
+                return { type: types.FETCH_METERS_SUCCESSFUL, data: data as MeterPortfolio };
             }, 
             error => {
                 return { type: types.FETCH_METERS_FAILED, errorMessage: error };
@@ -26,7 +26,7 @@ export function getMeters(portfolioId: string){
 };
 
 
-export function editMeter(meter: Meter){
+export function editMeter(meter: Mpan){
     return (dispatch: Dispatch<any>) => {
         dispatch({ 
             type: types.EDIT_METER,
@@ -44,7 +44,7 @@ export function cancelEditMeter(){
     };
 };
 
-export function updateMeter(portfolioId: string, meter: Meter){
+export function updateMeter(portfolioId: string, meter: Mpan){
     return (dispatch: Dispatch<any>) => {
         let createPromise = ApiService.updateMeter(portfolioId, meter);
         dispatch({ type: types.UPDATE_PORTFOLIO_METER_WORKING });

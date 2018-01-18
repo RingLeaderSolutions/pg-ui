@@ -1,15 +1,42 @@
 import * as React from "react";
 import { Portfolio, PortfolioDetails, UtilityType } from '../../../model/Models';
+import { MapDispatchToPropsFunction, connect, MapStateToProps } from 'react-redux';
+import { ApplicationState } from '../../../applicationState';
+import Spinner from '../../common/Spinner';
+import ErrorMessage from "../../common/ErrorMessage";
 
-import { getPortfolioTenders } from '../../../actions/tenderActions';
+import { assignTenderSupplier, unassignTenderSupplier } from '../../../actions/tenderActions';
 import { Tender, TenderSupplier } from "../../../model/Tender";
 import TenderStatus from "./TenderStatus";
 
 interface TenderSupplierSelectDialogProps {
+    tenderId: string;
     suppliers: TenderSupplier[];
+    assignedSuppliers: TenderSupplier[];
 }
 
-class TenderView extends React.Component<TenderSupplierSelectDialogProps, {}> { 
+interface StateProps {
+    working: boolean;
+    error: boolean;
+    errorMessage: string;
+}
+  
+interface DispatchProps {
+    assignTenderSupplier: (tenderId: string, supplierId: string) => void;
+    unassignTenderSupplier: (tenderId: string, supplierId: string) => void;
+}
+
+
+class TenderSupplierSelectDialog extends React.Component<TenderSupplierSelectDialogProps & StateProps & DispatchProps, {}> {
+    toggleSupplierAssignment(ev: any, supplierId: string){
+        if(ev.target.checked){
+            this.props.assignTenderSupplier(this.props.tenderId, supplierId);        
+        }
+        else {
+            this.props.unassignTenderSupplier(this.props.tenderId, supplierId);        
+        }
+    }
+
     render() {
         return (
             <div className="uk-modal-dialog">
@@ -20,18 +47,16 @@ class TenderView extends React.Component<TenderSupplierSelectDialogProps, {}> {
                 <div className="uk-modal-body">
                     <div className="uk-panel-scrollable uk-margin uk-height-large">
                         {this.props.suppliers.map(s => {
+                            var isAssigned = this.props.assignedSuppliers.find(as => as.supplierId == s.supplierId) != null;
                             return (
                                 <div key={s.supplierId} className="supplier">
-                                    <div className="uk-margin uk-grid" data-uk-grid>
-                                        <span data-uk-icon="icon: bolt; ratio: 2"></span>
-                                        <div className="uk-margin">
-                                            <h3>{s.name}</h3>
-                                        </div>
+                                    <div className="uk-margin uk-grid uk-flex-center" data-uk-grid>
+                                        <img className="supplier-image" src={s.logoUri} alt={s.name} />
                                     </div>
                                     <div className="uk-margin uk-grid-small" data-uk-grid>
                                         <div>
                                             <label>
-                                                <input className="uk-checkbox" type="checkbox"/>
+                                                <input className="uk-checkbox" type="checkbox" defaultChecked={isAssigned} onChange={(e) => this.toggleSupplierAssignment(e, s.supplierId)}/>
                                                 <div>Included</div>
                                             </label>
                                         </div>
@@ -65,4 +90,19 @@ class TenderView extends React.Component<TenderSupplierSelectDialogProps, {}> {
     }
 }
 
-export default TenderView;
+const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, TenderSupplierSelectDialogProps> = (dispatch) => {
+    return {
+        assignTenderSupplier: (tenderId, supplierId) => dispatch(assignTenderSupplier(tenderId, supplierId)),
+        unassignTenderSupplier: (tenderId, supplierId) => dispatch(unassignTenderSupplier(tenderId, supplierId))
+    };
+};
+  
+const mapStateToProps: MapStateToProps<StateProps, TenderSupplierSelectDialogProps> = (state: ApplicationState) => {
+    return {
+        working: state.portfolio.tender.suppliers.working,
+        error: state.portfolio.tender.tenders.error,
+        errorMessage: state.portfolio.tender.tenders.errorMessage
+    };
+};
+  
+export default connect(mapStateToProps, mapDispatchToProps)(TenderSupplierSelectDialog);

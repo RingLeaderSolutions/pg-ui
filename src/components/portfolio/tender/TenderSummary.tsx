@@ -5,6 +5,8 @@ import { MapDispatchToPropsFunction, connect, MapStateToProps } from 'react-redu
 import { ApplicationState } from '../../../applicationState';
 import { Portfolio, PortfolioDetails, UtilityType } from '../../../model/Models';
 import Spinner from '../../common/Spinner';
+import CreateElectricityTenderView from "./CreateElectricityTenderView";
+import CreateGasTenderView from "./CreateGasTenderView";
 
 import { getPortfolioTenders } from '../../../actions/tenderActions';
 import { Tender } from "../../../model/Tender";
@@ -38,32 +40,55 @@ class TenderSummary extends React.Component<TenderSummaryProps & StateProps & Di
 
     generateGasTender(){
         let tender = this.props.tenders.find(t => t.utility == "GAS");
-        return (<TenderView tender={tender} details={this.props.details} utility={UtilityType.Gas} />);
+        if(tender != null){
+            return (<TenderView tender={tender} details={this.props.details} utility={UtilityType.Gas} />);
+        }
+
+        return (<CreateGasTenderView portfolioId={this.props.portfolio.id} />);
     }
 
     generateElectricityTender(){
         let tender = this.props.tenders.find(t => t.utility == "ELECTRICITY");
-        return (<TenderView tender={tender} details={this.props.details} utility={UtilityType.Electricity} />);
+
+        if(tender != null){
+            return (<TenderView tender={tender} details={this.props.details} utility={UtilityType.Electricity} />);
+        }
+        return (<CreateElectricityTenderView portfolioId={this.props.portfolio.id} />);
     }
 
+    renderContent(content: any){
+        return (
+            <div className="content-tenders">
+                {content}
+            </div>
+        )
+    }
+    
     render() {
         if(this.props.error){
-            return (<ErrorMessage content={this.props.errorMessage} />);
+            var error = (<ErrorMessage content={this.props.errorMessage} />);
+            return this.renderContent(error);
         }
         if(this.props.working || this.props.tenders == null || this.props.details == null){
-            return (<Spinner />);
+            var spinner = (<Spinner />);
+            return this.renderContent(spinner);
+        }
+        if(this.props.details.requirements == null){
+            var finishSetup = (<p>This portfolio isn't ready to tender yet. Please complete the necessary fields on the setup tab.</p>);
+            return this.renderContent(finishSetup);
         }
         
         var gasTenders = this.props.details.requirements.gasRequired ? this.generateGasTender() : null;
         var elecTenders = this.props.details.requirements.electricityRequired ? this.generateElectricityTender() : null;
         var { tenders } = this.props;
-        return (
-            <div className="content-tenders">
-                <div className="uk-grid uk-child-width-expand@s uk-grid-match" data-uk-grid>
-                    <div>{elecTenders}</div>
-                    <div>{gasTenders}</div>
-                </div>
-            </div>)
+
+        var content = (
+            <div className="uk-grid uk-child-width-expand@s uk-grid-match" data-uk-grid>
+                <div>{elecTenders}</div>
+                <div>{gasTenders}</div>
+            </div>
+        );
+        return this.renderContent(content);
     }
 }
 
@@ -77,7 +102,7 @@ const mapStateToProps: MapStateToProps<StateProps, TenderSummaryProps> = (state:
     return {
         details: state.portfolio.details.value,
         tenders: state.portfolio.tender.tenders.value,
-        working: state.portfolio.tender.tenders.working && state.portfolio.details.working,
+        working: state.portfolio.tender.tenders.working || state.portfolio.details.working,
         error: state.portfolio.tender.tenders.error,
         errorMessage: state.portfolio.tender.tenders.errorMessage
     };

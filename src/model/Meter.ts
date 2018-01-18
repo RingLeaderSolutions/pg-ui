@@ -7,16 +7,50 @@ export interface MeterPortfolio {
 
 export interface MeterSite {
     siteCode: string;
-    mpans: Meter[];
-    mprns: Meter[];
+    mpans: Mpan[];
+    mprns: Mprn[];
 }
 
-export interface Meter {
-    meterSupplyData: MeterSupplyData;
-    halfhourly: void;
+export interface Mpan {
+    meterSupplyData: MpanSupplyData;
+    halfHourly: HalfHourlyData;
 }
 
-export interface MeterSupplyData {
+export interface Mprn {
+    meterSupplyData: MprnSupplyData;
+    halfHourly: HalfHourlyData;
+}
+
+export interface HalfHourlyData {
+    forecast: DocumentData;
+    historical: DocumentData;
+}
+
+export interface DocumentData {
+    created: string;
+    docId: string;
+}
+
+export interface MprnSupplyData {
+    aQ: number;
+    address: string;
+    changeOfUse: boolean;
+    currentContractEnd: string;
+    id: string;
+    imperial: boolean;
+    make: string;
+    model: string;
+    mprnCore: string;
+    postcode: string;
+    serialNumber: string;
+    siteCode: string;
+    size: number;
+    utility: string;
+}
+
+export interface MpanSupplyData {
+    address: string;
+    currentContractEnd: string;
     id: string;
     mpanCore: string;    
     meterType: string;
@@ -39,6 +73,9 @@ export interface MeterSupplyData {
     utility: string;
     energized: boolean;
     newConnection: boolean;
+    periodConsumption: string;
+    siteCode: string;
+    totalConsumption: number;
 }
 
 export enum MeterType{

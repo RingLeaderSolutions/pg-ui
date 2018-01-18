@@ -1,5 +1,7 @@
 export interface Tender {
     tenderId: string;
+    tenderTitle: string;
+    billingMethod: string;
     portfolioId: string;
     created: string;
     deadline: string;
@@ -10,10 +12,21 @@ export interface Tender {
     packs: TenderPack[];
     existingContract: TenderContract;
     utility: string;
+    commission: number;
 }
 
 export interface TenderQuote {
-
+    contractBlobId: string;
+    expiry: string;
+    portfolioId: string;
+    quoteId: string;
+    received: string;
+    sheetCount: number;
+    status: string;
+    tenderId: string;
+    termsheetBlobId: string;
+    utility: string;
+    supplierId: string;
 }
 
 export interface TenderSupplier {
@@ -48,4 +61,74 @@ export interface TenderContract {
     incumbent: boolean;
     uploaded: string;
     status: string;
+}
+
+export interface BackingSheet {
+    sheetType: string,
+    parentId: string,
+    sheetId: string,
+    tenderRef: string,
+    supplier: string,
+    siteCode: string,
+    address1: string,
+    address2: string,
+    town: string,
+    postcode: string,
+    utility: string,
+    product: string,
+    contractLength: number,
+    billingFrequency: string,
+    paymentTerms: number,
+    topline: string,
+    consumption1: number,
+    consumption2: number,
+    consumption3: number,
+    consumption4: number,
+    consumption5: number,
+    totalUnits: number,
+    rateName1: string,
+    rateName2: string,
+    rateName3: string,
+    rateName4: string,
+    rateName5: string,
+    rate1: number,
+    rate2: number,
+    rate3: number,
+    rate4: number,
+    rate5: number,
+    duosRedConsumption: number,
+    duosAmberConsumption: number,
+    duosGreenConsumption: number,
+    duosRedRate: number,
+    duosAmberRate: number,
+    duosGreenRate: number,
+    greenPercentage: number,
+    greenPremiumRate: number,
+    fixedCharge: number,
+    settlementRate: number,
+    kVARate: number,
+    kVACapacity: number,
+    fITRate: number,
+    cCLRate: number,
+    commission: number,
+    vatPercentage: number,
+    rate1Cost: number,
+    rate2Cost: number,
+    rate3Cost: number,
+    rate4Cost: number,
+    rate5Cost: number,
+    duosRedCost: number,
+    duosAmberCost: number,
+    duosGreenCost: number,
+    greenPremiumCost: number,
+    fixedChargesCost: number,
+    settlementsCost: number,
+    kVACosts: number,
+    fITCosts: number,
+    cCLCosts: number,
+    commissionCost: number,
+    totalCostIncCCL: number,
+    vATCost: number,
+    totalCostIncVAT: number,
+    mpanCore: string;
 }

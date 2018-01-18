@@ -1,7 +1,7 @@
 import * as types from '../../actions/actionTypes';
 import { reduceReducers, requestResponseReducer } from '../common';
 import { RequestState, initialRequestState } from '../RequestState';
-import { MeterPortfolio, Meter } from '../../model/Meter';
+import { MeterPortfolio } from '../../model/Meter';
 
 export interface MetersRetrievalState extends RequestState {
     value: MeterPortfolio;

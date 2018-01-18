@@ -6,4 +6,11 @@ export interface TenderState {
     tenders: TendersState;
     suppliers: TenderSuppliersState;
     addExistingContract: RequestState;
+    delete_tender: RequestState;
+    create_electricity_tender: RequestState;
+    create_gas_tender: RequestState;
+    assign_tender_supplier: RequestState;
+    unassign_tender_supplier: RequestState;
+    update_tender: RequestState;
+    generate_pack: RequestState;
 }

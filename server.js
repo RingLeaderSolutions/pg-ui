@@ -12,6 +12,14 @@ var applyStaticRoutes = function (app) {
     app.get('/appConfig.js', function (request, response) {
         response.send(configFileContents)
     });
+
+    app.get('/version', function(request, response) {
+        var hash = require('child_process')
+            .execSync('git rev-parse --short HEAD')
+            .toString()
+            .trim();
+        response.send(hash);
+    });
 }
 
 if (process.env.npm_lifecycle_event === 'start') {
@@ -20,6 +28,8 @@ if (process.env.npm_lifecycle_event === 'start') {
 
     const CONTENT_TYPE_HTML = "text/html";
 
+    applyStaticRoutes(app);
+    
     app.use(function (req, res, next) {
         if (req.headers.accept && req.headers.accept.substr(0, CONTENT_TYPE_HTML.length) === CONTENT_TYPE_HTML) {
             req.url = '/index.html';
@@ -35,7 +45,6 @@ if (process.env.npm_lifecycle_event === 'start') {
         log: console.log, path: '/__webpack_hmr', heartbeat: 10 * 1000
     }));
 
-    applyStaticRoutes(app);
 }
 else {
     app.use(express.static(__dirname + '/build'));

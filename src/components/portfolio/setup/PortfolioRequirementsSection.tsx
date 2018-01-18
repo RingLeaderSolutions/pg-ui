@@ -77,10 +77,10 @@ class PortfolioRequirementsSection extends React.Component<PortfolioRequirements
 
     render() {
         if(this.props.error){
-            return (<ErrorMessage content={this.props.errorMessage} />);
+            return (<div className="uk-card uk-card-default uk-card-body"><ErrorMessage content={this.props.errorMessage} /></div>);
         }
         if(this.props.working || this.props.details == null){
-            return (<Spinner />);
+            return (<div className="uk-card uk-card-default uk-card-body"><Spinner hasMargin={true}/></div>);
         }
         var { details } = this.props;
 
@@ -197,9 +197,9 @@ const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, PortfolioReq
   
 const mapStateToProps: MapStateToProps<StateProps, PortfolioRequirementsSectionProps> = (state: ApplicationState) => {
     return {
-        working: state.portfolio.details.working,
-        error: state.portfolio.details.error,
-        errorMessage: state.portfolio.details.errorMessage
+        working: state.portfolio.details.working || state.portfolio.update_requirements.working,
+        error: state.portfolio.update_requirements.error,
+        errorMessage: state.portfolio.update_requirements.errorMessage
     };
 };
   

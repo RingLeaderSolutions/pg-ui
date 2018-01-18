@@ -1,6 +1,6 @@
 import * as types from '../../actions/actionTypes';
 import { reduceReducers, requestResponseReducer } from '../common';
-import { RequestState, initialRequestState } from '../RequestState';
+import { RequestState, idleInitialRequestState } from '../RequestState';
 
 const addExistingContractReducer = requestResponseReducer(
     types.TENDER_ADD_EXISTING_CONTRACT_WORKING,
@@ -10,10 +10,9 @@ const addExistingContractReducer = requestResponseReducer(
         return {
             ...state,
             working: false,  
-            error: false,          
-            value: action.data
+            error: false,     
         };
     }
 );
 
-export default reduceReducers((state = initialRequestState) => state, addExistingContractReducer);
+export default reduceReducers((state = idleInitialRequestState) => state, addExistingContractReducer);

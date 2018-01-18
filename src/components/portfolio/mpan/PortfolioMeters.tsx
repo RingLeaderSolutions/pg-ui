@@ -2,7 +2,7 @@ import * as React from "react";
 import { MapDispatchToPropsFunction, connect, MapStateToProps } from 'react-redux';
 import { ApplicationState } from '../../../applicationState';
 import { Portfolio, PortfolioDetails } from '../../../model/Models';
-import { MeterPortfolio, Meter, MeterType } from '../../../model/Meter';
+import { MeterPortfolio, Mpan, MeterType } from '../../../model/Meter';
 import Spinner from '../../common/Spinner';
 import { Link } from 'react-router-dom';
 import MeterDetails from './MeterDetails';
@@ -25,7 +25,7 @@ interface StateProps {
 
 interface DispatchProps {
     getMeters: (portfolioId: string) => void;
-    editMeter: (meter: Meter) => void;
+    editMeter: (meter: Mpan) => void;
 }
 
 interface State {
@@ -47,11 +47,11 @@ class PortfolioMeters extends React.Component<PortfolioMetersProps & StateProps 
         }
     }
 
-    editMeter(meter: Meter){
+    editMeter(meter: Mpan){
         this.props.editMeter(meter);
     }
 
-    renderMeters(meters: Meter[]){
+    renderMeters(meters: Mpan[]){
         return meters.map((meter, index) =>{
             var supplyData = meter.meterSupplyData;
             if(supplyData == null){
@@ -94,13 +94,13 @@ class PortfolioMeters extends React.Component<PortfolioMetersProps & StateProps 
                     return;
                 }
                 var isElectricity = type == MeterType.Electricity;
-                var meters = isElectricity ? this.renderMeters(site.mpans) : this.renderMeters(site.mprns);
+                //var meters = isElectricity ? this.renderMeters(site.mpans) : this.renderMeters(site.mprns);
                 return (
                         <tbody key={site.siteCode}>
                             <tr>
                                 <td colSpan={21}>{site.siteCode}</td>
                             </tr>
-                            {meters}
+                            {this.renderMeters(site.mpans)}
                         </tbody>
                     
                 )
@@ -161,7 +161,7 @@ class PortfolioMeters extends React.Component<PortfolioMetersProps & StateProps 
                     <div>
                         <p className='uk-text-right'>
                             <button className='uk-button uk-button-primary uk-button-small' data-uk-toggle="target: #modal-upload-supply-data"><span data-uk-icon='icon: upload' />Supply Data</button>
-                            <button className='uk-button uk-button-primary uk-button-small' data-uk-toggle="target: #modal-upload-consumption"><span data-uk-icon='icon: upload' />Consumption</button>
+                            <button className='uk-button uk-button-primary uk-button-small uk-margin-small-left' data-uk-toggle="target: #modal-upload-consumption"><span data-uk-icon='icon: upload' />Consumption</button>
                         </p>
                     </div>
                     <div id='meter-modal' className='uk-flex-top' data-uk-modal>
@@ -181,7 +181,8 @@ class PortfolioMeters extends React.Component<PortfolioMetersProps & StateProps 
                                 {this.renderTable(MeterType.Electricity)}
                             </li>
                             <li className={this.state.tab === 'gas' ? 'uk-active' : null}>
-                                {this.renderTable(MeterType.Gas)}
+                                {/* {this.renderTable(MeterType.Gas)} */}
+                                <p>MPRN view coming soon.</p>
                             </li>
                         </ul>
                     </div>
@@ -201,7 +202,7 @@ class PortfolioMeters extends React.Component<PortfolioMetersProps & StateProps 
 const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, PortfolioMetersProps> = (dispatch) => {
     return {
         getMeters: (portfolioId: string) => dispatch(getMeters(portfolioId)),
-        editMeter: (meter: Meter) => dispatch(editMeter(meter))
+        editMeter: (meter: Mpan) => dispatch(editMeter(meter))
     };
 };
   

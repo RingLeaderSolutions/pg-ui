@@ -12,6 +12,7 @@ export interface PortfolioContact {
 export interface PortfolioSummary {
     id: string;
     title: string;
+    status: string;
     category: string;
     teamId: number;
     ownerId: number;

@@ -33,7 +33,7 @@ export const requestResponseReducer = (
             ...state,
             working: false,
             error: true,
-            errorMessage: action.error
+            errorMessage: action.errorMessage
           };
 
         case successActionType:

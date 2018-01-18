@@ -1,5 +1,5 @@
 var appConfig = {
-    //baseApiUri: 'http://86.180.144.6:8080', // paul's server
+    //baseApiUri: 'http://86.161.47.52:8080', // paul's server
     //baseApiUri: 'http://mpanupload242007.northeurope.cloudapp.azure.com:8080',
     baseApiUri: 'http://52.169.86.102:8080',
 
