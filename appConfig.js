@@ -10,8 +10,8 @@ var appConfig = {
     hierarchyApiUri: 'http://portfoliogenerationfrontendbackend.azurewebsites.net',
     //hierarchyApiUri: 'http://localhost:60258',
 
-    //uploadApiUri: 'http://portfoliogenerationuploadapi.azurewebsites.net',
-    uploadApiUri: 'http://localhost:60564',
+    uploadApiUri: 'http://portfoliogenerationuploadapi.azurewebsites.net',
+    //uploadApiUri: 'http://localhost:60564',
 
     //auth0_callbackUrl: 'http://tpiflow-web.azurewebsites.net/login_complete',
     auth0_callbackUrl: 'http://localhost:8585/login_complete',

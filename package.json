@@ -20,7 +20,7 @@
   },
   "homepage": "https://github.com/RingLeaderSolutions/pg-ui#readme",
   "devDependencies": {
-    "@types/auth0-js": "^8.10.2",
+    "@types/auth0-js": "^8.11.2",
     "@types/currency-formatter": "^1.3.0",
     "@types/jwt-decode": "^2.2.1",
     "@types/node": "^8.0.3",
@@ -47,7 +47,7 @@
   },
   "dependencies": {
     "@aspnet/signalr-client": "^1.0.0-alpha1-final",
-    "auth0-js": "^8.11.3",
+    "auth0-js": "^8.12.0",
     "axios": "^0.16.2",
     "currency-formatter": "^1.3.2",
     "highcharts": "^5.0.12",
