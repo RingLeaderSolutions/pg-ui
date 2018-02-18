@@ -7,4 +7,6 @@ declare var appConfig: {
     auth0_domain: string;
     auth0_callbackUrl: string;
     auth0_logoutCallbackUrl: string;
+    environment_name: string;
+    version: string;
   };

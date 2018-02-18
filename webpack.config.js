@@ -40,7 +40,8 @@ var config = {
         new webpack.HotModuleReplacementPlugin(),
         new HtmlWebpackPlugin({
             title: 'TPI Flow',
-            template: './index.ejs'
+            template: './index.ejs',
+            favicon: 'favicon.ico'
         })]
 };
 

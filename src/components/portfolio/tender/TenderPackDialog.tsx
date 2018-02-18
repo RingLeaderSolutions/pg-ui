@@ -47,44 +47,34 @@ class TenderPackDialog extends React.Component<TenderPackDialogProps & StateProp
         });
     }
 
-    renderSpinner(){
-        return (
-            <div className="uk-modal-dialog">
-                <div className="uk-modal-header">
-                    <h2 className="uk-modal-title">Action in progress...</h2>
-                </div>
-                <div className="uk-modal-body">
-                </div>
-            </div>
-        )
-    }
+    renderPackTable(){
+        if(this.props.tender.packs == null || this.props.tender.packs.length == 0){
+            return (<p>No tender packs have been generated.</p>);
+        }
 
-    renderPackDialogContent(){
         var tableContent = this.renderPackTableContent();
-
+        return (
+            <table className="uk-table uk-table-divider uk-table-hover">
+                <thead>
+                    <tr>
+                        <th>Pack ID</th>
+                        <th>Created</th>
+                        <th>Meter count</th>
+                        <th>Supplier</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {tableContent}
+                </tbody>
+            </table>)
+    }
+    
+    renderPackDialogContent(){
         return (
             <div>
                 <div className="uk-margin">
-                    <table className="uk-table uk-table-divider uk-table-hover">
-                        <thead>
-                            <tr>
-                                <th>Pack ID</th>
-                                <th>Created</th>
-                                <th>Meter count</th>
-                                <th>Supplier</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {tableContent}
-                        </tbody>
-                    </table>
+                    {this.renderPackTable()}
                 </div>
-                <div className="uk-margin">
-                    <button className="uk-button uk-button-primary" type="button" onClick={() => this.generateTenderPack()}>
-                        <span className="uk-margin-small-right" data-uk-icon="icon: bolt" />
-                        Generate new tender pack
-                    </button>   
-                </div>        
             </div>);
     }
 
@@ -103,7 +93,7 @@ class TenderPackDialog extends React.Component<TenderPackDialogProps & StateProp
         
         return (
             <div className="uk-modal-dialog">
-                {/* <button className="uk-modal-close-default" type="button" data-uk-close></button> */}
+                <button className="uk-modal-close-default" type="button" data-uk-close></button>
                 <div className="uk-modal-header">
                     <h2 className="uk-modal-title">Tender Packs</h2>
                 </div>
@@ -111,9 +101,6 @@ class TenderPackDialog extends React.Component<TenderPackDialogProps & StateProp
                     <div className="uk-margin">
                         {content}
                     </div>
-                </div>
-                <div className="uk-modal-footer uk-text-right">
-                    {/* <button className="uk-button uk-button-default uk-margin-right uk-modal-close" type="button">OK</button> */}
                 </div>
             </div>)
     }

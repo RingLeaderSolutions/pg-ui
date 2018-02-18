@@ -46,9 +46,9 @@ class PortfolioHistory extends React.Component<PortfolioHistoryProps & StateProp
                 return ( 
                     <tr key={h.id}>
                         <td>{time}</td>
-                        <td>-</td>
-                        <td>-</td>
-                        <td>-</td>
+                        <td>{h.category}</td>
+                        <td>{h.entityType}</td>
+                        <td>{h.description}</td>
                     </tr>
                 );
         });
@@ -58,9 +58,9 @@ class PortfolioHistory extends React.Component<PortfolioHistoryProps & StateProp
                 <thead>
                     <tr>
                         <th className="uk-text-center">Time</th>
-                        <th className="uk-text-center">Activity</th>
-                        <th className="uk-text-center">Entries</th>
-                        <th className="uk-text-center">Author</th>
+                        <th className="uk-text-center">Category</th>
+                        <th className="uk-text-center">Type</th>
+                        <th className="uk-text-center">Description</th>
                     </tr>
                 </thead>
                 <tbody>

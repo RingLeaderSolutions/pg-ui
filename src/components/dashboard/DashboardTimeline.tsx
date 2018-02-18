@@ -29,18 +29,18 @@ class DashboardSummary extends React.Component<TimelineProps & StateProps & Disp
         var tableContent = this.props.timeline.timelineList.map(timelineItem => {
             var totalActions = (timelineItem.totalMpans * 2);
             var remainingPercentage = timelineItem.workload / totalActions;
-            var labelClass = "uk-label uk-label-success";
+            var label = (<span className="uk-label uk-label-success">Low</span>);
             if(remainingPercentage >= 0.7){
-                labelClass = "uk-label uk-label-danger";
+                label = (<span className="uk-label uk-label-danger">High</span>);
             }
             else if(remainingPercentage > 0){
-                labelClass = "uk-label uk-label-warning";
+                label = (<span className="uk-label uk-label-warning">Medium</span>);
             }
             return (
                 <tr key={timelineItem.id}>
                     <td>{timelineItem.contractStart} - {timelineItem.contractEnd}</td>
                     <td><strong>{timelineItem.title}</strong></td>
-                    <td><span className={labelClass}>{timelineItem.workload}/{totalActions}</span></td>
+                    <td>{label}</td>
                 </tr>
             );
         });
@@ -51,8 +51,8 @@ class DashboardSummary extends React.Component<TimelineProps & StateProps & Disp
                     <thead>
                         <tr>
                             <th>Contract Dates</th>
-                            <th>Portfolios</th>
-                            <th>MPAN Workload</th>
+                            <th>Portfolio</th>
+                            <th>Meter Workload</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -83,7 +83,7 @@ class DashboardSummary extends React.Component<TimelineProps & StateProps & Disp
         return (
             <div>
                 <div className="uk-card uk-card-default uk-card-body">
-                    <h3><span className="uk-margin-small-right" data-uk-icon="icon: clock"></span>Portfolio Timeline</h3>
+                    <h3><span className="uk-margin-small-right" data-uk-icon="icon: clock"></span>Portfolio Workload</h3>
                     {content}
                 </div>
             </div>)

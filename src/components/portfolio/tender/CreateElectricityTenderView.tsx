@@ -6,11 +6,12 @@ import { ApplicationState } from '../../../applicationState';
 import { Portfolio, PortfolioDetails, UtilityType } from '../../../model/Models';
 import Spinner from '../../common/Spinner';
 
-import { createElectricityTender } from '../../../actions/tenderActions';
+import { createHHElectricityTender, createNHHElectricityTender } from '../../../actions/tenderActions';
 import { Tender, TenderSupplier } from "../../../model/Tender";
 
 interface CreateElectricityTenderProps {
     portfolioId: string;
+    isHalfHourly: boolean;
 }
 
 interface StateProps {
@@ -20,7 +21,8 @@ interface StateProps {
 }
 
 interface DispatchProps {
-    createTender: (portfolioId: string) => void;
+    createHHTender: (portfolioId: string) => void;
+    createNHHTender: (portfolioId: string) => void;
 }
 
 class CreateElectricityTenderView extends React.Component<CreateElectricityTenderProps & StateProps & DispatchProps, {}> {
@@ -29,7 +31,12 @@ class CreateElectricityTenderView extends React.Component<CreateElectricityTende
     }
 
     createElectricityTender(){
-        this.props.createTender(this.props.portfolioId);
+        if(this.props.isHalfHourly){
+            this.props.createHHTender(this.props.portfolioId);
+        }
+        else {
+            this.props.createNHHTender(this.props.portfolioId);
+        }
     }
     
     renderCard(content: any){
@@ -49,11 +56,12 @@ class CreateElectricityTenderView extends React.Component<CreateElectricityTende
             return this.renderCard(spinner);
         }
 
+        var buttonContent = this.props.isHalfHourly ? "Create a half-hourly electricity tender" : "Create a non-half-hourly electricity tender";
         var content = (
             <div className="uk-grid uk-flex-center" data-uk-grid>
                 <button className="uk-button uk-button-primary" type="button" onClick={() => this.createElectricityTender()}>
                     <span className="uk-margin-small-right" data-uk-icon="icon: bolt" />
-                    Create an electricity tender
+                    {buttonContent}
                 </button>
             </div>)
         return this.renderCard(content);
@@ -62,15 +70,16 @@ class CreateElectricityTenderView extends React.Component<CreateElectricityTende
 
 const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, CreateElectricityTenderProps> = (dispatch) => {
     return {
-        createTender: (portfolioId) => dispatch(createElectricityTender(portfolioId))        
+        createHHTender: (portfolioId) => dispatch(createHHElectricityTender(portfolioId)),
+        createNHHTender: (portfolioId) => dispatch(createNHHElectricityTender(portfolioId))
     };
 };
   
 const mapStateToProps: MapStateToProps<StateProps, CreateElectricityTenderProps> = (state: ApplicationState) => {
     return {
-        working: state.portfolio.tender.create_electricity_tender.working,
-        error: state.portfolio.tender.create_electricity_tender.error,
-        errorMessage: state.portfolio.tender.create_electricity_tender.errorMessage
+        working: state.portfolio.tender.create_nhh_electricity_tender.working || state.portfolio.tender.create_hh_electricity_tender.working,
+        error: state.portfolio.tender.create_nhh_electricity_tender.error || state.portfolio.tender.create_hh_electricity_tender.error,
+        errorMessage: state.portfolio.tender.create_nhh_electricity_tender.errorMessage || state.portfolio.tender.create_hh_electricity_tender.errorMessage
     };
 };
   

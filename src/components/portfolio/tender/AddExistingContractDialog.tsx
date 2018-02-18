@@ -38,6 +38,9 @@ class AddExistingContractDialog extends React.Component<AddExistingContractDialo
             contractStart: moment(),
             contractEnd: moment()
         }
+
+        this.handleContractStartChange = this.handleContractStartChange.bind(this);
+        this.handleContractEndChange = this.handleContractEndChange.bind(this);
     }
     contractRef: HTMLInputElement;
     supplier: HTMLSelectElement;
@@ -68,6 +71,7 @@ class AddExistingContractDialog extends React.Component<AddExistingContractDialo
             incumbent: true,
             uploaded: null,
             status: null,
+            sheetCount: 0
         };
         this.props.addExistingContract(this.props.portfolioId, this.props.tender.tenderId, contract);
     }

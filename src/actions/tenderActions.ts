@@ -1,6 +1,6 @@
 import ApiService from "../services/ApiService";
 
-import { Tender, TenderContract, TenderSupplier } from "../Model/Tender";
+import { Tender, TenderContract, TenderSupplier, BackingSheet } from "../Model/Tender";
 
 import * as types from "./actionTypes";
 import { Dispatch } from 'redux';
@@ -78,20 +78,38 @@ export function deleteTender(portfolioId: string, tenderId: string){
     };
 }
 
-export function createElectricityTender(portfolioId: string){
+export function createHHElectricityTender(portfolioId: string){
     return (dispatch: Dispatch<any>) => {
-        let createPromise = ApiService.createElectricityTender(portfolioId);
-        dispatch({ type: types.CREATE_ELECTRICITY_TENDER_WORKING });
+        let createPromise = ApiService.createHHElectricityTender(portfolioId);
+        dispatch({ type: types.CREATE_HH_ELECTRICITY_TENDER_WORKING });
 
         makeApiRequest(dispatch,
             createPromise,
             200, 
             data => {
-                return { type: types.CREATE_ELECTRICITY_TENDER_SUCCESSFUL, data: null};
+                return { type: types.CREATE_HH_ELECTRICITY_TENDER_SUCCESSFUL, data: null};
                 
             }, 
             error => {
-                return { type: types.CREATE_ELECTRICITY_TENDER_FAILED, errorMessage: error };
+                return { type: types.CREATE_HH_ELECTRICITY_TENDER_FAILED, errorMessage: error };
+            });
+    };
+}
+
+export function createNHHElectricityTender(portfolioId: string){
+    return (dispatch: Dispatch<any>) => {
+        let createPromise = ApiService.createNHHElectricityTender(portfolioId);
+        dispatch({ type: types.CREATE_NHH_ELECTRICITY_TENDER_WORKING });
+
+        makeApiRequest(dispatch,
+            createPromise,
+            200, 
+            data => {
+                return { type: types.CREATE_NHH_ELECTRICITY_TENDER_SUCCESSFUL, data: null};
+                
+            }, 
+            error => {
+                return { type: types.CREATE_NHH_ELECTRICITY_TENDER_FAILED, errorMessage: error };
             });
     };
 }
@@ -150,20 +168,38 @@ export function unassignTenderSupplier(tenderId: string, supplierId: string){
     };
 }
 
-export function uploadBackingSheet(tenderId: string, file: Blob){
+export function uploadGasBackingSheet(tenderId: string, file: Blob){
     return (dispatch: Dispatch<any>) => {
-        let uploadPromise = ApiService.uploadBackingSheet(tenderId, file);
-        dispatch({ type: types.UPLOAD_BACKING_SHEET_WORKING });
+        let uploadPromise = ApiService.uploadGasBackingSheet(tenderId, file);
+        dispatch({ type: types.UPLOAD_GAS_BACKING_SHEET_WORKING });
 
         makeApiRequest(dispatch,
             uploadPromise,
             200, 
             data => {
-                return { type: types.UPLOAD_BACKING_SHEET_SUCCESSFUL, data: null};
+                return { type: types.UPLOAD_GAS_BACKING_SHEET_SUCCESSFUL, data: null};
                 
             }, 
             error => {
-                return { type: types.UPLOAD_BACKING_SHEET_FAILED, errorMessage: error };
+                return { type: types.UPLOAD_GAS_BACKING_SHEET_FAILED, errorMessage: error };
+            });
+    };
+}
+
+export function uploadElectricityBackingSheet(tenderId: string, file: Blob){
+    return (dispatch: Dispatch<any>) => {
+        let uploadPromise = ApiService.uploadElectricityBackingSheet(tenderId, file);
+        dispatch({ type: types.UPLOAD_ELECTRICITY_BACKING_SHEET_WORKING });
+
+        makeApiRequest(dispatch,
+            uploadPromise,
+            200, 
+            data => {
+                return { type: types.UPLOAD_ELECTRICITY_BACKING_SHEET_SUCCESSFUL, data: null};
+                
+            }, 
+            error => {
+                return { type: types.UPLOAD_ELECTRICITY_BACKING_SHEET_FAILED, errorMessage: error };
             });
     };
 }
@@ -204,4 +240,87 @@ export function generateTenderPack(portfolioId: string, tenderId: string){
     };
 }
 
+export function fetchContractBackingSheets(tenderId: string, contractId: string){    
+    return (dispatch: Dispatch<any>) => {
+        let fetchPromise = ApiService.getContractBackingSheets(tenderId, contractId);
+        dispatch( { type: types.FETCH_CONTRACT_BACKINGSHEETS_WORKING });
 
+        makeApiRequest(dispatch,
+            fetchPromise,
+            200, 
+            data => {
+                return { type: types.FETCH_CONTRACT_BACKINGSHEETS_SUCCESSFUL, data: data as BackingSheet[] };
+            }, 
+            error => {
+                return { type: types.FETCH_CONTRACT_BACKINGSHEETS_FAILED, errorMessage: error };
+            });
+    }
+};
+
+export function fetchQuoteBackingSheets(tenderId: string, contractId: string){    
+    return (dispatch: Dispatch<any>) => {
+        let fetchPromise = ApiService.getQuoteBackingSheets(tenderId, contractId);
+        dispatch( { type: types.FETCH_QUOTE_BACKINGSHEETS_WORKING });
+
+        makeApiRequest(dispatch,
+            fetchPromise,
+            200, 
+            data => {
+                return { type: types.FETCH_QUOTE_BACKINGSHEETS_SUCCESSFUL, data: data as BackingSheet[] };
+            }, 
+            error => {
+                return { type: types.FETCH_QUOTE_BACKINGSHEETS_FAILED, errorMessage: error };
+            });
+    }
+};
+
+export function issueTenderPack(tenderId: string, subject: string, body: string){    
+    return (dispatch: Dispatch<any>) => {
+        let fetchPromise = ApiService.issueTenderPack(tenderId, subject, body);
+        dispatch( { type: types.ISSUE_TENDER_PACK_WORKING });
+
+        makeApiRequest(dispatch,
+            fetchPromise,
+            200, 
+            data => {
+                return { type: types.ISSUE_TENDER_PACK_SUCCESSFUL, data: null };
+            }, 
+            error => {
+                return { type: types.ISSUE_TENDER_PACK_FAILED, errorMessage: error };
+            });
+    }
+};
+
+export function generateSummaryReport(tenderId: string, quoteId: string, marketCommentary: string, selectionCommentary: string){    
+    return (dispatch: Dispatch<any>) => {
+        let fetchPromise = ApiService.generateSummaryReport(tenderId, quoteId, marketCommentary, selectionCommentary);
+        dispatch( { type: types.GENERATE_SUMMARY_REPORT_WORKING });
+
+        makeApiRequest(dispatch,
+            fetchPromise,
+            200, 
+            data => {
+                return { type: types.GENERATE_SUMMARY_REPORT_SUCCESSFUL, data: null };
+            }, 
+            error => {
+                return { type: types.GENERATE_SUMMARY_REPORT_FAILED, errorMessage: error };
+            });
+    }
+};
+
+export function issueSummaryReport(tenderId: string, reportId: string){    
+    return (dispatch: Dispatch<any>) => {
+        let fetchPromise = ApiService.issueSummaryReport(tenderId, reportId);
+        dispatch( { type: types.ISSUE_SUMMARY_REPORT_WORKING });
+
+        makeApiRequest(dispatch,
+            fetchPromise,
+            200, 
+            data => {
+                return { type: types.ISSUE_SUMMARY_REPORT_SUCCESSFUL, data: null };
+            }, 
+            error => {
+                return { type: types.ISSUE_SUMMARY_REPORT_FAILED, errorMessage: error };
+            });
+    }
+};

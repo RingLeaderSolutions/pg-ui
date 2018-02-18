@@ -6,7 +6,8 @@ import { Portfolio,
          MpanHistorical,
          CompanyInfo,
          PortfolioDetails,
-         PortfolioContact } from "../Model/Models";
+         PortfolioContact, 
+         UtilityType} from "../Model/Models";
 
 import * as types from "./actionTypes";
 import { makeApiRequest } from "./Common";
@@ -309,9 +310,9 @@ export function uploadSiteList(portfolioId: string, accountId: string, file: Blo
     };
 }
 
-export function uploadSupplyMeterData(portfolioId: string, accountId: string, file: Blob){
+export function uploadSupplyMeterData(portfolioId: string, accountId: string, file: Blob, utility: UtilityType){
     return (dispatch: Dispatch<any>) => {
-        let uploadPromise = ApiService.uploadSupplyMeterData(portfolioId, accountId, file);
+        let uploadPromise = ApiService.uploadSupplyMeterData(portfolioId, accountId, file, utility);
         dispatch({ type: types.UPLOAD_SUPPLY_METER_DATA_WORKING });
 
         makeApiRequest(dispatch,

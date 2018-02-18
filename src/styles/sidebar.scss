@@ -3,15 +3,19 @@
 .sidebar {
     padding: $margin-large;
     border-right: 1px solid $grey-border;
+    max-width: 200px;
     min-width: 200px;
     .app-title {
-        h1 {
-            margin-bottom: 0px;
+        img {
+            height: 120px;
         }
-        p {
+        .environment {
             text-align: right;
-            margin-top: 0px;
+            span {
+                margin-top: 0px;
+            }
         }
+        
     }
 
     li {

@@ -10,6 +10,7 @@ import { getPortfolioTenders, getTenderSuppliers } from '../../../actions/tender
 import { Tender, TenderSupplier } from "../../../model/Tender";
 import TenderSupplierSelectDialog from "./TenderSupplierSelectDialog";
 import TenderPackDialog from "./TenderPackDialog";
+import IssueTenderPackDialog from "./IssueTenderPackDialog";
 
 interface TenderStatusProps {
     tender: Tender;
@@ -44,8 +45,9 @@ class TenderStatus extends React.Component<TenderStatusProps & StateProps & Disp
         }
 
         var utilityName = this.props.utility == UtilityType.Gas ? "GAS" : "ELECTRICITY";
-        return meterGroups.find(mg => mg.groupName == utilityName)
-            .meterCount;
+        var foundGroup = meterGroups.find(mg => mg.groupName == utilityName);
+
+        return foundGroup ? foundGroup.meterCount : 0;
     }
 
     getSupplierCount(){
@@ -67,22 +69,26 @@ class TenderStatus extends React.Component<TenderStatusProps & StateProps & Disp
         var meterCount = this.getMeterCount();
         var eligibleSupplierCount = this.getSupplierCount();
 
-        var supplierModalId = "modal-select-suppliers-" + this.props.utility;
+        var supplierModalId = "modal-select-suppliers-" + this.props.tender.tenderId;
         var toggleSupplierModalClass = "target: #" + supplierModalId;
 
-        var packModalId = "modal-generate-packs-" + this.props.utility;
+        var packModalId = "modal-generate-packs-" + this.props.tender.tenderId;
         var togglePackModalClass = "target: #" + packModalId;
 
+        var issuePackModalId = "modal-generate-issue-pack-" + this.props.tender.tenderId;
+        var toggleIssuePackModalClass = "target: #" + issuePackModalId;
+
+        var { tender } = this.props;
         return (
             <div className="uk-card uk-card-default uk-card-body">
                 <h3>Status</h3>
                 <div className="uk-grid uk-child-width-expand@s uk-grid-match" data-uk-grid>
                     <p>Meter count: <strong>{meterCount}</strong></p>
-                    <p>Consumption: <strong>0 GWh</strong></p>
+                    <p>Consumption: <strong>{tender.annualConsumption.toLocaleString()} {tender.acuom}</strong></p>
                 </div>
                 <div className=" uk-grid uk-child-width-expand@s uk-grid-match" data-uk-grid>
                     <p>Eligible suppliers: <strong>{eligibleSupplierCount}</strong></p>
-                    <p>Commission: <strong>{this.props.tender.commission}p/kWH</strong></p>
+                    <p>Commission: <strong>{this.props.tender.commission}p/{tender.acuom}</strong></p>
                 </div>
                 <div className="tender-actions uk-margin-top">
                     <div className="uk-grid uk-child-width-expand@s" data-uk-grid>
@@ -93,15 +99,15 @@ class TenderStatus extends React.Component<TenderStatusProps & StateProps & Disp
                             </button>
                         </div>
                         <div className="uk-margin-small uk-width-1-4">
-                                <button className="uk-button uk-button-primary" type="button" data-uk-toggle={togglePackModalClass}>
+                            <button className="uk-button uk-button-primary" type="button" data-uk-toggle={togglePackModalClass}>
                                 <span className="uk-margin-small-right" data-uk-icon="icon: copy" />
-                                Pack
+                                View Packs
                             </button>
                         </div>
                         <div className="uk-margin-small uk-width-1-4">
-                            <button className="uk-button uk-button-primary" type="button" disabled>
+                            <button className="uk-button uk-button-primary" type="button" data-uk-toggle={toggleIssuePackModalClass}>
                                 <span className="uk-margin-small-right" data-uk-icon="icon: forward" />
-                                Issue
+                                Issue Pack
                             </button>
                         </div>
                         </div>
@@ -113,6 +119,10 @@ class TenderStatus extends React.Component<TenderStatusProps & StateProps & Disp
 
                 <div id={packModalId} data-uk-modal="center: true">
                     <TenderPackDialog tender={this.props.tender} portfolioId={this.props.details.portfolio.id} />
+                </div>
+
+                <div id={issuePackModalId} data-uk-modal="center: true">
+                    <IssueTenderPackDialog tender={this.props.tender} portfolioId={this.props.details.portfolio.id} />
                 </div>
             </div>)
     }

@@ -1,24 +1,19 @@
-import * as React from "react";
-import { MapDispatchToPropsFunction, connect, MapStateToProps } from 'react-redux';
-import { ApplicationState } from '../../../applicationState';
-
-import { Portfolio, PortfolioDetails } from '../../../model/Models';
-import { 
-    MeterPortfolio, 
-    Mpan,
-    MpanSupplyData, 
-    AggregatorCollectors,
-    MeterOperators, 
-    MeterTimeSwitchCodes,
-    RetrievalMethods,
-    GspGroups,
-    MeasurementClasses
-} from '../../../model/Meter';
-
-import Spinner from '../../common/Spinner';
-import { Link } from 'react-router-dom';
+import * as React from 'react';
+import { connect, MapDispatchToPropsFunction, MapStateToProps } from 'react-redux';
 
 import { cancelEditMeter, editMeter, updateMeter } from '../../../actions/meterActions';
+import { ApplicationState } from '../../../applicationState';
+import {
+    AggregatorCollectors,
+    GspGroups,
+    MeasurementClasses,
+    MeterOperators,
+    Mpan,
+    MpanSupplyData,
+    RetrievalMethods,
+} from '../../../model/Meter';
+import { Portfolio, PortfolioDetails } from '../../../model/Models';
+import Spinner from '../../common/Spinner';
 
 interface MeterDetailsProps {
     portfolio: Portfolio;

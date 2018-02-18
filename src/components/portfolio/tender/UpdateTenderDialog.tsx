@@ -13,6 +13,7 @@ import { Tender } from "../../../model/Tender";
 interface UpdateTenderDialogProps {
     tender: Tender;
     utilityDescription: string;
+    utility: UtilityType;
 }
 
 interface StateProps {
@@ -30,31 +31,41 @@ interface UpdateTenderState {
 }
 
 class UpdateTenderDialog extends React.Component<UpdateTenderDialogProps & StateProps & DispatchProps, UpdateTenderState> {
-    constructor(){
+    constructor(props: UpdateTenderDialogProps & StateProps & DispatchProps){
         super();
         this.state = {
-            deadline: moment()
-        }
+            deadline: props.tender.deadline ? moment(props.tender.deadline) : moment() 
+        };
+
+        this.handleDeadlineChange = this.handleDeadlineChange.bind(this);
+        this.updateTender = this.updateTender.bind(this);
     }
     titleElement: HTMLInputElement;
     commissionElement: HTMLInputElement;
     billingMethodElement: HTMLSelectElement;
     deadlineNotesElement: HTMLTextAreaElement;
+    isHalfHourlyElement: HTMLInputElement;
+    ebInclusiveElement: HTMLInputElement;
 
-    handleDeadlineChange(date: moment.Moment){
+    handleDeadlineChange(date: moment.Moment, event: React.SyntheticEvent<any>){
         this.setState({
             deadline: date
         });
+
+        event.preventDefault();
     }
 
     updateTender(){
+        var halfHourly = this.isHalfHourlyElement == null ? false : this.isHalfHourlyElement.checked
         var tender: Tender = {
             ...this.props.tender,
             tenderTitle: this.titleElement.value,
             billingMethod: this.billingMethodElement.value,
             deadline: this.state.deadline.format("YYYY-MM-DDTHH:mm:ss"),
             deadlineNotes: this.deadlineNotesElement.value,
-            commission: Number(this.commissionElement.value)
+            commission: Number(this.commissionElement.value),
+            halfHourly: halfHourly,
+            allInclusive: this.ebInclusiveElement.checked
         }
         this.props.updateTender(this.props.tender.tenderId, tender);
     }
@@ -95,6 +106,14 @@ class UpdateTenderDialog extends React.Component<UpdateTenderDialogProps & State
                                             <option>Paper</option>
                                             <option>Electronic</option>
                                         </select>
+                                    </div>
+
+                                    <div className='uk-margin'>
+                                        <label className='uk-form-label'>Embedded Benefits</label>
+                                        <div className="uk-margin-small">
+                                            <label><input className="uk-radio" type="radio" name="ebChoice" ref={ref => this.ebInclusiveElement = ref} defaultChecked={tender.allInclusive} /> Inclusive</label>
+                                            <label><input className="uk-radio uk-margin-large-left" type="radio" name="ebChoice" defaultChecked={!tender.allInclusive} />Pass-Through</label>
+                                        </div>
                                     </div>
 
                                     <div className="uk-margin">

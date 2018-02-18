@@ -31,12 +31,11 @@ interface PortfolioRequirementsState {
 }
 
 class PortfolioRequirementsSection extends React.Component<PortfolioRequirementsSectionProps & StateProps & DispatchProps, PortfolioRequirementsState> {
-    constructor(){
+    constructor(props: PortfolioRequirementsSectionProps & StateProps & DispatchProps){
         super();
-        // var {requirements} = this.props.details;
-        // var contractStart = requirements == null ? moment() : moment(requirements.startDate);
+        var { requirements } = props.details;
         this.state = {
-            contractStart: moment()
+            contractStart: requirements ? requirements.startDate ? moment(requirements.startDate) : moment() : moment() 
         }
         this.saveRequirements = this.saveRequirements.bind(this);
         this.handleContractStartChange = this.handleContractStartChange.bind(this);

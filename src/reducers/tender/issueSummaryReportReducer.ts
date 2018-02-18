@@ -2,10 +2,10 @@ import * as types from '../../actions/actionTypes';
 import { reduceReducers, requestResponseReducer } from '../common';
 import { RequestState, idleInitialRequestState } from '../RequestState';
 
-const createElectricityTenderReducer = requestResponseReducer(
-    types.CREATE_ELECTRICITY_TENDER_WORKING,
-    types.CREATE_ELECTRICITY_TENDER_SUCCESSFUL,
-    types.CREATE_ELECTRICITY_TENDER_FAILED,
+const issueSummaryReportReducer = requestResponseReducer(
+    types.ISSUE_SUMMARY_REPORT_WORKING,
+    types.ISSUE_SUMMARY_REPORT_SUCCESSFUL,
+    types.ISSUE_SUMMARY_REPORT_FAILED,
     (state, action) => {
         return {
             ...state,
@@ -15,4 +15,4 @@ const createElectricityTenderReducer = requestResponseReducer(
     }
 );
 
-export default reduceReducers((state = idleInitialRequestState) => state, createElectricityTenderReducer);
+export default reduceReducers((state = idleInitialRequestState) => state, issueSummaryReportReducer);

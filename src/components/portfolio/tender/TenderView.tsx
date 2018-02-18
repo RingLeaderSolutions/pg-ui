@@ -9,6 +9,7 @@ import { getPortfolioTenders, deleteTender } from '../../../actions/tenderAction
 import { Tender } from "../../../model/Tender";
 import TenderStatus from "./TenderStatus";
 import TenderContractView from "./TenderContractView";
+import TenderQuotesView from "./TenderQuotesView";
 import UpdateTenderDialog from "./UpdateTenderDialog";
 
 interface TenderViewProps {
@@ -44,44 +45,6 @@ class TenderView extends React.Component<TenderViewProps & StateProps & Dispatch
         )
     }
 
-    renderQuoteTable(){
-        var tableContent = this.props.tender.quotes.map(q => {
-            return (
-                <tr key={q.quoteId}>
-                    <td>{q.supplierId}</td>
-                    <td>{q.quoteId.substring(0, 8)}</td>
-                    <td>
-                        <button className="uk-button uk-button-default uk-button-small" type="button" disabled>
-                            View
-                        </button>
-                    </td>
-                    <td>
-                        <button className="uk-button uk-button-default uk-button-small" type="button" disabled>
-                            View
-                        </button>
-                    </td>
-                    <td>{q.sheetCount}</td>
-                </tr>
-            )
-        })
-        return (
-            <table className="uk-table uk-table-divider">
-            <thead>
-                <tr>
-                    <th>Supplier</th>
-                    <th>QuoteId</th>
-                    <th>Contract</th>
-                    <th>Terms sheet</th>
-                    <th>Sheet count</th>
-                </tr>
-            </thead>
-            <tbody>
-                {tableContent}
-            </tbody>
-        </table>
-        )
-    }
-
     render() {
         if(this.props.error){
             var error = (<ErrorMessage content={this.props.errorMessage} />);
@@ -98,20 +61,22 @@ class TenderView extends React.Component<TenderViewProps & StateProps & Dispatch
         var updateTenderDialogName = `modal-update-tender-${utilityDescription}`;
         var showUpdateDialogClass = `target: #${updateTenderDialogName}`;
 
-        let { quotes, tenderTitle } = this.props.tender;
-        var hasQuotes = quotes != null && quotes.length > 0;
+        let { tenderTitle } = this.props.tender;
 
         var hasTitle = tenderTitle != null && tenderTitle.length > 0;
-        var title = hasTitle ? (<h2>{utilityDescription}: {tenderTitle}</h2>) : (<h2>{utilityDescription}</h2>);
+        var title = hasTitle ? (<h2>{tenderTitle}</h2>) : (<h2>{utilityDescription} Tender</h2>);
         var content = (
             <div>
-                {title}
-
-                <div>
-                    <button className="uk-button uk-button-default uk-button-small uk-align-right" type="button" data-uk-toggle={showUpdateDialogClass}>
-                        <span className="uk-margin-small-right" data-uk-icon="icon: pencil" />
-                        Edit
-                    </button>
+                <div className="uk-grid" data-uk-grid>
+                    <div className="uk-width-expand@s">
+                        {title}
+                    </div>
+                    <div className="uk-width-1-6">
+                        <button className="uk-button uk-button-default uk-button-small uk-align-right" type="button" data-uk-toggle={showUpdateDialogClass}>
+                            <span className="uk-margin-small-right" data-uk-icon="icon: pencil" />
+                            Edit
+                        </button>
+                    </div>
                 </div>
 
                 <div className="uk-margin uk-margin-large-top">
@@ -119,13 +84,9 @@ class TenderView extends React.Component<TenderViewProps & StateProps & Dispatch
                 </div>
                 
                 <div className="uk-margin">
-                    <div className="uk-card uk-card-default uk-card-body">
-                        <h3>Quotes</h3>
-                        <div>
-                            {hasQuotes ? (this.renderQuoteTable()) : (<p>This tender has not yet been issued</p>)}
-                        </div>
-                    </div>
+                    <TenderQuotesView tender={this.props.tender} />
                 </div>
+
                 <div className="uk-margin">
                     <div className="uk-card uk-card-default uk-card-body">
                         <h3>Existing Contract</h3>
@@ -140,7 +101,7 @@ class TenderView extends React.Component<TenderViewProps & StateProps & Dispatch
                 </div>
 
                 <div id={updateTenderDialogName} data-uk-modal="center: true">
-                    <UpdateTenderDialog tender={this.props.tender} utilityDescription={utilityDescription}/>
+                    <UpdateTenderDialog tender={this.props.tender} utilityDescription={utilityDescription} utility={this.props.utility}/>
                 </div>
             </div>)
 

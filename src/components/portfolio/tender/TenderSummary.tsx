@@ -28,9 +28,18 @@ interface DispatchProps {
     getPortfolioTenders: (portfolioId: string) => void;
 }
 
-class TenderSummary extends React.Component<TenderSummaryProps & StateProps & DispatchProps, {}> {
+interface State {
+    tab: string
+}
+
+
+class TenderSummary extends React.Component<TenderSummaryProps & StateProps & DispatchProps, State> {
     constructor() {
         super();
+
+        this.state = {
+            tab: 'electricity'
+        };
     }
 
     componentDidMount(){
@@ -47,13 +56,22 @@ class TenderSummary extends React.Component<TenderSummaryProps & StateProps & Di
         return (<CreateGasTenderView portfolioId={this.props.portfolio.id} />);
     }
 
-    generateElectricityTender(){
-        let tender = this.props.tenders.find(t => t.utility == "ELECTRICITY");
+    generateHHTender(){
+        let tender = this.props.tenders.find(t => t.utility == "ELECTRICITY" && t.halfHourly);
 
         if(tender != null){
             return (<TenderView tender={tender} details={this.props.details} utility={UtilityType.Electricity} />);
         }
-        return (<CreateElectricityTenderView portfolioId={this.props.portfolio.id} />);
+        return (<CreateElectricityTenderView portfolioId={this.props.portfolio.id} isHalfHourly={true} />);
+    }
+
+    generateNHHTender(){
+        let tender = this.props.tenders.find(t => t.utility == "ELECTRICITY" && !t.halfHourly);
+
+        if(tender != null){
+            return (<TenderView tender={tender} details={this.props.details} utility={UtilityType.Electricity} />);
+        }
+        return (<CreateElectricityTenderView portfolioId={this.props.portfolio.id} isHalfHourly={false} />);
     }
 
     renderContent(content: any){
@@ -63,7 +81,50 @@ class TenderSummary extends React.Component<TenderSummaryProps & StateProps & Di
             </div>
         )
     }
-    
+
+    renderTenderTabs(){
+        var { requirements } = this.props.details;
+
+        var hhTab;
+        var nhhTab;
+        if(requirements.electricityRequired){
+            hhTab = (
+                <li className={this.state.tab === 'electricity-hh' ? 'uk-active' : null}>
+                    <a href='#' onClick={() =>this.selectTab('electricity-hh')}>Electricity (HH)</a>
+                </li>
+            );
+
+            nhhTab = (
+                <li className={this.state.tab === 'electricity-nhh' ? 'uk-active' : null}>
+                    <a href='#' onClick={() =>this.selectTab('electricity-nhh')}>Electricity (NHH)</a>
+                </li>
+            );
+        }
+
+        var gasTab;
+        if(requirements.gasRequired){
+            gasTab = (
+                <li className={this.state.tab === 'gas' ? 'uk-active' : null}>
+                    <a href='#' onClick={() =>this.selectTab('gas')}>Gas</a>
+                </li>
+            );
+        }
+
+        return (
+            <ul data-uk-tab>
+                {hhTab}
+                {nhhTab}
+                {gasTab}
+            </ul>
+        )
+    }
+
+    selectTab(tab:string){
+        this.setState({
+            tab: tab
+        });
+    }
+
     render() {
         if(this.props.error){
             var error = (<ErrorMessage content={this.props.errorMessage} />);
@@ -79,13 +140,24 @@ class TenderSummary extends React.Component<TenderSummaryProps & StateProps & Di
         }
         
         var gasTenders = this.props.details.requirements.gasRequired ? this.generateGasTender() : null;
-        var elecTenders = this.props.details.requirements.electricityRequired ? this.generateElectricityTender() : null;
+        var hhTender = this.props.details.requirements.electricityRequired ? this.generateHHTender() : null;
+        var nhhTender = this.props.details.requirements.electricityRequired ? this.generateNHHTender() : null;
         var { tenders } = this.props;
 
         var content = (
-            <div className="uk-grid uk-child-width-expand@s uk-grid-match" data-uk-grid>
-                <div>{elecTenders}</div>
-                <div>{gasTenders}</div>
+            <div>
+                {this.renderTenderTabs()}
+                <ul className='uk-switcher'>
+                    <li className={this.state.tab === 'electricity-hh' ? 'uk-active' : null}>
+                        {hhTender}
+                    </li>
+                    <li className={this.state.tab === 'electricity-nhh' ? 'uk-active' : null}>
+                        {nhhTender}
+                    </li>
+                    <li className={this.state.tab === 'gas' ? 'uk-active' : null}>
+                        {gasTenders}
+                    </li>
+                </ul>
             </div>
         );
         return this.renderContent(content);

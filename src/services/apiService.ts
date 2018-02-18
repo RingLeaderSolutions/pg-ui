@@ -1,6 +1,6 @@
 import { AxiosResponse } from 'axios';
 import axios from 'axios';
-import { Portfolio, CompanyInfo, PortfolioContact, PortfolioRequirements, Account, AccountCompanyStatusFlags } from "../model/Models";
+import { Portfolio, CompanyInfo, PortfolioContact, PortfolioRequirements, Account, AccountCompanyStatusFlags, UtilityType, User } from "../model/Models";
 import { FakeApiService } from './fakeApiService';
 import StorageService from './storageService';
 import { Mpan } from '../model/Meter';
@@ -34,16 +34,18 @@ export interface IApiService {
   updateMeter(portfolioId: string, meter: Mpan): Promise<AxiosResponse>;
 
   uploadLoa(portfolioId: string, accountId: string, file: Blob): Promise<AxiosResponse>;
-  uploadSupplyMeterData(portfolioId: string, accountId: string, file: Blob): Promise<AxiosResponse>;
+  uploadSupplyMeterData(portfolioId: string, accountId: string, file: Blob, utility: UtilityType): Promise<AxiosResponse>;
   uploadHistorical(portfolioId: string, file: Blob): Promise<AxiosResponse>;
   uploadSiteList(portfolioId: string, accountId: string, file: Blob): Promise<AxiosResponse>;
-  uploadBackingSheet(tenderId: string, file: Blob): Promise<AxiosResponse>;
+  uploadElectricityBackingSheet(tenderId: string, file: Blob): Promise<AxiosResponse>;
+  uploadGasBackingSheet(tenderId: string, file: Blob): Promise<AxiosResponse>;
 
   getTenderSuppliers(): Promise<AxiosResponse>;
   getPortfolioTenders(portfolioId: string): Promise<AxiosResponse>;
   addExistingContract(contract: TenderContract, portfolioId: string, tenderId: string): Promise<AxiosResponse>;
   deleteTender(portfolioId: string, tenderId: string): Promise<AxiosResponse>;
-  createElectricityTender(portfolioId: string): Promise<AxiosResponse>;
+  createHHElectricityTender(portfolioId: string): Promise<AxiosResponse>;
+  createNHHElectricityTender(portfolioId: string): Promise<AxiosResponse>;
   createGasTender(portfolioId: string): Promise<AxiosResponse>;
   assignTenderSupplier(tenderId: string, supplierId: string): Promise<AxiosResponse>;
   unassignTenderSupplier(tenderId: string, supplierId: string): Promise<AxiosResponse>;
@@ -51,6 +53,12 @@ export interface IApiService {
   getContractBackingSheets(tenderId: string, contractId: string): Promise<AxiosResponse>;
   getQuoteBackingSheets(tenderId: string, quoteId: string): Promise<AxiosResponse>;
   generateTenderPack(tenderId: string, portfolioId: string): Promise<AxiosResponse>;
+  issueTenderPack(tenderId: string, subject: string, body: string): Promise<AxiosResponse>;
+  generateSummaryReport(tenderId: string, quoteId: string, marketCommentary: string, selectionCommentary: string): Promise<AxiosResponse>;
+  issueSummaryReport(tenderId: string, reportId: string): Promise<AxiosResponse>;
+
+  getActiveUsers(): Promise<AxiosResponse>;
+  assignPortfolioUsers(portfolioId: string, users: User[]): Promise<AxiosResponse>;
 }
 
 export class ApiService implements IApiService {
@@ -218,12 +226,13 @@ export class ApiService implements IApiService {
         return axios.post(`${this.uploadApiUri}/api/upload/loa/${portfolioId}`, formData, this.getUploadFileConfig());
     }
 
-    uploadSupplyMeterData(portfolioId: string, accountId: string, file: Blob){
+    uploadSupplyMeterData(portfolioId: string, accountId: string, file: Blob, utility: UtilityType){
         var formData = new FormData();
         formData.append('files', file);
         formData.append('accountId', accountId);
 
-        return axios.post(`${this.uploadApiUri}/api/upload/supply/${portfolioId}`, formData, this.getUploadFileConfig());
+        var prefix = utility == UtilityType.Electricity ? "electricity" : "gas";
+        return axios.post(`${this.uploadApiUri}/api/upload/supply/${prefix}/${portfolioId}`, formData, this.getUploadFileConfig());
     }
 
     uploadHistorical(portfolioId: string, file: Blob){
@@ -241,11 +250,18 @@ export class ApiService implements IApiService {
         return axios.post(`${this.uploadApiUri}/api/upload/sites/${portfolioId}`, formData, this.getUploadFileConfig());
     }
 
-    uploadBackingSheet(tenderId: string, file: Blob){
+    uploadGasBackingSheet(tenderId: string, file: Blob){
         var formData = new FormData();
         formData.append('files', file);
 
-        return axios.post(`${this.uploadApiUri}/api/upload/backing/${tenderId}`, formData, this.getUploadFileConfig());
+        return axios.post(`${this.uploadApiUri}/api/upload/backing/${tenderId}/gas`, formData, this.getUploadFileConfig());
+    }
+
+    uploadElectricityBackingSheet(tenderId: string, file: Blob){
+        var formData = new FormData();
+        formData.append('files', file);
+
+        return axios.post(`${this.uploadApiUri}/api/upload/backing/${tenderId}/electricity`, formData, this.getUploadFileConfig());
     }
 
     getMpanHistorical(documentId: string){
@@ -277,12 +293,16 @@ export class ApiService implements IApiService {
         return axios.delete(`${this.baseApiUri}/portman-web/tender/portfolio/${portfolioId}/tender/${tenderId}`, this.getRequestConfig());
     }
 
-    createElectricityTender(portfolioId: string){
-        return axios.post(`${this.baseApiUri}/portman-web/tender/portfolio/${portfolioId}/utility/electricity`, null, this.getRequestConfig());
+    createHHElectricityTender(portfolioId: string){
+        return axios.post(`${this.baseApiUri}/portman-web/tender/portfolio/${portfolioId}/electricity/hh`, null, this.getRequestConfig());
+    }
+
+    createNHHElectricityTender(portfolioId: string){
+        return axios.post(`${this.baseApiUri}/portman-web/tender/portfolio/${portfolioId}/electricity/nhh`, null, this.getRequestConfig());
     }
 
     createGasTender(portfolioId: string){
-        return axios.post(`${this.baseApiUri}/portman-web/tender/portfolio/${portfolioId}/utility/gas`, null, this.getRequestConfig());
+        return axios.post(`${this.baseApiUri}/portman-web/tender/portfolio/${portfolioId}/gas`, null, this.getRequestConfig());
     }
 
     assignTenderSupplier(tenderId: string, supplierId: string){
@@ -307,6 +327,36 @@ export class ApiService implements IApiService {
     
     generateTenderPack(tenderId: string, portfolioId: string){
         return axios.post(`${this.baseApiUri}/portman-web/tender/${tenderId}/portfolio/${portfolioId}/tenderpack`, null, this.getRequestConfig());        
+    }
+
+    issueTenderPack(tenderId: string, subject: string, body: string){
+        var requestBody = {
+            subject,
+            body
+        }
+        return axios.post(`${this.baseApiUri}/portman-web/tender/${tenderId}/issuePack`, requestBody, this.getRequestConfig());                
+    }
+    
+    generateSummaryReport(tenderId: string, quoteId: string, marketCommentary: string, selectionCommentary: string){
+        var requestBody = {
+            tenderId,
+            quoteId,
+            marketCommentary,
+            selectionCommentary
+        };
+        return axios.post(`${this.baseApiUri}/portman-web/tender/${tenderId}/testSummaryReport`, requestBody, this.getRequestConfig());                        
+    }
+  
+    getActiveUsers(){
+        return axios.get(`${this.baseApiUri}/portman-web/admin/users`, this.getRequestConfig());                
+    }
+
+    assignPortfolioUsers(portfolioId: string, users: User[]){
+        return axios.post(`${this.baseApiUri}/portman-web/admin/staff/assignment/portfolio/${portfolioId}`, users, this.getRequestConfig());
+    }
+
+    issueSummaryReport(tenderId: string, reportId: string){
+        return axios.put(`${this.baseApiUri}/portman-web/tender/${tenderId}/issueSummaryReport/${reportId}`, {}, this.getRequestConfig());
     }
 }
 

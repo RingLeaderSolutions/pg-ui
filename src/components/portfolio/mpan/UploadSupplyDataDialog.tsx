@@ -3,7 +3,7 @@ import Header from "../../common/Header";
 import ErrorMessage from "../../common/ErrorMessage";
 import { MapDispatchToPropsFunction, connect, MapStateToProps } from 'react-redux';
 import { ApplicationState } from '../../../applicationState';
-import { PortfolioDetails, PortfolioContact } from '../../../model/Models';
+import { PortfolioDetails, PortfolioContact, UtilityType } from '../../../model/Models';
 import Spinner from '../../common/Spinner';
 import { FormEvent } from "react";
 
@@ -11,6 +11,7 @@ import { uploadSupplyMeterData } from '../../../actions/portfolioActions';
 
 interface UploadSupplyDataDialogProps {
     details: PortfolioDetails;
+    type: UtilityType;
 }
 
 interface StateProps {
@@ -20,7 +21,7 @@ interface StateProps {
 }
 
 interface DispatchProps {
-    uploadSupplyData: (portfolioId: string, accountId: string, file: Blob) => void;
+    uploadSupplyData: (portfolioId: string, accountId: string, file: Blob, type: UtilityType) => void;
 }
 
 interface UploadHistoricState {
@@ -41,7 +42,7 @@ class UploadSupplyDataDialog extends React.Component<UploadSupplyDataDialogProps
     upload() {
         var portfolioId = this.props.details.portfolio.id;
         var accountId = this.props.details.portfolio.accountId;
-        this.props.uploadSupplyData(portfolioId, accountId, this.state.file);
+        this.props.uploadSupplyData(portfolioId, accountId, this.state.file, this.props.type);
     }
 
     onFileChosen(e: any){
@@ -81,7 +82,7 @@ class UploadSupplyDataDialog extends React.Component<UploadSupplyDataDialogProps
 
 const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, UploadSupplyDataDialogProps> = (dispatch) => {
     return {
-        uploadSupplyData: (portfolioId: string, accountId: string, file: Blob) => dispatch(uploadSupplyMeterData(portfolioId, accountId, file))        
+        uploadSupplyData: (portfolioId: string, accountId: string, file: Blob, type: UtilityType) => dispatch(uploadSupplyMeterData(portfolioId, accountId, file, type))        
     };
 };
   

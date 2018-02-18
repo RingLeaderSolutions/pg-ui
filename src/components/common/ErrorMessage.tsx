@@ -1,5 +1,4 @@
-import * as React from "react";
-import { MapDispatchToPropsFunction, connect, MapStateToProps } from 'react-redux';
+import * as React from 'react';
 
 interface ErrorMessageProps {
   content: string;

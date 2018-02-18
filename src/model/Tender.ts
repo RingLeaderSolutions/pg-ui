@@ -9,10 +9,15 @@ export interface Tender {
     status: string;
     quotes: TenderQuote[];
     assignedSuppliers: TenderSupplier[];
+    summaries: TenderQuoteSummary[];
     packs: TenderPack[];
     existingContract: TenderContract;
     utility: string;
     commission: number;
+    allInclusive: boolean;
+    halfHourly: boolean;
+    acuom: string;
+    annualConsumption: number;
 }
 
 export interface TenderQuote {
@@ -27,6 +32,22 @@ export interface TenderQuote {
     termsheetBlobId: string;
     utility: string;
     supplierId: string;
+    totalIncCCL: number;
+    collateralList: TenderQuoteCollateral[];
+    version: number;
+}
+
+export interface TenderQuoteCollateral {
+    collateralId: string;
+    quoteId: string;
+    created: string;
+    documentBlobId: string;
+}
+
+export interface SupplierRating {
+    category: string;
+    reason: string;
+    score: string;
 }
 
 export interface TenderSupplier {
@@ -37,6 +58,7 @@ export interface TenderSupplier {
     electricitySupplier: boolean;
     paymentTerms: number;
     logoUri: string;
+    serviceRatings: SupplierRating[];
 }
 
 export interface TenderPack {
@@ -61,6 +83,20 @@ export interface TenderContract {
     incumbent: boolean;
     uploaded: string;
     status: string;
+    sheetCount: number;
+}
+
+export interface TenderQuoteSummary {
+    summaryId: string;
+    accepted: string;
+    communicated: string;
+    created: string;
+    meterCount: number;
+    packId: string;
+    summaryFileName: string;
+    supplierCount: number;
+    supplierId: string;
+    tenderId: string;
 }
 
 export interface BackingSheet {
@@ -131,4 +167,6 @@ export interface BackingSheet {
     vATCost: number,
     totalCostIncVAT: number,
     mpanCore: string;
+    availabilityChargeUOM: string;
+    fixedChargeUOM: string;
 }

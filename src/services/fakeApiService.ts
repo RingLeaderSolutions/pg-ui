@@ -1,21 +1,25 @@
 import { AxiosResponse } from 'axios';
-import axios from 'axios';
-import { Portfolio,
-         PortfolioContact,
-         PortfolioRequirements,
-         DashboardPortfolioSummary,
-         DashboardPortfolioTimeline,
-         DashboardPortfolioStatus,
-         MpanTopline,
-         PortfolioHistoryEntry,
-         Site,
-         Account,
-         AccountCompanyStatusFlags } from "../model/Models";
-import { MeterPortfolio, Mpan } from '../model/Meter';
-import { Tender, TenderContract, TenderSupplier, BackingSheet} from '../model/Tender';
-import { IApiService } from "./ApiService";
+
 import { CompanyInfo } from '../model/CompanyInfo';
+import { MeterPortfolio, Mpan } from '../model/Meter';
+import {
+    Account,
+    AccountCompanyStatusFlags,
+    DashboardPortfolioStatus,
+    DashboardPortfolioSummary,
+    DashboardPortfolioTimeline,
+    MpanTopline,
+    Portfolio,
+    PortfolioContact,
+    PortfolioHistoryEntry,
+    PortfolioRequirements,
+    Site,
+    User,
+    UtilityType
+} from '../model/Models';
 import { PortfolioDetails, PortfolioDocument } from '../model/PortfolioDetails';
+import { BackingSheet, Tender, TenderContract, TenderSupplier } from '../model/Tender';
+import { IApiService } from './ApiService';
 
 const responseDelay = 1000;
 const defer = (callback: () => void) => new Promise((resolve, reject) => setTimeout(() => callback(), responseDelay));
@@ -53,7 +57,8 @@ export class FakeApiService implements IApiService {
                         firstName: "Daniel",
                         lastName: "May",
                         status: "active",
-                        avatarUrl: ""
+                        avatarUrl: "",
+                        email: "daniel@danielmay.co.uk"                        
                     }
                 },
                 creditRating: "A+",
@@ -63,14 +68,16 @@ export class FakeApiService implements IApiService {
                     firstName: "Daniel",
                     lastName: "May",
                     status: "active",
-                    avatarUrl: ""
+                    avatarUrl: "",
+                    email: "daniel@danielmay.co.uk"
                 },
                 supportExec: {
                     id: "1",
                     firstName: "Daniel",
                     lastName: "May",
                     status: "active",
-                    avatarUrl: ""
+                    avatarUrl: "",
+                    email: "daniel@danielmay.co.uk"                    
                 }
              }
         ];
@@ -244,7 +251,8 @@ export class FakeApiService implements IApiService {
                 firstName: "Daniel",
                 lastName: "May",
                 status: "active",
-                avatarUrl: ""
+                avatarUrl: "",
+                email: "daniel@danielmay.co.uk"                
             }
         };
 
@@ -493,7 +501,7 @@ export class FakeApiService implements IApiService {
         return OK(data);
 	}
 		
-    uploadSupplyMeterData(portfolioId: string, accountId: string, file: Blob){
+    uploadSupplyMeterData(portfolioId: string, accountId: string, file: Blob, utility: UtilityType){
         return OK();
     }
 
@@ -509,7 +517,11 @@ export class FakeApiService implements IApiService {
         return OK();
     }
 
-    uploadBackingSheet(tenderId: string, file: Blob){
+    uploadGasBackingSheet(tenderId: string, file: Blob){
+        return OK();
+    }
+
+    uploadElectricityBackingSheet(tenderId: string, file: Blob){
         return OK();
     }
 
@@ -525,7 +537,29 @@ export class FakeApiService implements IApiService {
                 deadlineNotes: null,
                 commission: 1,
                 status: "CREATED",
-                quotes: [],
+                quotes: [
+                    {
+                        contractBlobId: "x",
+                        expiry: "2017-12-19T00:12:07.167",
+                        portfolioId: "4d584e81-91c2-47b4-85f9-411db125af51",
+                        quoteId: "1964f31c-29b1-4a29-8532-66e1aea9e231",
+                        received: "2017-12-19T00:12:07.167",
+                        sheetCount: 0,
+                        status: "x",
+                        tenderId: "5122951b-b942-4f25-8ee0-5f2e255a5f50",
+                        termsheetBlobId: "5122951b",
+                        utility: "GAS",
+                        supplierId: "4",
+                        totalIncCCL: 123456,
+                        collateralList: [{
+                            collateralId: "c1297bdd-63f0-4a7a-8903-b329e9000b09",
+                            quoteId: "1964f31c-29b1-4a29-8532-66e1aea9e231",
+                            created: "2017-12-19T00:12:07.167",
+                            documentBlobId: "https://test.com/test.pdf"
+                        }],
+                        version: 1,
+                    }
+                ],
                 assignedSuppliers: [
                     {
                         supplierId: "4",
@@ -534,10 +568,39 @@ export class FakeApiService implements IApiService {
                         gasSupplier: true,
                         electricitySupplier: true,
                         paymentTerms: 28,
-                        logoUri: "EonLogoMainLogo.svg"
+                        logoUri: "EonLogoMainLogo.svg",
+                        serviceRatings: [
+                            {
+                                category: "Billing Accuracy",
+                                score: "Good",
+                                reason: "None"
+                            },
+                            {
+                                category: "Service Desk",
+                                score: "Good",
+                                reason: "None"
+                            }
+                        ]
                     }
                 ],
-                packs: [],
+                packs: [{
+                    supplierId: "1",
+                    packId: "65277870-8d40-440d-9941-a7c7c2773425",
+                    tenderId: "5122951b-b942-4f25-8ee0-5f2e255a5f50",
+                    created: "2017-12-19T00:11:07.167",
+                    lastIssued: null,
+                    zipFileName: "http://fake.com/fake.zip",
+                    meterCount: 25
+                },
+                {
+                    supplierId: "4",
+                    packId: "12111eb9-98cc-4c17-8cd2-ea9c03013d70",
+                    tenderId: "5122951b-b942-4f25-8ee0-5f2e255a5f50",
+                    created: "2017-12-19T00:12:07.167",
+                    lastIssued: "2017-12-19T00:11:07.167",
+                    zipFileName: "http://fake.com/fake.zip",
+                    meterCount: 25
+                }],
                 existingContract: {
                     contractId: "bc6f7888-d4cf-443b-aa28-e79c58ba14bb",
                     supplierId: "1",
@@ -549,9 +612,28 @@ export class FakeApiService implements IApiService {
                     utility: "GAS",
                     incumbent: true,
                     uploaded: null,
-                    status: null
+                    status: null,
+                    sheetCount: 1
                 },
-                utility: "GAS"
+                summaries: [
+                    {
+                        accepted : null,
+                        communicated : null,
+                        created : "2017-12-19T00:12:07.167",
+                        meterCount : 25,
+                        packId : null,
+                        summaryFileName : "http://portfoliogeneration.blob.core.windows.net/tendersummary/c2edf658-4f75-401a-b2d0-3b330ab4e833/recommendation6511578287409214190.xls",
+                        summaryId : "1081e2f3-057e-4472-bbb5-37b01b0ca3e8",
+                        supplierCount : 0,
+                        supplierId : "4",
+                        tenderId : "c2edf658-4f75-401a-b2d0-3b330ab4e833"
+                    }
+                ],
+                halfHourly: false,
+                allInclusive: true,
+                utility: "GAS",
+                acuom: "BTU",
+                annualConsumption: 1000
             }
         ];
 
@@ -567,7 +649,19 @@ export class FakeApiService implements IApiService {
                 gasSupplier: true,
                 electricitySupplier: true,
                 paymentTerms: 28,
-                logoUri: "https://portfoliogeneration.blob.core.windows.net/suppliers/haven.png"
+                logoUri: "https://portfoliogeneration.blob.core.windows.net/suppliers/haven.png",
+                serviceRatings: [
+                    {
+                        category: "Billing Accuracy",
+                        score: "Good",
+                        reason: "None"
+                    },
+                    {
+                        category: "Service Desk",
+                        score: "Good",
+                        reason: "None"
+                    }
+                ]
             },
             {
                 supplierId: "4",
@@ -576,7 +670,19 @@ export class FakeApiService implements IApiService {
                 gasSupplier: true,
                 electricitySupplier: true,
                 paymentTerms: 28,
-                logoUri: "https://portfoliogeneration.blob.core.windows.net/suppliers/EonLogoMainLogo.svg"
+                logoUri: "https://portfoliogeneration.blob.core.windows.net/suppliers/EonLogoMainLogo.svg",
+                serviceRatings: [
+                    {
+                        category: "Billing Accuracy",
+                        score: "Bad",
+                        reason: "None"
+                    },
+                    {
+                        category: "Service Desk",
+                        score: "Not so great",
+                        reason: "None"
+                    }
+                ]
             }
         ];
 
@@ -591,7 +697,11 @@ export class FakeApiService implements IApiService {
         return OK();
     }
 
-    createElectricityTender(portfolioId: string){
+    createHHElectricityTender(portfolioId: string){
+        return OK();
+    }
+
+    createNHHElectricityTender(portfolioId: string){
         return OK();
     }
 
@@ -690,12 +800,45 @@ export class FakeApiService implements IApiService {
                 totalCostIncCCL: 16218.28,
                 vATCost: 32.44,
                 totalCostIncVAT: 16250.72,
-                mpanCore: "1001110011121"
+                mpanCore: "1001110011121",
+                availabilityChargeUOM: "POUNDS_PER_KVA_PER_MONTH",
+                fixedChargeUOM: "POUNDS_PER_MONTH"
             }
         ];
     }
 
     generateTenderPack(tenderId: string, portfolioId: string){
+        return OK();
+    }
+
+    issueTenderPack(tenderPackId: string, subject: string, body: string){
+        return OK();
+    }
+    
+    generateSummaryReport(tenderId: string, quoteId: string, marketCommentary: string, selectionCommentary: string){
+        return OK();        
+    }
+  
+    getActiveUsers(){
+        var users: User[] = [
+            {
+                id: '1',
+                firstName: 'Fake',
+                lastName: 'McFakerson',
+                status: 'active',
+                avatarUrl: 'http://none.com/none.jpg',
+                email: 'fake@fake.com'
+            }
+        ];
+
+        return OK(users);
+    }
+
+    assignPortfolioUsers(portfolioId: string, users: User[]){
+        return OK();        
+    }
+
+    issueSummaryReport(tenderId: string, reportId: string){
         return OK();
     }
 }

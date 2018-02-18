@@ -6,6 +6,8 @@ export default function connectSignalR(store: any) {
     let connection = new HubConnection(appConfig.signalRUri);
 
     connection.on('Notify', (data: NotificationMessage) => {
+        console.log('notif received');
+        console.log(data);
         let messageType = types.NOTIFICATION_PORTFOLIO_CREATED
         switch (data.Description) {
             case 'portfolio created':

@@ -46,7 +46,7 @@ class Login extends React.Component<StateProps & DispatchProps, {}> {
                 <img src={require('../../images/panels.png')} alt="" data-uk-cover />
                 <div className="uk-position-center">
                     <div className="uk-card uk-card-body uk-card-default">
-                        <h1>TPI Flow</h1>
+                        <img src={require('../../images/tpi-flow-logo.png')} alt="TPI Flow" />
                         <h4>Log in with your account details below.</h4>
                         <form className="auth-form">
                             <fieldset className="uk-fieldset">

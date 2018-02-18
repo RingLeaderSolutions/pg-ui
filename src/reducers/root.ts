@@ -47,23 +47,33 @@ import tendersReducer from './tender/tendersReducer';
 import tenderSuppliersReducer from './tender/tenderSuppliersReducer';
 import deleteTenderReducer from './tender/deleteTenderReducer';
 import createGasTenderReducer from './tender/createGasTenderReducer';
-import createElectricityTenderReducer from './tender/createElectricityTenderReducer';
+import createHHElectricityTenderReducer from './tender/createHHElectricityTenderReducer';
+import createNHHElectricityTenderReducer from './tender/createNHHElectricityTenderReducer';
 import assignTenderSupplierReducer from './tender/assignTenderSupplierReducer';
 import unassignTenderSupplierReducer from './tender/unassignTenderSupplierReducer';
 import updateTenderReducer from './tender/updateTenderReducer';
 import generateTenderPackReducer from './tender/generateTenderPackReducer';
+import issueTenderPackReducer from './tender/issueTenderPackReducer';
+import issueSummaryReportReducer from './tender/issueSummaryReportReducer';
+import generateSummaryReportReducer from './tender/generateSummaryReportReducer';
+import fetchBackingSheetsReducer from './tender/fetchBackingSheetsReducer';
 
 const tenderReducer: Reducer<TenderState> = combineReducers<TenderState>({
     tenders: tendersReducer,
     suppliers: tenderSuppliersReducer,
     addExistingContract: addExistingContractReducer,
     delete_tender: deleteTenderReducer,
-    create_electricity_tender: createElectricityTenderReducer,
+    create_hh_electricity_tender: createHHElectricityTenderReducer,
+    create_nhh_electricity_tender: createNHHElectricityTenderReducer,
     create_gas_tender: createGasTenderReducer,
     assign_tender_supplier: assignTenderSupplierReducer,
     unassign_tender_supplier: unassignTenderSupplierReducer,
     update_tender: updateTenderReducer,
-    generate_pack: generateTenderPackReducer
+    generate_pack: generateTenderPackReducer,
+    issue_pack: issueTenderPackReducer,
+    generate_summary: generateSummaryReportReducer,
+    issue_summary: issueSummaryReportReducer,
+    backing_sheets: fetchBackingSheetsReducer
 });
 
 // Combine portfolio reducers to form the PortfolioState

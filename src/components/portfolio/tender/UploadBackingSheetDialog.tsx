@@ -7,10 +7,11 @@ import { PortfolioDetails, PortfolioContact } from '../../../model/Models';
 import Spinner from '../../common/Spinner';
 import { FormEvent } from "react";
 
-import { uploadBackingSheet } from '../../../actions/tenderActions';
+import { uploadElectricityBackingSheet, uploadGasBackingSheet } from '../../../actions/tenderActions';
 
 interface UploadBackingSheetDialogProps {
     tenderId: string;
+    utilityType: string;
 }
 
 interface StateProps {
@@ -20,7 +21,8 @@ interface StateProps {
 }
 
 interface DispatchProps {
-    uploadBackingSheet: (tenderId: string, file: Blob) => void;
+    uploadElectricityBackingSheet: (tenderId: string, file: Blob) => void;
+    uploadGasBackingSheet: (tenderId: string, file: Blob) => void;
 }
 
 interface UploadBackingSheetState {
@@ -39,7 +41,11 @@ class UploadBackingSheetDialog extends React.Component<UploadBackingSheetDialogP
     }
     
     upload() {
-        this.props.uploadBackingSheet(this.props.tenderId, this.state.file);
+        if(this.props.utilityType == "GAS"){
+            this.props.uploadGasBackingSheet(this.props.tenderId, this.state.file);
+            return;
+        }
+        this.props.uploadElectricityBackingSheet(this.props.tenderId, this.state.file);
     }
 
     onFileChosen(e: any){
@@ -53,7 +59,7 @@ class UploadBackingSheetDialog extends React.Component<UploadBackingSheetDialogP
             <div className="uk-modal-dialog">
                 <button className="uk-modal-close-default" type="button" data-uk-close></button>
                 <div className="uk-modal-header">
-                    <h2 className="uk-modal-title">Upload Backing Sheet</h2>
+                    <h2 className="uk-modal-title">Upload Contract Rates</h2>
                 </div>
                 <div className="uk-modal-body">
                     <div className="uk-margin">
@@ -77,7 +83,8 @@ class UploadBackingSheetDialog extends React.Component<UploadBackingSheetDialogP
 
 const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, UploadBackingSheetDialogProps> = (dispatch) => {
     return {
-        uploadBackingSheet: (tenderId: string, file: Blob) => dispatch(uploadBackingSheet(tenderId, file))        
+        uploadElectricityBackingSheet: (tenderId: string, file: Blob) => dispatch(uploadElectricityBackingSheet(tenderId, file)),
+        uploadGasBackingSheet: (tenderId: string, file: Blob) => dispatch(uploadGasBackingSheet(tenderId, file))        
     };
 };
   

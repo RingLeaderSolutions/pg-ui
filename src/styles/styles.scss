@@ -7,6 +7,7 @@
 @import "dashboard";
 @import "auth";
 @import "datepicker";
+@import "tender";
 
 html, body, .root, .app-container {
   min-height: 100%;
@@ -26,7 +27,7 @@ html, body, .root, .app-container {
 }
 
 .content-inner {
-    height: 92%;
+    height: 90%;
 }
 
 // UIKit Table hover override (yellow->grey)
