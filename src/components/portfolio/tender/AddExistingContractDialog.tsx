@@ -46,16 +46,20 @@ class AddExistingContractDialog extends React.Component<AddExistingContractDialo
     supplier: HTMLSelectElement;
     product: HTMLSelectElement;
 
-    handleContractStartChange(date: moment.Moment){
+    handleContractStartChange(date: moment.Moment, event: React.SyntheticEvent<any>){
         this.setState({
             contractStart: date
         });
+
+        event.preventDefault();
     }
 
-    handleContractEndChange(date: moment.Moment){
+    handleContractEndChange(date: moment.Moment, event: React.SyntheticEvent<any>){
         this.setState({
             contractEnd: date
         });
+        
+        event.preventDefault();
     }
 
     addExistingContract(){
@@ -75,6 +79,7 @@ class AddExistingContractDialog extends React.Component<AddExistingContractDialo
         };
         this.props.addExistingContract(this.props.portfolioId, this.props.tender.tenderId, contract);
     }
+
     renderSupplierSelect(){
         var options = this.props.suppliers.map(s => {
                 return (<option key={s.supplierId} value={s.supplierId}>{s.name}</option>)
