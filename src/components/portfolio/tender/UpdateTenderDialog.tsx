@@ -92,9 +92,16 @@ class UpdateTenderDialog extends React.Component<UpdateTenderDialogProps & State
 
                                     <div className='uk-margin'>
                                         <label className='uk-form-label'>Commission</label>
-                                        <input className='uk-input' 
-                                            defaultValue={String(tender.commission)}
-                                            ref={ref => this.commissionElement = ref}/>
+                                        <div className="uk-grid" data-uk-grid>
+                                            <div className="uk-width-expand@s">
+                                                <input className='uk-input' 
+                                                    defaultValue={String(tender.commission)}
+                                                    ref={ref => this.commissionElement = ref}/>
+                                            </div>
+                                            <div className="uk-width-auto@s">
+                                                <p className="uk-margin-small-top">p/kWh</p>
+                                            </div>
+                                        </div>
                                     </div>
 
                                     <div className='uk-margin'>
@@ -112,7 +119,7 @@ class UpdateTenderDialog extends React.Component<UpdateTenderDialogProps & State
                                         <label className='uk-form-label'>Embedded Benefits</label>
                                         <div className="uk-margin-small">
                                             <label><input className="uk-radio" type="radio" name="ebChoice" ref={ref => this.ebInclusiveElement = ref} defaultChecked={tender.allInclusive} /> Inclusive</label>
-                                            <label><input className="uk-radio uk-margin-large-left" type="radio" name="ebChoice" defaultChecked={!tender.allInclusive} />Pass-Through</label>
+                                            <label><input className="uk-radio uk-margin-large-left" type="radio" name="ebChoice" defaultChecked={!tender.allInclusive} /> Pass-Through</label>
                                         </div>
                                     </div>
 
