@@ -16,6 +16,8 @@ import AuthenticatedRoute from "./components/auth/AuthenticatedRoute";
 import LoginComplete from "./components/auth/LoginComplete";
 import { Switch } from "react-router";
 
+import * as moment from 'moment';
+moment.locale('en-GB');
 
 // NOTE: Unable to get proper TS definitions working with UIkit.
 const UIkit = require('uikit');
