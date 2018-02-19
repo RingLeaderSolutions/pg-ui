@@ -67,19 +67,26 @@ class TenderContractView extends React.Component<TenderContractViewProps & Dispa
 
         var viewContractBackingSheetsName = `modal-view-backing-${this.props.tender.tenderId}`;
         var showViewContractBackingSheetsClass = `target: #${viewContractBackingSheetsName}`;
+
+        var uploadStyle = hasDocuments ? "uk-button-default" : "uk-button-primary";
+        var viewStyle = !hasDocuments ? "uk-button-default" : "uk-button-primary";
+
+        var uploadClass = `uk-button ${uploadStyle} uk-button-small`;
+        var viewClass = `uk-button ${viewStyle} uk-button-small`;
+
         return (
             <div>
                 {warningMessage}
                 <div className="uk-grid uk-margin-top" data-uk-grid>
                     <div className="uk-width-1-2">
-                        <button className="uk-button uk-button-primary uk-button-small" type="button" data-uk-toggle={showUploadBackingSheetClass}>
+                        <button className={uploadClass} type="button" data-uk-toggle={showUploadBackingSheetClass}>
                             <span className="uk-margin-small-right" data-uk-icon="icon: cloud-upload" />
                             Upload contract rates
                         </button>
                     </div>
                     {hasDocuments ? (
                         <div className="uk-width-expand@m">
-                            <button className="uk-button uk-button-default uk-button-small" type="button" data-uk-toggle={showViewContractBackingSheetsClass} onClick={() => this.fetchBackingSheets()}>
+                            <button className={viewClass} type="button" data-uk-toggle={showViewContractBackingSheetsClass} onClick={() => this.fetchBackingSheets()}>
                                 <span className="uk-margin-small-right" data-uk-icon="icon: copy" />
                                 View contract rates
                             </button>
