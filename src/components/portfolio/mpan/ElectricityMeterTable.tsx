@@ -44,17 +44,15 @@ class ElectricityMeterTable extends React.Component<ElectricityMeterTableProps &
                     <tr>
                         <th>Site</th>
                         <th>Meter</th>
-                        <th>Meter Type</th>
-                        <th>Meter Time Switch Code</th>
-                        <th>LLF</th>
-                        <th>Profile Class</th>
-                        <th>Retrieval Method</th>
-                        <th>GSP Group</th>
-                        <th>Measurement Class</th>
-                        <th>Serial Number</th>
-                        <th>DA Agent</th>
-                        <th>DC Agent</th>
-                        <th>MO Agent</th>
+                        <th>Type</th>
+                        <th>Topline</th>
+                        <th>Retrieval</th>
+                        <th>GSP</th>
+                        <th>Measurement</th>
+                        <th>S/N</th>
+                        <th>DA</th>
+                        <th>DC</th>
+                        <th>MO</th>
                         <th>Voltage</th>
                         <th>Connection</th>
                         <th>Postcode</th>
@@ -62,7 +60,7 @@ class ElectricityMeterTable extends React.Component<ElectricityMeterTableProps &
                         <th>EAC</th>
                         <th>Capacity</th>
                         <th>Energised</th>
-                        <th>New Connection</th>
+                        <th>New Conn.</th>
                     </tr>
                 </thead>
                 {this.renderSitesAndMeters()}
@@ -81,7 +79,7 @@ class ElectricityMeterTable extends React.Component<ElectricityMeterTableProps &
                 if (lowerFirst > lowerSecond) return 1;
                 return 0;
             });
-            
+
         return orderedSites.map((site, index) => {
                 if(site.siteCode == null || site.mprns == null || site.mpans.length == 0){
                     return;
@@ -107,9 +105,7 @@ class ElectricityMeterTable extends React.Component<ElectricityMeterTableProps &
                     <td>{index == 0 ? siteCode : null}</td>
                     <td>{supplyData.mpanCore}</td>
                     <td>{supplyData.meterType}</td>
-                    <td>{supplyData.meterTimeSwitchCode}</td>
-                    <td>{supplyData.llf}</td>
-                    <td>{supplyData.profileClass}</td>
+                    <td className="uk-text-nowrap">{supplyData.profileClass} {supplyData.meterTimeSwitchCode} {supplyData.llf}</td>
                     <td>{supplyData.retrievalMethod}</td>
                     <td>{supplyData.gspGroup}</td>
                     <td>{supplyData.measurementClass}</td>
@@ -123,8 +119,8 @@ class ElectricityMeterTable extends React.Component<ElectricityMeterTableProps &
                     <td>{supplyData.rec}</td>
                     <td>{supplyData.eac}</td>
                     <td>{supplyData.capacity}</td>
-                    <td>{supplyData.energized}</td>
-                    <td>{supplyData.newConnection}</td>
+                    <td>{supplyData.energized ? "Yes" : "No"}</td>
+                    <td>{supplyData.newConnection ? "Yes" : "No"}</td>
                 </tr>
             );
         })

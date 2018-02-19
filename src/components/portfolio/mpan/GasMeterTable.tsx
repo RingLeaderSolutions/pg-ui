@@ -96,8 +96,8 @@ class GasMeterTable extends React.Component<GasMeterTableProps & StateProps & Di
                     <td>{supplyData.model}</td>
                     <td>{supplyData.size}</td>
                     <td>{supplyData.aQ}</td>
-                    <td>{supplyData.changeOfUse}</td>
-                    <td>{supplyData.imperial}</td>
+                    <td>{supplyData.changeOfUse  ? "Yes" : "No"}</td>
+                    <td>{supplyData.imperial  ? "Yes" : "No"}</td>
                     <td>{supplyData.address}</td>
                     <td>{supplyData.postcode}</td>
                 </tr>
