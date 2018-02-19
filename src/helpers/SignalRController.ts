@@ -9,7 +9,7 @@ export default function connectSignalR(store: any) {
     let connection = new HubConnection(appConfig.signalRUri);
 
     connection.on('Notify', (data: NotificationMessage) => {
-        console.log("Notification received: " + data);
+        console.log(data);
         var currentState: ApplicationState = store.getState();
 
         var currentPortfolio = currentState.portfolio.selected.value;
