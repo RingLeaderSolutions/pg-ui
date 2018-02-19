@@ -120,18 +120,18 @@ class TenderQuotesView extends React.Component<TenderQuotesViewProps & StateProp
         var generateSummaryName = `modal-generate-summary-${tenderId}`;
         var generateSummaryClass = `target: #${generateSummaryName}`;
         return (
-                <div className="uk-card uk-card-default uk-card-body">
+                <div className="uk-card uk-card-small uk-card-default uk-card-body">
                     <div className="uk-grid" data-uk-grid>
                         <div className="uk-width-expand@s">
                             <h3>Quotes</h3>
                         </div>
-                        <div className="uk-width-1-4">
+                        <div className="uk-width-1-3">
                             <button className="uk-button uk-button-default uk-button-small uk-align-right" type="button" data-uk-toggle={viewSummariesClass}>
                                 <span className="uk-margin-small-right" data-uk-icon="icon: settings" />
                                 Summary Reports
                             </button>
                         </div>
-                        <div className="uk-width-1-4">
+                        <div className="uk-width-1-3">
                             <button className="uk-button uk-button-primary uk-button-small uk-align-right" type="button" data-uk-toggle={generateSummaryClass}>
                                 <span className="uk-margin-small-right" data-uk-icon="icon: bolt" />
                                 Generate new summary report

@@ -80,13 +80,10 @@ class TenderStatus extends React.Component<TenderStatusProps & StateProps & Disp
 
         var { tender } = this.props;
         return (
-            <div className="uk-card uk-card-default uk-card-body">
-                <h3>Status</h3>
+            <div className="uk-card uk-card-small uk-card-default uk-card-body">
                 <div className="uk-grid uk-child-width-expand@s uk-grid-match" data-uk-grid>
                     <p>Meter count: <strong>{meterCount}</strong></p>
                     <p>Consumption: <strong>{tender.annualConsumption.toLocaleString()} {tender.acuom}</strong></p>
-                </div>
-                <div className=" uk-grid uk-child-width-expand@s uk-grid-match" data-uk-grid>
                     <p>Eligible suppliers: <strong>{eligibleSupplierCount}</strong></p>
                     <p>Commission: <strong>{this.props.tender.commission}p/{tender.acuom}</strong></p>
                 </div>

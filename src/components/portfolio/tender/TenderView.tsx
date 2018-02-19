@@ -79,26 +79,26 @@ class TenderView extends React.Component<TenderViewProps & StateProps & Dispatch
                     </div>
                 </div>
 
-                <div className="uk-margin uk-margin-large-top">
+                <div className="uk-margin-small">
                     <TenderStatus tender={this.props.tender} utility={this.props.utility} details={this.props.details} />
                 </div>
                 
-                <div className="uk-margin">
+                <div className="uk-margin-small">
                     <TenderQuotesView tender={this.props.tender} />
                 </div>
 
-                <div className="uk-margin">
+                <div className="uk-margin-small">
                     <div className="uk-card uk-card-default uk-card-body">
                         <h3>Existing Contract</h3>
                         <TenderContractView tender={this.props.tender} portfolioId={this.props.details.portfolio.id}/>
                     </div>
                 </div>
-                <div>
-                    <button className="uk-button uk-button-danger uk-button-small uk-align-right" type="button" onClick={() => this.deleteTender()}>
+                {/* <div>
+                    <button className="uk-button uk-button-danger uk-button-small" type="button" onClick={() => this.deleteTender()}>
                         <span className="uk-margin-small-right" data-uk-icon="icon: close" />
                         Cancel
                     </button>
-                </div>
+                </div> */}
 
                 <div id={updateTenderDialogName} data-uk-modal="center: true">
                     <UpdateTenderDialog tender={this.props.tender} utilityDescription={utilityDescription} utility={this.props.utility}/>

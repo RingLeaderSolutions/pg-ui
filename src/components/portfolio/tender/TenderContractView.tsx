@@ -40,14 +40,10 @@ class TenderContractView extends React.Component<TenderContractViewProps & Dispa
 
     renderContractInfo(){
         return (
-            <div className="uk-margin uk-grid" data-uk-grid>
-                <div className="uk-width-1-3">
-                    <p>Ref: <strong>{this.props.tender.existingContract.reference}</strong></p>
-                </div>
-                <div className="uk-text-right uk-width-expand@m">
-                    <p>Contract Start: <strong>{this.props.tender.existingContract.contractStart}</strong></p>
-                    <p>Contract End: <strong>{this.props.tender.existingContract.contractEnd}</strong></p>
-                </div>
+            <div className="uk-grid uk-child-width-expand@s uk-grid-match" data-uk-grid>
+                <p>Ref: <strong>{this.props.tender.existingContract.reference}</strong></p>
+                <p>Contract Start: <strong>{this.props.tender.existingContract.contractStart}</strong></p>
+                <p>Contract End: <strong>{this.props.tender.existingContract.contractEnd}</strong></p>
             </div>);
     }
 
@@ -74,7 +70,7 @@ class TenderContractView extends React.Component<TenderContractViewProps & Dispa
         return (
             <div>
                 {warningMessage}
-                <div className="uk-grid" data-uk-grid>
+                <div className="uk-grid uk-margin-top" data-uk-grid>
                     <div className="uk-width-1-2">
                         <button className="uk-button uk-button-primary uk-button-small" type="button" data-uk-toggle={showUploadBackingSheetClass}>
                             <span className="uk-margin-small-right" data-uk-icon="icon: cloud-upload" />
