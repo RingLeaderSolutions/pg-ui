@@ -66,7 +66,7 @@ class Login extends React.Component<StateProps & DispatchProps, {}> {
                                 </div>
 
                                 {/* <Link to="/password_reset">Forgotten your password?</Link> */}
-                                <button className="uk-button uk-button-primary" type="button" onClick={this.handleSubmit}>
+                                <button className="uk-button uk-button-primary" type="submit" onClick={this.handleSubmit}>
                                     <span className="uk-margin-small-right" data-uk-icon="icon: sign-in" />
                                     Log in
                                 </button>
