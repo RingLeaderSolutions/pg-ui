@@ -125,6 +125,8 @@ class TenderQuotesView extends React.Component<TenderQuotesViewProps & StateProp
                         <div className="uk-width-expand@s">
                             <h3>Quotes</h3>
                         </div>
+                        { hasQuotes ? 
+                        <div>
                         <div className="uk-width-1-3">
                             <button className="uk-button uk-button-default uk-button-small uk-align-right" type="button" data-uk-toggle={viewSummariesClass}>
                                 <span className="uk-margin-small-right" data-uk-icon="icon: settings" />
@@ -137,6 +139,7 @@ class TenderQuotesView extends React.Component<TenderQuotesViewProps & StateProp
                                 Generate new summary report
                             </button>   
                         </div>
+                        </div> : null}
                     </div>
                 <div>
                     {hasQuotes ? (this.renderQuotesTable(showQuoteBackingSheetClass)) : (<p>This tender has not yet been issued.</p>)}
