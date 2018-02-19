@@ -6,7 +6,7 @@ import { MapDispatchToPropsFunction, connect, MapStateToProps } from 'react-redu
 import { ApplicationState } from '../../../applicationState';
 
 import { Portfolio, PortfolioDetails, UtilityType } from '../../../model/Models';
-import { MeterPortfolio, Mpan, MeterType } from '../../../model/Meter';
+import { MeterPortfolio, Mpan, MeterType, MeterSite } from '../../../model/Meter';
 import MeterDetails from './MeterDetails';
 
 import Spinner from '../../common/Spinner';
@@ -72,24 +72,30 @@ class ElectricityMeterTable extends React.Component<ElectricityMeterTableProps &
 
     renderSitesAndMeters()
     {
-        var sites = this.props.meterPortfolio.sites;
-        return sites.map((site, index) => {
+        var orderedSites = this.props.meterPortfolio.sites.sort(
+            (site1: MeterSite, site2: MeterSite) => {
+                let lowerFirst = site1.siteCode.toLowerCase();
+                let lowerSecond = site2.siteCode.toLowerCase();
+        
+                if (lowerFirst < lowerSecond) return -1;
+                if (lowerFirst > lowerSecond) return 1;
+                return 0;
+            });
+            
+        return orderedSites.map((site, index) => {
                 if(site.siteCode == null || site.mprns == null || site.mpans.length == 0){
                     return;
                 }
                 return (
                         <tbody key={site.siteCode}>
-                            <tr>
-                                <td colSpan={21}>{site.siteCode}</td>
-                            </tr>
-                            {this.renderMeters(site.mpans)}
+                            {this.renderMeters(site.siteCode, site.mpans)}
                         </tbody>
                     
                 )
             });
     }
 
-    renderMeters(meters: Mpan[]){
+    renderMeters(siteCode: string, meters: Mpan[]){
         return meters.map((meter, index) =>{
             var supplyData = meter.meterSupplyData;
             if(supplyData == null){
@@ -98,7 +104,7 @@ class ElectricityMeterTable extends React.Component<ElectricityMeterTableProps &
             
             return (
                 <tr key={index} data-uk-toggle='target: #meter-modal' onClick={()=> this.editMeter(meter)}>
-                    <td></td>
+                    <td>{index == 0 ? siteCode : null}</td>
                     <td>{supplyData.mpanCore}</td>
                     <td>{supplyData.meterType}</td>
                     <td>{supplyData.meterTimeSwitchCode}</td>

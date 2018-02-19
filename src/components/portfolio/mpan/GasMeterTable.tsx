@@ -6,7 +6,7 @@ import { MapDispatchToPropsFunction, connect, MapStateToProps } from 'react-redu
 import { ApplicationState } from '../../../applicationState';
 
 import { Portfolio, PortfolioDetails, UtilityType } from '../../../model/Models';
-import { MeterPortfolio, Mprn, MeterType } from '../../../model/Meter';
+import { MeterPortfolio, Mprn, MeterType, MeterSite } from '../../../model/Meter';
 import MeterDetails from './MeterDetails';
 import UploadSupplyDataDialog from './UploadSupplyDataDialog';
 
@@ -42,7 +42,6 @@ class GasMeterTable extends React.Component<GasMeterTableProps & StateProps & Di
                         <th>Make</th>
                         <th>Model</th>
                         <th>Size</th>
-                        <th>Utility</th>
                         <th>AQ</th>
                         <th>Change of Use</th>
                         <th>Is Imperial</th>
@@ -57,24 +56,30 @@ class GasMeterTable extends React.Component<GasMeterTableProps & StateProps & Di
 
     renderSitesAndMeters()
     {
-        var sites = this.props.meterPortfolio.sites;
-        return sites.map((site, index) => {
+        var orderedSites = this.props.meterPortfolio.sites.sort(
+            (site1: MeterSite, site2: MeterSite) => {
+                let lowerFirst = site1.siteCode.toLowerCase();
+                let lowerSecond = site2.siteCode.toLowerCase();
+        
+                if (lowerFirst < lowerSecond) return -1;
+                if (lowerFirst > lowerSecond) return 1;
+                return 0;
+            });
+            
+        return orderedSites.map((site, index) => {
                 if(site.siteCode == null || site.mprns == null || site.mprns.length == 0){
                     return;
                 }
                 return (
                         <tbody key={site.siteCode}>
-                            <tr>
-                                <td colSpan={21}>{site.siteCode}</td>
-                            </tr>
-                            {this.renderMeters(site.mprns)}
+                            {this.renderMeters(site.siteCode, site.mprns)}
                         </tbody>
                     
                 )
             });
     }
 
-    renderMeters(meters: Mprn[]){
+    renderMeters(siteCode: string, meters: Mprn[]){
         return meters.map((meter, index) =>{
             var supplyData = meter.meterSupplyData;
             if(supplyData == null){
@@ -83,14 +88,13 @@ class GasMeterTable extends React.Component<GasMeterTableProps & StateProps & Di
             
             return (
                 <tr key={index}>
-                    <td></td>
+                    <td>{index == 0 ? siteCode : null}</td>
                     <td>{supplyData.mprnCore}</td>
                     <td>{supplyData.serialNumber}</td>
                     <td>{supplyData.currentContractEnd}</td>
                     <td>{supplyData.make}</td>
                     <td>{supplyData.model}</td>
                     <td>{supplyData.size}</td>
-                    <td>{supplyData.utility}</td>
                     <td>{supplyData.aQ}</td>
                     <td>{supplyData.changeOfUse}</td>
                     <td>{supplyData.imperial}</td>
