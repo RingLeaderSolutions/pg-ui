@@ -111,10 +111,10 @@ class PortfolioRequirementsSection extends React.Component<PortfolioRequirements
                                         <select className="uk-select" id="payment-terms-select" ref={ref => this.paymentTerms = ref} 
                                                 defaultValue={requirements.paymentTerms.toString()}>
                                             <option value="0" disabled>Select terms</option>
-                                            <option>7</option>
-                                            <option>14</option>
-                                            <option>21</option>
-                                            <option>28</option>
+                                            <option value={7}>7 days</option>
+                                            <option value={14}>14 days</option>
+                                            <option value={21}>21 days</option>
+                                            <option value={28}>28 days</option>
                                         </select>
                                     </div>
                                 </div>
@@ -160,17 +160,17 @@ class PortfolioRequirementsSection extends React.Component<PortfolioRequirements
                                 </div>
 
                                 <div className="uk-margin">
-                                    <label className="uk-form-label" data-for="contract-length-select">Length</label>
+                                    <label className="uk-form-label" data-for="contract-length-select">Contract Length</label>
                                     <div className="uk-form-controls">
                                         <select className="uk-select" id="contract-length-select" ref={ref => this.contractLength = ref} 
                                                 defaultValue={requirements.durationMonths.toString()}>
                                             <option value="0" disabled>Select length</option>                                            
-                                            <option>6</option>
-                                            <option>12</option>
-                                            <option>18</option>
-                                            <option>24</option>
-                                            <option>30</option>
-                                            <option>36</option>
+                                            <option value={6}>6 months</option>
+                                            <option value={12}>12 months</option>
+                                            <option value={18}>18 months</option>
+                                            <option value={24}>24 months</option>
+                                            <option value={30}>30 months</option>
+                                            <option value={36}>36 months</option>
                                         </select>
                                     </div>
                                 </div>
