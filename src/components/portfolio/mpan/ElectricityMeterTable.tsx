@@ -44,6 +44,7 @@ class ElectricityMeterTable extends React.Component<ElectricityMeterTableProps &
                     <tr>
                         <th>Site</th>
                         <th>Meter</th>
+                        <th>Historical</th>
                         <th>Type</th>
                         <th>Topline</th>
                         <th>Retrieval</th>
@@ -99,11 +100,17 @@ class ElectricityMeterTable extends React.Component<ElectricityMeterTableProps &
             if(supplyData == null){
                 return;
             }
-            
+            var hasHistorical = meter.halfHourly != null;
             return (
                 <tr key={index} data-uk-toggle='target: #meter-modal' onClick={()=> this.editMeter(meter)}>
                     <td>{index == 0 ? siteCode : null}</td>
                     <td>{supplyData.mpanCore}</td>
+                    <td>{hasHistorical ? (
+                        <span className="icon-standard-cursor" data-uk-tooltip="title: Uploaded" data-uk-icon="icon: check"></span>
+                    ) : 
+                    (
+                        <span className="icon-standard-cursor" data-uk-tooltip="title: Not processed" data-uk-icon="icon: close"></span>
+                    )}</td>
                     <td>{supplyData.meterType}</td>
                     <td className="uk-text-nowrap">{supplyData.profileClass} {supplyData.meterTimeSwitchCode} {supplyData.llf}</td>
                     <td>{supplyData.retrievalMethod}</td>
