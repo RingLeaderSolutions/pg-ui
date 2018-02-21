@@ -101,6 +101,7 @@ class ElectricityMeterTable extends React.Component<ElectricityMeterTableProps &
                 return;
             }
             var hasHistorical = meter.halfHourly != null;
+            var toplineTooltip = `title: Profile: ${supplyData.profileClass} / MTC: ${supplyData.meterTimeSwitchCode} / LLF: ${supplyData.llf}`;
             return (
                 <tr key={index} data-uk-toggle='target: #meter-modal' onClick={()=> this.editMeter(meter)}>
                     <td>{index == 0 ? siteCode : null}</td>
@@ -112,7 +113,7 @@ class ElectricityMeterTable extends React.Component<ElectricityMeterTableProps &
                         <span className="icon-standard-cursor" data-uk-tooltip="title: Not processed" data-uk-icon="icon: close"></span>
                     )}</td>
                     <td>{supplyData.meterType}</td>
-                    <td className="uk-text-nowrap">{supplyData.profileClass} {supplyData.meterTimeSwitchCode} {supplyData.llf}</td>
+                    <td className="uk-text-nowrap" data-uk-tooltip={toplineTooltip} >{supplyData.profileClass} {supplyData.meterTimeSwitchCode} {supplyData.llf}</td>
                     <td>{supplyData.retrievalMethod}</td>
                     <td>{supplyData.gspGroup}</td>
                     <td>{supplyData.measurementClass}</td>
