@@ -3,6 +3,7 @@ import { HubConnection } from "@aspnet/signalr-client";
 import { NotificationMessage } from '../model/NotificationMessage';
 import { getPortfolioDetails } from '../actions/portfolioActions';
 import { getPortfolioTenders } from '../actions/tenderActions';
+import { getMeters } from '../actions/meterActions';
 import { ApplicationState } from "../applicationState";
 
 export default function connectSignalR(store: any) {
@@ -18,12 +19,22 @@ export default function connectSignalR(store: any) {
         }
 
         var currentPortfolioId = currentPortfolio.id;
-        if(data.EntityType.toLowerCase() == "portfolio" && data.EntityId == currentPortfolioId){
-            store.dispatch(getPortfolioDetails(currentPortfolioId));
-            return;
-        }
-        else if (data.EntityType.toLowerCase() == "tender") {
-            store.dispatch(getPortfolioTenders(currentPortfolioId));
+        switch(data.EntityType.toLowerCase()){
+            case "portfolio":
+                if(data.EntityId == currentPortfolioId){
+                    store.dispatch(getPortfolioDetails(currentPortfolioId));
+                }
+            case "portfoliometers":
+                if(data.EntityId == currentPortfolioId){
+                    store.dispatch(getPortfolioDetails(currentPortfolioId));
+                    store.dispatch(getMeters(currentPortfolioId));
+                }
+                break;
+            case "tender":
+                if(data.PortfolioId == currentPortfolioId){
+                    store.dispatch(getPortfolioTenders(currentPortfolioId));
+                }
+                break;
         }
 
         // let messageType = types.NOTIFICATION_PORTFOLIO_CREATED;

@@ -3,4 +3,5 @@ export interface NotificationMessage {
     Description: string;
     EntityType: string;
     EntityId: string;
+    PortfolioId: string;
 }
