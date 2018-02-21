@@ -101,6 +101,12 @@ class TenderPackDialog extends React.Component<TenderPackDialogProps & StateProp
                     <div className="uk-margin">
                         {content}
                     </div>
+                    <div className="uk-margin">
+                        <button className="uk-button uk-button-primary" type="button" onClick={() => this.generateTenderPack()}>
+                            <span className="uk-margin-small-right" data-uk-icon="icon: bolt" />
+                            Generate new tender pack
+                        </button>   
+                    </div>    
                 </div>
             </div>)
     }

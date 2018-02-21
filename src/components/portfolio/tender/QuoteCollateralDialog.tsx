@@ -7,7 +7,6 @@ import ErrorMessage from "../../common/ErrorMessage";
 import * as moment from 'moment';
 import DatePicker from 'react-datepicker';
 
-import { generateTenderPack } from '../../../actions/tenderActions';
 import { Tender, TenderPack, TenderSupplier, TenderQuoteCollateral } from "../../../model/Tender";
 
 interface QuoteCollateralDialogProps {

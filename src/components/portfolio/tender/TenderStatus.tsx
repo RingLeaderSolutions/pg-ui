@@ -66,19 +66,21 @@ class TenderStatus extends React.Component<TenderStatusProps & StateProps & Disp
             return (<Spinner />);
         }
         
+        var { tender } = this.props;
+
         var meterCount = this.getMeterCount();
         var eligibleSupplierCount = this.getSupplierCount();
 
-        var supplierModalId = "modal-select-suppliers-" + this.props.tender.tenderId;
+        var supplierModalId = "modal-select-suppliers-" + tender.tenderId;
         var toggleSupplierModalClass = "target: #" + supplierModalId;
 
-        var packModalId = "modal-generate-packs-" + this.props.tender.tenderId;
+        var packModalId = "modal-generate-packs-" + tender.tenderId;
         var togglePackModalClass = "target: #" + packModalId;
 
-        var issuePackModalId = "modal-generate-issue-pack-" + this.props.tender.tenderId;
+        var issuePackModalId = "modal-generate-issue-pack-" + tender.tenderId;
         var toggleIssuePackModalClass = "target: #" + issuePackModalId;
 
-        var { tender } = this.props;
+        var hasPacks = tender.packs != null && tender.packs.length > 0;
         return (
             <div className="uk-card uk-card-small uk-card-default uk-card-body">
                 <div className="uk-grid uk-child-width-expand@s uk-grid-match" data-uk-grid>
@@ -101,13 +103,14 @@ class TenderStatus extends React.Component<TenderStatusProps & StateProps & Disp
                                 View Packs
                             </button>
                         </div>
+                        { hasPacks ? (
                         <div className="uk-margin-small uk-width-1-4">
                             <button className="uk-button uk-button-primary" type="button" data-uk-toggle={toggleIssuePackModalClass}>
                                 <span className="uk-margin-small-right" data-uk-icon="icon: forward" />
                                 Issue Pack
                             </button>
-                        </div>
-                        </div>
+                        </div>) : null}
+                    </div>
                 </div>
 
                 <div id={supplierModalId} data-uk-modal="center: true">
