@@ -328,9 +328,9 @@ export function uploadSupplyMeterData(portfolioId: string, accountId: string, fi
     };
 }
 
-export function uploadHistoric(portfolioId: string, file: Blob){
+export function uploadHistoric(portfolioId: string, files: Blob[]){
     return (dispatch: Dispatch<any>) => {
-        let uploadPromise = ApiService.uploadHistorical(portfolioId, file);
+        let uploadPromise = ApiService.uploadHistorical(portfolioId, files);
         dispatch({ type: types.UPLOAD_HISTORICAL_WORKING });
 
         makeApiRequest(dispatch,

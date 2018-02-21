@@ -505,7 +505,7 @@ export class FakeApiService implements IApiService {
         return OK();
     }
 
-    uploadHistorical(portfolioId: string, file: Blob){
+    uploadHistorical(portfolioId: string, files: Blob[]){
         return OK();
     }
 

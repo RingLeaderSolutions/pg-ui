@@ -20,18 +20,18 @@ interface StateProps {
 }
 
 interface DispatchProps {
-    uploadHistoric: (portfolioId: string, file: Blob) => void;
+    uploadHistoric: (portfolioId: string, files: Blob[]) => void;
 }
 
 interface UploadHistoricState {
-    file: Blob;
+    files: Blob[];
 }
 
 class UploadHistoricDialog extends React.Component<UploadHistoricDialogProps & StateProps & DispatchProps, UploadHistoricState> {
     constructor(props: UploadHistoricDialogProps & StateProps & DispatchProps){
         super();
         this.state = {
-            file: null
+            files: null
         };
 
         this.upload = this.upload.bind(this);
@@ -40,12 +40,12 @@ class UploadHistoricDialog extends React.Component<UploadHistoricDialogProps & S
     
     upload() {
         var portfolioId = this.props.details.portfolio.id;
-        this.props.uploadHistoric(portfolioId, this.state.file);
+        this.props.uploadHistoric(portfolioId, this.state.files);
     }
 
     onFileChosen(e: any){
         this.setState({
-            file: e.target.files[0]
+            files: e.target.files
         });
     }
 
@@ -64,7 +64,7 @@ class UploadHistoricDialog extends React.Component<UploadHistoricDialogProps & S
                         <form>
                             <fieldset className="uk-fieldset">
                                 <div className="uk-margin">
-                                    <div className="uk-form-file"><input type="file" onChange={this.onFileChosen}/></div>
+                                    <div className="uk-form-file"><input type="file" onChange={this.onFileChosen} multiple/></div>
                                 </div>
                             </fieldset>
                         </form>
@@ -80,7 +80,7 @@ class UploadHistoricDialog extends React.Component<UploadHistoricDialogProps & S
 
 const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, UploadHistoricDialogProps> = (dispatch) => {
     return {
-        uploadHistoric: (portfolioId: string, file: Blob) => dispatch(uploadHistoric(portfolioId, file))        
+        uploadHistoric: (portfolioId: string, files: Blob[]) => dispatch(uploadHistoric(portfolioId, files))        
     };
 };
   

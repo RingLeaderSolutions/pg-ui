@@ -35,7 +35,7 @@ export interface IApiService {
 
   uploadLoa(portfolioId: string, accountId: string, file: Blob): Promise<AxiosResponse>;
   uploadSupplyMeterData(portfolioId: string, accountId: string, file: Blob, utility: UtilityType): Promise<AxiosResponse>;
-  uploadHistorical(portfolioId: string, file: Blob): Promise<AxiosResponse>;
+  uploadHistorical(portfolioId: string, files: Blob[]): Promise<AxiosResponse>;
   uploadSiteList(portfolioId: string, accountId: string, file: Blob): Promise<AxiosResponse>;
   uploadElectricityBackingSheet(tenderId: string, file: Blob): Promise<AxiosResponse>;
   uploadGasBackingSheet(tenderId: string, file: Blob): Promise<AxiosResponse>;
@@ -235,9 +235,12 @@ export class ApiService implements IApiService {
         return axios.post(`${this.uploadApiUri}/api/upload/supply/${prefix}/${portfolioId}`, formData, this.getUploadFileConfig());
     }
 
-    uploadHistorical(portfolioId: string, file: Blob){
+    uploadHistorical(portfolioId: string, files: Blob[]){
         var formData = new FormData();
-        formData.append('files', file);
+        for (let index = 0; index < files.length; index++) {
+            const element = files[index];
+            formData.append('files', element);
+        }
 
         return axios.post(`${this.uploadApiUri}/api/upload/historic/${portfolioId}`, formData, this.getUploadFileConfig());
     }
