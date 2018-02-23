@@ -37,8 +37,8 @@ export interface IApiService {
   uploadSupplyMeterData(portfolioId: string, accountId: string, file: Blob, utility: UtilityType): Promise<AxiosResponse>;
   uploadHistorical(portfolioId: string, files: Blob[]): Promise<AxiosResponse>;
   uploadSiteList(portfolioId: string, accountId: string, file: Blob): Promise<AxiosResponse>;
-  uploadElectricityBackingSheet(tenderId: string, file: Blob): Promise<AxiosResponse>;
-  uploadGasBackingSheet(tenderId: string, file: Blob): Promise<AxiosResponse>;
+  uploadElectricityBackingSheet(contractId: string, file: Blob): Promise<AxiosResponse>;
+  uploadGasBackingSheet(contractId: string, file: Blob): Promise<AxiosResponse>;
 
   getTenderSuppliers(): Promise<AxiosResponse>;
   getPortfolioTenders(portfolioId: string): Promise<AxiosResponse>;
@@ -253,18 +253,18 @@ export class ApiService implements IApiService {
         return axios.post(`${this.uploadApiUri}/api/upload/sites/${portfolioId}`, formData, this.getUploadFileConfig());
     }
 
-    uploadGasBackingSheet(tenderId: string, file: Blob){
+    uploadGasBackingSheet(contractId: string, file: Blob){
         var formData = new FormData();
         formData.append('files', file);
 
-        return axios.post(`${this.uploadApiUri}/api/upload/backing/${tenderId}/gas`, formData, this.getUploadFileConfig());
+        return axios.post(`${this.uploadApiUri}/api/upload/backing/${contractId}/gas`, formData, this.getUploadFileConfig());
     }
 
-    uploadElectricityBackingSheet(tenderId: string, file: Blob){
+    uploadElectricityBackingSheet(contractId: string, file: Blob){
         var formData = new FormData();
         formData.append('files', file);
 
-        return axios.post(`${this.uploadApiUri}/api/upload/backing/${tenderId}/electricity`, formData, this.getUploadFileConfig());
+        return axios.post(`${this.uploadApiUri}/api/upload/backing/${contractId}/electricity`, formData, this.getUploadFileConfig());
     }
 
     getMpanHistorical(documentId: string){

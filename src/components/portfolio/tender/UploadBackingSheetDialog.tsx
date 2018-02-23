@@ -10,7 +10,7 @@ import { FormEvent } from "react";
 import { uploadElectricityBackingSheet, uploadGasBackingSheet } from '../../../actions/tenderActions';
 
 interface UploadBackingSheetDialogProps {
-    tenderId: string;
+    contractId: string;
     utilityType: string;
 }
 
@@ -21,8 +21,8 @@ interface StateProps {
 }
 
 interface DispatchProps {
-    uploadElectricityBackingSheet: (tenderId: string, file: Blob) => void;
-    uploadGasBackingSheet: (tenderId: string, file: Blob) => void;
+    uploadElectricityBackingSheet: (contractId: string, file: Blob) => void;
+    uploadGasBackingSheet: (contractId: string, file: Blob) => void;
 }
 
 interface UploadBackingSheetState {
@@ -42,10 +42,10 @@ class UploadBackingSheetDialog extends React.Component<UploadBackingSheetDialogP
     
     upload() {
         if(this.props.utilityType == "GAS"){
-            this.props.uploadGasBackingSheet(this.props.tenderId, this.state.file);
+            this.props.uploadGasBackingSheet(this.props.contractId, this.state.file);
             return;
         }
-        this.props.uploadElectricityBackingSheet(this.props.tenderId, this.state.file);
+        this.props.uploadElectricityBackingSheet(this.props.contractId, this.state.file);
     }
 
     onFileChosen(e: any){
@@ -83,8 +83,8 @@ class UploadBackingSheetDialog extends React.Component<UploadBackingSheetDialogP
 
 const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, UploadBackingSheetDialogProps> = (dispatch) => {
     return {
-        uploadElectricityBackingSheet: (tenderId: string, file: Blob) => dispatch(uploadElectricityBackingSheet(tenderId, file)),
-        uploadGasBackingSheet: (tenderId: string, file: Blob) => dispatch(uploadGasBackingSheet(tenderId, file))        
+        uploadElectricityBackingSheet: (contractId: string, file: Blob) => dispatch(uploadElectricityBackingSheet(contractId, file)),
+        uploadGasBackingSheet: (contractId: string, file: Blob) => dispatch(uploadGasBackingSheet(contractId, file))        
     };
 };
   

@@ -517,11 +517,11 @@ export class FakeApiService implements IApiService {
         return OK();
     }
 
-    uploadGasBackingSheet(tenderId: string, file: Blob){
+    uploadGasBackingSheet(contractId: string, file: Blob){
         return OK();
     }
 
-    uploadElectricityBackingSheet(tenderId: string, file: Blob){
+    uploadElectricityBackingSheet(contractId: string, file: Blob){
         return OK();
     }
 

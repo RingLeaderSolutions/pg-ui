@@ -168,9 +168,9 @@ export function unassignTenderSupplier(tenderId: string, supplierId: string){
     };
 }
 
-export function uploadGasBackingSheet(tenderId: string, file: Blob){
+export function uploadGasBackingSheet(contractId: string, file: Blob){
     return (dispatch: Dispatch<any>) => {
-        let uploadPromise = ApiService.uploadGasBackingSheet(tenderId, file);
+        let uploadPromise = ApiService.uploadGasBackingSheet(contractId, file);
         dispatch({ type: types.UPLOAD_GAS_BACKING_SHEET_WORKING });
 
         makeApiRequest(dispatch,
@@ -186,9 +186,9 @@ export function uploadGasBackingSheet(tenderId: string, file: Blob){
     };
 }
 
-export function uploadElectricityBackingSheet(tenderId: string, file: Blob){
+export function uploadElectricityBackingSheet(contractId: string, file: Blob){
     return (dispatch: Dispatch<any>) => {
-        let uploadPromise = ApiService.uploadElectricityBackingSheet(tenderId, file);
+        let uploadPromise = ApiService.uploadElectricityBackingSheet(contractId, file);
         dispatch({ type: types.UPLOAD_ELECTRICITY_BACKING_SHEET_WORKING });
 
         makeApiRequest(dispatch,

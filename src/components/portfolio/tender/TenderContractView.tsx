@@ -94,7 +94,7 @@ class TenderContractView extends React.Component<TenderContractViewProps & Dispa
                 </div>
 
                 <div id={uploadBackingSheetDialogName} data-uk-modal="center: true">
-                    <UploadBackingSheetDialog tenderId={this.props.tender.tenderId} utilityType={this.props.tender.utility} />
+                    <UploadBackingSheetDialog contractId={this.props.tender.existingContract.contractId} utilityType={this.props.tender.utility} />
                 </div>
 
                 <div id={viewContractBackingSheetsName} data-uk-modal="center: true">
