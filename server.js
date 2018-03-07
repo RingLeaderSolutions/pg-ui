@@ -5,20 +5,27 @@ var hotServer = require('webpack-hot-middleware');
 var fs = require('fs');
 var path = require("path");
 var app = express();
+var dotenv = require('dotenv');
+var configSubstitutor = require('./config/ConfigSubstitutor');
 
+// Default the node environment to development if none is provided
+process.env.NODE_ENV = process.env.NODE_ENV || 'development';
+console.log(`NODE_ENV=${process.env.NODE_ENV}`);
+
+// Search for a config.$environment.env file to load variables from
+var envFilePath = __dirname + '/config/config.' + process.env.NODE_ENV + '.env';
+if (fs.existsSync(envFilePath)) {
+    console.log(`Using config file ${envFilePath}`);
+    dotenv.config({ path: envFilePath });
+}
+
+// Load the config file and re-write the appConfig file for usage
 var configFileContents = fs.readFileSync('./appConfig.js', 'utf-8');
+configFileContents = configSubstitutor(configFileContents);
 
 var applyStaticRoutes = function (app) {
     app.get('/appConfig.js', function (request, response) {
         response.send(configFileContents)
-    });
-
-    app.get('/version', function(request, response) {
-        var hash = require('child_process')
-            .execSync('git rev-parse --short HEAD')
-            .toString()
-            .trim();
-        response.send(hash);
     });
 }
 
