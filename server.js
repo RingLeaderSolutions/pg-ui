@@ -8,12 +8,12 @@ var app = express();
 var dotenv = require('dotenv');
 var configSubstitutor = require('./config/ConfigSubstitutor');
 
-// Default the node environment to development if none is provided
-process.env.NODE_ENV = process.env.NODE_ENV || 'development';
-console.log(`NODE_ENV=${process.env.NODE_ENV}`);
+// Default the environment to development if none is provided
+process.env.TPIFLOW_ENV = process.env.TPIFLOW_ENV || 'development';
+console.log(`TPIFLOW_ENV=${process.env.TPIFLOW_ENV}`);
 
 // Search for a config.$environment.env file to load variables from
-var envFilePath = __dirname + '/config/config.' + process.env.NODE_ENV + '.env';
+var envFilePath = __dirname + '/config/config.' + process.env.TPIFLOW_ENV + '.env';
 if (fs.existsSync(envFilePath)) {
     console.log(`Using config file ${envFilePath}`);
     dotenv.config({ path: envFilePath });
