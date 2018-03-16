@@ -57,7 +57,7 @@ class PortfolioRequirementsSection extends React.Component<PortfolioRequirements
     saveRequirements(){
         let { details } = this.props;
         let requirements: PortfolioRequirements = {
-            portfolioId: details.portfolio.id,
+            entityId: details.portfolio.id,
 
             paymentTerms: Number(this.paymentTerms.value),
             durationMonths: Number(this.contractLength.value),
@@ -68,7 +68,7 @@ class PortfolioRequirementsSection extends React.Component<PortfolioRequirements
             product: this.product.value,
             startDate: this.state.contractStart.format("YYYY-MM-DDTHH:mm:ss"),
             // TODO: stodId
-            stodId: "day/night"
+            tariffId: "day/night"
         };
 
         this.props.updatePortfolioRequirements(requirements);
@@ -87,12 +87,12 @@ class PortfolioRequirementsSection extends React.Component<PortfolioRequirements
         var { requirements, portfolio } = details;
         if(requirements == null){
             requirements = {
-                portfolioId: portfolio.id,
+                entityId: portfolio.id,
                 durationMonths: 0,
                 product: "",
                 electricityRequired: true,
                 gasRequired: false,
-                stodId: "day/night",
+                tariffId: "day/night",
                 paymentTerms: 0,
                 greenPercentage: 0,
                 startDate: this.state.contractStart.unix().toString()

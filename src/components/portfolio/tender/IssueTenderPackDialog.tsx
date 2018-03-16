@@ -7,8 +7,8 @@ import ErrorMessage from "../../common/ErrorMessage";
 import * as moment from 'moment';
 import DatePicker from 'react-datepicker';
 
-import { issueTenderPack } from '../../../actions/tenderActions';
-import { Tender, TenderPack, TenderSupplier } from "../../../model/Tender";
+import { issueTenderPack, fetchTenderIssuanceEmail } from '../../../actions/tenderActions';
+import { Tender, TenderPack, TenderSupplier, TenderIssuanceEmail } from "../../../model/Tender";
 
 interface IssueTenderPackDialogProps {
     tender: Tender;
@@ -20,9 +20,11 @@ interface StateProps {
     error: boolean;
     errorMessage: string;
     suppliers: TenderSupplier[];
+    email: TenderIssuanceEmail;    
 }
   
 interface DispatchProps {
+    fetchIssuanceEmail: (tenderId: string) => void;
     issueTenderPack: (tenderId: string, subject: string, body: string) => void;
 }
 
@@ -30,11 +32,21 @@ class IssueTenderPackDialog extends React.Component<IssueTenderPackDialogProps &
     subjectElement: HTMLInputElement;
     bodyElement: HTMLTextAreaElement;
 
+    componentDidMount(){
+        if(this.props.tender.packs.length > 0){
+            this.props.fetchIssuanceEmail(this.props.tender.tenderId);
+        }
+    }
+
     issueTender() {
         this.props.issueTenderPack(this.props.tender.tenderId, this.subjectElement.value, this.bodyElement.value);
     }
 
     renderPackDialogContent(){
+        if(this.props.email == null) {
+            return (<Spinner />)
+        }
+
         return (
             <div className="uk-margin">
             <form>
@@ -44,6 +56,7 @@ class IssueTenderPackDialog extends React.Component<IssueTenderPackDialogProps &
                             <div className='uk-margin'>
                                 <label className='uk-form-label'>Subject</label>
                                 <input className='uk-input' 
+                                    defaultValue={this.props.email.subject}
                                     ref={ref => this.subjectElement = ref}/>
                             </div>
 
@@ -51,6 +64,7 @@ class IssueTenderPackDialog extends React.Component<IssueTenderPackDialogProps &
                                 <label className='uk-form-label'>Body</label>
                                 <textarea className='uk-textarea' 
                                     rows={4}
+                                    defaultValue={this.props.email.body}
                                     ref={ref => this.bodyElement = ref}/>
                             </div>
                         </fieldset>
@@ -94,6 +108,7 @@ class IssueTenderPackDialog extends React.Component<IssueTenderPackDialogProps &
 
 const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, IssueTenderPackDialogProps> = (dispatch) => {
     return {
+        fetchIssuanceEmail: (tenderId: string) => dispatch(fetchTenderIssuanceEmail(tenderId)),
         issueTenderPack: (tenderId: string, subject: string, body: string) => dispatch(issueTenderPack(tenderId, subject, body))
     };
 };
@@ -101,9 +116,10 @@ const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, IssueTenderP
 const mapStateToProps: MapStateToProps<StateProps, IssueTenderPackDialogProps> = (state: ApplicationState) => {
     return {
         suppliers: state.portfolio.tender.suppliers.value,
-        working: state.portfolio.tender.issue_pack.working,
-        error: state.portfolio.tender.issue_pack.error,
-        errorMessage: state.portfolio.tender.issue_pack.errorMessage
+        email: state.portfolio.tender.issuance_email.value,
+        working: state.portfolio.tender.issue_pack.working || state.portfolio.tender.issuance_email.working,
+        error: state.portfolio.tender.issue_pack.error || state.portfolio.tender.issuance_email.error,
+        errorMessage: state.portfolio.tender.issue_pack.errorMessage || state.portfolio.tender.issuance_email.errorMessage
     };
 };
   

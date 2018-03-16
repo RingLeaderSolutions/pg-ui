@@ -1,6 +1,7 @@
 import ApiService from "../services/ApiService";
 
-import { Tender, TenderContract, TenderSupplier, BackingSheet } from "../Model/Tender";
+import { Tender, TenderContract, TenderSupplier, BackingSheet, TenderIssuanceEmail, QuoteExportResponse, TenderRequirements } from "../Model/Tender";
+import { UploadResponse, UtilityType } from "../Model/Models";
 
 import * as types from "./actionTypes";
 import { Dispatch } from 'redux';
@@ -177,6 +178,8 @@ export function uploadGasBackingSheet(contractId: string, file: Blob){
             uploadPromise,
             200, 
             data => {
+                var uploadResponse = data as UploadResponse;
+                ApiService.reportSuccessfulBackingSheetUpload(contractId, uploadResponse.uploadedFiles, UtilityType.Gas);
                 return { type: types.UPLOAD_GAS_BACKING_SHEET_SUCCESSFUL, data: null};
                 
             }, 
@@ -195,8 +198,9 @@ export function uploadElectricityBackingSheet(contractId: string, file: Blob){
             uploadPromise,
             200, 
             data => {
+                var uploadResponse = data as UploadResponse;
+                ApiService.reportSuccessfulBackingSheetUpload(contractId, uploadResponse.uploadedFiles, UtilityType.Electricity);
                 return { type: types.UPLOAD_ELECTRICITY_BACKING_SHEET_SUCCESSFUL, data: null};
-                
             }, 
             error => {
                 return { type: types.UPLOAD_ELECTRICITY_BACKING_SHEET_FAILED, errorMessage: error };
@@ -206,11 +210,11 @@ export function uploadElectricityBackingSheet(contractId: string, file: Blob){
 
 export function updateTender(tenderId: string, tender: Tender){
     return (dispatch: Dispatch<any>) => {
-        let uploadPromise = ApiService.updateTender(tenderId, tender);
+        let updateTenderPromise = ApiService.updateTender(tenderId, tender);
         dispatch({ type: types.UPDATE_TENDER_WORKING });
 
         makeApiRequest(dispatch,
-            uploadPromise,
+            updateTenderPromise,
             200, 
             data => {
                 return { type: types.UPDATE_TENDER_SUCCESSFUL, data: null};
@@ -224,11 +228,11 @@ export function updateTender(tenderId: string, tender: Tender){
 
 export function generateTenderPack(portfolioId: string, tenderId: string){
     return (dispatch: Dispatch<any>) => {
-        let uploadPromise = ApiService.generateTenderPack(tenderId, portfolioId);
+        let generatePromise = ApiService.generateTenderPack(tenderId, portfolioId);
         dispatch({ type: types.GENERATE_TENDER_PACK_WORKING });
 
         makeApiRequest(dispatch,
-            uploadPromise,
+            generatePromise,
             200, 
             data => {
                 return { type: types.GENERATE_TENDER_PACK_SUCCESSFUL, data: null};
@@ -321,6 +325,97 @@ export function issueSummaryReport(tenderId: string, reportId: string){
             }, 
             error => {
                 return { type: types.ISSUE_SUMMARY_REPORT_FAILED, errorMessage: error };
+            });
+    }
+};
+
+export function fetchTenderIssuanceEmail(tenderId: string){    
+    return (dispatch: Dispatch<any>) => {
+        let fetchPromise = ApiService.fetchTenderIssuanceEmail(tenderId);
+        dispatch( { type: types.FETCH_TENDER_ISSUANCE_EMAIL_WORKING });
+
+        makeApiRequest(dispatch,
+            fetchPromise,
+            200, 
+            data => {
+                return { type: types.FETCH_TENDER_ISSUANCE_EMAIL_SUCCESSFUL, data: data as TenderIssuanceEmail };
+            }, 
+            error => {
+                return { type: types.FETCH_TENDER_ISSUANCE_EMAIL_FAILED, errorMessage: error };
+            });
+    }
+};
+
+export function exportContractRates(tenderId: string, quoteId: string){    
+    return (dispatch: Dispatch<any>) => {
+        let fetchPromise = ApiService.exportContractRates(tenderId, quoteId);
+        dispatch( { type: types.EXPORT_CONTRACT_RATES_WORKING });
+
+        makeApiRequest(dispatch,
+            fetchPromise,
+            200, 
+            data => {
+                var resp = data as QuoteExportResponse;
+                window.open(resp.exportUri, '_blank');
+                return { type: types.EXPORT_CONTRACT_RATES_SUCCESSFUL, data: data};
+            }, 
+            error => {
+                return { type: types.EXPORT_CONTRACT_RATES_FAILED, errorMessage: error };
+            });
+    }
+};
+
+export function uploadGasOffer(tenderId: string, supplierId: string, file: Blob){
+    return (dispatch: Dispatch<any>) => {
+        let uploadPromise = ApiService.uploadOffer(tenderId, supplierId, file);
+        dispatch({ type: types.UPLOAD_GAS_OFFER_WORKING });
+
+        makeApiRequest(dispatch,
+            uploadPromise,
+            200, 
+            data => {
+                var uploadResponse = data as UploadResponse;
+                ApiService.reportSuccessfulOfferUpload(tenderId, supplierId, uploadResponse.uploadedFiles, UtilityType.Gas);
+                return { type: types.UPLOAD_GAS_OFFER_SUCCESSFUL, data: null};
+            }, 
+            error => {
+                return { type: types.UPLOAD_GAS_OFFER_FAILED, errorMessage: error };
+            });
+    };
+}
+
+export function uploadElectricityOffer(tenderId: string, supplierId: string, file: Blob){
+    return (dispatch: Dispatch<any>) => {
+        let uploadPromise = ApiService.uploadOffer(tenderId, supplierId, file);
+        dispatch({ type: types.UPLOAD_ELECTRICITY_OFFER_WORKING });
+
+        makeApiRequest(dispatch,
+            uploadPromise,
+            200, 
+            data => {
+                var uploadResponse = data as UploadResponse;
+                ApiService.reportSuccessfulOfferUpload(tenderId, supplierId, uploadResponse.uploadedFiles, UtilityType.Electricity);
+                return { type: types.UPLOAD_ELECTRICITY_OFFER_SUCCESSFUL, data: null};
+            }, 
+            error => {
+                return { type: types.UPLOAD_ELECTRICITY_OFFER_FAILED, errorMessage: error };
+            });
+    };
+}
+
+export function updateTenderRequirements(requirements: TenderRequirements){    
+    return (dispatch: Dispatch<any>) => {
+        let fetchPromise = ApiService.updateTenderRequirements(requirements);
+        dispatch( { type: types.UPDATE_TENDER_REQUIREMENTS_WORKING });
+
+        makeApiRequest(dispatch,
+            fetchPromise,
+            200, 
+            data => {
+                return { type: types.UPDATE_TENDER_REQUIREMENTS_SUCCESSFUL, data: null};
+            }, 
+            error => {
+                return { type: types.UPDATE_TENDER_REQUIREMENTS_FAILED, errorMessage: error };
             });
     }
 };

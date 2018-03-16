@@ -4,6 +4,7 @@ import { DashboardState } from './reducers/dashboard/DashboardState';
 import { NotificationState } from './reducers/notifications/NotificationState';
 import { AuthState } from './reducers/auth/AuthState';
 import { MeterState } from './reducers/meters/MeterState';
+import { RequestState } from './reducers/RequestState';
 
 export interface ApplicationState {    
     portfolio: PortfolioState;
@@ -12,4 +13,5 @@ export interface ApplicationState {
     notifications: NotificationState;
     auth: AuthState;
     meters: MeterState;
+    backend_version: RequestState;
 }

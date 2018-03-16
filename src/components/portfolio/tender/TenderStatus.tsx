@@ -6,6 +6,8 @@ import { ApplicationState } from '../../../applicationState';
 import { Portfolio, PortfolioDetails, UtilityType } from '../../../model/Models';
 import Spinner from '../../common/Spinner';
 
+import { format } from 'currency-formatter';
+
 import { getPortfolioTenders, getTenderSuppliers } from '../../../actions/tenderActions';
 import { Tender, TenderSupplier } from "../../../model/Tender";
 import TenderSupplierSelectDialog from "./TenderSupplierSelectDialog";
@@ -71,6 +73,8 @@ class TenderStatus extends React.Component<TenderStatusProps & StateProps & Disp
         var meterCount = this.getMeterCount();
         var eligibleSupplierCount = this.getSupplierCount();
 
+        var totalCommission = tender.commission * tender.annualConsumption;
+
         var supplierModalId = "modal-select-suppliers-" + tender.tenderId;
         var toggleSupplierModalClass = "target: #" + supplierModalId;
 
@@ -87,7 +91,8 @@ class TenderStatus extends React.Component<TenderStatusProps & StateProps & Disp
                     <p>Meter count: <strong>{meterCount}</strong></p>
                     <p>Consumption: <strong>{tender.annualConsumption.toLocaleString()} {tender.acuom}</strong></p>
                     <p>Eligible suppliers: <strong>{eligibleSupplierCount}</strong></p>
-                    <p>Commission: <strong>{this.props.tender.commission}p/{tender.acuom}</strong></p>
+                    <p>Commission Rate: <strong>{tender.commission}p/{tender.acuom}</strong></p>
+                    <p>Commission: <strong>{format(totalCommission, { locale: 'en-GB'})}</strong></p>
                 </div>
                 <div className="tender-actions uk-margin-top">
                     <div className="uk-grid uk-child-width-expand@s" data-uk-grid>

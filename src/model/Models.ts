@@ -42,6 +42,16 @@ export enum UtilityType {
     Electricity
 }
 
+export interface BackendVersion {
+    version: string;
+}
+
 // Application data model
 
 export { PortfolioCreationStage } from './app/PortfolioCreationStage';
+
+export interface UploadResponse {
+    success: boolean;
+    uploadedFiles: string[];
+    error: string;
+}

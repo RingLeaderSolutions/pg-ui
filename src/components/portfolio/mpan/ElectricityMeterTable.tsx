@@ -13,7 +13,7 @@ import Spinner from '../../common/Spinner';
 import * as moment from 'moment';
 import UploadHistoricDialog from './UploadHistoricDialog';
 import UploadSupplyDataDialog from './UploadSupplyDataDialog';
-import { getMeters, editMeter } from '../../../actions/meterActions';
+import { getMeters, editMeter, excludeMeters } from '../../../actions/meterActions';
 
 interface ElectricityMeterTableProps {
     meterPortfolio: MeterPortfolio;
@@ -26,11 +26,18 @@ interface StateProps {
 
 interface DispatchProps {
     editMeter: (meter: Mpan) => void;
+    excludeMeters: (portfolioId: string, meters: string[]) => void;    
 }
 
 class ElectricityMeterTable extends React.Component<ElectricityMeterTableProps & StateProps & DispatchProps, {}> {
     editMeter(meter: Mpan){
         this.props.editMeter(meter);
+    }
+
+    excludeMeter(event: any,meter: Mpan){
+        event.preventDefault();
+        var meters: string[] = [meter.meterSupplyData.mpanCore]
+        this.props.excludeMeters(this.props.portfolio.id,  meters);
     }
 
     renderTable() {
@@ -129,6 +136,9 @@ class ElectricityMeterTable extends React.Component<ElectricityMeterTableProps &
                     <td>{supplyData.capacity}</td>
                     <td>{supplyData.energized ? "Yes" : "No"}</td>
                     <td>{supplyData.newConnection ? "Yes" : "No"}</td>
+                    <td>
+                        <button className='uk-button uk-button-default uk-button-small' data-uk-toggle="target: #modal-upload-supply-data" onClick={(ev) => this.excludeMeter(ev, meter)}><span data-uk-icon='icon: close' data-uk-tooltip="title: Exclude" /></button>
+                    </td>
                 </tr>
             );
         })
@@ -161,7 +171,8 @@ class ElectricityMeterTable extends React.Component<ElectricityMeterTableProps &
 
 const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, ElectricityMeterTableProps> = (dispatch) => {
     return {
-        editMeter: (meter: Mpan) => dispatch(editMeter(meter))
+        editMeter: (meter: Mpan) => dispatch(editMeter(meter)),
+        excludeMeters: (portfolioId: string, meters: string[]) => dispatch(excludeMeters(portfolioId, meters))
     };
 };
   

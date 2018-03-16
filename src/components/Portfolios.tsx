@@ -2,7 +2,7 @@ import * as React from "react";
 import { Link } from "react-router-dom";
 import { RouteComponentProps } from 'react-router';
 import { MapDispatchToPropsFunction, connect, MapStateToProps } from 'react-redux';
-import { getAllPortfolios } from '../actions/portfolioActions';
+import { getAllPortfolios, deselectPortfolio } from '../actions/portfolioActions';
 import { ApplicationState } from '../applicationState';
 import Header from "./common/Header";
 import ErrorMessage from "./common/ErrorMessage";
@@ -22,11 +22,13 @@ interface StateProps {
 
 interface DispatchProps {
   getPortfolios: () => void;
+  deselectPortfolio: () => void;
 }
 
 class Portfolios extends React.Component<PortfoliosProps & StateProps & DispatchProps, {}> {
     componentDidMount() {
         this.props.getPortfolios();
+        this.props.deselectPortfolio();
     }
 
     render() {
@@ -142,7 +144,8 @@ class Portfolios extends React.Component<PortfoliosProps & StateProps & Dispatch
 
 const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, PortfoliosProps> = (dispatch) => {
   return {
-    getPortfolios: () => dispatch(getAllPortfolios())
+    getPortfolios: () => dispatch(getAllPortfolios()),
+    deselectPortfolio: () => dispatch(deselectPortfolio())
   };
 };
 

@@ -18,6 +18,24 @@ export interface Tender {
     halfHourly: boolean;
     acuom: string;
     annualConsumption: number;
+    requirements: TenderRequirements;
+}
+
+export interface TenderRequirements {
+    id: string;
+    portfolioId: string;
+    tenderId: string;
+    durationMonths: number;
+    greenPercentage: number;
+    paymentTerms: number;
+    product: string;
+    startDate: string;
+    tariffId: string;
+}
+
+export interface TenderIssuanceEmail {
+    subject: string;
+    body: string;
 }
 
 export interface TenderQuote {
@@ -169,4 +187,13 @@ export interface BackingSheet {
     mpanCore: string;
     availabilityChargeUOM: string;
     fixedChargeUOM: string;
+}
+
+export interface Tariff {
+    id: string;
+    name: string;
+}
+
+export interface QuoteExportResponse {
+    exportUri: string;
 }

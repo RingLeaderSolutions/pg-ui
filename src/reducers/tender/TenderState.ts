@@ -18,4 +18,7 @@ export interface TenderState {
     generate_summary: RequestState;
     issue_summary: RequestState;
     backing_sheets: RequestState;
+    issuance_email: RequestState;
+    tariffs: RequestState;
+    update_requirements: RequestState;
 }

@@ -23,6 +23,7 @@ class PortfolioMeterStatus extends React.Component<PortfolioMeterStatusProps & S
             return (
                 <tr key={mg.groupName}>
                     <td>{mg.groupName}</td>
+                    <td>{mg.consumption.toLocaleString()} kWh</td>
                     <td>{mg.meterCount}</td>
                     <td>{mg.supplyDataCount}</td>
                     <td>{mg.historicalCount}</td>
@@ -35,6 +36,7 @@ class PortfolioMeterStatus extends React.Component<PortfolioMeterStatusProps & S
             <thead>
                 <tr>
                     <th>Meter Type</th>
+                    <th>Consumption</th>
                     <th>Count</th>
                     <th>Supply Data Provided</th>
                     <th>Historical Provided</th>

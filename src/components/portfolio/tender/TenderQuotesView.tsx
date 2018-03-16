@@ -12,10 +12,11 @@ import TenderBackingSheetsDialog from './TenderBackingSheetsDialog';
 import TenderQuoteSummariesDialog from './TenderQuoteSummariesDialog';
 import QuoteCollateralDialog from './QuoteCollateralDialog';
 
-import { fetchQuoteBackingSheets } from '../../../actions/tenderActions';
+import { fetchQuoteBackingSheets, exportContractRates } from '../../../actions/tenderActions';
 import { Tender, BackingSheet, TenderSupplier, TenderQuote } from "../../../model/Tender";
 import { format } from 'currency-formatter';
 import GenerateSummaryReportDialog from "./GenerateSummaryReportDialog";
+import UploadOfferDialog from "./UploadOfferDialog";
 
 interface TenderQuotesViewProps {
     tender: Tender;
@@ -28,6 +29,7 @@ interface StateProps {
   
 interface DispatchProps {
     fetchQuoteBackingSheets: (tenderId: string, quoteId: string) => void;
+    exportContractRates: (tenderId: string, quoteId: string) => void
 }
 
 class TenderQuotesView extends React.Component<TenderQuotesViewProps & StateProps & DispatchProps, {}> {
@@ -36,6 +38,9 @@ class TenderQuotesView extends React.Component<TenderQuotesViewProps & StateProp
         this.props.fetchQuoteBackingSheets(this.props.tender.tenderId, quoteId);
     }
 
+    exportQuote(quoteId: string){
+        this.props.exportContractRates(this.props.tender.tenderId, quoteId);
+    }
     renderQuotesTable(viewBackingSheetClass: string){
         let quotesBySupplier = this.props.tender.quotes.reduce((r: any, a: TenderQuote) => {
             r[a.supplierId] = r[a.supplierId] || [];
@@ -80,6 +85,11 @@ class TenderQuotesView extends React.Component<TenderQuotesViewProps & StateProp
                     <td>{format(highestVersion.totalIncCCL, { locale: 'en-GB'})}</td>
                     <td>{billingAccuracy}</td>
                     <td>{serviceDesk}</td>
+                    <td>
+                        <button className="uk-button uk-button-default uk-button-small" type="button" data-uk-tooltip="title: Download" onClick={() => this.exportQuote(highestVersion.quoteId)}>
+                            <span data-uk-icon="icon: cloud-download" />
+                        </button>  
+                    </td>
                 </tr>
             );
         });
@@ -92,7 +102,7 @@ class TenderQuotesView extends React.Component<TenderQuotesViewProps & StateProp
                     <th>Version</th>
                     <th>Contract Rates</th>
                     <th>Collateral</th>
-                    <th>Sheet count</th>
+                    <th>Site count</th>
                     <th>Contract Value</th>
                     <th>Billing Accuracy</th>
                     <th>Service Desk</th>
@@ -119,13 +129,24 @@ class TenderQuotesView extends React.Component<TenderQuotesViewProps & StateProp
 
         var generateSummaryName = `modal-generate-summary-${tenderId}`;
         var generateSummaryClass = `target: #${generateSummaryName}`;
+
+        var uploadOfferName = `modal-upload-offer-${tenderId}`;
+        var uploadOfferClass = `target: #${uploadOfferName}`;
         return (
                 <div className="uk-card uk-card-small uk-card-default uk-card-body">
-                    <div className="uk-grid" data-uk-grid>
-                        <div className="uk-width-expand@s">
-                            <h3>Quotes</h3>
-                        </div>
-                        { hasQuotes ? 
+                    <div className="uk-width-expand@s">
+                        <h3>Offers</h3>
+                    </div>
+                    <div>
+                        <button className="uk-button uk-button-default uk-button-small uk-align-right" type="button" data-uk-toggle={uploadOfferClass}>
+                                <span className="uk-margin-small-right" data-uk-icon="icon: cloud-upload" />
+                                Upload Offer
+                            </button>
+                    </div>
+                    <div>
+                        {hasQuotes ? (this.renderQuotesTable(showQuoteBackingSheetClass)) : (<p>This tender has not yet been issued.</p>)}
+                    </div>
+                    { hasQuotes ? 
                         <div className="uk-width-2-3 uk-grid" data-uk-grid>
                             <div className="uk-width-1-2">
                                 <button className="uk-button uk-button-default uk-button-small uk-align-right" type="button" data-uk-toggle={viewSummariesClass}>
@@ -140,21 +161,21 @@ class TenderQuotesView extends React.Component<TenderQuotesViewProps & StateProp
                                 </button>   
                             </div>
                         </div> : null}
+                    <div id={viewQuoteBackingSheetName} data-uk-modal="center: true">
+                        <TenderBackingSheetsDialog />
                     </div>
-                <div>
-                    {hasQuotes ? (this.renderQuotesTable(showQuoteBackingSheetClass)) : (<p>This tender has not yet been issued.</p>)}
-                </div>
-                <div id={viewQuoteBackingSheetName} data-uk-modal="center: true">
-                    <TenderBackingSheetsDialog />
-                </div>
 
-                <div id={viewSummariesName} data-uk-modal="center: true">
-                    <TenderQuoteSummariesDialog tender={this.props.tender} />
-                </div>
+                    <div id={viewSummariesName} data-uk-modal="center: true">
+                        <TenderQuoteSummariesDialog tender={this.props.tender} />
+                    </div>
 
-                <div id={generateSummaryName} data-uk-modal="center: true">
-                    <GenerateSummaryReportDialog tender={this.props.tender} />
-                </div>
+                    <div id={generateSummaryName} data-uk-modal="center: true">
+                        <GenerateSummaryReportDialog tender={this.props.tender} />
+                    </div>
+
+                    <div id={uploadOfferName} data-uk-modal="center: true">
+                        <UploadOfferDialog tenderId={this.props.tender.tenderId} />
+                    </div>
             </div>
         )
     }
@@ -162,7 +183,8 @@ class TenderQuotesView extends React.Component<TenderQuotesViewProps & StateProp
 
 const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, TenderQuotesViewProps> = (dispatch) => {
     return {
-        fetchQuoteBackingSheets: (tenderId: string, quoteId: string) => dispatch(fetchQuoteBackingSheets(tenderId, quoteId))
+        fetchQuoteBackingSheets: (tenderId: string, quoteId: string) => dispatch(fetchQuoteBackingSheets(tenderId, quoteId)),
+        exportContractRates: (tenderId: string, quoteId: string) => dispatch(exportContractRates(tenderId, quoteId))
     };
 };
   

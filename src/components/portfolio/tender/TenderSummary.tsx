@@ -83,38 +83,17 @@ class TenderSummary extends React.Component<TenderSummaryProps & StateProps & Di
     }
 
     renderTenderTabs(){
-        var { requirements } = this.props.details;
-
-        var hhTab;
-        var nhhTab;
-        if(requirements.electricityRequired){
-            hhTab = (
+        return (
+            <ul data-uk-tab>
                 <li className={this.state.tab === 'electricity-hh' ? 'uk-active' : null}>
                     <a href='#' onClick={() =>this.selectTab('electricity-hh')}>Electricity (HH)</a>
                 </li>
-            );
-
-            nhhTab = (
                 <li className={this.state.tab === 'electricity-nhh' ? 'uk-active' : null}>
                     <a href='#' onClick={() =>this.selectTab('electricity-nhh')}>Electricity (NHH)</a>
                 </li>
-            );
-        }
-
-        var gasTab;
-        if(requirements.gasRequired){
-            gasTab = (
                 <li className={this.state.tab === 'gas' ? 'uk-active' : null}>
                     <a href='#' onClick={() =>this.selectTab('gas')}>Gas</a>
                 </li>
-            );
-        }
-
-        return (
-            <ul data-uk-tab>
-                {hhTab}
-                {nhhTab}
-                {gasTab}
             </ul>
         )
     }
@@ -138,10 +117,14 @@ class TenderSummary extends React.Component<TenderSummaryProps & StateProps & Di
             var finishSetup = (<p>This portfolio isn't ready to tender yet. Please complete the necessary fields on the setup tab.</p>);
             return this.renderContent(finishSetup);
         }
+        if(this.props.details.portfolio.status != "tender"){
+            var finishSetup = (<p>This portfolio isn't ready to tender yet. Please upload data for applicable meters.</p>);
+            return this.renderContent(finishSetup);
+        }
         
-        var gasTenders = this.props.details.requirements.gasRequired ? this.generateGasTender() : null;
-        var hhTender = this.props.details.requirements.electricityRequired ? this.generateHHTender() : null;
-        var nhhTender = this.props.details.requirements.electricityRequired ? this.generateNHHTender() : null;
+        var gasTenders = this.generateGasTender();
+        var hhTender = this.generateHHTender();
+        var nhhTender = this.generateNHHTender();
         var { tenders } = this.props;
 
         var content = (

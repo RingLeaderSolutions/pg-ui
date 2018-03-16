@@ -7,7 +7,9 @@ import { Portfolio,
          CompanyInfo,
          PortfolioDetails,
          PortfolioContact, 
-         UtilityType} from "../Model/Models";
+         UtilityType,
+         BackendVersion,
+         UploadResponse} from "../Model/Models";
 
 import * as types from "./actionTypes";
 import { makeApiRequest } from "./Common";
@@ -15,6 +17,7 @@ import { makeApiRequest } from "./Common";
 import { Dispatch } from 'redux';
 import { PortfolioRequirements } from "../model/PortfolioDetails";
 import { AccountCompanyStatusFlags } from "../model/Account";
+import { Tariff } from "../model/Tender";
 
 export function getAllPortfolios(){
     return (dispatch: Dispatch<any>) => {
@@ -276,13 +279,15 @@ export function updatePortfolioRequirements(requirements: PortfolioRequirements)
 
 export function uploadLetterOfAuthority(portfolioId: string, accountId: string, file: Blob){
     return (dispatch: Dispatch<any>) => {
-        let uploadPromise = ApiService.uploadLoa(portfolioId, accountId, file);
+        let uploadPromise = ApiService.uploadLoa(portfolioId, file);
         dispatch({ type: types.UPLOAD_LOA_WORKING });
 
         makeApiRequest(dispatch,
             uploadPromise,
             200, 
             data => {
+                var uploadResponse = data as UploadResponse;
+                ApiService.reportSuccessfulLoaUpload(portfolioId, accountId, uploadResponse.uploadedFiles);
                 return { type: types.UPLOAD_LOA_SUCCESSFUL, data: null};
                 
             }, 
@@ -294,13 +299,15 @@ export function uploadLetterOfAuthority(portfolioId: string, accountId: string, 
 
 export function uploadSiteList(portfolioId: string, accountId: string, file: Blob){
     return (dispatch: Dispatch<any>) => {
-        let uploadPromise = ApiService.uploadSiteList(portfolioId, accountId, file);
+        let uploadPromise = ApiService.uploadSiteList(portfolioId, file);
         dispatch({ type: types.UPLOAD_SITELIST_WORKING });
 
         makeApiRequest(dispatch,
             uploadPromise,
             200, 
             data => {
+                var uploadResponse = data as UploadResponse;
+                ApiService.reportSuccessfulSiteListUpload(portfolioId, accountId, uploadResponse.uploadedFiles);
                 return { type: types.UPLOAD_SITELIST_SUCCESSFUL, data: null};
                 
             }, 
@@ -312,13 +319,15 @@ export function uploadSiteList(portfolioId: string, accountId: string, file: Blo
 
 export function uploadSupplyMeterData(portfolioId: string, accountId: string, file: Blob, utility: UtilityType){
     return (dispatch: Dispatch<any>) => {
-        let uploadPromise = ApiService.uploadSupplyMeterData(portfolioId, accountId, file, utility);
+        let uploadPromise = ApiService.uploadSupplyMeterData(portfolioId, file, utility);
         dispatch({ type: types.UPLOAD_SUPPLY_METER_DATA_WORKING });
 
         makeApiRequest(dispatch,
             uploadPromise,
             200, 
             data => {
+                var uploadResponse = data as UploadResponse;
+                ApiService.reportSuccessfulSupplyMeterDataUpload(portfolioId, accountId, uploadResponse.uploadedFiles, utility);
                 return { type: types.UPLOAD_SUPPLY_METER_DATA_SUCCESSFUL, data: null};
                 
             }, 
@@ -337,11 +346,55 @@ export function uploadHistoric(portfolioId: string, files: Blob[]){
             uploadPromise,
             200, 
             data => {
+                var uploadResponse = data as UploadResponse;
+                ApiService.reportSuccessfulHistoricalUpload(portfolioId, uploadResponse.uploadedFiles);
                 return { type: types.UPLOAD_HISTORICAL_SUCCESSFUL, data: null};
                 
             }, 
             error => {
                 return { type: types.UPLOAD_HISTORICAL_FAILED, errorMessage: error };
             });
+    };
+}
+
+export function fetchBackendVersion(){
+    return (dispatch: Dispatch<any>) => {
+        let fetchVersionPromise = ApiService.fetchBackendVersion();
+        dispatch({ type: types.FETCH_BACKEND_VERSION_WORKING });
+
+        makeApiRequest(dispatch,
+            fetchVersionPromise,
+            200, 
+            data => {
+                return { type: types.FETCH_BACKEND_VERSION_SUCCESSFUL, data: (data as BackendVersion).version};
+                
+            }, 
+            error => {
+                return { type: types.FETCH_BACKEND_VERSION_FAILED, errorMessage: error };
+            });
+    };
+}
+
+export function fetchTariffs(){
+    return (dispatch: Dispatch<any>) => {
+        let fetchTariffsPromise = ApiService.getTariffs();
+        dispatch({ type: types.FETCH_TARIFFS_WORKING });
+
+        makeApiRequest(dispatch,
+            fetchTariffsPromise,
+            200, 
+            data => {
+                return { type: types.FETCH_TARIFFS_SUCCESSFUL, data: data as Tariff[]};
+                
+            }, 
+            error => {
+                return { type: types.FETCH_TARIFFS_FAILED, errorMessage: error };
+            });
+    };
+}
+
+export function deselectPortfolio(){
+    return (dispatch: Dispatch<any>) => {    
+        dispatch({ type: types.DESELECT_PORTFOLIO });
     };
 }

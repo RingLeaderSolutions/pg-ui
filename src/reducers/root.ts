@@ -57,6 +57,9 @@ import issueTenderPackReducer from './tender/issueTenderPackReducer';
 import issueSummaryReportReducer from './tender/issueSummaryReportReducer';
 import generateSummaryReportReducer from './tender/generateSummaryReportReducer';
 import fetchBackingSheetsReducer from './tender/fetchBackingSheetsReducer';
+import fetchTenderIssuanceEmailReducer from './tender/fetchTenderIssuanceEmailReducer';
+import fetchTariffsReducer from './tender/fetchTariffsReducer';
+import updateTenderRequirementsReducer from './tender/updateTenderRequirementsReducer';
 
 const tenderReducer: Reducer<TenderState> = combineReducers<TenderState>({
     tenders: tendersReducer,
@@ -73,7 +76,10 @@ const tenderReducer: Reducer<TenderState> = combineReducers<TenderState>({
     issue_pack: issueTenderPackReducer,
     generate_summary: generateSummaryReportReducer,
     issue_summary: issueSummaryReportReducer,
-    backing_sheets: fetchBackingSheetsReducer
+    backing_sheets: fetchBackingSheetsReducer,
+    issuance_email: fetchTenderIssuanceEmailReducer,
+    tariffs: fetchTariffsReducer,
+    update_requirements: updateTenderRequirementsReducer
 });
 
 // Combine portfolio reducers to form the PortfolioState
@@ -88,7 +94,6 @@ import mpanToplineReducer from './portfolio/mpanToplineReducer';
 import mpanHistoricalReducer from './portfolio/mpanHistoricalReducer';
 import updateRequirementsReducer from './portfolio/updateRequirementsReducer';
 import createContactReducer from './portfolio/createContactReducer';
-
 
 const portfolioReducer: Reducer<PortfolioState> = combineReducers<PortfolioState>({
     account: portfolioAccountReducer,
@@ -127,6 +132,8 @@ var completeMeterReducer = reduceReducers((state: MeterState = {
     update: initialRequestState,
 }) => state, meterReducer, meterEditReducer);
 
+import fetchBackendVersionReducer from './fetchBackendVersionReducer';
+
 // Combine all reducers to form the master ApplicationState
 const rootReducer: Reducer<ApplicationState> = combineReducers<ApplicationState>({
     portfolio: portfolioReducer,
@@ -135,6 +142,7 @@ const rootReducer: Reducer<ApplicationState> = combineReducers<ApplicationState>
     notifications: notificationMessageReducer,    
     auth: authReducer,
     meters: completeMeterReducer,
+    backend_version: fetchBackendVersionReducer
 });
 
 export default rootReducer;

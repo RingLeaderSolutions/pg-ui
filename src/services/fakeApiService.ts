@@ -18,7 +18,7 @@ import {
     UtilityType
 } from '../model/Models';
 import { PortfolioDetails, PortfolioDocument } from '../model/PortfolioDetails';
-import { BackingSheet, Tender, TenderContract, TenderSupplier } from '../model/Tender';
+import { BackingSheet, Tender, TenderContract, TenderSupplier, TenderIssuanceEmail, Tariff, TenderRequirements } from '../model/Tender';
 import { IApiService } from './ApiService';
 
 const responseDelay = 1000;
@@ -337,7 +337,7 @@ export class FakeApiService implements IApiService {
         var response = {
             id: "a1b01d44-5971-4be0-a197-0226c44372ea",
             title: company.companyName,
-            status: "onboard",
+            status: "tender",
             category: "direct",
             teamId: 989,
             ownerId: 1,
@@ -376,7 +376,7 @@ export class FakeApiService implements IApiService {
             portfolio: {
                 id: "4d584e81-91c2-47b4-85f9-411db125af51",
                 title: "Portfolio for testing",
-                status: "onboard",
+                status: "tender",
                 category: "direct",
                 teamId: 989,
                 ownerId: 1,
@@ -388,24 +388,26 @@ export class FakeApiService implements IApiService {
             },
             requirements: {
                 id: "6ae3c008-5541-48a4-b514-be36b1a613bd",
-                portfolioId: "4d584e81-91c2-47b4-85f9-411db125af51",
+                entityId: "4d584e81-91c2-47b4-85f9-411db125af51",
                 product: "Fixed",
                 paymentTerms: 21,
                 startDate: "2018-01-12T00:54:25",
                 durationMonths: 18,
-                stodId: "day/night",
+                tariffId: "day/night",
                 gasRequired: true,
                 electricityRequired: true,
                 greenPercentage: 100.0
             },
             documentation: null,
             meterGroups: [{
+                consumption: 1234.32,
                 groupName: "GAS",
                 meterCount: 4,
                 supplyDataCount: 4,
                 historicalCount: 0,
                 forecastCount: 0
             }, {
+                consumption: 1234.32,
                 groupName: "ELECTRICITY",
                 meterCount: 25,
                 supplyDataCount: 25,
@@ -426,7 +428,7 @@ export class FakeApiService implements IApiService {
         return OK();
     }
 
-    uploadLoa(portfolioId: string, accountId: string, file: Blob){
+    uploadLoa(portfolioId: string, file: Blob){
         return OK();
     }
 
@@ -501,7 +503,7 @@ export class FakeApiService implements IApiService {
         return OK(data);
 	}
 		
-    uploadSupplyMeterData(portfolioId: string, accountId: string, file: Blob, utility: UtilityType){
+    uploadSupplyMeterData(portfolioId: string, file: Blob, utility: UtilityType){
         return OK();
     }
 
@@ -509,7 +511,7 @@ export class FakeApiService implements IApiService {
         return OK();
     }
 
-    uploadSiteList(portfolioId: string, accountId: string, file: Blob){
+    uploadSiteList(portfolioId: string, file: Blob){
         return OK();
     }
 
@@ -614,6 +616,17 @@ export class FakeApiService implements IApiService {
                     uploaded: null,
                     status: null,
                     sheetCount: 1
+                },
+                requirements: {
+                    durationMonths: 18,
+                    greenPercentage: 0,
+                    id: "68bc8e6b-2552-4dfd-8c65-235c20cf83ce",
+                    paymentTerms: 21,
+                    portfolioId: "4d584e81-91c2-47b4-85f9-411db125af51",
+                    product: "fixed",
+                    startDate: "2017-11-21T05:49:53",
+                    tariffId: "2",
+                    tenderId: "5122951b-b942-4f25-8ee0-5f2e255a5f50"
                 },
                 summaries: [
                     {
@@ -840,6 +853,71 @@ export class FakeApiService implements IApiService {
 
     issueSummaryReport(tenderId: string, reportId: string){
         return OK();
+    }
+    
+    fetchBackendVersion(){
+        return OK({
+            version: "FAKE"
+        });
+    }
+
+    fetchTenderIssuanceEmail(tenderId: string){
+        var email: TenderIssuanceEmail = {
+            subject: "hello",
+            body: "test"
+        };
+        
+        return OK(email);
+    }
+
+    exportContractRates(tenderId: string, quoteId: string){
+        var rateLink = "http://test.com/test.csv";
+
+        return OK(rateLink);
+    }
+
+    excludeMeters(portfolioId: string, meters: string[]){
+        return OK();
+    }
+
+    uploadOffer(tenderId: string, supplierId: string, file: Blob) {
+        return OK();
+    }
+
+    reportSuccessfulLoaUpload(portfolioId: string, accountId: string, files: string[]) {
+        return OK();
+    }
+
+    reportSuccessfulSupplyMeterDataUpload(portfolioId: string, accountId: string, files: string[], utility: UtilityType) {
+        return OK();
+    }
+
+    reportSuccessfulSiteListUpload(portfolioId: string, accountId: string, files: string[]) {
+        return OK();
+    }
+
+    reportSuccessfulHistoricalUpload(portfolioId: string, files: string[]) {
+        return OK();
+    }
+
+    reportSuccessfulBackingSheetUpload(contractId: string, files: string[], utility: UtilityType) {
+        return OK();
+    }
+
+    reportSuccessfulOfferUpload(tenderId: string, supplierId: string, files: string[], utility: UtilityType) {
+        return OK();
+    }
+
+    updateTenderRequirements(requirements: TenderRequirements){
+        return OK();
+    }
+
+    getTariffs(){
+        var tariffs: Tariff[] = [
+            { id: "1",  name: "day/night"},
+            { id: "2",  name: "summer/winter"}
+        ];
+        return OK(tariffs);
     }
 }
 

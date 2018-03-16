@@ -3,12 +3,14 @@ import { Portfolio, PortfolioDetails, UtilityType } from '../../../model/Models'
 import { MapDispatchToPropsFunction, connect, MapStateToProps } from 'react-redux';
 import { ApplicationState } from '../../../applicationState';
 
+import * as moment from 'moment';
 import { fetchContractBackingSheets } from '../../../actions/tenderActions';
 import { Tender, TenderSupplier } from "../../../model/Tender";
 import TenderStatus from "./TenderStatus";
 import UploadBackingSheetDialog from './UploadBackingSheetDialog';
 import AddExistingContractDialog from './AddExistingContractDialog';
 import TenderBackingSheetsDialog from './TenderBackingSheetsDialog';
+import Spinner from "../../common/Spinner";
 
 interface TenderContractViewProps {
     tender: Tender;
@@ -16,14 +18,15 @@ interface TenderContractViewProps {
 }
 
 interface StateProps {
-
+    suppliers: TenderSupplier[];
+    working: boolean;
 }
 
 interface DispatchProps {
     fetchContractBackingSheets: (tenderId: string, contractId: string) => void;
 }
 
-class TenderContractView extends React.Component<TenderContractViewProps & DispatchProps, {}> { 
+class TenderContractView extends React.Component<TenderContractViewProps & DispatchProps & StateProps, {}> { 
     renderAddExistingContract(){
         var addExistingContractDialogName = `modal-add-contract-${this.props.tender.tenderId}`;
         var addExistingContractTargetClass = `target: #${addExistingContractDialogName}`;
@@ -39,11 +42,15 @@ class TenderContractView extends React.Component<TenderContractViewProps & Dispa
     }
 
     renderContractInfo(){
+        var { existingContract } = this.props.tender;
+        var existingSupplier = this.props.suppliers.find(s => s.supplierId == existingContract.supplierId);
+        var supplierText = existingSupplier == null ? "Unknown" : existingSupplier.name;
         return (
             <div className="uk-grid uk-child-width-expand@s uk-grid-match" data-uk-grid>
-                <p>Ref: <strong>{this.props.tender.existingContract.reference}</strong></p>
-                <p>Contract Start: <strong>{this.props.tender.existingContract.contractStart}</strong></p>
-                <p>Contract End: <strong>{this.props.tender.existingContract.contractEnd}</strong></p>
+                <p>Ref: <strong>{existingContract.reference}</strong></p>
+                <p>Contract Start: <strong>{moment.utc(existingContract.contractStart).format('ll')}</strong></p>
+                <p>Contract End: <strong>{moment.utc(existingContract.contractEnd).format('ll')}</strong></p>
+                <p>Supplier: <strong>{supplierText}</strong></p>
             </div>);
     }
 
@@ -105,6 +112,9 @@ class TenderContractView extends React.Component<TenderContractViewProps & Dispa
     }
     
     render() {
+        if(this.props.working){
+            return (<Spinner />);
+        }
         if(this.props.tender.existingContract == null){
             return this.renderAddExistingContract();
         }
@@ -127,6 +137,8 @@ const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, TenderContra
   
 const mapStateToProps: MapStateToProps<StateProps, TenderContractViewProps> = (state: ApplicationState) => {
     return {
+        suppliers: state.portfolio.tender.suppliers.value,
+        working: state.portfolio.tender.suppliers.working
     };
 };
   

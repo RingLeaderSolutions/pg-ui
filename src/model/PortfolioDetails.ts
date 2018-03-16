@@ -25,12 +25,12 @@ export interface PortfolioSummary {
 
 export interface PortfolioRequirements {
     id?: string;
-    portfolioId: string;
+    entityId: string;
     product: string;
     paymentTerms: number;
     startDate: string;
     durationMonths: number;
-    stodId: string;
+    tariffId: string;
     gasRequired: boolean;
     electricityRequired: boolean;
     greenPercentage: number;
@@ -50,7 +50,8 @@ export interface MeterGroup {
     meterCount: number,
     supplyDataCount: number,
     historicalCount: number,
-    forecastCount: number
+    forecastCount: number,
+    consumption: number
 }
 
 export interface PortfolioDetails {

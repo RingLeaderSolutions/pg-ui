@@ -11,6 +11,7 @@ import TenderStatus from "./TenderStatus";
 import TenderContractView from "./TenderContractView";
 import TenderQuotesView from "./TenderQuotesView";
 import UpdateTenderDialog from "./UpdateTenderDialog";
+import UpdateTenderRequirementsDialog from "./UpdateTenderRequirementsDialog";
 
 interface TenderViewProps {
     tender: Tender;
@@ -61,6 +62,9 @@ class TenderView extends React.Component<TenderViewProps & StateProps & Dispatch
         var updateTenderDialogName = `modal-update-tender-${utilityDescription}`;
         var showUpdateDialogClass = `target: #${updateTenderDialogName}`;
 
+        var updateRequirementsDialogName = `modal-update-requirements-${this.props.tender.tenderId}`;
+        var showUpdateRequirementsDialogClass = `target: #${updateRequirementsDialogName}`;
+
         let { tenderTitle } = this.props.tender;
 
         var hasTitle = tenderTitle != null && tenderTitle.length > 0;
@@ -72,6 +76,10 @@ class TenderView extends React.Component<TenderViewProps & StateProps & Dispatch
                         {title}
                     </div>
                     <div className="uk-width-1-6">
+                        <button className="uk-button uk-button-default uk-button-small uk-align-right" type="button" data-uk-toggle={showUpdateRequirementsDialogClass}>
+                            <span className="uk-margin-small-right" data-uk-icon="icon: pencil" />
+                            View/Edit Requirements
+                        </button>
                         <button className="uk-button uk-button-default uk-button-small uk-align-right" type="button" data-uk-toggle={showUpdateDialogClass}>
                             <span className="uk-margin-small-right" data-uk-icon="icon: pencil" />
                             Edit
@@ -102,6 +110,10 @@ class TenderView extends React.Component<TenderViewProps & StateProps & Dispatch
 
                 <div id={updateTenderDialogName} data-uk-modal="center: true">
                     <UpdateTenderDialog tender={this.props.tender} utilityDescription={utilityDescription} utility={this.props.utility}/>
+                </div>
+
+                <div id={updateRequirementsDialogName} data-uk-modal="center: true">
+                    <UpdateTenderRequirementsDialog tender={this.props.tender}/>
                 </div>
             </div>)
 

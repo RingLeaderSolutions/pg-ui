@@ -12,6 +12,7 @@ import UploadSupplyDataDialog from './UploadSupplyDataDialog';
 
 import Spinner from '../../common/Spinner';
 import * as moment from 'moment';
+import { excludeMeters } from '../../../actions/meterActions';
 
 interface GasMeterTableProps {
     meterPortfolio: MeterPortfolio;
@@ -23,9 +24,17 @@ interface StateProps {
 }
 
 interface DispatchProps {
+    excludeMeters: (portfolioId: string, meters: string[]) => void;    
 }
 
 class GasMeterTable extends React.Component<GasMeterTableProps & StateProps & DispatchProps, {}> {
+    
+    excludeMeter(event: any, meter: Mprn){
+        event.preventDefault();
+        var meters: string[] = [meter.meterSupplyData.mprnCore]
+        this.props.excludeMeters(this.props.portfolio.id,  meters);
+    }
+
     renderTable() {
         if(this.props.meterPortfolio.sites.length === 0){
             return (<div>No meter data uploaded yet.</div>);
@@ -100,6 +109,9 @@ class GasMeterTable extends React.Component<GasMeterTableProps & StateProps & Di
                     <td>{supplyData.imperial  ? "Yes" : "No"}</td>
                     <td>{supplyData.address}</td>
                     <td>{supplyData.postcode}</td>
+                    <td>
+                        <button className='uk-button uk-button-default uk-button-small' data-uk-toggle="target: #modal-upload-supply-data" onClick={(ev) => this.excludeMeter(ev, meter)}><span data-uk-icon='icon: close' data-uk-tooltip="title: Exclude" /></button>
+                    </td>
                 </tr>
             );
         })
@@ -128,6 +140,7 @@ class GasMeterTable extends React.Component<GasMeterTableProps & StateProps & Di
 
 const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, GasMeterTableProps> = (dispatch) => {
     return {
+        excludeMeters: (portfolioId: string, meters: string[]) => dispatch(excludeMeters(portfolioId, meters))
     };
 };
   
