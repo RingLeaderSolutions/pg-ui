@@ -61,34 +61,41 @@ class TenderQuotesView extends React.Component<TenderQuotesViewProps & StateProp
             var collateralDialogName = `modal-view-collateral-${highestVersion.quoteId}`;
             var viewCollateralDialogClass = `target: #${collateralDialogName}`;
 
+            var isPending = highestVersion.status = "PENDING";
+
             return (
                 <tr key={index}>
                     <td>{supplierText}</td>
-                    <td><span className="uk-label uk-label-success">{highestVersion.quoteId.substring(0, 8)}</span></td>
-                    <td>{highestVersion.version}</td>
+                    <td>{isPending ? (<span className="uk-label uk-label-warning"><i>Pending</i></span>) : (<span className="uk-label uk-label-success">{highestVersion.quoteId.substring(0, 8)}</span>)}</td>  
+                    <td>{!isPending ? highestVersion.version: (<p>N/A</p>)}</td>
                     <td>
-                        <button className="uk-button uk-button-default uk-button-small" type="button" data-uk-toggle={viewBackingSheetClass} onClick={() => this.fetchBackingSheets(highestVersion.quoteId)}>
-                            View
-                        </button>
+                        {!isPending ? 
+                            (<button className="uk-button uk-button-default uk-button-small" type="button" data-uk-toggle={viewBackingSheetClass} onClick={() => this.fetchBackingSheets(highestVersion.quoteId)}>
+                                View
+                            </button>) : (<p>-</p>)}
+                        
                     </td>
                     <td>
-                        <div>
+                        {!isPending ? 
+                        (<div>
                             <button className="uk-button uk-button-default uk-button-small" type="button" data-uk-toggle={viewCollateralDialogClass}>
                                 View
                             </button>
                             <div id={collateralDialogName} data-uk-modal="center: true">
                                 <QuoteCollateralDialog collateral={highestVersion.collateralList} />
                             </div>
-                        </div>
+                        </div>) : (<p>-</p>)}
                     </td>
-                    <td>{highestVersion.sheetCount}</td>
-                    <td>{format(highestVersion.totalIncCCL, { locale: 'en-GB'})}</td>
+                    <td>{!isPending ? (highestVersion.sheetCount) : (<p>-</p>)}</td>
+                    <td>{!isPending ? format(highestVersion.totalIncCCL, { locale: 'en-GB'}) : (<p>-</p>)}</td>
                     <td>{billingAccuracy}</td>
                     <td>{serviceDesk}</td>
                     <td>
-                        <button className="uk-button uk-button-default uk-button-small" type="button" data-uk-tooltip="title: Download" onClick={() => this.exportQuote(highestVersion.quoteId)}>
+                        {!isPending ? 
+                        (<button className="uk-button uk-button-default uk-button-small" type="button" data-uk-tooltip="title: Download" onClick={() => this.exportQuote(highestVersion.quoteId)}>
                             <span data-uk-icon="icon: cloud-download" />
-                        </button>  
+                        </button>) 
+                        : null}
                     </td>
                 </tr>
             );
@@ -134,14 +141,16 @@ class TenderQuotesView extends React.Component<TenderQuotesViewProps & StateProp
         var uploadOfferClass = `target: #${uploadOfferName}`;
         return (
                 <div className="uk-card uk-card-small uk-card-default uk-card-body">
-                    <div className="uk-width-expand@s">
-                        <h3>Offers</h3>
-                    </div>
-                    <div>
-                        <button className="uk-button uk-button-default uk-button-small uk-align-right" type="button" data-uk-toggle={uploadOfferClass}>
+                    <div className="uk-grid" data-uk-grid>
+                        <div className="uk-width-expand@s">
+                            <h3>Offers</h3>
+                        </div>
+                        <div className="uk-width-1-3">
+                            <button className="uk-button uk-button-default uk-button-small uk-align-right" type="button" data-uk-toggle={uploadOfferClass}>
                                 <span className="uk-margin-small-right" data-uk-icon="icon: cloud-upload" />
                                 Upload Offer
                             </button>
+                        </div>
                     </div>
                     <div>
                         {hasQuotes ? (this.renderQuotesTable(showQuoteBackingSheetClass)) : (<p>This tender has not yet been issued.</p>)}

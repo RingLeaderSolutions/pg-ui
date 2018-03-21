@@ -42,6 +42,11 @@ class TenderPackDialog extends React.Component<TenderPackDialogProps & StateProp
                     <td>{p.created}</td>
                     <td>{p.meterCount}</td>
                     <td>{supplierText}</td>
+                    <td>
+                        <a className="uk-button uk-button-default uk-button-small" href={p.zipFileName}>
+                            <span className="uk-margin-small-right" data-uk-icon="icon: cloud-download" />
+                        </a> 
+                    </td>
                 </tr>
             )
         });

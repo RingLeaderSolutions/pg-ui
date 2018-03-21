@@ -39,7 +39,6 @@ export interface BackendVersion {
 }
 
 // Application data model
-
 export { PortfolioCreationStage } from './app/PortfolioCreationStage';
 
 export interface UploadResponse {

@@ -49,8 +49,9 @@ class GenerateSummaryReportDialog extends React.Component<GenerateSummaryReportD
 
             var supplier = this.props.suppliers.find(s => s.supplierId == highestVersion.supplierId);
             var supplierText = supplier == null ? "Unknown" : supplier.name;
-
-            return (<option key={highestVersion.quoteId} value={highestVersion.quoteId}>{supplierText} - {highestVersion.quoteId.substr(0, 8)}-V{highestVersion.version} - {format(highestVersion.totalIncCCL, { locale: 'en-GB'})}</option>)
+            
+            var key = `${supplierText}-${highestVersion.quoteId}`;
+            return (<option key={key} value={highestVersion.quoteId}>{supplierText} - {highestVersion.quoteId.substr(0, 8)}-V{highestVersion.version} - {format(highestVersion.totalIncCCL, { locale: 'en-GB'})}</option>)
         });
 
         return (

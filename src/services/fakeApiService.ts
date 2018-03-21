@@ -532,6 +532,7 @@ export class FakeApiService implements IApiService {
             {
                 tenderId: "5122951b-b942-4f25-8ee0-5f2e255a5f50",
                 tenderTitle: "Best tender",
+                packStatusMessage: "Issued on 21/03/2018 with deadline of 31/03/2018",
                 billingMethod: "Paper",
                 portfolioId: "4d584e81-91c2-47b4-85f9-411db125af51",
                 created: "2017-12-19T00:12:07.167",

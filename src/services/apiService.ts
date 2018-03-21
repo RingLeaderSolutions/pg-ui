@@ -459,12 +459,11 @@ export class ApiService implements IApiService {
     reportSuccessfulOfferUpload(tenderId: string, supplierId: string, files: string[], utility: UtilityType){
         var payload = {
             tenderId,
-            files,
-            notes: `Uploaded ${moment().toISOString()}`
+            files
         };
         
         var prefix = this.getEndpointPrefix(utility);
-        return axios.post(`${this.baseApiUri}/portman-web/upload/offer/${supplierId}/${prefix}`, payload, this.getRequestConfig());
+        return axios.post(`${this.baseApiUri}/portman-web/upload/offer/supplier/${supplierId}/${prefix}`, payload, this.getRequestConfig());
     }
 
     updateTenderRequirements(requirements: TenderRequirements){

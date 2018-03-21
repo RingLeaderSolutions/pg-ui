@@ -19,6 +19,7 @@ export interface Tender {
     acuom: string;
     annualConsumption: number;
     requirements: TenderRequirements;
+    packStatusMessage: string;
 }
 
 export interface TenderRequirements {

@@ -88,11 +88,14 @@ class TenderStatus extends React.Component<TenderStatusProps & StateProps & Disp
         return (
             <div className="uk-card uk-card-small uk-card-default uk-card-body">
                 <div className="uk-grid uk-child-width-expand@s uk-grid-match" data-uk-grid>
-                    <p>Assigned suppliers: <strong>{eligibleSupplierCount}/6</strong></p>
+                    <p>Assigned suppliers: <strong>{eligibleSupplierCount}/{this.props.suppliers.length}</strong></p>
                     {/* <p>Meter count: <strong>{meterCount}</strong></p> */}
                     <p>Consumption: <strong>{tender.annualConsumption.toLocaleString()} {tender.acuom}</strong></p>
                     <p>Commission Rate: <strong>{tender.commission}p/{tender.acuom}</strong></p>
                     <p>Commission: <strong>{format(totalCommission, { locale: 'en-GB'})}</strong></p>
+                </div>
+                <div className="uk-margin-large-top uk-margin-bottom">
+                    <p style={{textAlign:"center"}}><strong>Status:</strong> {tender.packStatusMessage}</p>
                 </div>
                 <div className="tender-actions uk-margin-top">
                     <div className="uk-grid uk-child-width-expand@s" data-uk-grid>
