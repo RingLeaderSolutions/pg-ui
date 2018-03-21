@@ -75,11 +75,13 @@ class TenderView extends React.Component<TenderViewProps & StateProps & Dispatch
                     <div className="uk-width-expand@s">
                         {title}
                     </div>
-                    <div className="uk-width-1-6">
+                    <div className="uk-width-1-3">
                         <button className="uk-button uk-button-default uk-button-small uk-align-right" type="button" data-uk-toggle={showUpdateRequirementsDialogClass}>
                             <span className="uk-margin-small-right" data-uk-icon="icon: pencil" />
                             View/Edit Requirements
                         </button>
+                    </div>
+                    <div className="uk-width-1-6">
                         <button className="uk-button uk-button-default uk-button-small uk-align-right" type="button" data-uk-toggle={showUpdateDialogClass}>
                             <span className="uk-margin-small-right" data-uk-icon="icon: pencil" />
                             Edit
@@ -90,10 +92,6 @@ class TenderView extends React.Component<TenderViewProps & StateProps & Dispatch
                 <div className="uk-margin-small">
                     <TenderStatus tender={this.props.tender} utility={this.props.utility} details={this.props.details} />
                 </div>
-                
-                <div className="uk-margin-small">
-                    <TenderQuotesView tender={this.props.tender} />
-                </div>
 
                 <div className="uk-margin-small">
                     <div className="uk-card uk-card-default uk-card-body">
@@ -101,6 +99,12 @@ class TenderView extends React.Component<TenderViewProps & StateProps & Dispatch
                         <TenderContractView tender={this.props.tender} portfolioId={this.props.details.portfolio.id}/>
                     </div>
                 </div>
+                
+                <div className="uk-margin-small">
+                    <TenderQuotesView tender={this.props.tender} />
+                </div>
+
+                
                 {/* <div>
                     <button className="uk-button uk-button-danger uk-button-small" type="button" onClick={() => this.deleteTender()}>
                         <span className="uk-margin-small-right" data-uk-icon="icon: close" />

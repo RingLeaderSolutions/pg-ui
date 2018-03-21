@@ -35,7 +35,7 @@ class ElectricityMeterTable extends React.Component<ElectricityMeterTableProps &
     }
 
     excludeMeter(event: any,meter: Mpan){
-        event.preventDefault();
+        event.stopPropagation();
         var meters: string[] = [meter.meterSupplyData.mpanCore]
         this.props.excludeMeters(this.props.portfolio.id,  meters);
     }
@@ -110,7 +110,7 @@ class ElectricityMeterTable extends React.Component<ElectricityMeterTableProps &
             var hasHistorical = meter.halfHourly != null;
             var toplineTooltip = `title: Profile: ${supplyData.profileClass} / MTC: ${supplyData.meterTimeSwitchCode} / LLF: ${supplyData.llf}`;
             return (
-                <tr key={index} data-uk-toggle='target: #meter-modal' onClick={()=> this.editMeter(meter)}>
+                <tr key={index}>
                     <td>{index == 0 ? siteCode : null}</td>
                     <td>{supplyData.mpanCore}</td>
                     <td>{hasHistorical ? (
@@ -137,7 +137,10 @@ class ElectricityMeterTable extends React.Component<ElectricityMeterTableProps &
                     <td>{supplyData.energized ? "Yes" : "No"}</td>
                     <td>{supplyData.newConnection ? "Yes" : "No"}</td>
                     <td>
-                        <button className='uk-button uk-button-default uk-button-small' data-uk-toggle="target: #modal-upload-supply-data" onClick={(ev) => this.excludeMeter(ev, meter)}><span data-uk-icon='icon: close' data-uk-tooltip="title: Exclude" /></button>
+                        <button className='uk-button uk-button-default uk-button-small' data-uk-toggle='target: #meter-modal' onClick={()=> this.editMeter(meter)}><span data-uk-icon='icon: settings' data-uk-tooltip="title: Edit" /></button>
+                    </td>
+                    <td>
+                        <button className='uk-button uk-button-default uk-button-small' onClick={(ev) => this.excludeMeter(ev, meter)}><span data-uk-icon='icon: close' data-uk-tooltip="title: Exclude" /></button>
                     </td>
                 </tr>
             );

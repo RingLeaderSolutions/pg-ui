@@ -340,11 +340,11 @@ export class ApiService implements IApiService {
     }
 
     getContractBackingSheets(tenderId: string, contractId: string){
-        return axios.get(`${this.baseApiUri}/portman-web/tender/${tenderId}/backingsheets/contract/${contractId}`, this.getRequestConfig());        
+        return axios.get(`${this.baseApiUri}/portman-web/tender/${tenderId}/contractBackingsheets/contract/${contractId}`, this.getRequestConfig());        
     }
 
     getQuoteBackingSheets(tenderId: string, quoteId: string){
-        return axios.get(`${this.baseApiUri}/portman-web/tender/${tenderId}/backingsheets/quote/${quoteId}`, this.getRequestConfig());        
+        return axios.get(`${this.baseApiUri}/portman-web/tender/${tenderId}/contractBackingsheets/quote/${quoteId}`, this.getRequestConfig());        
     }
     
     generateTenderPack(tenderId: string, portfolioId: string){
@@ -453,7 +453,7 @@ export class ApiService implements IApiService {
         };
         
         var prefix = this.getEndpointPrefix(utility);
-        return axios.post(`${this.baseApiUri}/portman-web/upload/backingsheets/${contractId}/${prefix}`, payload, this.getRequestConfig());
+        return axios.post(`${this.baseApiUri}/portman-web/upload/backingsheets/contract/${contractId}/${prefix}`, payload, this.getRequestConfig());
     }
 
     reportSuccessfulOfferUpload(tenderId: string, supplierId: string, files: string[], utility: UtilityType){

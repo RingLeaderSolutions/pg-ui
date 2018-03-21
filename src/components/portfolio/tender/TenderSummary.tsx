@@ -113,12 +113,8 @@ class TenderSummary extends React.Component<TenderSummaryProps & StateProps & Di
             var spinner = (<Spinner />);
             return this.renderContent(spinner);
         }
-        if(this.props.details.requirements == null){
-            var finishSetup = (<p>This portfolio isn't ready to tender yet. Please complete the necessary fields on the setup tab.</p>);
-            return this.renderContent(finishSetup);
-        }
         if(this.props.details.portfolio.status != "tender"){
-            var finishSetup = (<p>This portfolio isn't ready to tender yet. Please upload data for applicable meters.</p>);
+            var finishSetup = (<p>This portfolio isn't ready to tender yet. Please upload data for applicable meters and ensure portfolio setup is complete.</p>);
             return this.renderContent(finishSetup);
         }
         

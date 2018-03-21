@@ -1,7 +1,7 @@
 import ApiService from "../services/ApiService";
 
 import { Tender, TenderContract, TenderSupplier, BackingSheet, TenderIssuanceEmail, QuoteExportResponse, TenderRequirements } from "../Model/Tender";
-import { UploadResponse, UtilityType } from "../Model/Models";
+import { UploadResponse, UtilityType } from "../model/Models";
 
 import * as types from "./actionTypes";
 import { Dispatch } from 'redux';

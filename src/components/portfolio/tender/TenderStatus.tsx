@@ -46,7 +46,7 @@ class TenderStatus extends React.Component<TenderStatusProps & StateProps & Disp
             return 0;
         }
 
-        var utilityName = this.props.utility == UtilityType.Gas ? "GAS" : "ELECTRICITY";
+        var utilityName = this.props.utility == UtilityType.Gas ? "GAS" : this.props.tender.halfHourly ? "HH" : "NHH";
         var foundGroup = meterGroups.find(mg => mg.groupName == utilityName);
 
         return foundGroup ? foundGroup.meterCount : 0;
@@ -88,9 +88,9 @@ class TenderStatus extends React.Component<TenderStatusProps & StateProps & Disp
         return (
             <div className="uk-card uk-card-small uk-card-default uk-card-body">
                 <div className="uk-grid uk-child-width-expand@s uk-grid-match" data-uk-grid>
-                    <p>Meter count: <strong>{meterCount}</strong></p>
+                    <p>Assigned suppliers: <strong>{eligibleSupplierCount}/6</strong></p>
+                    {/* <p>Meter count: <strong>{meterCount}</strong></p> */}
                     <p>Consumption: <strong>{tender.annualConsumption.toLocaleString()} {tender.acuom}</strong></p>
-                    <p>Eligible suppliers: <strong>{eligibleSupplierCount}</strong></p>
                     <p>Commission Rate: <strong>{tender.commission}p/{tender.acuom}</strong></p>
                     <p>Commission: <strong>{format(totalCommission, { locale: 'en-GB'})}</strong></p>
                 </div>

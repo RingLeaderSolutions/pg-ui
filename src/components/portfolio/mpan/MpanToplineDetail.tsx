@@ -4,7 +4,7 @@ import CounterCard from "../../common/CounterCard";
 import { RouteComponentProps } from 'react-router';
 import { MapDispatchToPropsFunction, connect, MapStateToProps } from 'react-redux';
 import { ApplicationState } from '../../../applicationState';
-import { MpanTopline, Portfolio, DocumentGroup } from '../../../model/Models';
+import { MpanTopline, Portfolio } from '../../../model/Models';
 import Spinner from '../../common/Spinner';
 
 import { getMpanTopline } from '../../../actions/portfolioActions';
@@ -68,7 +68,7 @@ class MpanToplineDetail extends React.Component<MpanToplineDetailProps & StatePr
             return (<Spinner />);
         }
 
-        var group = topline.group == DocumentGroup.Proposed ? "Proposed" : "Current";
+        var group = topline.group == 'PROPOSED' ? "Proposed" : "Current";
         var headerTitle = `${group} MPAN Topline: ${topline.mpanCore}`;
 
         var creatorName = topline.creator == null ? "Unknown" : `${topline.creator.firstName} ${topline.creator.lastName}`;

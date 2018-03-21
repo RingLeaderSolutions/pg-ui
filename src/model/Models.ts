@@ -29,14 +29,6 @@ export { Client } from './Client';
 
 export { CompanyInfo } from './CompanyInfo';
 
-import * as DocumentType from "./DocumentType";
-import * as DocumentStatus from "./DocumentStatus";
-import * as DocumentGroup from "./DocumentGroup";
-
-export { DocumentType };
-export { DocumentStatus };
-export { DocumentGroup };
-
 export enum UtilityType {
     Gas,
     Electricity

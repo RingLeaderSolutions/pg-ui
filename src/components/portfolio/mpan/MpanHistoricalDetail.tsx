@@ -4,7 +4,7 @@ import CounterCard from "../../common/CounterCard";
 import { RouteComponentProps } from 'react-router';
 import { MapDispatchToPropsFunction, connect, MapStateToProps } from 'react-redux';
 import { ApplicationState } from '../../../applicationState';
-import { MpanHistorical, Portfolio, DocumentGroup } from '../../../model/Models';
+import { MpanHistorical, Portfolio } from '../../../model/Models';
 import Spinner from '../../common/Spinner';
 import { ChartConfig } from "./MpanHistoricalChartConfig";
 import * as moment from 'moment';
@@ -80,7 +80,7 @@ class MpanHistoricalDetail extends React.Component<MpanHistoricalDetailProps & S
             return (<Spinner />);
         }
 
-        var group = historical.group == DocumentGroup.Proposed ? "Proposed" : "Current";
+        var group = historical.group == 'PROPOSED' ? "Proposed" : "Current";
         var headerTitle = `${group} MPAN Historical: ${historical.mpanCore}`;
 
         var creatorName = `${historical.creator.firstName} ${historical.creator.lastName}`;

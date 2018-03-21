@@ -110,7 +110,7 @@ class GasMeterTable extends React.Component<GasMeterTableProps & StateProps & Di
                     <td>{supplyData.address}</td>
                     <td>{supplyData.postcode}</td>
                     <td>
-                        <button className='uk-button uk-button-default uk-button-small' data-uk-toggle="target: #modal-upload-supply-data" onClick={(ev) => this.excludeMeter(ev, meter)}><span data-uk-icon='icon: close' data-uk-tooltip="title: Exclude" /></button>
+                        <button className='uk-button uk-button-default uk-button-small' onClick={(ev) => this.excludeMeter(ev, meter)}><span data-uk-icon='icon: close' data-uk-tooltip="title: Exclude" /></button>
                     </td>
                 </tr>
             );

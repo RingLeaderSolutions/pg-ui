@@ -48,7 +48,7 @@ class TenderQuotesView extends React.Component<TenderQuotesViewProps & StateProp
             return r;
         }, Object.create(null));
 
-        let tableContent = Object.keys(quotesBySupplier).map((q: any) => {
+        let tableContent = Object.keys(quotesBySupplier).map((q: any, index: number) => {
             var highestVersion = quotesBySupplier[q].reduce((previous: TenderQuote, current: TenderQuote) => {
                 return (previous.version > current.version) ? previous : current;
             });
@@ -62,7 +62,7 @@ class TenderQuotesView extends React.Component<TenderQuotesViewProps & StateProp
             var viewCollateralDialogClass = `target: #${collateralDialogName}`;
 
             return (
-                <tr key={highestVersion.quoteId}>
+                <tr key={index}>
                     <td>{supplierText}</td>
                     <td><span className="uk-label uk-label-success">{highestVersion.quoteId.substring(0, 8)}</span></td>
                     <td>{highestVersion.version}</td>
