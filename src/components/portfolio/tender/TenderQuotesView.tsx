@@ -61,7 +61,7 @@ class TenderQuotesView extends React.Component<TenderQuotesViewProps & StateProp
             var collateralDialogName = `modal-view-collateral-${highestVersion.quoteId}`;
             var viewCollateralDialogClass = `target: #${collateralDialogName}`;
 
-            var isPending = highestVersion.status = "PENDING";
+            var isPending = highestVersion.status == "PENDING";
 
             return (
                 <tr key={index}>
