@@ -202,6 +202,7 @@ class TenderQuotesView extends React.Component<TenderQuotesViewProps & StateProp
             var serviceDesk = supplier == null || supplier.serviceRatings.length == 0 ? "Unknown" : supplier.serviceRatings[1].score;
 
             var viewBackingSheetClass = `target: #modal-view-quote-bs-${this.props.tender.tenderId}`;
+
             var collateralDialogName = `modal-view-collateral-${highestVersion.quoteId}`;
             var viewCollateralDialogClass = `target: #${collateralDialogName}`;
 
@@ -270,6 +271,7 @@ class TenderQuotesView extends React.Component<TenderQuotesViewProps & StateProp
     getFormattedDateTime(dateTime: string){
         return moment.utc(dateTime).local().format("MMMM Do, HH:mm");
     }
+
     renderIssuanceContent(issuance: TenderIssuance){
         var supplierCount = issuance.packs.length;
         var lastIssued = this.getFormattedDateTime(issuance.packs[issuance.packs.length - 1].lastIssued);
@@ -278,6 +280,9 @@ class TenderQuotesView extends React.Component<TenderQuotesViewProps & StateProp
 
         var summaryReportsDialogName = `modal-generate-summary-${issuance.issuanceId}`;
         var summaryReportsDialogClass = `target: #${summaryReportsDialogName}`;
+
+        var uploadOfferName = `modal-upload-offer-${this.props.tender.tenderId}`;
+        var uploadOfferClass = `target: #${uploadOfferName}`;
 
         var offersTable = this.renderOffersTable(issuance.packs);
         return (
@@ -305,10 +310,14 @@ class TenderQuotesView extends React.Component<TenderQuotesViewProps & StateProp
                     <div className="uk-width-expand@s">
                         <h3>Offers</h3>
                     </div>
-                    <div className="uk-width-1-3">
+                    <div className="uk-width-1-2">
                         <button className="uk-button uk-button-default uk-button-small uk-align-right" type="button" data-uk-toggle={summaryReportsDialogClass}>
                             <span className="uk-margin-small-right" data-uk-icon="icon: shrink" />
                             Summary Reports
+                        </button>
+                        <button className="uk-button uk-button-primary uk-button-small uk-align-right" type="button" data-uk-toggle={uploadOfferClass}>
+                            <span className="uk-margin-small-right" data-uk-icon="icon: cloud-upload" />
+                            Upload Offer
                         </button>
                     </div>
                 </div>
@@ -316,6 +325,9 @@ class TenderQuotesView extends React.Component<TenderQuotesViewProps & StateProp
                 </div>
                 <div id={summaryReportsDialogName} data-uk-modal="center: true">
                     <GenerateSummaryReportDialog tender={this.props.tender} issuance={issuance} />
+                </div>
+                <div id={uploadOfferName} data-uk-modal="center: true">
+                    <UploadOfferDialog tenderId={this.props.tender.tenderId} />
                 </div>
             </div>
         )
@@ -375,7 +387,8 @@ class TenderQuotesView extends React.Component<TenderQuotesViewProps & StateProp
                     <div className="uk-width-expand@s">
                         <h3>Issued Packs</h3>
                     </div>
-                    <div className="uk-width-1-3">
+                    <div className="uk-width-1-2">
+                    
                         <button className="uk-button uk-button-primary uk-button-small uk-align-right" type="button" data-uk-toggle={issuePackDialogClass} disabled={!canIssue}>
                             <span className="uk-margin-small-right" data-uk-icon="icon: push" />
                             Issue
