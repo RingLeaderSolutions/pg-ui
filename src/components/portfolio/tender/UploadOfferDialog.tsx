@@ -121,7 +121,7 @@ const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, UploadOfferD
   
 const mapStateToProps: MapStateToProps<StateProps, UploadOfferDialogProps> = (state: ApplicationState) => {
     return {
-        working: state.portfolio.details.working,
+        working: state.portfolio.details.working || state.portfolio.tender.suppliers.working,
         error: state.portfolio.details.error,
         errorMessage: state.portfolio.details.errorMessage,
         suppliers: state.portfolio.tender.suppliers.value,

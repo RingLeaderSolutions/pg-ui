@@ -540,29 +540,45 @@ export class FakeApiService implements IApiService {
                 deadlineNotes: null,
                 commission: 1,
                 status: "CREATED",
-                quotes: [
-                    {
-                        contractBlobId: "x",
-                        expiry: "2017-12-19T00:12:07.167",
-                        portfolioId: "4d584e81-91c2-47b4-85f9-411db125af51",
-                        quoteId: "1964f31c-29b1-4a29-8532-66e1aea9e231",
-                        received: "2017-12-19T00:12:07.167",
-                        sheetCount: 0,
-                        status: "x",
-                        tenderId: "5122951b-b942-4f25-8ee0-5f2e255a5f50",
-                        termsheetBlobId: "5122951b",
-                        utility: "GAS",
-                        supplierId: "4",
-                        totalIncCCL: 123456,
-                        collateralList: [{
-                            collateralId: "c1297bdd-63f0-4a7a-8903-b329e9000b09",
-                            quoteId: "1964f31c-29b1-4a29-8532-66e1aea9e231",
-                            created: "2017-12-19T00:12:07.167",
-                            documentBlobId: "https://test.com/test.pdf"
-                        }],
-                        version: 1,
-                    }
-                ],
+                issuances: [{
+                    issuanceId: "4f2ca438-d5dd-4fe4-9932-f31c8812a5de",
+                    tenderId: "9f8cac73-73f4-40b3-a811-c0afc02a9edd",
+                    created: "2018-03-29T01:10:34.613",
+                    expiry: "2018-03-31T01:07:49",
+                    status: "created",
+                    packs: [{
+                        packId: "8d9af5b6-ba36-4ef0-8021-13ed7e4269f2",
+                        tenderId: "9f8cac73-73f4-40b3-a811-c0afc02a9edd",
+                        supplierId: "1",
+                        created: "2018-03-28T22:46:28.153",
+                        lastIssued: "2018-03-29T01:11:40.023",
+                        zipFileName: "http://portfoliotest.blob.core.windows.net/tenderpacks/1/SupplyRequirements-9f8cac73.zip",
+                        meterCount: 5,
+                        quotes: [
+                            {
+                                contractBlobId: "x",
+                                expiry: "2017-12-19T00:12:07.167",
+                                portfolioId: "4d584e81-91c2-47b4-85f9-411db125af51",
+                                quoteId: "1964f31c-29b1-4a29-8532-66e1aea9e231",
+                                received: "2017-12-19T00:12:07.167",
+                                sheetCount: 0,
+                                status: "x",
+                                tenderId: "5122951b-b942-4f25-8ee0-5f2e255a5f50",
+                                termsheetBlobId: "5122951b",
+                                utility: "GAS",
+                                supplierId: "4",
+                                totalIncCCL: 123456,
+                                collateralList: [{
+                                    collateralId: "c1297bdd-63f0-4a7a-8903-b329e9000b09",
+                                    quoteId: "1964f31c-29b1-4a29-8532-66e1aea9e231",
+                                    created: "2017-12-19T00:12:07.167",
+                                    documentBlobId: "https://test.com/test.pdf"
+                                }],
+                                version: 1,
+                            }
+                        ],
+                    }]
+                }],
                 assignedSuppliers: [
                     {
                         supplierId: "4",
@@ -586,14 +602,16 @@ export class FakeApiService implements IApiService {
                         ]
                     }
                 ],
-                packs: [{
+                unissuedPacks: [
+                {
                     supplierId: "1",
                     packId: "65277870-8d40-440d-9941-a7c7c2773425",
                     tenderId: "5122951b-b942-4f25-8ee0-5f2e255a5f50",
                     created: "2017-12-19T00:11:07.167",
                     lastIssued: null,
                     zipFileName: "http://fake.com/fake.zip",
-                    meterCount: 25
+                    meterCount: 25,
+                    quotes: null
                 },
                 {
                     supplierId: "4",
@@ -602,7 +620,8 @@ export class FakeApiService implements IApiService {
                     created: "2017-12-19T00:12:07.167",
                     lastIssued: "2017-12-19T00:11:07.167",
                     zipFileName: "http://fake.com/fake.zip",
-                    meterCount: 25
+                    meterCount: 25,
+                    quotes: null                    
                 }],
                 existingContract: {
                     contractId: "bc6f7888-d4cf-443b-aa28-e79c58ba14bb",

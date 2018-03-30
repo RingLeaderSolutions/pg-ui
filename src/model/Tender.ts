@@ -7,10 +7,10 @@ export interface Tender {
     deadline: string;
     deadlineNotes: string;
     status: string;
-    quotes: TenderQuote[];
     assignedSuppliers: TenderSupplier[];
     summaries: TenderQuoteSummary[];
-    packs: TenderPack[];
+    unissuedPacks: TenderPack[];
+    issuances: TenderIssuance[];
     existingContract: TenderContract;
     utility: string;
     commission: number;
@@ -32,6 +32,15 @@ export interface TenderRequirements {
     product: string;
     startDate: string;
     tariffId: string;
+}
+
+export interface TenderIssuance {
+    issuanceId: string;
+    created: string;
+    expiry: string;
+    packs: TenderPack[];
+    status: string;
+    tenderId: string;
 }
 
 export interface TenderIssuanceEmail {
@@ -88,6 +97,7 @@ export interface TenderPack {
     lastIssued: string;
     zipFileName: string;
     meterCount: number;
+    quotes: TenderQuote[]
 }
 
 export interface TenderContract {

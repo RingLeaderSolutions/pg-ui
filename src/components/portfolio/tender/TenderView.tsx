@@ -5,13 +5,14 @@ import { ApplicationState } from '../../../applicationState';
 import Spinner from '../../common/Spinner';
 import ErrorMessage from "../../common/ErrorMessage";
 
-import { getPortfolioTenders, deleteTender } from '../../../actions/tenderActions';
-import { Tender } from "../../../model/Tender";
+import { getPortfolioTenders, deleteTender, getTenderSuppliers } from '../../../actions/tenderActions';
+
+import { Tender, TenderSupplier } from "../../../model/Tender";
 import TenderStatus from "./TenderStatus";
 import TenderContractView from "./TenderContractView";
 import TenderQuotesView from "./TenderQuotesView";
 import UpdateTenderDialog from "./UpdateTenderDialog";
-import UpdateTenderRequirementsDialog from "./UpdateTenderRequirementsDialog";
+import TenderSupplierSelectDialog from "./TenderSupplierSelectDialog";
 
 interface TenderViewProps {
     tender: Tender;
@@ -62,8 +63,8 @@ class TenderView extends React.Component<TenderViewProps & StateProps & Dispatch
         var updateTenderDialogName = `modal-update-tender-${utilityDescription}`;
         var showUpdateDialogClass = `target: #${updateTenderDialogName}`;
 
-        var updateRequirementsDialogName = `modal-update-requirements-${this.props.tender.tenderId}`;
-        var showUpdateRequirementsDialogClass = `target: #${updateRequirementsDialogName}`;
+        var supplierModalId = "modal-select-suppliers-" + this.props.tender.tenderId;
+        var toggleSupplierModalClass = "target: #" + supplierModalId;
 
         let { tenderTitle } = this.props.tender;
 
@@ -72,19 +73,18 @@ class TenderView extends React.Component<TenderViewProps & StateProps & Dispatch
         var content = (
             <div>
                 <div className="uk-grid" data-uk-grid>
-                    <div className="uk-width-expand@s">
+                    <div>
                         {title}
                     </div>
-                    <div className="uk-width-1-3">
-                        <button className="uk-button uk-button-default uk-button-small uk-align-right" type="button" data-uk-toggle={showUpdateRequirementsDialogClass}>
-                            <span className="uk-margin-small-right" data-uk-icon="icon: pencil" />
-                            View/Edit Requirements
+                    <div className="uk-width-expand@s">
+                        <button className="uk-button uk-button-default uk-button-small" type="button" data-uk-toggle={showUpdateDialogClass}>
+                            <span data-uk-icon="icon: pencil" />
                         </button>
                     </div>
-                    <div className="uk-width-1-6">
-                        <button className="uk-button uk-button-default uk-button-small uk-align-right" type="button" data-uk-toggle={showUpdateDialogClass}>
-                            <span className="uk-margin-small-right" data-uk-icon="icon: pencil" />
-                            Edit
+                    <div className="uk-width-1-5">
+                        <button className="uk-button uk-button-default uk-button-small uk-align-right" type="button"  data-uk-toggle={toggleSupplierModalClass}>
+                            <span className="uk-margin-small-right" data-uk-icon="icon: database" />
+                            Assign Suppliers
                         </button>
                     </div>
                 </div>
@@ -116,8 +116,8 @@ class TenderView extends React.Component<TenderViewProps & StateProps & Dispatch
                     <UpdateTenderDialog tender={this.props.tender} utilityDescription={utilityDescription} utility={this.props.utility}/>
                 </div>
 
-                <div id={updateRequirementsDialogName} data-uk-modal="center: true">
-                    <UpdateTenderRequirementsDialog tender={this.props.tender}/>
+                <div id={supplierModalId} data-uk-modal="center: true">
+                    <TenderSupplierSelectDialog assignedSuppliers={this.props.tender.assignedSuppliers} tenderId={this.props.tender.tenderId}/>
                 </div>
             </div>)
 

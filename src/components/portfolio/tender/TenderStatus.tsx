@@ -8,11 +8,8 @@ import Spinner from '../../common/Spinner';
 
 import { format } from 'currency-formatter';
 
-import { getPortfolioTenders, getTenderSuppliers } from '../../../actions/tenderActions';
 import { Tender, TenderSupplier } from "../../../model/Tender";
 import TenderSupplierSelectDialog from "./TenderSupplierSelectDialog";
-import TenderPackDialog from "./TenderPackDialog";
-import IssueTenderPackDialog from "./IssueTenderPackDialog";
 
 interface TenderStatusProps {
     tender: Tender;
@@ -28,7 +25,6 @@ interface StateProps {
 }
 
 interface DispatchProps {
-    getTenderSuppliers: () => void;
 }
 
 class TenderStatus extends React.Component<TenderStatusProps & StateProps & DispatchProps, {}> {
@@ -36,9 +32,7 @@ class TenderStatus extends React.Component<TenderStatusProps & StateProps & Disp
         super();
     }
 
-    componentDidMount(){ 
-        this.props.getTenderSuppliers();
-    }
+
 
     getMeterCount(){
         var { meterGroups } = this.props.details;
@@ -78,67 +72,24 @@ class TenderStatus extends React.Component<TenderStatusProps & StateProps & Disp
         var supplierModalId = "modal-select-suppliers-" + tender.tenderId;
         var toggleSupplierModalClass = "target: #" + supplierModalId;
 
-        var packModalId = "modal-generate-packs-" + tender.tenderId;
-        var togglePackModalClass = "target: #" + packModalId;
-
-        var issuePackModalId = "modal-generate-issue-pack-" + tender.tenderId;
-        var toggleIssuePackModalClass = "target: #" + issuePackModalId;
-
-        var hasPacks = tender.packs != null && tender.packs.length > 0;
         return (
             <div className="uk-card uk-card-small uk-card-default uk-card-body">
                 <div className="uk-grid uk-child-width-expand@s uk-grid-match" data-uk-grid>
-                    <p>Assigned suppliers: <strong>{eligibleSupplierCount}/{this.props.suppliers.length}</strong></p>
+                    <p>Assigned suppliers: <strong>{tender.assignedSuppliers.length}/{eligibleSupplierCount}</strong></p>
                     {/* <p>Meter count: <strong>{meterCount}</strong></p> */}
                     <p>Consumption: <strong>{tender.annualConsumption.toLocaleString()} {tender.acuom}</strong></p>
                     <p>Commission Rate: <strong>{tender.commission}p/{tender.acuom}</strong></p>
                     <p>Commission: <strong>{format(totalCommission, { locale: 'en-GB'})}</strong></p>
                 </div>
-                <div className="uk-margin-large-top uk-margin-bottom">
+                <div className="uk-margin-top uk-margin-bottom">
                     <p style={{textAlign:"center"}}><strong>Status:</strong> {tender.packStatusMessage}</p>
-                </div>
-                <div className="tender-actions uk-margin-top">
-                    <div className="uk-grid uk-child-width-expand@s" data-uk-grid>
-                        <div className="uk-margin-small">
-                            <button className="uk-button uk-button-default" type="button"  data-uk-toggle={toggleSupplierModalClass}>
-                                <span className="uk-margin-small-right" data-uk-icon="icon: database" />
-                                Select Suppliers
-                            </button>
-                        </div>
-                        <div className="uk-margin-small uk-width-1-4">
-                            <button className="uk-button uk-button-primary" type="button" data-uk-toggle={togglePackModalClass}>
-                                <span className="uk-margin-small-right" data-uk-icon="icon: copy" />
-                                View Packs
-                            </button>
-                        </div>
-                        { hasPacks ? (
-                        <div className="uk-margin-small uk-width-1-4">
-                            <button className="uk-button uk-button-primary" type="button" data-uk-toggle={toggleIssuePackModalClass}>
-                                <span className="uk-margin-small-right" data-uk-icon="icon: forward" />
-                                Issue Pack
-                            </button>
-                        </div>) : null}
-                    </div>
-                </div>
-
-                <div id={supplierModalId} data-uk-modal="center: true">
-                    <TenderSupplierSelectDialog suppliers={this.props.suppliers} assignedSuppliers={this.props.tender.assignedSuppliers} tenderId={this.props.tender.tenderId}/>
-                </div>
-
-                <div id={packModalId} data-uk-modal="center: true">
-                    <TenderPackDialog tender={this.props.tender} portfolioId={this.props.details.portfolio.id} />
-                </div>
-
-                <div id={issuePackModalId} data-uk-modal="center: true">
-                    <IssueTenderPackDialog tender={this.props.tender} portfolioId={this.props.details.portfolio.id} />
                 </div>
             </div>)
     }
 }
 
 const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, TenderStatusProps> = (dispatch) => {
-    return {
-        getTenderSuppliers: () => dispatch(getTenderSuppliers())        
+    return {    
     };
 };
   

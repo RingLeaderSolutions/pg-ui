@@ -32,14 +32,14 @@ class TenderPackDialog extends React.Component<TenderPackDialogProps & StateProp
     }
 
     renderPackTableContent(){
-        return this.props.tender.packs.map(p => {
+        return this.props.tender.unissuedPacks.map(p => {
             var supplier = this.props.suppliers.find(s => s.supplierId == p.supplierId);
             var supplierText = supplier == null ? "Unknown" : supplier.name;
 
             return (
                 <tr key={p.packId}>
-                    <td>{p.packId.substring(0, 8)}</td>
-                    <td>{p.created}</td>
+                    <td>{<span className="uk-label uk-label-success">{p.packId.substring(0, 8)}</span>}</td>
+                    <td>{moment.utc(p.created).local().format("MMMM Do, HH:mm")}</td>
                     <td>{p.meterCount}</td>
                     <td>{supplierText}</td>
                     <td>
@@ -53,8 +53,8 @@ class TenderPackDialog extends React.Component<TenderPackDialogProps & StateProp
     }
 
     renderPackTable(){
-        if(this.props.tender.packs == null || this.props.tender.packs.length == 0){
-            return (<p>No tender packs have been generated.</p>);
+        if(this.props.tender.unissuedPacks == null || this.props.tender.unissuedPacks.length == 0){
+            return (<p>There are no unissued packs for this tender.</p>);
         }
 
         var tableContent = this.renderPackTableContent();

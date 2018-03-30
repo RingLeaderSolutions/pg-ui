@@ -172,7 +172,7 @@ const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, AddExistingC
 const mapStateToProps: MapStateToProps<StateProps, AddExistingContractDialogProps> = (state: ApplicationState) => {
     return {
         suppliers: state.portfolio.tender.suppliers.value,
-        working: state.portfolio.tender.addExistingContract.working,
+        working: state.portfolio.tender.addExistingContract.working || state.portfolio.tender.suppliers.working,
         error: state.portfolio.tender.addExistingContract.error,
         errorMessage: state.portfolio.tender.addExistingContract.errorMessage
     };

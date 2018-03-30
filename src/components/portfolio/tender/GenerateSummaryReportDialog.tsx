@@ -7,11 +7,12 @@ import ErrorMessage from "../../common/ErrorMessage";
 import * as moment from 'moment';
 
 import { generateSummaryReport } from '../../../actions/tenderActions';
-import { Tender, TenderPack, TenderSupplier, TenderQuote } from "../../../model/Tender";
+import { Tender, TenderPack, TenderSupplier, TenderQuote, TenderIssuance } from "../../../model/Tender";
 import { format } from 'currency-formatter';
 
 interface GenerateSummaryReportDialogProps {
     tender: Tender;
+    issuance: TenderIssuance;
 }
 
 interface StateProps {
@@ -35,15 +36,8 @@ class GenerateSummaryReportDialog extends React.Component<GenerateSummaryReportD
     }
 
     renderPackDialogContent(){
-
-        let quotesBySupplier = this.props.tender.quotes.reduce((r: any, a: TenderQuote) => {
-            r[a.supplierId] = r[a.supplierId] || [];
-            r[a.supplierId].push(a);
-            return r;
-        }, Object.create(null));
-
-        let quoteOptions = Object.keys(quotesBySupplier).map((q: any) => {
-            var highestVersion = quotesBySupplier[q].reduce((previous: TenderQuote, current: TenderQuote) => {
+        let quoteOptions = this.props.issuance.packs.map((p: any) => {
+            var highestVersion = p.quotes.reduce((previous: TenderQuote, current: TenderQuote) => {
                 return (previous.version > current.version) ? previous : current;
             });
 

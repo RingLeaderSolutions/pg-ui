@@ -27,6 +27,8 @@ UIkit.use(Icons);
 require('./styles/styles.scss');
 require('./styles/uikit.css');
 
+import 'react-datepicker/dist/react-datepicker.css';
+
 declare global {
     interface NodeModule {
         hot: {

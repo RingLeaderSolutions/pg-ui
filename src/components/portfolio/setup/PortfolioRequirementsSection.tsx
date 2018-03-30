@@ -8,8 +8,6 @@ import Spinner from '../../common/Spinner';
 import DatePicker from 'react-datepicker';
 import * as moment from 'moment';
 
-import 'react-datepicker/dist/react-datepicker.css';
-
 import { updatePortfolioRequirements } from '../../../actions/portfolioActions';
 
 interface PortfolioRequirementsSectionProps {
