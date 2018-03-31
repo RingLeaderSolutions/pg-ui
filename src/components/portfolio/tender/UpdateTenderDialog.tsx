@@ -46,6 +46,7 @@ class UpdateTenderDialog extends React.Component<UpdateTenderDialogProps & State
         };
 
         this.handleDeadlineChange = this.handleDeadlineChange.bind(this);
+        this.handleStartDateChange = this.handleStartDateChange.bind(this);
         this.updateTender = this.updateTender.bind(this);
     }
     // Standard
