@@ -562,6 +562,7 @@ export class FakeApiService implements IApiService {
                                 quoteId: "1964f31c-29b1-4a29-8532-66e1aea9e231",
                                 received: "2017-12-19T00:12:07.167",
                                 sheetCount: 0,
+                                contractLength: 24,
                                 status: "x",
                                 tenderId: "5122951b-b942-4f25-8ee0-5f2e255a5f50",
                                 termsheetBlobId: "5122951b",

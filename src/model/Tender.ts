@@ -63,6 +63,7 @@ export interface TenderQuote {
     totalIncCCL: number;
     collateralList: TenderQuoteCollateral[];
     version: number;
+    contractLength: number;
 }
 
 export interface TenderQuoteCollateral {

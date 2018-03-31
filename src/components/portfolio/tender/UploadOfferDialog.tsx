@@ -80,7 +80,7 @@ class UploadOfferDialog extends React.Component<UploadOfferDialogProps & StatePr
                 </div>
                 <div className="uk-modal-body">
                     <div className="uk-margin">
-                        <p>Please select the utility, the originating supplier, and the file provided.</p>
+                        <p>Please select the originating supplier, and browse for the offer file provided by the supplier.</p>
                         <form>
                             <fieldset className="uk-fieldset">
                                 <div className='uk-margin'>

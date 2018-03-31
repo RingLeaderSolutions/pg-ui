@@ -213,32 +213,42 @@ class TenderQuotesView extends React.Component<TenderQuotesViewProps & StateProp
                     <td><img src={supplier.logoUri} style={{ width: "70px"}}/></td>
                     <td>{isPending ? (<span className="uk-label uk-label-warning"><i>Pending</i></span>) : (<span className="uk-label uk-label-success">{highestVersion.quoteId.substring(0, 8)}</span>)}</td>  
                     <td>{!isPending ? highestVersion.version: (<p>N/A</p>)}</td>
-                    <td>
-                        {!isPending ? 
-                            (<button className="uk-button uk-button-default uk-button-small" type="button" data-uk-toggle={viewBackingSheetClass} onClick={() => this.fetchBackingSheets(highestVersion.quoteId)}>
-                                View
-                            </button>) : (<p>-</p>)}
-                    </td>
-                    <td>
-                        {!isPending ? 
-                        (<div>
-                            <button className="uk-button uk-button-default uk-button-small" type="button" data-uk-toggle={viewCollateralDialogClass}>
-                                View
-                            </button>
-                            <div id={collateralDialogName} data-uk-modal="center: true">
-                                <QuoteCollateralDialog collateral={highestVersion.collateralList} />
-                            </div>
-                        </div>) : (<p>-</p>)}
-                    </td>
+                    <td>{!isPending ? `${highestVersion.contractLength} months` : (<p>-</p>)}</td>
                     <td>{!isPending ? (highestVersion.sheetCount) : (<p>-</p>)}</td>
                     <td>{!isPending ? format(highestVersion.totalIncCCL, { locale: 'en-GB'}) : (<p>-</p>)}</td>
                     <td>{billingAccuracy}</td>
                     <td>{serviceDesk}</td>
                     <td>
-                        {!isPending ? 
-                        (<button className="uk-button uk-button-default uk-button-small" type="button" data-uk-tooltip="title: Download" onClick={() => this.exportQuote(highestVersion.quoteId)}>
-                            <span data-uk-icon="icon: cloud-download" />
-                        </button>) 
+                        {!isPending ? (
+                            <div>
+                                <div className="uk-inline">
+                                    <button className="uk-button uk-button-default" type="button">
+                                        <span className="uk-margin-small-right" data-uk-icon="icon: more" />
+                                        Actions
+                                    </button>
+                                    <div data-uk-dropdown="pos:bottom-justify;mode:click">
+                                        <ul className="uk-nav uk-dropdown-nav">
+                                        <li><a href="#" onClick={() => this.exportQuote(highestVersion.quoteId)}>
+                                            <span className="uk-margin-small-right" data-uk-icon="icon: cloud-download" />
+                                            Download
+                                        </a></li>
+                                        <li className="uk-nav-divider"></li>
+                                        <li><a href="#" data-uk-toggle={viewBackingSheetClass} onClick={() => this.fetchBackingSheets(highestVersion.quoteId)}>
+                                            <span className="uk-margin-small-right" data-uk-icon="icon: album" />
+                                            View Contract Rates
+                                        </a></li>
+                                        <li className="uk-nav-divider"></li>
+                                        <li><a href="#" data-uk-toggle={viewCollateralDialogClass}>
+                                            <span className="uk-margin-small-right" data-uk-icon="icon: folder" />                                        
+                                            View Collateral
+                                        </a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div id={collateralDialogName} data-uk-modal="center: true">
+                                    <QuoteCollateralDialog collateral={highestVersion.collateralList} />
+                                </div>
+                            </div>) 
                         : null}
                     </td>
                 </tr>
@@ -253,8 +263,7 @@ class TenderQuotesView extends React.Component<TenderQuotesViewProps & StateProp
                             <th>Supplier</th>
                             <th>Id</th>
                             <th>Version</th>
-                            <th>Contract Rates</th>
-                            <th>Collateral</th>
+                            <th>Contract Length</th>
                             <th>Site count</th>
                             <th>Contract Value</th>
                             <th>Billing Accuracy</th>
