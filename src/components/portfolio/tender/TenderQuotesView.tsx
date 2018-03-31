@@ -327,7 +327,7 @@ class TenderQuotesView extends React.Component<TenderQuotesViewProps & StateProp
                     <GenerateSummaryReportDialog tender={this.props.tender} issuance={issuance} />
                 </div>
                 <div id={uploadOfferName} data-uk-modal="center: true">
-                    <UploadOfferDialog tenderId={this.props.tender.tenderId} />
+                    <UploadOfferDialog tenderId={this.props.tender.tenderId} utilityType={this.props.tender.utility} />
                 </div>
             </div>
         )

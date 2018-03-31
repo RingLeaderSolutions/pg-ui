@@ -12,6 +12,7 @@ import { uploadElectricityOffer, uploadGasOffer } from '../../../actions/tenderA
 
 interface UploadOfferDialogProps {
     tenderId: string;
+    utilityType: string;
 }
 
 interface StateProps {
@@ -40,11 +41,10 @@ class UploadOfferDialog extends React.Component<UploadOfferDialogProps & StatePr
         this.upload = this.upload.bind(this);
         this.onFileChosen = this.onFileChosen.bind(this);
     }
-    utilityType: HTMLSelectElement;
     supplier: HTMLSelectElement;
 
     upload() {
-        if(this.utilityType.value.toLowerCase() == "gas"){
+        if(this.props.utilityType.toLowerCase() == "gas"){
             this.props.uploadGasOffer(this.props.tenderId, this.supplier.value, this.state.file);
             return;
         }
@@ -83,16 +83,6 @@ class UploadOfferDialog extends React.Component<UploadOfferDialogProps & StatePr
                         <p>Please select the utility, the originating supplier, and the file provided.</p>
                         <form>
                             <fieldset className="uk-fieldset">
-                                <div className='uk-margin'>
-                                    <label className='uk-form-label'>Utility</label>
-                                    <select className='uk-select' 
-                                        ref={ref => this.utilityType = ref}>
-                                        <option value="" disabled>Select</option>
-                                        <option>Gas</option>
-                                        <option>Electricity</option>
-                                    </select>
-                                </div>
-
                                 <div className='uk-margin'>
                                     <label className='uk-form-label'>Supplier</label>
                                     {this.renderSupplierSelect()}
