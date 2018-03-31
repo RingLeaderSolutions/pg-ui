@@ -33,7 +33,7 @@ class IssueTenderPackDialog extends React.Component<IssueTenderPackDialogProps &
     bodyElement: HTMLTextAreaElement;
 
     componentDidMount(){
-        if(this.props.tender.issuances.length > 0){
+        if(this.props.tender.unissuedPacks.length > 0){
             this.props.fetchIssuanceEmail(this.props.tender.tenderId);
         }
     }
