@@ -133,38 +133,20 @@ export function createGasTender(portfolioId: string){
     };
 }
 
-export function assignTenderSupplier(tenderId: string, supplierId: string){
+export function updateTenderSuppliers(tenderId: string, supplierIds: string[]){
     return (dispatch: Dispatch<any>) => {
-        let createPromise = ApiService.assignTenderSupplier(tenderId, supplierId);
-        dispatch({ type: types.ASSIGN_TENDER_SUPPLIER_WORKING });
+        let createPromise = ApiService.updateTenderSuppliers(tenderId, supplierIds);
+        dispatch({ type: types.UPDATE_TENDER_SUPPLIERS_WORKING });
 
         makeApiRequest(dispatch,
             createPromise,
             200, 
             data => {
-                return { type: types.ASSIGN_TENDER_SUPPLIER_SUCCESSFUL, data: null};
+                return { type: types.UPDATE_TENDER_SUPPLIERS_SUCCESSFUL, data: null};
                 
             }, 
             error => {
-                return { type: types.ASSIGN_TENDER_SUPPLIER_FAILED, errorMessage: error };
-            });
-    };
-}
-
-export function unassignTenderSupplier(tenderId: string, supplierId: string){
-    return (dispatch: Dispatch<any>) => {
-        let createPromise = ApiService.unassignTenderSupplier(tenderId, supplierId);
-        dispatch({ type: types.UNASSIGN_TENDER_SUPPLIER_WORKING });
-
-        makeApiRequest(dispatch,
-            createPromise,
-            200, 
-            data => {
-                return { type: types.UNASSIGN_TENDER_SUPPLIER_SUCCESSFUL, data: null};
-                
-            }, 
-            error => {
-                return { type: types.UNASSIGN_TENDER_SUPPLIER_FAILED, errorMessage: error };
+                return { type: types.UPDATE_TENDER_SUPPLIERS_FAILED, errorMessage: error };
             });
     };
 }

@@ -5,7 +5,7 @@ import { ApplicationState } from '../../../applicationState';
 import Spinner from '../../common/Spinner';
 import ErrorMessage from "../../common/ErrorMessage";
 
-import { assignTenderSupplier, unassignTenderSupplier, getTenderSuppliers } from '../../../actions/tenderActions';
+import { updateTenderSuppliers, getTenderSuppliers } from '../../../actions/tenderActions';
 import { Tender, TenderSupplier } from "../../../model/Tender";
 import TenderStatus from "./TenderStatus";
 
@@ -23,22 +23,38 @@ interface StateProps {
   
 interface DispatchProps {
     getTenderSuppliers: () => void;        
-    assignTenderSupplier: (tenderId: string, supplierId: string) => void;
-    unassignTenderSupplier: (tenderId: string, supplierId: string) => void;
+    updateTenderSuppliers: (tenderId: string, supplierIds: string[]) => void;
 }
 
+interface SupplierSelectState {
+    selected: string[];
+}
 
-class TenderSupplierSelectDialog extends React.Component<TenderSupplierSelectDialogProps & StateProps & DispatchProps, {}> {
+class TenderSupplierSelectDialog extends React.Component<TenderSupplierSelectDialogProps & StateProps & DispatchProps, SupplierSelectState> {
+    constructor(props: TenderSupplierSelectDialogProps & StateProps & DispatchProps) {
+        super();
+        var selected = props.assignedSuppliers.map(s => s.supplierId);
+        this.state = {
+            selected 
+        }
+    }
     componentDidMount() {
         this.props.getTenderSuppliers();
     }
 
+    saveSuppliers(){
+        this.props.updateTenderSuppliers(this.props.tenderId, this.state.selected);
+    }
     toggleSupplierAssignment(ev: any, supplierId: string){
-        if(ev.target.checked){
-            this.props.assignTenderSupplier(this.props.tenderId, supplierId);        
+        if(this.state.selected.find(selectedId => selectedId == supplierId)){
+            this.setState( {
+                selected: this.state.selected.filter((sid) => sid != supplierId)
+            })
         }
         else {
-            this.props.unassignTenderSupplier(this.props.tenderId, supplierId);        
+            this.setState({
+                selected: [...this.state.selected, supplierId]
+            })
         }
     }
 
@@ -86,6 +102,7 @@ class TenderSupplierSelectDialog extends React.Component<TenderSupplierSelectDia
                 </div>
                 <div className="uk-modal-footer uk-text-right">
                     <button className="uk-button uk-button-default uk-margin-right uk-modal-close" type="button">Done</button>
+                    <button className="uk-button uk-button-primary uk-margin-right uk-modal-close" type="button" onClick={() => this.saveSuppliers()}>Save</button>
                 </div>
             </div>)
     }
@@ -94,8 +111,7 @@ class TenderSupplierSelectDialog extends React.Component<TenderSupplierSelectDia
 const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, TenderSupplierSelectDialogProps> = (dispatch) => {
     return {
         getTenderSuppliers: () => dispatch(getTenderSuppliers()),                
-        assignTenderSupplier: (tenderId, supplierId) => dispatch(assignTenderSupplier(tenderId, supplierId)),
-        unassignTenderSupplier: (tenderId, supplierId) => dispatch(unassignTenderSupplier(tenderId, supplierId))
+        updateTenderSuppliers: (tenderId, supplierIds) => dispatch(updateTenderSuppliers(tenderId, supplierIds))
     };
 };
   

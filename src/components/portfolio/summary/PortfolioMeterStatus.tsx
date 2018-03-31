@@ -27,7 +27,6 @@ class PortfolioMeterStatus extends React.Component<PortfolioMeterStatusProps & S
                     <td>{mg.meterCount}</td>
                     <td>{mg.supplyDataCount}</td>
                     <td>{mg.historicalCount}</td>
-                    <td>{mg.forecastCount}</td>
                 </tr>
             )
         })
@@ -40,7 +39,6 @@ class PortfolioMeterStatus extends React.Component<PortfolioMeterStatusProps & S
                     <th>Count</th>
                     <th>Supply Data Provided</th>
                     <th>Historical Provided</th>
-                    <th>Forecast Generated</th>
                 </tr>
             </thead>
             <tbody>

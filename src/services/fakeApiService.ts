@@ -742,11 +742,7 @@ export class FakeApiService implements IApiService {
         return OK();
     }
 
-    assignTenderSupplier(tenderId: string, supplierId: string){
-        return OK();
-    }
-
-    unassignTenderSupplier(tenderId: string, supplierId: string){
+    updateTenderSuppliers(tenderId: string, supplierIds: string[]){
         return OK();
     }
 

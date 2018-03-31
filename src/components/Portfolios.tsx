@@ -119,8 +119,8 @@ class Portfolios extends React.Component<PortfoliosProps & StateProps & Dispatch
                                     <tr>
                                         <th>Name</th>
                                         <th>Status</th>
-                                        <th>Sales Lead</th>
-                                        <th>Support Executive</th>
+                                        <th>Account Manager</th>
+                                        <th>Tender Analyst</th>
                                         <th>Start</th>
                                         <th>End</th>
                                         <th>Accounts</th>

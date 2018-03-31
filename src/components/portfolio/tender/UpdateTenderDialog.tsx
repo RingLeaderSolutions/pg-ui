@@ -127,6 +127,8 @@ class UpdateTenderDialog extends React.Component<UpdateTenderDialogProps & State
         var { tender } = this.props;
         var { requirements } = tender;
 
+        var isGasTender = tender.utility == "GAS";
+        var isHalfhourly = tender.halfHourly;
         if(requirements == null){
             requirements = {
                 id: "",
@@ -210,6 +212,7 @@ class UpdateTenderDialog extends React.Component<UpdateTenderDialogProps & State
                                         </div>
                                     </div>
 
+                                    { !isGasTender && isHalfhourly ? (
                                     <div className="uk-margin">
                                         <label className="uk-form-label" data-for="tariff-select">Tariff</label>
                                         <div className="uk-form-controls">
@@ -219,7 +222,8 @@ class UpdateTenderDialog extends React.Component<UpdateTenderDialogProps & State
                                                 {this.renderTariffOptions()}
                                             </select>
                                         </div>
-                                    </div>
+                                    </div>) : null}
+                                    
 
                                     <div className="uk-margin">
                                         <button className="uk-button uk-button-primary uk-align-right" type="button" onClick={(e) => this.saveRequirements(e)}>Save</button>                                    
@@ -235,7 +239,8 @@ class UpdateTenderDialog extends React.Component<UpdateTenderDialogProps & State
     }
 
     renderGeneralEditForm(){
-        let { tender } = this.props;        
+        let { tender } = this.props;    
+        var isGas = tender.utility == "GAS";    
         return (
             <form>
                 <div className='uk-flex'>
@@ -273,13 +278,15 @@ class UpdateTenderDialog extends React.Component<UpdateTenderDialogProps & State
                                 </select>
                             </div>
 
-                            <div className='uk-margin'>
-                                <label className='uk-form-label'>Embedded Benefits</label>
-                                <div className="uk-margin-small">
-                                    <label><input className="uk-radio" type="radio" name="ebChoice" ref={ref => this.ebInclusiveElement = ref} defaultChecked={tender.allInclusive} /> Inclusive</label>
-                                    <label><input className="uk-radio uk-margin-large-left" type="radio" name="ebChoice" defaultChecked={!tender.allInclusive} /> Pass-Through</label>
-                                </div>
-                            </div>
+                            { !isGas ? (
+                                <div className='uk-margin'>
+                                    <label className='uk-form-label'>Embedded Benefits</label>
+                                    <div className="uk-margin-small">
+                                        <label><input className="uk-radio" type="radio" name="ebChoice" ref={ref => this.ebInclusiveElement = ref} defaultChecked={tender.allInclusive} /> Inclusive</label>
+                                        <label><input className="uk-radio uk-margin-large-left" type="radio" name="ebChoice" defaultChecked={!tender.allInclusive} /> Pass-Through</label>
+                                    </div>
+                                </div>)
+                            : null}
 
                             <div className="uk-margin">
                                 <label className="uk-form-label" data-for="deadline-input">Deadline</label>

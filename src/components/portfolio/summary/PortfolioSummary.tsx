@@ -36,15 +36,13 @@ class PortfolioSummary extends React.Component<PortfolioSummaryProps, {}> {
                 <div className="uk-child-width-expand@s uk-grid-match uk-text-center" data-uk-grid>
                     <CounterCard title={client} label="Client" small/>
                     <CounterCard title={clientContact} label="Client Contact" small/>
-                    <CounterCard title={salesLead} label="Sales Lead" small/>
-                    <CounterCard title={supportExec} label="Support Executive" small/>
-                    <CounterCard title={this.formatForDisplay(portfolio.creditRating)} label="Credit Check" small/>
-                    <CounterCard title={this.formatForDisplay(portfolio.approvalStatus)} label="Approval Status" small/>
+                    <CounterCard title={salesLead} label="Account Manager" small/>
+                    <CounterCard title={supportExec} label="Tender Analyst" small/>
+                    <CounterCard title={this.formatForDisplay(portfolio.creditRating)} label="Credit Score" small/>
                 </div>
                 <div className="uk-child-width-expand@s uk-grid-match uk-text-center" data-uk-grid>
                     <CounterCard title={this.formatForDisplay(portfolio.contractStart)} label="Contract Start" small/>
                     <CounterCard title={this.formatForDisplay(portfolio.contractEnd)} label="Contract End" small/>
-                    <CounterCard title={this.missingFieldText} label="Consumption" small/>
                     <CounterCard title={this.missingFieldText} label="Upload Activity" small/>
                     <CounterCard title={String(portfolio.accounts)} label="Accounts" small/>
                     <CounterCard title={String(portfolio.mpans)} label="Meters" small />

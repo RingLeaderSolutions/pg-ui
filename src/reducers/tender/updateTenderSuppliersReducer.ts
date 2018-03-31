@@ -2,10 +2,10 @@ import * as types from '../../actions/actionTypes';
 import { reduceReducers, requestResponseReducer } from '../common';
 import { RequestState, idleInitialRequestState } from '../RequestState';
 
-const unassignTenderSupplierReducer = requestResponseReducer(
-    types.UNASSIGN_TENDER_SUPPLIER_WORKING,
-    types.UNASSIGN_TENDER_SUPPLIER_SUCCESSFUL,
-    types.UNASSIGN_TENDER_SUPPLIER_FAILED,
+const updateTenderSuppliersReducer = requestResponseReducer(
+    types.UPDATE_TENDER_SUPPLIERS_WORKING,
+    types.UPDATE_TENDER_SUPPLIERS_SUCCESSFUL,
+    types.UPDATE_TENDER_SUPPLIERS_FAILED,
     (state, action) => {
         return {
             ...state,
@@ -15,4 +15,4 @@ const unassignTenderSupplierReducer = requestResponseReducer(
     }
 );
 
-export default reduceReducers((state = idleInitialRequestState) => state, unassignTenderSupplierReducer);
+export default reduceReducers((state = idleInitialRequestState) => state, updateTenderSuppliersReducer);

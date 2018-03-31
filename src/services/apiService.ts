@@ -56,8 +56,7 @@ export interface IApiService {
   createHHElectricityTender(portfolioId: string): Promise<AxiosResponse>;
   createNHHElectricityTender(portfolioId: string): Promise<AxiosResponse>;
   createGasTender(portfolioId: string): Promise<AxiosResponse>;
-  assignTenderSupplier(tenderId: string, supplierId: string): Promise<AxiosResponse>;
-  unassignTenderSupplier(tenderId: string, supplierId: string): Promise<AxiosResponse>;
+  updateTenderSuppliers(tenderId: string, supplierIds: string[]): Promise<AxiosResponse>;
   updateTender(tenderId: string, tender: Tender): Promise<AxiosResponse>;
   getContractBackingSheets(tenderId: string, contractId: string): Promise<AxiosResponse>;
   getQuoteBackingSheets(tenderId: string, quoteId: string): Promise<AxiosResponse>;
@@ -327,12 +326,8 @@ export class ApiService implements IApiService {
         return axios.post(`${this.baseApiUri}/portman-web/tender/portfolio/${portfolioId}/gas`, null, this.getRequestConfig());
     }
 
-    assignTenderSupplier(tenderId: string, supplierId: string){
-        return axios.put(`${this.baseApiUri}/portman-web/tender/${tenderId}/supplier/${supplierId}/assign`, null, this.getRequestConfig());
-    }
-
-    unassignTenderSupplier(tenderId: string, supplierId: string){
-        return axios.put(`${this.baseApiUri}/portman-web/tender/${tenderId}/supplier/${supplierId}/unassign`, null, this.getRequestConfig());
+    updateTenderSuppliers(tenderId: string, supplierIds: string[]){
+        return axios.put(`${this.baseApiUri}/portman-web/tender/${tenderId}/supplier/population`, supplierIds, this.getRequestConfig());        
     }
 
     updateTender(tenderId: string, tender: Tender){

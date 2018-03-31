@@ -49,8 +49,7 @@ import deleteTenderReducer from './tender/deleteTenderReducer';
 import createGasTenderReducer from './tender/createGasTenderReducer';
 import createHHElectricityTenderReducer from './tender/createHHElectricityTenderReducer';
 import createNHHElectricityTenderReducer from './tender/createNHHElectricityTenderReducer';
-import assignTenderSupplierReducer from './tender/assignTenderSupplierReducer';
-import unassignTenderSupplierReducer from './tender/unassignTenderSupplierReducer';
+import updateTenderSuppliersReducer from './tender/updateTenderSuppliersReducer';
 import updateTenderReducer from './tender/updateTenderReducer';
 import generateTenderPackReducer from './tender/generateTenderPackReducer';
 import issueTenderPackReducer from './tender/issueTenderPackReducer';
@@ -69,8 +68,7 @@ const tenderReducer: Reducer<TenderState> = combineReducers<TenderState>({
     create_hh_electricity_tender: createHHElectricityTenderReducer,
     create_nhh_electricity_tender: createNHHElectricityTenderReducer,
     create_gas_tender: createGasTenderReducer,
-    assign_tender_supplier: assignTenderSupplierReducer,
-    unassign_tender_supplier: unassignTenderSupplierReducer,
+    update_tender_suppliers: updateTenderSuppliersReducer,
     update_tender: updateTenderReducer,
     generate_pack: generateTenderPackReducer,
     issue_pack: issueTenderPackReducer,
