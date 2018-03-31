@@ -343,14 +343,24 @@ class TenderQuotesView extends React.Component<TenderQuotesViewProps & StateProp
         var tabs: any = [];
         var tabContent: any = [];
 
-        this.props.tender.issuances.map((issuance, index) => {
-            var tabName = index == 0 ? "Latest" : index + 1;
-            var tab = (<li key={index}><a href="#">{tabName}</a></li>);
-            tabs[index] = tab;
+        this.props.tender.issuances
+            .sort(
+                (i1: TenderIssuance, i2: TenderIssuance) => {
+                    var firstDate = moment.utc(i1.created).unix();
+                    var secondDate = moment.utc(i2.created).unix();
+            
+                    if (firstDate > secondDate) return -1;
+                    if (firstDate < secondDate) return 1;
+                    return 0;
+                })
+            .map((issuance, index) => {
+                var tabName = index == 0 ? "Latest" : index + 1;
+                var tab = (<li key={index}><a href="#">{tabName}</a></li>);
+                tabs[index] = tab;
 
-            var content = this.renderIssuanceContent(issuance);
-            tabContent[index] = content;
-        });
+                var content = this.renderIssuanceContent(issuance);
+                tabContent[index] = content;
+            });
 
         return (
             <div className="uk-margin-top">
