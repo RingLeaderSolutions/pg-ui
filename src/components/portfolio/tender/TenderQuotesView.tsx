@@ -43,216 +43,73 @@ class TenderQuotesView extends React.Component<TenderQuotesViewProps & StateProp
     exportQuote(quoteId: string){
         this.props.exportContractRates(this.props.tender.tenderId, quoteId);
     }
-    // renderQuotesTable(viewBackingSheetClass: string){
-    //     let quotesBySupplier = this.props.tender.quotes.reduce((r: any, a: TenderQuote) => {
-    //         r[a.supplierId] = r[a.supplierId] || [];
-    //         r[a.supplierId].push(a);
-    //         return r;
-    //     }, Object.create(null));
-
-    //     let tableContent = Object.keys(quotesBySupplier).map((q: any, index: number) => {
-    //         var highestVersion = quotesBySupplier[q].reduce((previous: TenderQuote, current: TenderQuote) => {
-    //             return (previous.version > current.version) ? previous : current;
-    //         });
-
-    //         var supplier = this.props.suppliers.find(su => su.supplierId == highestVersion.supplierId);
-    //         var supplierText = supplier == null ? "Unknown" : supplier.name;
-    //         var billingAccuracy = supplier == null || supplier.serviceRatings.length == 0 ? "Unknown" : supplier.serviceRatings[0].score;
-    //         var serviceDesk = supplier == null || supplier.serviceRatings.length == 0 ? "Unknown" : supplier.serviceRatings[1].score;
-
-    //         var collateralDialogName = `modal-view-collateral-${highestVersion.quoteId}`;
-    //         var viewCollateralDialogClass = `target: #${collateralDialogName}`;
-
-    //         var isPending = highestVersion.status == "PENDING";
-
-    //         return (
-    //             <tr key={index}>
-    //                 <td>{supplierText}</td>
-    //                 <td>{isPending ? (<span className="uk-label uk-label-warning"><i>Pending</i></span>) : (<span className="uk-label uk-label-success">{highestVersion.quoteId.substring(0, 8)}</span>)}</td>  
-    //                 <td>{!isPending ? highestVersion.version: (<p>N/A</p>)}</td>
-    //                 <td>
-    //                     {!isPending ? 
-    //                         (<button className="uk-button uk-button-default uk-button-small" type="button" data-uk-toggle={viewBackingSheetClass} onClick={() => this.fetchBackingSheets(highestVersion.quoteId)}>
-    //                             View
-    //                         </button>) : (<p>-</p>)}
-                        
-    //                 </td>
-    //                 <td>
-    //                     {!isPending ? 
-    //                     (<div>
-    //                         <button className="uk-button uk-button-default uk-button-small" type="button" data-uk-toggle={viewCollateralDialogClass}>
-    //                             View
-    //                         </button>
-    //                         <div id={collateralDialogName} data-uk-modal="center: true">
-    //                             <QuoteCollateralDialog collateral={highestVersion.collateralList} />
-    //                         </div>
-    //                     </div>) : (<p>-</p>)}
-    //                 </td>
-    //                 <td>{!isPending ? (highestVersion.sheetCount) : (<p>-</p>)}</td>
-    //                 <td>{!isPending ? format(highestVersion.totalIncCCL, { locale: 'en-GB'}) : (<p>-</p>)}</td>
-    //                 <td>{billingAccuracy}</td>
-    //                 <td>{serviceDesk}</td>
-    //                 <td>
-    //                     {!isPending ? 
-    //                     (<button className="uk-button uk-button-default uk-button-small" type="button" data-uk-tooltip="title: Download" onClick={() => this.exportQuote(highestVersion.quoteId)}>
-    //                         <span data-uk-icon="icon: cloud-download" />
-    //                     </button>) 
-    //                     : null}
-    //                 </td>
-    //             </tr>
-    //         );
-    //     });
-    //     return (
-    //         <table className="uk-table uk-table-divider">
-    //         <thead>
-    //             <tr>
-    //                 <th>Supplier</th>
-    //                 <th>Quote Id</th>
-    //                 <th>Version</th>
-    //                 <th>Contract Rates</th>
-    //                 <th>Collateral</th>
-    //                 <th>Site count</th>
-    //                 <th>Contract Value</th>
-    //                 <th>Billing Accuracy</th>
-    //                 <th>Service Desk</th>
-    //             </tr>
-    //         </thead>
-    //         <tbody>
-    //             {tableContent}
-    //         </tbody>
-    //     </table>
-    //     )
-    // }
-    // render() {
-    //     if(this.props.working){
-    //         return (<Spinner hasMargin={true} />)
-    //     }
-    //     let { quotes, tenderId } = this.props.tender;
-    //     var hasQuotes = quotes != null && quotes.length > 0;
-
-    //     var viewQuoteBackingSheetName = `modal-view-quote-backing-${tenderId}`;
-    //     var showQuoteBackingSheetClass = `target: #${viewQuoteBackingSheetName}`;
-
-    //     var viewSummariesName = `modal-view-summaries-${tenderId}`;
-    //     var viewSummariesClass = `target: #${viewSummariesName}`;
-
-    //     var generateSummaryName = `modal-generate-summary-${tenderId}`;
-    //     var generateSummaryClass = `target: #${generateSummaryName}`;
-
-    //     var uploadOfferName = `modal-upload-offer-${tenderId}`;
-    //     var uploadOfferClass = `target: #${uploadOfferName}`;
-    //     return (
-    //             <div className="uk-card uk-card-small uk-card-default uk-card-body">
-    //                 <div className="uk-grid" data-uk-grid>
-    //                     <div className="uk-width-expand@s">
-    //                         <h3>Offers</h3>
-    //                     </div>
-    //                     <div className="uk-width-1-3">
-    //                         <button className="uk-button uk-button-default uk-button-small uk-align-right" type="button" data-uk-toggle={uploadOfferClass}>
-    //                             <span className="uk-margin-small-right" data-uk-icon="icon: cloud-upload" />
-    //                             Upload Offer
-    //                         </button>
-    //                     </div>
-    //                 </div>
-    //                 <div>
-    //                     {hasQuotes ? (this.renderQuotesTable(showQuoteBackingSheetClass)) : (<p>This tender has not yet been issued.</p>)}
-    //                 </div>
-    //                 { hasQuotes ? 
-    //                     <div className="uk-width-2-3 uk-grid" data-uk-grid>
-    //                         <div className="uk-width-1-2">
-    //                             <button className="uk-button uk-button-default uk-button-small uk-align-right" type="button" data-uk-toggle={viewSummariesClass}>
-    //                                 <span className="uk-margin-small-right" data-uk-icon="icon: settings" />
-    //                                 Summary Reports
-    //                             </button>
-    //                         </div>
-    //                         <div className="uk-width-1-2">
-    //                             <button className="uk-button uk-button-primary uk-button-small uk-align-right" type="button" data-uk-toggle={generateSummaryClass}>
-    //                                 <span className="uk-margin-small-right" data-uk-icon="icon: bolt" />
-    //                                 Generate new summary report
-    //                             </button>   
-    //                         </div>
-    //                     </div> : null}
-    //                 <div id={viewQuoteBackingSheetName} data-uk-modal="center: true">
-    //                     <TenderBackingSheetsDialog />
-    //                 </div>
-
-    //                 <div id={viewSummariesName} data-uk-modal="center: true">
-    //                     <TenderQuoteSummariesDialog tender={this.props.tender} />
-    //                 </div>
-
-    //                 <div id={generateSummaryName} data-uk-modal="center: true">
-    //                     <GenerateSummaryReportDialog tender={this.props.tender} />
-    //                 </div>
-
-    //                 <div id={uploadOfferName} data-uk-modal="center: true">
-    //                     <UploadOfferDialog tenderId={this.props.tender.tenderId} />
-    //                 </div>
-    //         </div>
-    //     )
-    // }
+  
     renderOffersTable(packs: TenderPack[]){
-        var quotes = packs.map((p, index) => {
-            var highestVersion = p.quotes.reduce((previous: TenderQuote, current: TenderQuote) => {
-                return (previous.version > current.version) ? previous : current;
-            });
+        var quotes = packs.map((p) => {
+            return p.quotes
+            .sort((q1: TenderQuote, q2: TenderQuote) => {        
+                if (q1.version < q2.version) return 1;
+                if (q1.version > q2.version) return -1;
+                return 0;
+            })
+            .map((quote) => {
+                var supplier = this.props.suppliers.find(su => su.supplierId == quote.supplierId);
+                var supplierText = supplier == null ? "Unknown" : supplier.name;
+                var billingAccuracy = supplier == null || supplier.serviceRatings.length == 0 ? "Unknown" : supplier.serviceRatings[0].score;
+                var serviceDesk = supplier == null || supplier.serviceRatings.length == 0 ? "Unknown" : supplier.serviceRatings[1].score;
 
-            var supplier = this.props.suppliers.find(su => su.supplierId == highestVersion.supplierId);
-            var supplierText = supplier == null ? "Unknown" : supplier.name;
-            var billingAccuracy = supplier == null || supplier.serviceRatings.length == 0 ? "Unknown" : supplier.serviceRatings[0].score;
-            var serviceDesk = supplier == null || supplier.serviceRatings.length == 0 ? "Unknown" : supplier.serviceRatings[1].score;
+                var viewBackingSheetClass = `target: #modal-view-quote-bs-${this.props.tender.tenderId}`;
 
-            var viewBackingSheetClass = `target: #modal-view-quote-bs-${this.props.tender.tenderId}`;
+                var collateralDialogName = `modal-view-collateral-${quote.quoteId}`;
+                var viewCollateralDialogClass = `target: #${collateralDialogName}`;
 
-            var collateralDialogName = `modal-view-collateral-${highestVersion.quoteId}`;
-            var viewCollateralDialogClass = `target: #${collateralDialogName}`;
+                var isPending = quote.status == "PENDING";
 
-            var isPending = highestVersion.status == "PENDING";
-
-            return (
-                <tr key={index}>
-                    <td><img src={supplier.logoUri} style={{ width: "70px"}}/></td>
-                    <td>{isPending ? (<span className="uk-label uk-label-warning"><i>Pending</i></span>) : (<span className="uk-label uk-label-success">{highestVersion.quoteId.substring(0, 8)}</span>)}</td>  
-                    <td>{!isPending ? highestVersion.version: (<p>N/A</p>)}</td>
-                    <td>{!isPending ? `${highestVersion.contractLength} months` : (<p>-</p>)}</td>
-                    <td>{!isPending ? (highestVersion.sheetCount) : (<p>-</p>)}</td>
-                    <td>{!isPending ? format(highestVersion.totalIncCCL, { locale: 'en-GB'}) : (<p>-</p>)}</td>
-                    <td>{billingAccuracy}</td>
-                    <td>{serviceDesk}</td>
-                    <td>
-                        {!isPending ? (
-                            <div>
-                                <div className="uk-inline">
-                                    <button className="uk-button uk-button-default" type="button">
-                                        <span className="uk-margin-small-right" data-uk-icon="icon: more" />
-                                        Actions
-                                    </button>
-                                    <div data-uk-dropdown="pos:bottom-justify;mode:click">
-                                        <ul className="uk-nav uk-dropdown-nav">
-                                        <li><a href="#" onClick={() => this.exportQuote(highestVersion.quoteId)}>
-                                            <span className="uk-margin-small-right" data-uk-icon="icon: cloud-download" />
-                                            Download
-                                        </a></li>
-                                        <li className="uk-nav-divider"></li>
-                                        <li><a href="#" data-uk-toggle={viewBackingSheetClass} onClick={() => this.fetchBackingSheets(highestVersion.quoteId)}>
-                                            <span className="uk-margin-small-right" data-uk-icon="icon: album" />
-                                            View Contract Rates
-                                        </a></li>
-                                        <li className="uk-nav-divider"></li>
-                                        <li><a href="#" data-uk-toggle={viewCollateralDialogClass}>
-                                            <span className="uk-margin-small-right" data-uk-icon="icon: folder" />                                        
-                                            View Collateral
-                                        </a></li>
-                                        </ul>
+                return (
+                    <tr key={quote.quoteId}>
+                        <td><img src={supplier.logoUri} style={{ width: "70px"}}/></td>
+                        <td>{isPending ? (<span className="uk-label uk-label-warning"><i>Pending</i></span>) : (<span className="uk-label uk-label-success">{quote.quoteId.substring(0, 8)}</span>)}</td>  
+                        <td>{!isPending ? quote.version: (<p>N/A</p>)}</td>
+                        <td>{!isPending ? `${quote.contractLength} months` : (<p>-</p>)}</td>
+                        <td>{!isPending ? (quote.sheetCount) : (<p>-</p>)}</td>
+                        <td>{!isPending ? format(quote.totalIncCCL, { locale: 'en-GB'}) : (<p>-</p>)}</td>
+                        <td>{billingAccuracy}</td>
+                        <td>{serviceDesk}</td>
+                        <td>
+                            {!isPending ? (
+                                <div>
+                                    <div className="uk-inline">
+                                        <button className="uk-button uk-button-default" type="button">
+                                            <span data-uk-icon="icon: more" />
+                                        </button>
+                                        <div data-uk-dropdown="pos:bottom-justify;mode:click">
+                                            <ul className="uk-nav uk-dropdown-nav">
+                                            <li><a href="#" onClick={() => this.exportQuote(quote.quoteId)}>
+                                                <span className="uk-margin-small-right" data-uk-icon="icon: cloud-download" />
+                                                Download
+                                            </a></li>
+                                            <li className="uk-nav-divider"></li>
+                                            <li><a href="#" data-uk-toggle={viewBackingSheetClass} onClick={() => this.fetchBackingSheets(quote.quoteId)}>
+                                                <span className="uk-margin-small-right" data-uk-icon="icon: album" />
+                                                View Contract Rates
+                                            </a></li>
+                                            <li className="uk-nav-divider"></li>
+                                            <li><a href="#" data-uk-toggle={viewCollateralDialogClass}>
+                                                <span className="uk-margin-small-right" data-uk-icon="icon: folder" />                                        
+                                                View Collateral
+                                            </a></li>
+                                            </ul>
+                                        </div>
                                     </div>
-                                </div>
-                                <div id={collateralDialogName} data-uk-modal="center: true">
-                                    <QuoteCollateralDialog collateral={highestVersion.collateralList} />
-                                </div>
-                            </div>) 
-                        : null}
-                    </td>
-                </tr>
-            );
+                                    <div id={collateralDialogName} data-uk-modal="center: true">
+                                        <QuoteCollateralDialog collateral={quote.collateralList} />
+                                    </div>
+                                </div>) 
+                            : null}
+                        </td>
+                    </tr>
+                );
+            });
         });
 
         return (
@@ -322,7 +179,7 @@ class TenderQuotesView extends React.Component<TenderQuotesViewProps & StateProp
                     <div className="uk-width-1-2">
                         <button className="uk-button uk-button-default uk-button-small uk-align-right" type="button" data-uk-toggle={summaryReportsDialogClass}>
                             <span className="uk-margin-small-right" data-uk-icon="icon: shrink" />
-                            Summary Reports
+                            Recommendations
                         </button>
                         <button className="uk-button uk-button-primary uk-button-small uk-align-right" type="button" data-uk-toggle={uploadOfferClass}>
                             <span className="uk-margin-small-right" data-uk-icon="icon: cloud-upload" />
@@ -336,7 +193,7 @@ class TenderQuotesView extends React.Component<TenderQuotesViewProps & StateProp
                     <GenerateSummaryReportDialog tender={this.props.tender} issuance={issuance} />
                 </div>
                 <div id={uploadOfferName} data-uk-modal="center: true">
-                    <UploadOfferDialog tenderId={this.props.tender.tenderId} utilityType={this.props.tender.utility} />
+                    <UploadOfferDialog tenderId={this.props.tender.tenderId} assignedSuppliers={this.props.tender.assignedSuppliers} utilityType={this.props.tender.utility} />
                 </div>
             </div>
         )

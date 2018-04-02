@@ -61,7 +61,7 @@ class TenderQuoteSummariesDialog extends React.Component<TenderQuoteSummariesDia
 
     renderSummaryTable(){
         if(this.props.tender.summaries == null || this.props.tender.summaries.length == 0){
-            return (<p>No summary reports have been generated.</p>);
+            return (<p>No reccomendations have been generated.</p>);
         }
 
         var tableContent = this.renderSummaryTableContent();
@@ -110,7 +110,7 @@ class TenderQuoteSummariesDialog extends React.Component<TenderQuoteSummariesDia
             <div className="uk-modal-dialog summary-report-dialog">
                 <button className="uk-modal-close-default" type="button" data-uk-close></button>
                 <div className="uk-modal-header">
-                    <h2 className="uk-modal-title">Summary Reports</h2>
+                    <h2 className="uk-modal-title">Recommendations</h2>
                 </div>
                 <div className="uk-modal-body">
                     <div className="uk-margin">

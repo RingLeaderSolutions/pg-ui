@@ -12,6 +12,7 @@ import { uploadElectricityOffer, uploadGasOffer } from '../../../actions/tenderA
 
 interface UploadOfferDialogProps {
     tenderId: string;
+    assignedSuppliers: TenderSupplier[];
     utilityType: string;
 }
 
@@ -19,7 +20,6 @@ interface StateProps {
   working: boolean;
   error: boolean;
   errorMessage: string;
-  suppliers: TenderSupplier[];
 }
 
 interface DispatchProps {
@@ -58,7 +58,7 @@ class UploadOfferDialog extends React.Component<UploadOfferDialogProps & StatePr
     }
 
     renderSupplierSelect(){
-        var options = this.props.suppliers.map(s => {
+        var options = this.props.assignedSuppliers.map(s => {
                 return (<option key={s.supplierId} value={s.supplierId}>{s.name}</option>)
         })
 
@@ -111,7 +111,7 @@ const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, UploadOfferD
   
 const mapStateToProps: MapStateToProps<StateProps, UploadOfferDialogProps> = (state: ApplicationState) => {
     return {
-        working: state.portfolio.details.working || state.portfolio.tender.suppliers.working,
+        working: state.portfolio.details.working,
         error: state.portfolio.details.error,
         errorMessage: state.portfolio.details.errorMessage,
         suppliers: state.portfolio.tender.suppliers.value,
