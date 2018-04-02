@@ -35,21 +35,26 @@ class GenerateSummaryReportDialog extends React.Component<GenerateSummaryReportD
         this.props.generateSummaryReport(this.props.tender.tenderId, this.quoteSelectElement.value, this.marketCommentaryElement.value, this.selectionCommentaryElement.value);
     }
 
+    getFormattedDateTime(dateTime: string){
+        return moment.utc(dateTime).local().format("MMMM Do, HH:mm");
+    }
+
     renderPackDialogContent(){
         let quoteOptions = this.props.issuance.packs.map((p: any) => {
-            var highestVersion = p.quotes.reduce((previous: TenderQuote, current: TenderQuote) => {
-                return (previous.version > current.version) ? previous : current;
+            return p.quotes
+            .filter((q: TenderQuote) => q.status != "PENDING")
+            .map((quote: TenderQuote) => {
+                var supplier = this.props.suppliers.find(s => s.supplierId == quote.supplierId);
+                var supplierText = supplier == null ? "Unknown" : supplier.name;
+                
+                var key = `${supplierText}-${quote.quoteId}`;
+                return (<option key={key} value={quote.quoteId}>{supplierText} - {quote.quoteId.substr(0, 8)}-V{quote.version} - {format(quote.totalIncCCL, { locale: 'en-GB'})}</option>)
             });
-
-            var supplier = this.props.suppliers.find(s => s.supplierId == highestVersion.supplierId);
-            var supplierText = supplier == null ? "Unknown" : supplier.name;
-            
-            var key = `${supplierText}-${highestVersion.quoteId}`;
-            return (<option key={key} value={highestVersion.quoteId}>{supplierText} - {highestVersion.quoteId.substr(0, 8)}-V{highestVersion.version} - {format(highestVersion.totalIncCCL, { locale: 'en-GB'})}</option>)
         });
 
         return (
             <div className="uk-margin">
+            <p>You are generating a recommendation report against the issuance issued on <strong>{this.getFormattedDateTime(this.props.issuance.created)}</strong>, which has received <strong>{quoteOptions.length}</strong> supplier responses.</p>
             <form>
                 <div className='uk-flex'>
                     <div className='uk-card uk-card-default uk-card-body uk-flex-1'>
@@ -104,7 +109,7 @@ class GenerateSummaryReportDialog extends React.Component<GenerateSummaryReportD
             <div className="uk-modal-dialog">
                 <button className="uk-modal-close-default" type="button" data-uk-close></button>
                 <div className="uk-modal-header">
-                    <h2 className="uk-modal-title">Generate Summary Report</h2>
+                    <h2 className="uk-modal-title">Create Recommendation Report</h2>
                 </div>
                 <div className="uk-modal-body">
                     <div className="uk-margin">

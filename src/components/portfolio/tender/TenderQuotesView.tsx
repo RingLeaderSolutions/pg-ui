@@ -144,11 +144,20 @@ class TenderQuotesView extends React.Component<TenderQuotesViewProps & StateProp
         var created = this.getFormattedDateTime(issuance.created);
         var expiry = this.getFormattedDateTime(issuance.expiry);
 
-        var summaryReportsDialogName = `modal-generate-summary-${issuance.issuanceId}`;
-        var summaryReportsDialogClass = `target: #${summaryReportsDialogName}`;
+        var createRecommendationDialogName = `modal-create-recommendation-${issuance.issuanceId}`;
+        var createRecommendationDialogClass = `target: #${createRecommendationDialogName}`;
+
+        var viewRecommendationsDialogName = `modal-view-recommendations-${this.props.tender.tenderId}`;
+        var viewRecommendationsDialogClass = `target: #${viewRecommendationsDialogName}`;
 
         var uploadOfferName = `modal-upload-offer-${this.props.tender.tenderId}`;
         var uploadOfferClass = `target: #${uploadOfferName}`;
+
+        var hasReceivedQuotes = issuance.packs.some(
+            (p: TenderPack) => {
+                return p.quotes.some(
+                    (q:TenderQuote) => q.status != "PENDING") });
+
 
         var offersTable = this.renderOffersTable(issuance.packs);
         return (
@@ -177,10 +186,26 @@ class TenderQuotesView extends React.Component<TenderQuotesViewProps & StateProp
                         <h3>Offers</h3>
                     </div>
                     <div className="uk-width-1-2">
-                        <button className="uk-button uk-button-default uk-button-small uk-align-right" type="button" data-uk-toggle={summaryReportsDialogClass}>
-                            <span className="uk-margin-small-right" data-uk-icon="icon: shrink" />
-                            Recommendations
-                        </button>
+                        <div>
+                            <div className="uk-inline">
+                                <button className="uk-button uk-button-default uk-button-small uk-align-right" type="button" disabled={!hasReceivedQuotes}>
+                                    <span className="uk-margin-small-right" data-uk-icon="icon: file-edit" />                        
+                                    Recommendations
+                                </button>
+                                <div data-uk-dropdown="pos:bottom-justify;mode:click">
+                                    <ul className="uk-nav uk-dropdown-nav">
+                                    <li><a href="#" data-uk-toggle={viewRecommendationsDialogClass}>
+                                        <span className="uk-margin-small-right" data-uk-icon="icon: table" />
+                                        View Existing
+                                    </a></li>
+                                    <li><a href="#" data-uk-toggle={createRecommendationDialogClass}>
+                                        <span className="uk-margin-small-right" data-uk-icon="icon: plus" />
+                                        Create New
+                                    </a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
                         <button className="uk-button uk-button-primary uk-button-small uk-align-right" type="button" data-uk-toggle={uploadOfferClass}>
                             <span className="uk-margin-small-right" data-uk-icon="icon: cloud-upload" />
                             Upload Offer
@@ -189,8 +214,11 @@ class TenderQuotesView extends React.Component<TenderQuotesViewProps & StateProp
                 </div>
                     {offersTable}
                 </div>
-                <div id={summaryReportsDialogName} data-uk-modal="center: true">
+                <div id={createRecommendationDialogName} data-uk-modal="center: true">
                     <GenerateSummaryReportDialog tender={this.props.tender} issuance={issuance} />
+                </div>
+                <div id={viewRecommendationsDialogName} data-uk-modal="center: true">
+                    <TenderQuoteSummariesDialog tender={this.props.tender} />
                 </div>
                 <div id={uploadOfferName} data-uk-modal="center: true">
                     <UploadOfferDialog tenderId={this.props.tender.tenderId} assignedSuppliers={this.props.tender.assignedSuppliers} utilityType={this.props.tender.utility} />
