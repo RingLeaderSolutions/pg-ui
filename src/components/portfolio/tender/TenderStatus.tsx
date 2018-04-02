@@ -9,7 +9,6 @@ import Spinner from '../../common/Spinner';
 import { format } from 'currency-formatter';
 
 import { Tender, TenderSupplier } from "../../../model/Tender";
-import TenderSupplierSelectDialog from "./TenderSupplierSelectDialog";
 
 interface TenderStatusProps {
     tender: Tender;

@@ -12,6 +12,7 @@ import TenderStatus from "./TenderStatus";
 interface TenderSupplierSelectDialogProps {
     tenderId: string;
     assignedSuppliers: TenderSupplier[];
+    utility: UtilityType;
 }
 
 interface StateProps {
@@ -45,6 +46,7 @@ class TenderSupplierSelectDialog extends React.Component<TenderSupplierSelectDia
     saveSuppliers(){
         this.props.updateTenderSuppliers(this.props.tenderId, this.state.selected);
     }
+
     toggleSupplierAssignment(ev: any, supplierId: string){
         if(this.state.selected.find(selectedId => selectedId == supplierId)){
             this.setState( {
@@ -58,6 +60,15 @@ class TenderSupplierSelectDialog extends React.Component<TenderSupplierSelectDia
         }
     }
 
+    getValidSuppliers() : TenderSupplier[]{
+        if(this.props.utility == UtilityType.Gas){
+            return this.props.suppliers.filter(s => s.gasSupplier);
+        }
+        else {
+            return this.props.suppliers.filter(s => s.electricitySupplier);
+        }
+    }
+
     renderModalContent(){
         if(this.props.working){
             return (<Spinner hasMargin={true} />);
@@ -65,7 +76,7 @@ class TenderSupplierSelectDialog extends React.Component<TenderSupplierSelectDia
         
         return (
             <div className="uk-panel-scrollable uk-margin uk-height-large">
-                    {this.props.suppliers.map(s => {
+                    {this.getValidSuppliers().map(s => {
                         var isAssigned = this.props.assignedSuppliers.find(as => as.supplierId == s.supplierId) != null;
                         return (
                             <div key={s.supplierId} className="supplier">

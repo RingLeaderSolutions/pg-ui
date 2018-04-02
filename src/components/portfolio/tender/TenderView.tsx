@@ -117,7 +117,7 @@ class TenderView extends React.Component<TenderViewProps & StateProps & Dispatch
                 </div>
 
                 <div id={supplierModalId} data-uk-modal="center: true">
-                    <TenderSupplierSelectDialog assignedSuppliers={this.props.tender.assignedSuppliers} tenderId={this.props.tender.tenderId}/>
+                    <TenderSupplierSelectDialog assignedSuppliers={this.props.tender.assignedSuppliers} tenderId={this.props.tender.tenderId} utility={this.props.utility}/>
                 </div>
             </div>)
 
