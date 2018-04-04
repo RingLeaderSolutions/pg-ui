@@ -94,7 +94,7 @@ class UpdateTenderDialog extends React.Component<UpdateTenderDialogProps & State
             deadlineNotes: this.deadlineNotesElement.value,
             commission: Number(this.commissionElement.value),
             halfHourly: halfHourly,
-            allInclusive: this.ebInclusiveElement.checked
+            allInclusive: this.ebInclusiveElement ? this.ebInclusiveElement.checked : false
         }
         this.props.updateTender(this.props.tender.tenderId, tender);
     }
@@ -112,7 +112,7 @@ class UpdateTenderDialog extends React.Component<UpdateTenderDialogProps & State
 
             product: this.product.value,
             startDate: this.state.startDate.format("YYYY-MM-DDTHH:mm:ss"),
-            tariffId: this.tariff.value
+            tariffId: this.tariff ? this.tariff.value : null
         };
 
         this.props.updateTenderRequirements(requirements);
