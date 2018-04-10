@@ -12,7 +12,7 @@ import TenderBackingSheetsDialog from './TenderBackingSheetsDialog';
 import TenderQuoteSummariesDialog from './TenderQuoteSummariesDialog';
 import QuoteCollateralDialog from './QuoteCollateralDialog';
 
-import { fetchQuoteBackingSheets, exportContractRates } from '../../../actions/tenderActions';
+import { fetchQuoteBackingSheets, exportContractRates, deleteQuote } from '../../../actions/tenderActions';
 import { Tender, BackingSheet, TenderSupplier, TenderQuote, TenderIssuance, TenderPack } from "../../../model/Tender";
 import { format } from 'currency-formatter';
 import GenerateSummaryReportDialog from "./GenerateSummaryReportDialog";
@@ -31,7 +31,8 @@ interface StateProps {
   
 interface DispatchProps {
     fetchQuoteBackingSheets: (tenderId: string, quoteId: string) => void;
-    exportContractRates: (tenderId: string, quoteId: string) => void
+    exportContractRates: (tenderId: string, quoteId: string) => void;
+    deleteQuote: (tenderId: string, quoteId: string) => void;
 }
 
 class TenderQuotesView extends React.Component<TenderQuotesViewProps & StateProps & DispatchProps, {}> {
@@ -42,6 +43,10 @@ class TenderQuotesView extends React.Component<TenderQuotesViewProps & StateProp
 
     exportQuote(quoteId: string){
         this.props.exportContractRates(this.props.tender.tenderId, quoteId);
+    }
+
+    deleteQuote(quoteId: string){
+        this.props.deleteQuote(this.props.tender.tenderId, quoteId);
     }
   
     renderOffersTable(packs: TenderPack[]){
@@ -97,6 +102,11 @@ class TenderQuotesView extends React.Component<TenderQuotesViewProps & StateProp
                                             <li><a href="#" data-uk-toggle={viewCollateralDialogClass}>
                                                 <span className="uk-margin-small-right" data-uk-icon="icon: folder" />                                        
                                                 View Collateral
+                                            </a></li>
+                                            <li className="uk-nav-divider"></li>
+                                            <li><a href="#" onClick={() => this.deleteQuote(quote.quoteId)}>
+                                                <span className="uk-margin-small-right" data-uk-icon="icon: trash" />                                        
+                                                Delete
                                             </a></li>
                                             </ul>
                                         </div>
@@ -324,7 +334,8 @@ class TenderQuotesView extends React.Component<TenderQuotesViewProps & StateProp
 const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, TenderQuotesViewProps> = (dispatch) => {
     return {
         fetchQuoteBackingSheets: (tenderId: string, quoteId: string) => dispatch(fetchQuoteBackingSheets(tenderId, quoteId)),
-        exportContractRates: (tenderId: string, quoteId: string) => dispatch(exportContractRates(tenderId, quoteId))
+        exportContractRates: (tenderId: string, quoteId: string) => dispatch(exportContractRates(tenderId, quoteId)),
+        deleteQuote: (tenderId: string, quoteId: string) => dispatch(deleteQuote(tenderId, quoteId))
     };
 };
   

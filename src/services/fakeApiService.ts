@@ -929,6 +929,10 @@ export class FakeApiService implements IApiService {
         return OK();
     }
 
+    deleteQuote(tenderId: string, quoteId: string){
+        return OK();
+    }
+
     getTariffs(){
         var tariffs: Tariff[] = [
             { id: "1",  name: "day/night"},

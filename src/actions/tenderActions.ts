@@ -401,3 +401,21 @@ export function updateTenderRequirements(requirements: TenderRequirements){
             });
     }
 };
+
+export function deleteQuote(tenderId: string, quoteId: string){
+    return (dispatch: Dispatch<any>) => {
+        let createPromise = ApiService.deleteQuote(tenderId, quoteId);
+        dispatch({ type: types.DELETE_QUOTE_WORKING });
+
+        makeApiRequest(dispatch,
+            createPromise,
+            200, 
+            data => {
+                return { type: types.DELETE_QUOTE_SUCCESSFUL, data: null};
+                
+            }, 
+            error => {
+                return { type: types.DELETE_QUOTE_FAILED, errorMessage: error };
+            });
+    };
+}

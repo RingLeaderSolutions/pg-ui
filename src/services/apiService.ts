@@ -67,6 +67,7 @@ export interface IApiService {
   fetchTenderIssuanceEmail(tenderId: string): Promise<AxiosResponse>;
   exportContractRates(tenderId: string, quoteId: string): Promise<AxiosResponse>;
   updateTenderRequirements(requirements: TenderRequirements): Promise<AxiosResponse>;
+  deleteQuote(tenderId: string, quoteId: string): Promise<AxiosResponse>;
 
   getActiveUsers(): Promise<AxiosResponse>;
   assignPortfolioUsers(portfolioId: string, users: User[]): Promise<AxiosResponse>;
@@ -463,6 +464,10 @@ export class ApiService implements IApiService {
 
     updateTenderRequirements(requirements: TenderRequirements){
         return axios.post(`${this.baseApiUri}/portman-web/tender/requirements`, requirements, this.getRequestConfig());        
+    }
+
+    deleteQuote(tenderId: string, quoteId: string){
+        return axios.delete(`${this.baseApiUri}/portman-web/tender/${tenderId}/quote/${quoteId}`, this.getRequestConfig());                
     }
 
     getTariffs(){

@@ -20,4 +20,5 @@ export interface TenderState {
     issuance_email: RequestState;
     tariffs: RequestState;
     update_requirements: RequestState;
+    delete_quote: RequestState;
 }

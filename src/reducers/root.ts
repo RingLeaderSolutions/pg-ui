@@ -46,6 +46,7 @@ import addExistingContractReducer from './tender/addExistingContractReducer';
 import tendersReducer from './tender/tendersReducer';
 import tenderSuppliersReducer from './tender/tenderSuppliersReducer';
 import deleteTenderReducer from './tender/deleteTenderReducer';
+import deleteQuoteReducer from './tender/deleteQuoteReducer';
 import createGasTenderReducer from './tender/createGasTenderReducer';
 import createHHElectricityTenderReducer from './tender/createHHElectricityTenderReducer';
 import createNHHElectricityTenderReducer from './tender/createNHHElectricityTenderReducer';
@@ -77,7 +78,8 @@ const tenderReducer: Reducer<TenderState> = combineReducers<TenderState>({
     backing_sheets: fetchBackingSheetsReducer,
     issuance_email: fetchTenderIssuanceEmailReducer,
     tariffs: fetchTariffsReducer,
-    update_requirements: updateTenderRequirementsReducer
+    update_requirements: updateTenderRequirementsReducer,
+    delete_quote: deleteQuoteReducer
 });
 
 // Combine portfolio reducers to form the PortfolioState
