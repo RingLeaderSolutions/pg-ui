@@ -90,21 +90,21 @@ import portfolioDetailsReducer from './portfolio/portfolioDetailsReducer';
 import selectedPortfolioReducer from './portfolio/selectedPortfolioReducer';
 import portfolioHistoryReducer from './portfolio/portfolioHistoryReducer';
 
-import mpanToplineReducer from './portfolio/mpanToplineReducer';
-import mpanHistoricalReducer from './portfolio/mpanHistoricalReducer';
 import updateRequirementsReducer from './portfolio/updateRequirementsReducer';
 import createContactReducer from './portfolio/createContactReducer';
+import portfolioUploadsReducer from './portfolio/portfolioUploadsReducer';
+import selectedUploadReportReducer from './portfolio/selectedUploadReportReducer';
 
 const portfolioReducer: Reducer<PortfolioState> = combineReducers<PortfolioState>({
     account: portfolioAccountReducer,
     details: portfolioDetailsReducer,
     selected: selectedPortfolioReducer,
     history: portfolioHistoryReducer,
-    topline: mpanToplineReducer,
-    historical: mpanHistoricalReducer,
     tender: tenderReducer,
     update_requirements: updateRequirementsReducer,
-    create_contact: createContactReducer
+    create_contact: createContactReducer,
+    uploads: portfolioUploadsReducer,
+    selected_upload_report: selectedUploadReportReducer
 });
 
 import notificationMessageReducer from './notifications/notificationMessageReducer';
@@ -134,6 +134,15 @@ var completeMeterReducer = reduceReducers((state: MeterState = {
 
 import fetchBackendVersionReducer from './fetchBackendVersionReducer';
 
+import { HierarchyState } from './hierarchy/HierarchyState'
+import retrieveAccountsReducer from './hierarchy/retrieveAccountsReducer';
+import retrieveAccountDetailReducer from './hierarchy/retrieveAccountDetailReducer';
+
+const hierarchyState: Reducer<HierarchyState> = combineReducers<HierarchyState>({
+    accounts: retrieveAccountsReducer,
+    selected: retrieveAccountDetailReducer
+});
+
 // Combine all reducers to form the master ApplicationState
 const rootReducer: Reducer<ApplicationState> = combineReducers<ApplicationState>({
     portfolio: portfolioReducer,
@@ -142,7 +151,8 @@ const rootReducer: Reducer<ApplicationState> = combineReducers<ApplicationState>
     notifications: notificationMessageReducer,    
     auth: authReducer,
     meters: completeMeterReducer,
-    backend_version: fetchBackendVersionReducer
+    backend_version: fetchBackendVersionReducer,
+    hierarchy: hierarchyState
 });
 
 export default rootReducer;

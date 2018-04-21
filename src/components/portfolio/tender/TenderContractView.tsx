@@ -64,7 +64,7 @@ class TenderContractView extends React.Component<TenderContractViewProps & Dispa
         var warningMessage = null;
         if(!hasDocuments){
             warningMessage = (
-                <div className="uk-alert-danger" data-uk-alert>
+                <div className="uk-alert-warning" data-uk-alert>
                     <p>Comparison is not yet possible - please upload contract rate(s).</p>
                 </div>);
         }

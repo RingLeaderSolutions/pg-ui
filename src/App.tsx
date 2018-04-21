@@ -63,10 +63,8 @@ class App extends React.Component<{}, {}> {
 
                         <AuthenticatedRoute path="/portfolios" component={Home} />
                         <AuthenticatedRoute path="/portfolio" component={Home} />
-                        <AuthenticatedRoute path="/topline" component={Home} />
-                        <AuthenticatedRoute path="/historical" component={Home} />
-                        <AuthenticatedRoute path="/calendar" component={Home} />
-                        <AuthenticatedRoute path="/uploads" component={Home} />
+                        <AuthenticatedRoute path="/accounts" component={Home} />
+                        <AuthenticatedRoute path="/account" component={Home} />
                     </Switch>
                 </Router>
             </Provider>

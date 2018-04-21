@@ -54,8 +54,6 @@ class ElectricityMeterTable extends React.Component<ElectricityMeterTableProps &
                         <th>Historical</th>
                         <th>Type</th>
                         <th>Topline</th>
-                        <th>Retrieval</th>
-                        <th>GSP</th>
                         <th>Measurement</th>
                         <th>S/N</th>
                         <th>DA</th>
@@ -68,7 +66,6 @@ class ElectricityMeterTable extends React.Component<ElectricityMeterTableProps &
                         <th>EAC</th>
                         <th>Capacity</th>
                         <th>Energised</th>
-                        <th>New Conn.</th>
                     </tr>
                 </thead>
                 {this.renderSitesAndMeters()}
@@ -121,8 +118,6 @@ class ElectricityMeterTable extends React.Component<ElectricityMeterTableProps &
                     )}</td>
                     <td>{supplyData.meterType}</td>
                     <td className="uk-text-nowrap" data-uk-tooltip={toplineTooltip} >{supplyData.profileClass} {supplyData.meterTimeSwitchCode} {supplyData.llf}</td>
-                    <td>{supplyData.retrievalMethod}</td>
-                    <td>{supplyData.gspGroup}</td>
                     <td>{supplyData.measurementClass}</td>
                     <td>{supplyData.serialNumber}</td>
                     <td>{supplyData.daAgent}</td>
@@ -135,7 +130,6 @@ class ElectricityMeterTable extends React.Component<ElectricityMeterTableProps &
                     <td>{supplyData.eac}</td>
                     <td>{supplyData.capacity}</td>
                     <td>{supplyData.energized ? "Yes" : "No"}</td>
-                    <td>{supplyData.newConnection ? "Yes" : "No"}</td>
                     <td>
                         <button className='uk-button uk-button-default uk-button-small' data-uk-toggle='target: #meter-modal' onClick={()=> this.editMeter(meter)}><span data-uk-icon='icon: settings' data-uk-tooltip="title: Edit" /></button>
                     </td>

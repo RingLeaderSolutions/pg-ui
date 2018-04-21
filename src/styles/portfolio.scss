@@ -40,6 +40,15 @@
     }
 }
 
+.upload-report-modal {
+    height: 800px;
+    width: 100% !important;
+
+    .uk-modal-body {
+        height: 80%;
+    }
+}
+
 .restrict-height-hack {
     overflow: auto;
     height: 97%;

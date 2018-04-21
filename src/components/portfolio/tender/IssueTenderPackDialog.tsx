@@ -95,7 +95,7 @@ class IssueTenderPackDialog extends React.Component<IssueTenderPackDialogProps &
             <div className="uk-modal-dialog">
                 <button className="uk-modal-close-default" type="button" data-uk-close></button>
                 <div className="uk-modal-header">
-                    <h2 className="uk-modal-title">Issue Tender Packs</h2>
+                    <h2 className="uk-modal-title">Issue Tender Requirements</h2>
                 </div>
                 <div className="uk-modal-body">
                     <div className="uk-margin">

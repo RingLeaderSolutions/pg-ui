@@ -46,6 +46,11 @@ export interface MprnSupplyData {
     siteCode: string;
     size: number;
     utility: string;
+    vatPercentage: number;
+    cclEligible: boolean;
+    emergencyContactAddress: string;
+    emergencyContactName: string;
+    emergencyContactTelephone: string;
 }
 
 export interface MpanSupplyData {
@@ -76,6 +81,8 @@ export interface MpanSupplyData {
     periodConsumption: string;
     siteCode: string;
     totalConsumption: number;
+    vatPercentage: number;
+    cclEligible: boolean;    
 }
 
 export enum MeterType{

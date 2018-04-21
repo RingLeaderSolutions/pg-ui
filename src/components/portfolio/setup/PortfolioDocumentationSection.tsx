@@ -7,6 +7,7 @@ import { PortfolioDetails } from '../../../model/Models';
 import Spinner from '../../common/Spinner';
 import UploadLOADialog from "./UploadLOADialog";
 import UploadSiteListDialog from "./UploadSiteListDialog";
+import * as moment from 'moment';
 
 interface PortfolioDocumentationSectionProps {
     details: PortfolioDetails;
@@ -32,7 +33,8 @@ class PortfolioDocumentationSection extends React.Component<PortfolioDocumentati
         
         let loaContent = null;
         var { documentation } = this.props.details;
-        var loaProvided = documentation != null && documentation.length != 0;
+        var loa = documentation.find(d => d.documentType == "loa");
+        var loaProvided = loa != null;
         if(loaProvided){
             loaContent = (
                 <div data-uk-grid>
@@ -40,7 +42,13 @@ class PortfolioDocumentationSection extends React.Component<PortfolioDocumentati
                         <span className="icon-standard-cursor" data-uk-icon="icon: check; ratio: 1.5"></span>
                     </div>
                     <div className="uk-width-expand@m">
-                        <h3>Letter of Authority provided</h3>
+                        <h3>Letter of Authority provided, expires {moment.utc(loa.expiry).format('ll')}</h3>
+                    </div>
+                    <div className="uk-width-1-3">
+                        <a className="uk-button uk-button-default uk-button-small uk-align-right" href={loa.blobFileName}>
+                            <span className="uk-margin-small-right" data-uk-icon="icon: cloud-download" />
+                            Download
+                        </a> 
                     </div>
                 </div>);
         }

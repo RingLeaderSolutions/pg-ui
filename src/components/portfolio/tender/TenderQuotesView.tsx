@@ -48,7 +48,26 @@ class TenderQuotesView extends React.Component<TenderQuotesViewProps & StateProp
     deleteQuote(quoteId: string){
         this.props.deleteQuote(this.props.tender.tenderId, quoteId);
     }
-  
+    
+    mapStatusToLabel(status: string){
+        var labelType = "success"
+        switch(status)
+        {
+            case "PENDING":
+                labelType = "warning";
+                break;
+            case "SUBMITTED":
+                labelType = "success";
+                break;
+            case "meterErrors":
+                labelType = "danger"
+                break;
+        }
+        
+        var labelClass = `uk-label uk-label-${labelType}`;
+        return (<span className={labelClass}>{status}</span>);
+    }
+
     renderOffersTable(packs: TenderPack[]){
         var quotes = packs.map((p) => {
             return p.quotes
@@ -73,7 +92,7 @@ class TenderQuotesView extends React.Component<TenderQuotesViewProps & StateProp
                 return (
                     <tr key={quote.quoteId}>
                         <td><img src={supplier.logoUri} style={{ width: "70px"}}/></td>
-                        <td>{isPending ? (<span className="uk-label uk-label-warning"><i>Pending</i></span>) : (<span className="uk-label uk-label-success">{quote.quoteId.substring(0, 8)}</span>)}</td>  
+                        <td>{this.mapStatusToLabel(quote.status)}</td>  
                         <td>{!isPending ? quote.version: (<p>N/A</p>)}</td>
                         <td>{!isPending ? `${quote.contractLength} months` : (<p>-</p>)}</td>
                         <td>{!isPending ? (quote.sheetCount) : (<p>-</p>)}</td>
@@ -128,10 +147,10 @@ class TenderQuotesView extends React.Component<TenderQuotesViewProps & StateProp
                     <thead>
                         <tr>
                             <th>Supplier</th>
-                            <th>Id</th>
+                            <th>Status</th>
                             <th>Version</th>
                             <th>Contract Length</th>
-                            <th>Site count</th>
+                            <th>Meter count</th>
                             <th>Contract Value</th>
                             <th>Billing Accuracy</th>
                             <th>Service Desk</th>
@@ -299,7 +318,7 @@ class TenderQuotesView extends React.Component<TenderQuotesViewProps & StateProp
             <div className="uk-card uk-card-default uk-card-body">
                 <div className="uk-grid" data-uk-grid>
                     <div className="uk-width-expand@s">
-                        <h3>Issued Packs</h3>
+                        <h3>Issued Requirements</h3>
                     </div>
                     <div className="uk-width-1-2">
                     

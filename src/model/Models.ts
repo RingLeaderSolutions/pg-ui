@@ -8,7 +8,12 @@ export { PortfolioDetails,
          PortfolioDocument } from './PortfolioDetails'
 
 export { Account,
-         AccountCompanyStatusFlags } from './Account';
+         AccountCompanyStatusFlags,
+         AccountDetail,
+         SiteDetail,
+         HierarchySite,
+         HierarchyMpan,
+         HierarchyMprn } from './HierarchyObjects';
          
 export { User } from './User';
 
@@ -18,16 +23,10 @@ export { DashboardPortfolioSummary,
          DashboardPortfolioStatus, 
          PortfolioStatusEntry } from './Dashboard';
 
-export { Mpan,
-         MpanDocument,
-         MpanTopline,
-         MpanHistorical } from './Mpan';
-
-export { Site } from './Site';
-
 export { Client } from './Client';
 
 export { CompanyInfo } from './CompanyInfo';
+export { UploadReport, SupplyDataUploadReport, UploadFileReport, UploadResultItem } from './Uploads';
 
 export enum UtilityType {
     Gas,

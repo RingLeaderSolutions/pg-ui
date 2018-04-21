@@ -5,6 +5,7 @@ import { NotificationState } from './reducers/notifications/NotificationState';
 import { AuthState } from './reducers/auth/AuthState';
 import { MeterState } from './reducers/meters/MeterState';
 import { RequestState } from './reducers/RequestState';
+import { HierarchyState } from './reducers/hierarchy/HierarchyState';
 
 export interface ApplicationState {    
     portfolio: PortfolioState;
@@ -14,4 +15,5 @@ export interface ApplicationState {
     auth: AuthState;
     meters: MeterState;
     backend_version: RequestState;
+    hierarchy: HierarchyState;
 }

@@ -21,18 +21,20 @@ export interface IApiService {
   updatePortfolioContact(contact: PortfolioContact): Promise<AxiosResponse>;
   updatePortfolioRequirements(requirements: PortfolioRequirements): Promise<AxiosResponse>;
   
+  retrieveAccounts(): Promise<AxiosResponse>;  
   retrieveAccount(accountId: string): Promise<AxiosResponse>;
+  retrieveAccountDetail(accountId: string): Promise<AxiosResponse>;
   createAccount(company: CompanyInfo) : Promise<AxiosResponse>;
   updateAccountFlags(accountId: string, accountFlags: AccountCompanyStatusFlags): Promise<AxiosResponse>;
   
   getPortfolioHistory(portfolioId: string): Promise<AxiosResponse>;
 
-  getMpanTopline(documentId: string): Promise<AxiosResponse>;
-  getMpanHistorical(documentId: string): Promise<AxiosResponse>;
-
   getAllMeters(portfolioId: string): Promise<AxiosResponse>;
   updateMeter(portfolioId: string, meter: Mpan): Promise<AxiosResponse>;
   excludeMeters(portfolioId: string, meters: string[]): Promise<AxiosResponse>;
+
+  fetchPortfolioUploads(portfolioId: string): Promise<AxiosResponse>;
+  fetchUploadReport(reportId: string): Promise<AxiosResponse>;
 
   uploadLoa(portfolioId: string, file: Blob): Promise<AxiosResponse>;
   uploadSupplyMeterData(portfolioId: string, file: Blob, utility: UtilityType): Promise<AxiosResponse>;
@@ -183,8 +185,16 @@ export class ApiService implements IApiService {
         return axios.get(`${this.baseApiUri}/portman-web/company/search/fields/${companyNumber}`, this.getRequestConfig());                        
     }
 
+    retrieveAccounts(){
+        return axios.get(`${this.hierarchyApiUri}/api/Account/`);                        
+    }
+
     retrieveAccount(accountId: string){
         return axios.get(`${this.hierarchyApiUri}/api/Account/${accountId}`, this.getRequestConfig());                        
+    }
+
+    retrieveAccountDetail(accountId: string){
+        return axios.get(`${this.hierarchyApiUri}/api/Account/detail/${accountId}`, this.getRequestConfig());                        
     }
 
     createAccount(company: CompanyInfo) {
@@ -227,10 +237,6 @@ export class ApiService implements IApiService {
         };
         
         return axios.post(`${this.baseApiUri}/portman-web/portfolio`, portfolio, this.getRequestConfig());                        
-    }
-
-    getMpanTopline(documentId: string){
-        return axios.get(`${this.baseApiUri}/portman-web/topline/${documentId}`, this.getRequestConfig());                        
     }
 
     uploadLoa(portfolioId: string, file: Blob){
@@ -284,11 +290,6 @@ export class ApiService implements IApiService {
         formData.append('files', file);
 
         return axios.post(`${this.uploadApiUri}/api/upload/offer/${tenderId}`, formData, this.getUploadFileConfig());
-    }
-
-    getMpanHistorical(documentId: string){
-        return new FakeApiService().getMpanHistorical(documentId);
-        //return axios.get(`${this.baseApiUri}/historical/${documentId}`, this.getRequestConfig());                        
     }
 
     getAllMeters(portfolioId: string){
@@ -472,6 +473,14 @@ export class ApiService implements IApiService {
 
     getTariffs(){
         return axios.get(`${this.baseApiUri}/portman-web/tariff`, this.getRequestConfig());        
+    }
+
+    fetchPortfolioUploads(portfolioId: string){
+        return axios.get(`${this.baseApiUri}/portman-web/upload/query/portfolio/${portfolioId}`, this.getRequestConfig());        
+    }
+
+    fetchUploadReport(reportId: string){
+        return axios.get(`${this.baseApiUri}/portman-web/upload/query/request/${reportId}`, this.getRequestConfig());        
     }
 
     getEndpointPrefix(utility: UtilityType) {

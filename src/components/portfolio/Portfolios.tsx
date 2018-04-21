@@ -2,13 +2,13 @@ import * as React from "react";
 import { Link } from "react-router-dom";
 import { RouteComponentProps } from 'react-router';
 import { MapDispatchToPropsFunction, connect, MapStateToProps } from 'react-redux';
-import { getAllPortfolios, deselectPortfolio } from '../actions/portfolioActions';
-import { ApplicationState } from '../applicationState';
-import Header from "./common/Header";
-import ErrorMessage from "./common/ErrorMessage";
-import { Portfolio } from '../model/Models';
-import NewPortfolioDialog from './portfolio/creation/NewPortfolioDialog';
-import Spinner from './common/Spinner';
+import { getAllPortfolios, deselectPortfolio } from '../../actions/portfolioActions';
+import { ApplicationState } from '../../applicationState';
+import Header from "../common/Header";
+import ErrorMessage from "../common/ErrorMessage";
+import { Portfolio } from '../../model/Models';
+import NewPortfolioDialog from './creation/NewPortfolioDialog';
+import Spinner from '../common/Spinner';
 
 interface PortfoliosProps extends RouteComponentProps<void> {
 }
@@ -75,7 +75,6 @@ class Portfolios extends React.Component<PortfoliosProps & StateProps & Dispatch
                         <td className="uk-table-link"><Link to={link} className="uk-link-reset">{supportOwner}</Link></td>
                         <td className="uk-table-link"><Link to={link} className="uk-link-reset">{portfolio.contractStart}</Link></td>
                         <td className="uk-table-link"><Link to={link} className="uk-link-reset">{portfolio.contractEnd}</Link></td>
-                        <td className="uk-table-link"><Link to={link} className="uk-link-reset">{portfolio.accounts}</Link></td>
                         <td className="uk-table-link"><Link to={link} className="uk-link-reset">{portfolio.sites}</Link></td>
                         <td className="uk-table-link"><Link to={link} className="uk-link-reset">{portfolio.mpans}</Link></td>
                     </tr>
@@ -123,7 +122,6 @@ class Portfolios extends React.Component<PortfoliosProps & StateProps & Dispatch
                                         <th>Tender Analyst</th>
                                         <th>Start</th>
                                         <th>End</th>
-                                        <th>Accounts</th>
                                         <th>Sites</th>
                                         <th>Meters</th>
                                     </tr>

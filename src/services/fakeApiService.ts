@@ -8,14 +8,14 @@ import {
     DashboardPortfolioStatus,
     DashboardPortfolioSummary,
     DashboardPortfolioTimeline,
-    MpanTopline,
     Portfolio,
     PortfolioContact,
     PortfolioHistoryEntry,
     PortfolioRequirements,
-    Site,
     User,
-    UtilityType
+    UtilityType,
+    AccountDetail,
+    SiteDetail
 } from '../model/Models';
 import { PortfolioDetails, PortfolioDocument } from '../model/PortfolioDetails';
 import { BackingSheet, Tender, TenderContract, TenderSupplier, TenderIssuanceEmail, Tariff, TenderRequirements } from '../model/Tender';
@@ -171,97 +171,6 @@ export class FakeApiService implements IApiService {
         ]
 
         return OK(history);
-    }
-
-    getPortfolioSiteMpans(portfolioId: string){
-        var sites: Site[] = 
-        [{
-            id: "1",
-            name: "Test site",
-            effectiveFrom: "15/01/2017",
-            effectiveTo: "16/01/2017",
-            mpans: [
-                {
-                    id: "1",
-                    mpanCore: "12345678901",
-                    currentTopline: null,
-                    currentHistorical: null,
-                    proposedTopline: {
-                        documentId: "1",
-                        status: "UPLOADED",
-                        validFrom: "15/06/2017"
-                    },
-                    proposedHistorical: {
-                        documentId: "1",
-                        status: "UPLOADED",
-                        validFrom: "15/06/2017"
-                    }
-                },
-                {
-                    id: "2",
-                    mpanCore: "23456789012",
-                    currentTopline: {
-                        documentId: "3",
-                        status: "CURRENT",
-                        validFrom: "17/06/2017"
-                    },
-                    currentHistorical: {
-                        documentId: "4",
-                        status: "CURRENT",
-                        validFrom: "17/06/2017"
-                    },
-                    proposedTopline: null,
-                    proposedHistorical: null,
-                }
-            ]
-        }];
-
-        var wrapper = {
-            sites
-        };
-        return OK(wrapper);
-    }
-
-    getMpanTopline(documentId: string){
-        var topline: MpanTopline = {
-            _id : "59aeffcdb1a0d819811eede1",
-            connection: "Network",
-            cot: false,
-            da: "UKDC",
-            dc: "UKDC",
-            duosFixed: true,
-            eac: "null",
-            energisation: "E",
-            gspGroup: "_A",
-            llf: "86",
-            measurementClass: "C",
-            meterType: "HH",
-            mo: "EELC",
-            mpanCore: "1640000432138",
-            mtc: "845",
-            newConnection: false,
-            profileClass: "0",
-            retrievalMethod: "R",
-            ssc: "null",
-            voltage: "High",
-            group: "PROPOSED",
-            created: "2017-09-13T11:45:33.446",
-            creator: {
-                id: "1",
-                firstName: "Daniel",
-                lastName: "May",
-                status: "active",
-                avatarUrl: "",
-                email: "daniel@danielmay.co.uk"                
-            }
-        };
-
-        return OK(topline);
-    }
-
-    getMpanHistorical(documentId: string){
-        let historical = require("json-loader!./fake/mpanHistorical.json");    
-        return OK(historical);
     }
 
     searchCompany(companyNumber: string){
@@ -466,7 +375,9 @@ export class FakeApiService implements IApiService {
                             siteCode: null,
                             totalConsumption: 0,
                             utility: "ELECTRICITY",
-                            voltage: null
+                            voltage: null,
+                            cclEligible: true,
+                            vatPercentage: 0.2,
                         },
                         halfHourly: {
                             forecast: null,
@@ -492,7 +403,12 @@ export class FakeApiService implements IApiService {
                             serialNumber: null,
                             siteCode: null,
                             size: 0,
-                            utility: "GAS"
+                            utility: "GAS",
+                            cclEligible: true,
+                            vatPercentage: 0.2,
+                            emergencyContactName: "Joe Bloggs",
+                            emergencyContactAddress: "1 Hampton Court, Hampton, London, W1A X21",
+                            emergencyContactTelephone: "01292 191191"
                         },
                         halfHourly: null
                     }
@@ -939,6 +855,124 @@ export class FakeApiService implements IApiService {
             { id: "2",  name: "summer/winter"}
         ];
         return OK(tariffs);
+    }
+
+    retrieveAccounts(){
+     var accounts: Account[] = [
+        {
+            id: "1",
+            accountNumber: "1",
+            address: "123 Fake St",
+            companyName: "ABC XYZ Ltd",
+            companyRegistrationNumber: "124567890",
+            companyStatus: "Active",
+            contact: "AB CD",
+            countryOfOrigin: "United Kingdom",
+            creditRating: "A+++",
+            hasCCLException: true,
+            hasFiTException: false,
+            incorporationDate: "12/04/2012",
+            isRegisteredCharity: false,
+            isVATEligible: true,
+            postcode: "AB12 CD2"
+        }
+     ];
+     return OK(accounts);
+    }
+
+    retrieveAccountDetail(accountId: string) {
+        var sites: SiteDetail[] = 
+        [
+            {
+                tenancyStart: "2018-04-21T07:25:26.327Z",
+                tenancyEnd: "2018-04-21T07:25:26.327Z",
+                mpans: [
+                    {
+                    id: "string",
+                    mpanCore: "string",
+                    meterType: "string",
+                    meterTimeSwitchCode: "string",
+                    llf: "string",
+                    profileClass: "string",
+                    retrievalMethod: "string",
+                    gspGroup: "string",
+                    measurementClass: "string",
+                    isEnergized: true,
+                    moAgent: "string",
+                    daAgent: "string",
+                    dcAgent: "string",
+                    voltage: "string",
+                    serialNumber: "string",
+                    postcode: "string",
+                    isNewConnection: true,
+                    connection: "string",
+                    eac: 0,
+                    rec: 0,
+                    capacity: 0,
+                    vatPercentage: 0,
+                    tariffId: "string",
+                    cclEligible: true
+                    }
+                ],
+                mprns: [
+                    {
+                    id: "string",
+                    mprnCore: "string",
+                    serialNumber: "string",
+                    isImperial: true,
+                    make: "string",
+                    model: "string",
+                    aq: 0,
+                    changeOfUse: true,
+                    size: 0,
+                    vatPercentage: 0,
+                    cclEligible: true,
+                    emergencyContactAddress: "string",
+                    emergencyContactName: "string",
+                    emergencyContactTelephone: "string",
+                    tariffId: "string"
+                    }
+                ],
+                id: "string",
+                siteCode: "string",
+                name: "string",
+                contact: "string",
+                address1: "string",
+                address2: "string",
+                town: "string",
+                coT: "string",
+                billingAddress: "string",
+                postcode: "string"
+            }
+        ];
+
+        var accountDetail: AccountDetail = {
+            id: "1",
+            accountNumber: "1",
+            address: "123 Fake St",
+            companyName: "ABC XYZ Ltd",
+            companyRegistrationNumber: "124567890",
+            companyStatus: "Active",
+            contact: "AB CD",
+            countryOfOrigin: "United Kingdom",
+            creditRating: "A+++",
+            hasCCLException: true,
+            hasFiTException: false,
+            incorporationDate: "12/04/2012",
+            isRegisteredCharity: false,
+            isVATEligible: true,
+            postcode: "AB12 CD2",
+            sites
+        };
+        return OK(accountDetail);
+    }
+
+    fetchPortfolioUploads(portfolioId: string){
+        return OK();
+    }
+
+    fetchUploadReport(reportId: string){
+        return OK();
     }
 }
 

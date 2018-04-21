@@ -1,22 +1,21 @@
 import ApiService from "../services/ApiService";
 import { Portfolio,
          PortfolioHistoryEntry,
-         Site,  
-         MpanTopline,
-         MpanHistorical,
          CompanyInfo,
          PortfolioDetails,
          PortfolioContact, 
          UtilityType,
          BackendVersion,
-         UploadResponse} from "../Model/Models";
+         UploadResponse,
+         UploadReport,
+         SupplyDataUploadReport} from "../Model/Models";
 
 import * as types from "./actionTypes";
 import { makeApiRequest } from "./Common";
 
 import { Dispatch } from 'redux';
 import { PortfolioRequirements } from "../model/PortfolioDetails";
-import { AccountCompanyStatusFlags } from "../model/Account";
+import { AccountCompanyStatusFlags } from "../model/HierarchyObjects";
 import { Tariff } from "../model/Tender";
 
 export function getAllPortfolios(){
@@ -92,43 +91,6 @@ export function getPortfolioHistory(portfolioId: string){
             }, 
             error => {
                 return { type: types.FETCH_PORTFOLIO_HISTORY_FAILED, errorMessage: error };
-            });
-    };
-}
-
-// TODO: Move topline & historical calls to own Actions
-export function getMpanTopline(documentId: string){
-    return (dispatch: Dispatch<any>) => {
-        let fetchPromise = ApiService.getMpanTopline(documentId);
-        dispatch( { type: types.FETCH_MPAN_TOPLINE_WORKING });
-
-        makeApiRequest(dispatch,
-            fetchPromise,
-            200, 
-            data => {
-                return { type: types.FETCH_MPAN_TOPLINE_SUCCESSFUL, data: data as MpanTopline};
-                
-            }, 
-            error => {
-                return { type: types.FETCH_MPAN_TOPLINE_FAILED, errorMessage: error };
-            });
-    };
-}
-
-export function getMpanHistorical(documentId: string){
-    return (dispatch: Dispatch<any>) => {
-        let fetchPromise = ApiService.getMpanHistorical(documentId);
-        dispatch( { type: types.FETCH_MPAN_HISTORICAL_WORKING });
-
-        makeApiRequest(dispatch,
-            fetchPromise,
-            200, 
-            data => {
-                return { type: types.FETCH_MPAN_HISTORICAL_SUCCESSFUL, data: data as MpanHistorical};
-                
-            }, 
-            error => {
-                return { type: types.FETCH_MPAN_HISTORICAL_FAILED, errorMessage: error };
             });
     };
 }
@@ -389,6 +351,43 @@ export function fetchTariffs(){
             }, 
             error => {
                 return { type: types.FETCH_TARIFFS_FAILED, errorMessage: error };
+            });
+    };
+}
+
+export function fetchPortfolioUploads(portfolioId: string){
+    return (dispatch: Dispatch<any>) => {
+        let fetchTariffsPromise = ApiService.fetchPortfolioUploads(portfolioId);
+        dispatch({ type: types.FETCH_PORTFOLIO_UPLOADS_WORKING });
+
+        makeApiRequest(dispatch,
+            fetchTariffsPromise,
+            200, 
+            data => {
+                return { type: types.FETCH_PORTFOLIO_UPLOADS_SUCCESSFUL, data: data as UploadReport[]};
+                
+            }, 
+            error => {
+                return { type: types.FETCH_PORTFOLIO_UPLOADS_FAILED, errorMessage: error };
+            });
+    };
+}
+
+
+export function fetchUploadReport(reportId: string){
+    return (dispatch: Dispatch<any>) => {
+        let fetchTariffsPromise = ApiService.fetchUploadReport(reportId);
+        dispatch({ type: types.FETCH_UPLOAD_REPORT_WORKING });
+
+        makeApiRequest(dispatch,
+            fetchTariffsPromise,
+            200, 
+            data => {
+                return { type: types.FETCH_UPLOAD_REPORT_SUCCESSFUL, data: data as SupplyDataUploadReport[]};
+                
+            }, 
+            error => {
+                return { type: types.FETCH_UPLOAD_REPORT_FAILED, errorMessage: error };
             });
     };
 }

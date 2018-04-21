@@ -54,7 +54,7 @@ class TenderPackDialog extends React.Component<TenderPackDialogProps & StateProp
 
     renderPackTable(){
         if(this.props.tender.unissuedPacks == null || this.props.tender.unissuedPacks.length == 0){
-            return (<p>There are no unissued packs for this tender.</p>);
+            return (<p>There are no unissued requirement packs for this tender.</p>);
         }
 
         var tableContent = this.renderPackTableContent();
@@ -100,7 +100,7 @@ class TenderPackDialog extends React.Component<TenderPackDialogProps & StateProp
             <div className="uk-modal-dialog">
                 <button className="uk-modal-close-default" type="button" data-uk-close></button>
                 <div className="uk-modal-header">
-                    <h2 className="uk-modal-title">Tender Packs</h2>
+                    <h2 className="uk-modal-title">Tender Requirements</h2>
                 </div>
                 <div className="uk-modal-body">
                     <div className="uk-margin">

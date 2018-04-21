@@ -1,92 +1,124 @@
 import * as React from "react";
+import ErrorMessage from "../../common/ErrorMessage";
+import { RouteComponentProps } from 'react-router';
+import { MapDispatchToPropsFunction, connect, MapStateToProps } from 'react-redux';
+import { ApplicationState } from '../../../applicationState';
+import { UploadReport, SupplyDataUploadReport, Portfolio } from '../../../model/Models';
+import Spinner from '../../common/Spinner';
+import * as moment from 'moment';
 
-const PortfolioUploads : React.SFC<{}> = () => {
-    return (
-        <div className="content-inner-portfolio">
-            
-            <div className="table-uploads">
-                <div className="search-uploads">
-                    <form className="uk-search uk-search-default">
-                        <span data-uk-search-icon="search"></span>
-                        <input className="uk-search-input" type="search" placeholder="Search..." />
-                    </form>
-                    <div className="actions-uploads">
-                        <button className="uk-button uk-button-primary" data-uk-toggle="target: #modal-sections">Bulk upload MPANs</button>
-                        <button className="uk-button uk-button-default">Bulk upload HH Data</button>
-                    </div>
-                </div>
-                <div>
-                    <table className="uk-table uk-table-divider">
-                        <thead>
-                            <tr>
-                                <th>Status</th>
-                                <th>Uploader</th>
-                                <th>Upload Date</th>
-                                <th>Progress</th>
-                                <th>Notes</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td><div className="circle circle-blue" /></td>
-                                <td>
-                                    <div className="user">
-                                        <img className="avatar" src={require('../../../images/user1.png')} />
-                                        <p>Tony Walsh</p>
-                                    </div>
-                                </td>
-                                <td>10 minutes ago</td>
-                                <td>1 of 2 MPANs updated</td>
-                                <td>HH data for St Albans MPANs</td>
-                                <td><button className="uk-button uk-button-disabled">Processing...</button></td>
-                            </tr>
-                            <tr>
-                                <td><div className="circle circle-green" /></td>
-                                <td>
-                                    <div className="user">
-                                        <img className="avatar" src={require('../../../images/user3.png')} />
-                                        <p>Deanna Troi</p>
-                                    </div>
-                                </td>
-                                <td>4 hours ago</td>
-                                <td>Completed</td>
-                                <td>Topline data insertion</td>
-                                <td><button className="uk-button uk-button-default">View</button></td>
-                            </tr>
-                            <tr>
-                                <td><div className="circle circle-red" /></td>
-                                <td>
-                                    <div className="user">
-                                        <img className="avatar" src={require('../../../images/user6.png')} />
-                                        <p>Aiden Day</p>
-                                    </div>
-                                </td>
-                                <td>A week ago</td>
-                                <td>2 Anomalies detected</td>
-                                <td>First attempt at topline insertion</td>
-                                <td><button className="uk-button uk-button-primary">Resolve</button></td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-            <div id="modal-sections" data-uk-modal="center: true">
-                <div className="uk-modal-dialog">
-                    <button className="uk-modal-close-default" type="button" data-uk-close></button>
-                    <div className="uk-modal-header">
-                        <h2 className="uk-modal-title">Bulk upload MPANs</h2>
-                    </div>
-                    <div className="uk-modal-body">
-                        <p>Drag files into the location below to upload.</p>
-                    </div>
-                    <div className="uk-modal-footer uk-text-right">
-                        <button className="uk-button uk-button-primary uk-modal-close" type="button"><span data-uk-icon="icon: cloud-upload" /> Upload</button>
-                        <button className="uk-button uk-button-secondary uk-modal-close uk-margin-left" type="button"><span data-uk-icon="icon: close" /> Cancel</button>
-                    </div>
-                </div>
-            </div>
-        </div>)
+import { fetchPortfolioUploads, fetchUploadReport } from '../../../actions/portfolioActions';
+import SupplyDataReportView from "./SupplyDataReportView";
+
+interface PortfolioUploadProps {
+    portfolio: Portfolio;
 }
 
-export default PortfolioUploads;
+interface StateProps {
+  reports: UploadReport[];
+  working: boolean;
+  error: boolean;
+  errorMessage: string;
+}
+
+interface DispatchProps {
+    fetchPortfolioUploads: (portfolioId: string) => void;
+    fetchUploadReport: (reportId: string) => void;
+}
+
+class PortfolioUploads extends React.Component<PortfolioUploadProps & StateProps & DispatchProps, {}> {
+    constructor() {
+        super();
+    }
+
+    componentDidMount(){
+        let portfolioId = this.props.portfolio.id;     
+        this.props.fetchPortfolioUploads(portfolioId);
+    }
+
+    fetchUploadReport(reportId: string){
+        this.props.fetchUploadReport(reportId);
+    }
+
+    renderUploadsTable(){
+        var uploadReportDialogName = `modal-view-upload-${this.props.portfolio.id}`;
+        var showUploadReportDialogClass = `target: #${uploadReportDialogName}`;
+
+        var rows = this.props.reports.map(r => {
+            var requestTime = moment.utc(r.requested).local().fromNow();   
+            return (
+                <tr key={r.id}>
+                    <td>{r.dataType}</td>
+                    <td>{r.notes}</td>
+                    <td>{requestTime}</td>
+                    <td>{r.requestor}</td>
+                    <td>
+                        <button className='uk-button uk-button-default uk-button-small' data-uk-toggle={showUploadReportDialogClass} onClick={() => this.fetchUploadReport(r.resultDocId)}><span data-uk-icon='icon: menu' data-uk-tooltip="title: Open" /></button>
+                    </td>
+                </tr>
+            )
+        });
+
+        return (
+            <div>
+                <table className="uk-table uk-table-divider">
+                    <thead>
+                        <tr>
+                            <th>Upload type</th>
+                            <th>Notes</th>
+                            <th>Upload Time</th>
+                            <th>Requester</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {rows}
+                    </tbody>
+                </table>
+                <div id={uploadReportDialogName} data-uk-modal="center: true">
+                    <SupplyDataReportView />
+                </div>
+            </div>
+        )
+    }
+    render() {
+        if(this.props.error){
+            return (<ErrorMessage content={this.props.errorMessage} />);
+        }
+        if(this.props.working || this.props.reports == null){
+            return (<Spinner />);
+        }
+        return (
+            <div className="content-inner-portfolio">
+                <div className="table-uploads">
+                    <div className="search-uploads">
+                        <form className="uk-search uk-search-default">
+                            <span data-uk-search-icon="search"></span>
+                            <input className="uk-search-input" type="search" placeholder="Search..." />
+                        </form>
+                    </div>
+                    <div>
+                        {this.renderUploadsTable()}
+                    </div>
+                </div>
+            </div>)
+    }
+}
+
+const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, PortfolioUploadProps> = (dispatch) => {
+    return {
+        fetchPortfolioUploads: (portfolioId: string) => dispatch(fetchPortfolioUploads(portfolioId)),
+        fetchUploadReport: (reportId: string) => dispatch(fetchUploadReport(reportId))
+    };
+};
+  
+const mapStateToProps: MapStateToProps<StateProps, PortfolioUploadProps> = (state: ApplicationState) => {
+    return {
+        reports: state.portfolio.uploads.value,
+        working: state.portfolio.uploads.working,
+        error: state.portfolio.uploads.error,
+        errorMessage: state.portfolio.uploads.errorMessage
+    };
+};
+  
+export default connect(mapStateToProps, mapDispatchToProps)(PortfolioUploads);

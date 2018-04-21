@@ -4,16 +4,17 @@ import { ApplicationState } from '../applicationState';
 import { fetchBackendVersion } from '../actions/portfolioActions';
 
 import Dashboard from "./dashboard/Dashboard";
-import Portfolios from "./Portfolios";
+import Portfolios from "./portfolio/Portfolios";
+import Accounts from "./accounts/Accounts";
 import PortfolioDetail from "./portfolio/PortfolioDetail";
-import MpanToplineDetail from "./portfolio/mpan/MpanToplineDetail";
-import MpanHistoricalDetail from "./portfolio/mpan/MpanHistoricalDetail";
+import AccountDetailView from "./accounts/AccountDetailView";
 
 import {
     BrowserRouter as Router,
     Route,
     Link
 } from 'react-router-dom';
+
 
 interface StateProps {
     backendVersion: string;
@@ -34,9 +35,9 @@ class Home extends React.Component<StateProps & DispatchProps, {}> {
                 <div className="app-container">
                     <div className="sidebar">
                         <div className="app-title">
-                            <img src={require('../images/tpi-flow-logo.png')} alt="TPI Flow" />
+                            <img src={require('../images/tpi-flow-logo.png')} alt="TPI Flow" /> 
                             <div className="environment">
-                                <span className="uk-label">{appConfig.environment_name} v0.1.14</span>
+                                <span className="uk-label">{appConfig.environment_name} v0.1.15</span>
                             </div>
                             <div className="environment">
                                 <span className="uk-label">Backend v{this.props.backendVersion}</span>
@@ -48,17 +49,15 @@ class Home extends React.Component<StateProps & DispatchProps, {}> {
                             <li className="uk-nav-divider"></li>                    
                             <li><Link to="/portfolios"><span className="uk-margin-small-right" data-uk-icon="icon: table"></span>Portfolios</Link></li>
                             <li className="uk-nav-divider"></li>
-                            <li><Link to="/calendar"><span className="uk-margin-small-right" data-uk-icon="icon: calendar"></span>Calendar</Link></li>
-                            <li className="uk-nav-divider"></li>                    
-                            <li><Link to="/uploads"><span className="uk-margin-small-right" data-uk-icon="icon: upload"></span>Uploads</Link></li>
+                            <li><Link to="/accounts"><span className="uk-margin-small-right" data-uk-icon="icon: social"></span>Accounts</Link></li>
                         </ul>
                     </div>
                     <div className="content-container">
                         <Route exact path="/" component={Dashboard} />
                         <Route path="/portfolios" component={Portfolios} />
+                        <Route path="/accounts" component={Accounts} />
+                        <Route path="/account" component={AccountDetailView} />
                         <Route path="/portfolio" component={PortfolioDetail} />
-                        <Route path="/topline" component={MpanToplineDetail} />
-                        <Route path="/historical" component={MpanHistoricalDetail} />
                     </div>
                 </div>
             );
