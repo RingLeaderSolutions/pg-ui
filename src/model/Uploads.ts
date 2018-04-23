@@ -1,10 +1,12 @@
+import { User } from './User';
+
 export interface UploadReport {
     id: string,
     portfolioId: string,
     dataType: string,
     resultDocId: string,
     requested: string,
-    requestor: number,
+    requestor: User,
     notes: string
 }
 

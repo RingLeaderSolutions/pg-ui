@@ -51,7 +51,10 @@ class PortfolioUploads extends React.Component<PortfolioUploadProps & StateProps
                     <td>{r.dataType}</td>
                     <td>{r.notes}</td>
                     <td>{requestTime}</td>
-                    <td>{r.requestor}</td>
+                    <td><div className="user">
+                        <img className="avatar" src={r.requestor.avatarUrl} />
+                        <p>{r.requestor.firstName} {r.requestor.lastName}</p>
+                    </div></td>
                     <td>
                         <button className='uk-button uk-button-default uk-button-small' data-uk-toggle={showUploadReportDialogClass} onClick={() => this.fetchUploadReport(r.resultDocId)}><span data-uk-icon='icon: menu' data-uk-tooltip="title: Open" /></button>
                     </td>
