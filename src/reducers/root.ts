@@ -121,15 +121,18 @@ import { MeterState } from './meters/MeterState'
 import metersRetrievalReducer from './meters/metersRetrievalReducer';
 import meterUpdateReducer from './meters/meterUpdateReducer';
 import meterEditReducer from './meters/meterEditReducer';
+import fetchMeterConsumptionReducer from './meters/fetchMeterConsumptionReducer';
 
 var meterReducer : Reducer<MeterState> = combineReducers<MeterState>({
     all: metersRetrievalReducer,
+    consumption: fetchMeterConsumptionReducer,
     update: meterUpdateReducer
 });
 
 var completeMeterReducer = reduceReducers((state: MeterState = {
     all: initialRequestState,
     update: initialRequestState,
+    consumption: initialRequestState
 }) => state, meterReducer, meterEditReducer);
 
 import fetchBackendVersionReducer from './fetchBackendVersionReducer';

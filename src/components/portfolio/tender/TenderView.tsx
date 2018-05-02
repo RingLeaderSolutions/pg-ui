@@ -60,7 +60,7 @@ class TenderView extends React.Component<TenderViewProps & StateProps & Dispatch
 
         var utilityDescription = this.props.utility == UtilityType.Gas ? "Gas" : "Electricity";
 
-        var updateTenderDialogName = `modal-update-tender-${utilityDescription}`;
+        var updateTenderDialogName = `modal-update-tender-${this.props.tender.tenderId}`;
         var showUpdateDialogClass = `target: #${updateTenderDialogName}`;
 
         var supplierModalId = "modal-select-suppliers-" + this.props.tender.tenderId;

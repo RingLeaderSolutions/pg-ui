@@ -30,11 +30,12 @@ export interface IApiService {
   getPortfolioHistory(portfolioId: string): Promise<AxiosResponse>;
 
   getAllMeters(portfolioId: string): Promise<AxiosResponse>;
+  fetchMeterConsumption(portfolioId: string): Promise<AxiosResponse>;
   updateMeter(portfolioId: string, meter: Mpan): Promise<AxiosResponse>;
   excludeMeters(portfolioId: string, meters: string[]): Promise<AxiosResponse>;
 
   fetchPortfolioUploads(portfolioId: string): Promise<AxiosResponse>;
-  fetchUploadReport(reportId: string): Promise<AxiosResponse>;
+  fetchUploadReport(reportId: string, isImport: boolean): Promise<AxiosResponse>;
 
   uploadLoa(portfolioId: string, file: Blob): Promise<AxiosResponse>;
   uploadSupplyMeterData(portfolioId: string, file: Blob, utility: UtilityType): Promise<AxiosResponse>;
@@ -49,7 +50,7 @@ export interface IApiService {
   reportSuccessfulSiteListUpload(portfolioId: string, accountId: string, files: string[]): Promise<AxiosResponse>;
   reportSuccessfulHistoricalUpload(portfolioId: string, files: string[]): Promise<AxiosResponse>;
   reportSuccessfulBackingSheetUpload(contractId: string, files: string[], utility: UtilityType): Promise<AxiosResponse>;
-  reportSuccessfulOfferUpload(tenderId: string, supplierId: string, files: string[], utility: UtilityType): Promise<AxiosResponse>;
+  reportSuccessfulOfferUpload(tenderId: string, supplierId: string, useGeneric: boolean, files: string[], utility: UtilityType): Promise<AxiosResponse>;
 
   getTenderSuppliers(): Promise<AxiosResponse>;
   getPortfolioTenders(portfolioId: string): Promise<AxiosResponse>;
@@ -71,6 +72,7 @@ export interface IApiService {
   updateTenderRequirements(requirements: TenderRequirements): Promise<AxiosResponse>;
   deleteQuote(tenderId: string, quoteId: string): Promise<AxiosResponse>;
 
+  reportLogin(): Promise<AxiosResponse>;
   getActiveUsers(): Promise<AxiosResponse>;
   assignPortfolioUsers(portfolioId: string, users: User[]): Promise<AxiosResponse>;
   fetchBackendVersion(): Promise<AxiosResponse>;
@@ -453,10 +455,10 @@ export class ApiService implements IApiService {
         return axios.post(`${this.baseApiUri}/portman-web/upload/backingsheets/contract/${contractId}/${prefix}`, payload, this.getRequestConfig());
     }
 
-    reportSuccessfulOfferUpload(tenderId: string, supplierId: string, files: string[], utility: UtilityType){
+    reportSuccessfulOfferUpload(tenderId: string, supplierId: string, useGeneric: boolean, files: string[], utility: UtilityType){
         var payload = {
             tenderId,
-            useGeneric: false,
+            useGeneric,
             files
         };
         
@@ -480,8 +482,20 @@ export class ApiService implements IApiService {
         return axios.get(`${this.baseApiUri}/portman-web/upload/query/portfolio/${portfolioId}`, this.getRequestConfig());        
     }
 
-    fetchUploadReport(reportId: string){
-        return axios.get(`${this.baseApiUri}/portman-web/upload/query/request/${reportId}`, this.getRequestConfig());        
+    fetchUploadReport(reportId: string, isImport: boolean){
+        if(isImport){
+            return axios.get(`${this.baseApiUri}/portman-web/upload/query/import/${reportId}`, this.getRequestConfig());        
+        }
+
+        return axios.get(`${this.baseApiUri}/portman-web/upload/query/upload/${reportId}`, this.getRequestConfig());        
+    }
+
+    fetchMeterConsumption(portfolioId: string){
+        return axios.get(`${this.baseApiUri}/portman-web/meters/portfolio/consumption/${portfolioId}`, this.getRequestConfig());     
+    }
+
+    reportLogin(){
+        return axios.post(`${this.baseApiUri}/portman-web/admin/logon`, null, this.getRequestConfig());
     }
 
     getEndpointPrefix(utility: UtilityType) {

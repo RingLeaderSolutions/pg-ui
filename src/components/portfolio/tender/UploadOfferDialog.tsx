@@ -23,8 +23,8 @@ interface StateProps {
 }
 
 interface DispatchProps {
-    uploadElectricityOffer: (tenderId: string, supplierId: string, file: Blob) => void;
-    uploadGasOffer: (tenderId: string, supplierId: string, file: Blob) => void;
+    uploadElectricityOffer: (tenderId: string, supplierId: string, useGeneric: boolean, file: Blob) => void;
+    uploadGasOffer: (tenderId: string, supplierId: string, useGeneric: boolean, file: Blob) => void;
 }
 
 interface UploadOfferState {
@@ -42,13 +42,14 @@ class UploadOfferDialog extends React.Component<UploadOfferDialogProps & StatePr
         this.onFileChosen = this.onFileChosen.bind(this);
     }
     supplier: HTMLSelectElement;
+    useGeneric: HTMLInputElement;
 
     upload() {
         if(this.props.utilityType.toLowerCase() == "gas"){
-            this.props.uploadGasOffer(this.props.tenderId, this.supplier.value, this.state.file);
+            this.props.uploadGasOffer(this.props.tenderId, this.supplier.value, this.useGeneric.checked, this.state.file);
             return;
         }
-        this.props.uploadElectricityOffer(this.props.tenderId, this.supplier.value, this.state.file);
+        this.props.uploadElectricityOffer(this.props.tenderId, this.supplier.value, this.useGeneric.checked, this.state.file);
     }
 
     onFileChosen(e: any){
@@ -87,6 +88,16 @@ class UploadOfferDialog extends React.Component<UploadOfferDialogProps & StatePr
                                     <label className='uk-form-label'>Supplier</label>
                                     {this.renderSupplierSelect()}
                                 </div>
+                                <div className='uk-margin uk-grid-small uk-child-width-auto uk-grid'>
+                                    <label>
+                                        <input 
+                                            className='uk-checkbox'
+                                            type='checkbox' 
+                                            defaultChecked={false}
+                                            ref={ref => this.useGeneric = ref}
+                                            /> Use Generic Template
+                                    </label>
+                                </div>
                                 <div className="uk-margin">
                                     <div className="uk-form-file"><input type="file" onChange={this.onFileChosen}/></div>
                                 </div>
@@ -104,8 +115,8 @@ class UploadOfferDialog extends React.Component<UploadOfferDialogProps & StatePr
 
 const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, UploadOfferDialogProps> = (dispatch) => {
     return {
-        uploadElectricityOffer: (tenderId: string, supplierId: string, file: Blob) => dispatch(uploadElectricityOffer(tenderId, supplierId, file)),
-        uploadGasOffer: (tenderId: string, supplierId: string, file: Blob) => dispatch(uploadGasOffer(tenderId, supplierId, file))
+        uploadElectricityOffer: (tenderId: string, supplierId: string, useGeneric: boolean, file: Blob) => dispatch(uploadElectricityOffer(tenderId, supplierId, useGeneric, file)),
+        uploadGasOffer: (tenderId: string, supplierId: string, useGeneric: boolean,  file: Blob) => dispatch(uploadGasOffer(tenderId, supplierId, useGeneric, file))
     };
 };
   

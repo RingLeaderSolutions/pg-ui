@@ -8,7 +8,8 @@ import { Portfolio,
          BackendVersion,
          UploadResponse,
          UploadReport,
-         SupplyDataUploadReport} from "../Model/Models";
+         SupplyDataUploadReport,
+         PortfolioUploadReports} from "../Model/Models";
 
 import * as types from "./actionTypes";
 import { makeApiRequest } from "./Common";
@@ -364,7 +365,7 @@ export function fetchPortfolioUploads(portfolioId: string){
             fetchTariffsPromise,
             200, 
             data => {
-                return { type: types.FETCH_PORTFOLIO_UPLOADS_SUCCESSFUL, data: data as UploadReport[]};
+                return { type: types.FETCH_PORTFOLIO_UPLOADS_SUCCESSFUL, data: data as PortfolioUploadReports};
                 
             }, 
             error => {
@@ -374,9 +375,9 @@ export function fetchPortfolioUploads(portfolioId: string){
 }
 
 
-export function fetchUploadReport(reportId: string){
+export function fetchUploadReport(reportId: string, isImport: boolean){
     return (dispatch: Dispatch<any>) => {
-        let fetchTariffsPromise = ApiService.fetchUploadReport(reportId);
+        let fetchTariffsPromise = ApiService.fetchUploadReport(reportId, isImport);
         dispatch({ type: types.FETCH_UPLOAD_REPORT_WORKING });
 
         makeApiRequest(dispatch,

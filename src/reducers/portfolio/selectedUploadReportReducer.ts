@@ -1,10 +1,10 @@
 import * as types from '../../actions/actionTypes';
 import { reduceReducers, requestResponseReducer } from '../common';
-import { SupplyDataUploadReport } from '../../model/Models';
+import { UploadReportBase } from '../../model/Models';
 import { RequestState, initialRequestState } from '../RequestState';
 
 export interface SelectedUploadReportState extends RequestState {
-    value: SupplyDataUploadReport;
+    value: UploadReportBase;
 }
 
 const selectedUploadReportReducer = requestResponseReducer(

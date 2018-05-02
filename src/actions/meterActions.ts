@@ -1,6 +1,6 @@
 import ApiService from "../services/ApiService";
 
-import { Mpan, MeterPortfolio } from "../Model/Meter";
+import { Mpan, MeterPortfolio, MeterConsumptionSummary } from "../Model/Meter";
 
 import * as types from "./actionTypes";
 import { Dispatch } from 'redux';
@@ -79,3 +79,20 @@ export function excludeMeters(portfolioId: string, meters: string[]){
             });
     };
 }
+
+export function fetchMeterConsumption(portfolioId: string){    
+    return (dispatch: Dispatch<any>) => {
+        let fetchPromise = ApiService.fetchMeterConsumption(portfolioId);
+        dispatch( { type: types.FETCH_METER_CONSUMPTION_WORKING });
+
+        makeApiRequest(dispatch,
+            fetchPromise,
+            200, 
+            data => {
+                return { type: types.FETCH_METER_CONSUMPTION_SUCCESSFUL, data: data as MeterConsumptionSummary };
+            }, 
+            error => {
+                return { type: types.FETCH_METER_CONSUMPTION_FAILED, errorMessage: error };
+            });
+    }
+};

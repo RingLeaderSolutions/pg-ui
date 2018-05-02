@@ -1,7 +1,7 @@
 import { AxiosResponse } from 'axios';
 
 import { CompanyInfo } from '../model/CompanyInfo';
-import { MeterPortfolio, Mpan } from '../model/Meter';
+import { MeterPortfolio, Mpan, MeterConsumptionSummary } from '../model/Meter';
 import {
     Account,
     AccountCompanyStatusFlags,
@@ -837,7 +837,7 @@ export class FakeApiService implements IApiService {
         return OK();
     }
 
-    reportSuccessfulOfferUpload(tenderId: string, supplierId: string, files: string[], utility: UtilityType) {
+    reportSuccessfulOfferUpload(tenderId: string, supplierId: string, useGeneric: boolean, files: string[], utility: UtilityType) {
         return OK();
     }
 
@@ -971,8 +971,24 @@ export class FakeApiService implements IApiService {
         return OK();
     }
 
-    fetchUploadReport(reportId: string){
+    fetchUploadReport(reportId: string, isImport: boolean){
         return OK();
+    }
+
+    reportLogin(){
+        return OK();
+    }
+
+    fetchMeterConsumption(portfolioId: string){
+        var consumption: MeterConsumptionSummary = {
+            summaryFields: [],
+            summaryValues: [],
+            electricityHeaders: [ "site", "mpan", "meterType", "total Units", "Day", "Night"],
+            gasHeaders: [ "site", "mprn", "total Units", "All Times"],
+            electrictyConsumptionEntries: [[ "MOONIE009", "1", "NHH", "100", "100", "100"]],
+            gasConsumptionEntries: [[ "MOONIEG", "2", "100", "100"]],
+        }
+        return OK(consumption);
     }
 }
 

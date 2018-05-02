@@ -347,7 +347,7 @@ export function exportContractRates(tenderId: string, quoteId: string){
     }
 };
 
-export function uploadGasOffer(tenderId: string, supplierId: string, file: Blob){
+export function uploadGasOffer(tenderId: string, supplierId: string, useGeneric: boolean, file: Blob){
     return (dispatch: Dispatch<any>) => {
         let uploadPromise = ApiService.uploadOffer(tenderId, supplierId, file);
         dispatch({ type: types.UPLOAD_GAS_OFFER_WORKING });
@@ -357,7 +357,7 @@ export function uploadGasOffer(tenderId: string, supplierId: string, file: Blob)
             200, 
             data => {
                 var uploadResponse = data as UploadResponse;
-                ApiService.reportSuccessfulOfferUpload(tenderId, supplierId, uploadResponse.uploadedFiles, UtilityType.Gas);
+                ApiService.reportSuccessfulOfferUpload(tenderId, supplierId, useGeneric, uploadResponse.uploadedFiles, UtilityType.Gas);
                 return { type: types.UPLOAD_GAS_OFFER_SUCCESSFUL, data: null};
             }, 
             error => {
@@ -366,7 +366,7 @@ export function uploadGasOffer(tenderId: string, supplierId: string, file: Blob)
     };
 }
 
-export function uploadElectricityOffer(tenderId: string, supplierId: string, file: Blob){
+export function uploadElectricityOffer(tenderId: string, supplierId: string, useGeneric: boolean, file: Blob){
     return (dispatch: Dispatch<any>) => {
         let uploadPromise = ApiService.uploadOffer(tenderId, supplierId, file);
         dispatch({ type: types.UPLOAD_ELECTRICITY_OFFER_WORKING });
@@ -376,7 +376,7 @@ export function uploadElectricityOffer(tenderId: string, supplierId: string, fil
             200, 
             data => {
                 var uploadResponse = data as UploadResponse;
-                ApiService.reportSuccessfulOfferUpload(tenderId, supplierId, uploadResponse.uploadedFiles, UtilityType.Electricity);
+                ApiService.reportSuccessfulOfferUpload(tenderId, supplierId, useGeneric, uploadResponse.uploadedFiles, UtilityType.Electricity);
                 return { type: types.UPLOAD_ELECTRICITY_OFFER_SUCCESSFUL, data: null};
             }, 
             error => {

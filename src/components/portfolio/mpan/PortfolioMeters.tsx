@@ -9,7 +9,8 @@ import { Link } from 'react-router-dom';
 import GasMeterTable from './GasMeterTable';
 import ElectricityMeterTable from './ElectricityMeterTable';
 
-import { getMeters } from '../../../actions/meterActions';
+import { getMeters, fetchMeterConsumption } from '../../../actions/meterActions';
+import MeterConsumptionDialog from "./MeterConsumptionDialog";
 
 interface PortfolioMetersProps {
     portfolio: Portfolio;
@@ -25,6 +26,7 @@ interface StateProps {
 
 interface DispatchProps {
     getMeters: (portfolioId: string) => void;
+    fetchMeterConsumption: (portfolioId: string) => void;
 }
 
 interface State {
@@ -38,6 +40,10 @@ class PortfolioMeters extends React.Component<PortfolioMetersProps & StateProps 
         this.state = {
             tab: 'electricity'
         };
+    }
+
+    loadConsumption(){
+        this.props.fetchMeterConsumption(this.props.portfolio.id);        
     }
 
     componentDidMount(){
@@ -59,6 +65,12 @@ class PortfolioMeters extends React.Component<PortfolioMetersProps & StateProps 
 
         return (
             <div>
+                <div>
+                    <p className='uk-text-right'>
+                        <button className='uk-button uk-button-default uk-button-small uk-margin-small-right view-consumption-button' data-uk-toggle="target: #modal-view-consumption" onClick={() => this.loadConsumption()}><span data-uk-icon='icon: list' /> View Meter Consumption</button>                
+                    </p>
+                </div>
+
                 <div className='uk-flex uk-flex-column portfolio-meters'>
                     <div className="uk-overflow-auto">
                         <ul data-uk-tab>
@@ -79,6 +91,9 @@ class PortfolioMeters extends React.Component<PortfolioMetersProps & StateProps 
                         </ul>
                     </div>
                 </div>
+                <div id="modal-view-consumption" data-uk-modal="center: true">
+                    <MeterConsumptionDialog />
+                </div>
             </div>
         );
     }
@@ -87,6 +102,7 @@ class PortfolioMeters extends React.Component<PortfolioMetersProps & StateProps 
 const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, PortfolioMetersProps> = (dispatch) => {
     return {
         getMeters: (portfolioId: string) => dispatch(getMeters(portfolioId)),
+        fetchMeterConsumption: (portfolioId: string) => dispatch(fetchMeterConsumption(portfolioId))
     };
 };
   

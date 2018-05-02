@@ -1,6 +1,7 @@
 import { WebAuth, AuthOptions, CrossOriginLoginOptions, Auth0Error, ParseHashOptions, Auth0DecodedHash, LogoutOptions } from "auth0-js";
 import StorageService from "./storageService";
 import * as jwtDecode from "jwt-decode";
+import ApiService from "./ApiService";
 
 export interface IAuthService {
     login(email: string, password: string, redirectUri: string, callback: (error: Auth0Error) => void): void;
@@ -63,8 +64,9 @@ export class AuthService implements IAuthService {
                 // TODO: redirect to error page?
                 return;
             }
-            this.saveToken(result);
-            window.location.replace('/');
+            this.saveToken(result).then(() => {
+                window.location.replace('/');
+            }); 
         });
       }
   
@@ -77,6 +79,15 @@ export class AuthService implements IAuthService {
   
           console.log("Saving valid auth token for " + username)
           this.storage.saveInfo(authResult.idToken, username, avatar, role);
+
+          return ApiService.reportLogin().then(function (response) {
+            if (response.status === 200) {
+              console.log("Successfully reported login");
+            }
+            else {
+              console.log(`Error: Received HTTP Status code ${response.status} when attempting to report login`);
+            }
+          });
         }
       }
 

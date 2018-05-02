@@ -9,6 +9,7 @@ import * as moment from 'moment';
 import DatePicker from 'react-datepicker';
 
 import { SupplyDataUploadReport } from "../../../model/Models";
+import UploadSupplyDataDialog from "../mpan/UploadSupplyDataDialog";
 
 interface SupplyDataReportViewProps {
 }
@@ -68,7 +69,7 @@ class SupplyDataReportView extends React.Component<SupplyDataReportViewProps & S
             </table>)
     }
     render() {
-        if(this.props.working || this.props.uploadReport == null){
+        if(this.props.working || this.props.uploadReport == null || this.props.uploadReport.uploadFiles == null){
             return (<div className="uk-modal-dialog upload-report-modal uk-modal-body"><Spinner hasMargin={true} /></div>);
         }
         return (
@@ -94,7 +95,7 @@ const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, SupplyDataRe
   
 const mapStateToProps: MapStateToProps<StateProps, SupplyDataReportViewProps> = (state: ApplicationState) => {
     return {
-        uploadReport: state.portfolio.selected_upload_report.value,
+        uploadReport: state.portfolio.selected_upload_report.value as SupplyDataUploadReport,
         working: state.portfolio.selected_upload_report.working,
         error: state.portfolio.selected_upload_report.error,
         errorMessage: state.portfolio.selected_upload_report.errorMessage

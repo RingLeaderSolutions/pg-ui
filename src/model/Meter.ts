@@ -90,6 +90,15 @@ export enum MeterType{
     Electricity
 }
 
+export interface MeterConsumptionSummary {
+    summaryFields: string[],
+    summaryValues: string[],
+    gasHeaders: string[],
+    gasConsumptionEntries: string[][],
+    electricityHeaders: string[],
+    electrictyConsumptionEntries: string[][]
+}
+
 export const AggregatorCollectors = [
     'ETCL',
     'GUCL',

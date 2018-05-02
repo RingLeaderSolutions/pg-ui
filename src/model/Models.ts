@@ -26,7 +26,7 @@ export { DashboardPortfolioSummary,
 export { Client } from './Client';
 
 export { CompanyInfo } from './CompanyInfo';
-export { UploadReport, SupplyDataUploadReport, UploadFileReport, UploadResultItem } from './Uploads';
+export { UploadReport, SupplyDataUploadReport, UploadFileReport, UploadResultItem, PortfolioUploadReports, UploadReportBase, QuoteImportUploadReport } from './Uploads';
 
 export enum UtilityType {
     Gas,
