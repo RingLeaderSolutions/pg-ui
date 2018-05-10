@@ -190,7 +190,15 @@ export class FakeApiService implements IApiService {
         return OK(company);
     }
 
-    createAccount(company: CompanyInfo){
+    createAccount(account: Account){
+        var response = {
+            id: "4dbd3fb8-c598-4d33-a0f6-b12da7b8b0d0"
+        };
+
+        return OK(response);
+    }
+
+    createAccountFromCompany(company:CompanyInfo){
         var response = {
             id: "4dbd3fb8-c598-4d33-a0f6-b12da7b8b0d0"
         };
@@ -829,7 +837,7 @@ export class FakeApiService implements IApiService {
         return OK();
     }
 
-    reportSuccessfulHistoricalUpload(portfolioId: string, files: string[]) {
+    reportSuccessfulHistoricalUpload(portfolioId: string, files: string[], historicalType: string) {
         return OK();
     }
 

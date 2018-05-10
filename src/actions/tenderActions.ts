@@ -1,6 +1,6 @@
 import ApiService from "../services/ApiService";
 
-import { Tender, TenderContract, TenderSupplier, BackingSheet, TenderIssuanceEmail, QuoteExportResponse, TenderRequirements } from "../Model/Tender";
+import { Tender, TenderContract, TenderSupplier, BackingSheet, TenderIssuanceEmail, QuoteExportResponse, TenderRequirements, ContractRatesResponse } from "../Model/Tender";
 import { UploadResponse, UtilityType } from "../model/Models";
 
 import * as types from "./actionTypes";
@@ -235,7 +235,7 @@ export function fetchContractBackingSheets(tenderId: string, contractId: string)
             fetchPromise,
             200, 
             data => {
-                return { type: types.FETCH_CONTRACT_BACKINGSHEETS_SUCCESSFUL, data: data as BackingSheet[] };
+                return { type: types.FETCH_CONTRACT_BACKINGSHEETS_SUCCESSFUL, data: data as ContractRatesResponse };
             }, 
             error => {
                 return { type: types.FETCH_CONTRACT_BACKINGSHEETS_FAILED, errorMessage: error };
@@ -252,7 +252,7 @@ export function fetchQuoteBackingSheets(tenderId: string, contractId: string){
             fetchPromise,
             200, 
             data => {
-                return { type: types.FETCH_QUOTE_BACKINGSHEETS_SUCCESSFUL, data: data as BackingSheet[] };
+                return { type: types.FETCH_QUOTE_BACKINGSHEETS_SUCCESSFUL, data: data as ContractRatesResponse };
             }, 
             error => {
                 return { type: types.FETCH_QUOTE_BACKINGSHEETS_FAILED, errorMessage: error };

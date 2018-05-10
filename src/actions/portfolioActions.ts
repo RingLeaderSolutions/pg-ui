@@ -9,7 +9,8 @@ import { Portfolio,
          UploadResponse,
          UploadReport,
          SupplyDataUploadReport,
-         PortfolioUploadReports} from "../Model/Models";
+         PortfolioUploadReports, 
+         Account} from "../Model/Models";
 
 import * as types from "./actionTypes";
 import { makeApiRequest } from "./Common";
@@ -144,9 +145,27 @@ export function retrieveAccount(accountId: string){
     };
 }
 
-export function createAccount(company: CompanyInfo){
+export function createAccount(account: Account){
     return (dispatch: Dispatch<any>) => {
-        let createPromise = ApiService.createAccount(company);
+        let createPromise = ApiService.createAccount(account);
+        dispatch( { type: types.CREATE_ACCOUNT_WORKING });
+
+        makeApiRequest(dispatch,
+            createPromise,
+            201, 
+            data => {
+                return { type: types.CREATE_ACCOUNT_SUCCESSFUL, data};
+                
+            }, 
+            error => {
+                return { type: types.CREATE_ACCOUNT_FAILED, errorMessage: error };
+            });
+    };
+}
+
+export function createAccountFromCompany(company: CompanyInfo){
+    return (dispatch: Dispatch<any>) => {
+        let createPromise = ApiService.createAccountFromCompany(company);
         dispatch( { type: types.CREATE_ACCOUNT_WORKING });
 
         makeApiRequest(dispatch,
@@ -300,7 +319,7 @@ export function uploadSupplyMeterData(portfolioId: string, accountId: string, fi
     };
 }
 
-export function uploadHistoric(portfolioId: string, files: Blob[]){
+export function uploadHistoric(portfolioId: string, files: Blob[], historicalType: string){
     return (dispatch: Dispatch<any>) => {
         let uploadPromise = ApiService.uploadHistorical(portfolioId, files);
         dispatch({ type: types.UPLOAD_HISTORICAL_WORKING });
@@ -310,7 +329,7 @@ export function uploadHistoric(portfolioId: string, files: Blob[]){
             200, 
             data => {
                 var uploadResponse = data as UploadResponse;
-                ApiService.reportSuccessfulHistoricalUpload(portfolioId, uploadResponse.uploadedFiles);
+                ApiService.reportSuccessfulHistoricalUpload(portfolioId, uploadResponse.uploadedFiles, historicalType);
                 return { type: types.UPLOAD_HISTORICAL_SUCCESSFUL, data: null};
                 
             }, 

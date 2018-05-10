@@ -5,7 +5,7 @@ import ErrorMessage from '../../common/ErrorMessage';
 import Spinner from '../../common/Spinner';
 import { CompanyInfo } from '../../../model/Models';
 
-import { createAccount} from '../../../actions/portfolioActions';
+import { createAccountFromCompany } from '../../../actions/portfolioActions';
 
 interface StateProps {
     working: boolean;
@@ -16,12 +16,12 @@ interface StateProps {
   }
   
   interface DispatchProps {
-      createAccount: (company: CompanyInfo) => void;
+    createAccountFromCompany: (company: CompanyInfo) => void;
   }
 
 class AccountCreation extends React.Component<DispatchProps & StateProps, {}> {
     componentDidMount(){
-        this.props.createAccount(this.props.company);
+        this.props.createAccountFromCompany(this.props.company);
     }
 
     render(){
@@ -57,7 +57,7 @@ class AccountCreation extends React.Component<DispatchProps & StateProps, {}> {
 
 const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, {}> = (dispatch) => {
     return {
-        createAccount: (company: CompanyInfo) => dispatch(createAccount(company)),
+        createAccountFromCompany: (company: CompanyInfo) => dispatch(createAccountFromCompany(company)),
     }
 }
 

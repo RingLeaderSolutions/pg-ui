@@ -20,7 +20,7 @@ interface StateProps {
 }
 
 interface DispatchProps {
-    uploadHistoric: (portfolioId: string, files: Blob[]) => void;
+    uploadHistoric: (portfolioId: string, files: Blob[], historicalType: string) => void;
 }
 
 interface UploadHistoricState {
@@ -37,10 +37,11 @@ class UploadHistoricDialog extends React.Component<UploadHistoricDialogProps & S
         this.upload = this.upload.bind(this);
         this.onFileChosen = this.onFileChosen.bind(this);
     }
+    historicalType: HTMLSelectElement;
     
     upload() {
         var portfolioId = this.props.details.portfolio.id;
-        this.props.uploadHistoric(portfolioId, this.state.files);
+        this.props.uploadHistoric(portfolioId, this.state.files, this.historicalType.value);
     }
 
     onFileChosen(e: any){
@@ -66,6 +67,12 @@ class UploadHistoricDialog extends React.Component<UploadHistoricDialogProps & S
                                 <div className="uk-margin">
                                     <div className="uk-form-file"><input type="file" onChange={this.onFileChosen} multiple/></div>
                                 </div>
+                                <select className='uk-select' 
+                                    ref={ref => this.historicalType = ref}>
+                                    <option value="" disabled>Select</option>
+                                    <option value="Generic">Generic</option>
+                                    <option value="BACKWARDS">Backwards</option>
+                                </select>
                             </fieldset>
                         </form>
                     </div>
@@ -80,7 +87,7 @@ class UploadHistoricDialog extends React.Component<UploadHistoricDialogProps & S
 
 const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, UploadHistoricDialogProps> = (dispatch) => {
     return {
-        uploadHistoric: (portfolioId: string, files: Blob[]) => dispatch(uploadHistoric(portfolioId, files))        
+        uploadHistoric: (portfolioId: string, files: Blob[], historicalType: string) => dispatch(uploadHistoric(portfolioId, files, historicalType))        
     };
 };
   

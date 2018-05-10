@@ -129,6 +129,12 @@ export interface TenderQuoteSummary {
     tenderId: string;
 }
 
+export interface ContractRatesResponse {
+    summaryFields: any;
+    headers: string[];
+    entries: string[][];
+}
+
 export interface BackingSheet {
     sheetType: string,
     parentId: string,

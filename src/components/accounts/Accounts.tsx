@@ -8,6 +8,7 @@ import Header from "../common/Header";
 import ErrorMessage from "../common/ErrorMessage";
 import { Account } from '../../model/Models';
 import Spinner from '../common/Spinner';
+import CreateAccountDialog from "./CreateAccountDialog";
 
 interface AccountsProps extends RouteComponentProps<void> {
 }
@@ -79,7 +80,7 @@ class Accounts extends React.Component<AccountsProps & StateProps & DispatchProp
                                 <input className="uk-search-input" type="search" placeholder="Search..." disabled/>
                             </form>
                             <div className="actions-accounts">
-                                <button className="uk-button uk-button-primary" disabled>
+                                <button className="uk-button uk-button-primary" data-uk-toggle="target: #modal-new-account">
                                     <span className="uk-margin-small-right" data-uk-icon="plus-circle"></span>
                                     New account
                                 </button>
@@ -108,6 +109,9 @@ class Accounts extends React.Component<AccountsProps & StateProps & DispatchProp
                             </table>
                         </div>
                     </div>
+                </div>
+                <div id="modal-new-account" data-uk-modal="center: true">
+                    <CreateAccountDialog />
                 </div>
             </div>)
     }

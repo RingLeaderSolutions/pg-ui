@@ -1,10 +1,10 @@
 import * as types from '../../actions/actionTypes';
 import { reduceReducers, requestResponseReducer } from '../common';
 import { RequestState, initialRequestState } from '../RequestState';
-import { BackingSheet } from '../../model/Tender';
+import { ContractRatesResponse } from '../../model/Tender';
 
 export interface TendersState extends RequestState {
-    value: BackingSheet[];
+    value: ContractRatesResponse;
 }
 
 const quoteBackingSheetReducer = requestResponseReducer(

@@ -24,7 +24,8 @@ export interface IApiService {
   retrieveAccounts(): Promise<AxiosResponse>;  
   retrieveAccount(accountId: string): Promise<AxiosResponse>;
   retrieveAccountDetail(accountId: string): Promise<AxiosResponse>;
-  createAccount(company: CompanyInfo) : Promise<AxiosResponse>;
+  createAccountFromCompany(company: CompanyInfo) : Promise<AxiosResponse>;
+  createAccount(account: Account) : Promise<AxiosResponse>;
   updateAccountFlags(accountId: string, accountFlags: AccountCompanyStatusFlags): Promise<AxiosResponse>;
   
   getPortfolioHistory(portfolioId: string): Promise<AxiosResponse>;
@@ -48,7 +49,7 @@ export interface IApiService {
   reportSuccessfulLoaUpload(portfolioId: string, accountId: string, files: string[]): Promise<AxiosResponse>;
   reportSuccessfulSupplyMeterDataUpload(portfolioId: string, accountId: string, files: string[], utility: UtilityType): Promise<AxiosResponse>;
   reportSuccessfulSiteListUpload(portfolioId: string, accountId: string, files: string[]): Promise<AxiosResponse>;
-  reportSuccessfulHistoricalUpload(portfolioId: string, files: string[]): Promise<AxiosResponse>;
+  reportSuccessfulHistoricalUpload(portfolioId: string, files: string[], historicalType: string): Promise<AxiosResponse>;
   reportSuccessfulBackingSheetUpload(contractId: string, files: string[], utility: UtilityType): Promise<AxiosResponse>;
   reportSuccessfulOfferUpload(tenderId: string, supplierId: string, useGeneric: boolean, files: string[], utility: UtilityType): Promise<AxiosResponse>;
 
@@ -199,7 +200,11 @@ export class ApiService implements IApiService {
         return axios.get(`${this.hierarchyApiUri}/api/Account/detail/${accountId}`, this.getRequestConfig());                        
     }
 
-    createAccount(company: CompanyInfo) {
+    createAccount(account: Account){
+        return axios.post(`${this.hierarchyApiUri}/api/Account`, account, this.getRequestConfig());         
+    }
+    
+    createAccountFromCompany(company: CompanyInfo) {
         let dateToFormat = moment(company.incorporationDate, "DD/MM/YYYY");
         let incorporationDate = dateToFormat.format();
         let account = {
@@ -339,11 +344,11 @@ export class ApiService implements IApiService {
     }
 
     getContractBackingSheets(tenderId: string, contractId: string){
-        return axios.get(`${this.baseApiUri}/portman-web/tender/${tenderId}/contractBackingsheets/contract/${contractId}`, this.getRequestConfig());        
+        return axios.get(`${this.baseApiUri}/portman-web/tender/${tenderId}/contractBackingsheets/contract/v2/${contractId}`, this.getRequestConfig());        
     }
 
     getQuoteBackingSheets(tenderId: string, quoteId: string){
-        return axios.get(`${this.baseApiUri}/portman-web/tender/${tenderId}/contractBackingsheets/quote/${quoteId}`, this.getRequestConfig());        
+        return axios.get(`${this.baseApiUri}/portman-web/tender/${tenderId}/contractBackingsheets/quote/v2/${quoteId}`, this.getRequestConfig());        
     }
     
     generateTenderPack(tenderId: string, portfolioId: string){
@@ -434,11 +439,12 @@ export class ApiService implements IApiService {
         return axios.post(`${this.baseApiUri}/portman-web/upload/sitelist/${accountId}`, payload, this.getRequestConfig());
     }
 
-    reportSuccessfulHistoricalUpload(portfolioId: string, files: string[]) {
+    reportSuccessfulHistoricalUpload(portfolioId: string, files: string[], historicalType: string) {
         var payload = {
             csvNames: files,
             uploadType: "HISTORICAL",
-            notes: `Uploaded ${moment().toISOString()}`
+            notes: `Uploaded ${moment().toISOString()}`,
+            historicalType
         };
         
         return axios.post(`${this.baseApiUri}/portman-web/upload/historical/${portfolioId}`, payload, this.getRequestConfig());
@@ -495,7 +501,8 @@ export class ApiService implements IApiService {
     }
 
     reportLogin(){
-        return axios.post(`${this.baseApiUri}/portman-web/admin/logon`, null, this.getRequestConfig());
+        return new FakeApiService().reportLogin();
+        //return axios.post(`${this.baseApiUri}/portman-web/admin/logon`, null, this.getRequestConfig());
     }
 
     getEndpointPrefix(utility: UtilityType) {
