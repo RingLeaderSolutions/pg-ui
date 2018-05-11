@@ -1,7 +1,7 @@
 import ApiService from "../services/ApiService";
 
-import { Tender, TenderContract, TenderSupplier, BackingSheet, TenderIssuanceEmail, QuoteExportResponse, TenderRequirements, ContractRatesResponse } from "../Model/Tender";
-import { UploadResponse, UtilityType } from "../model/Models";
+import { Tender, TenderContract, TenderSupplier, BackingSheet, TenderIssuanceEmail, TenderRequirements, ContractRatesResponse } from "../Model/Tender";
+import { UploadResponse, UtilityType, ExportResponse } from "../model/Models";
 
 import * as types from "./actionTypes";
 import { Dispatch } from 'redux';
@@ -151,7 +151,7 @@ export function updateTenderSuppliers(tenderId: string, supplierIds: string[]){
     };
 }
 
-export function uploadGasBackingSheet(contractId: string, file: Blob){
+export function uploadGasBackingSheet(contractId: string, useGeneric: boolean, file: Blob){
     return (dispatch: Dispatch<any>) => {
         let uploadPromise = ApiService.uploadGasBackingSheet(contractId, file);
         dispatch({ type: types.UPLOAD_GAS_BACKING_SHEET_WORKING });
@@ -161,7 +161,7 @@ export function uploadGasBackingSheet(contractId: string, file: Blob){
             200, 
             data => {
                 var uploadResponse = data as UploadResponse;
-                ApiService.reportSuccessfulBackingSheetUpload(contractId, uploadResponse.uploadedFiles, UtilityType.Gas);
+                ApiService.reportSuccessfulBackingSheetUpload(contractId, useGeneric, uploadResponse.uploadedFiles, UtilityType.Gas);
                 return { type: types.UPLOAD_GAS_BACKING_SHEET_SUCCESSFUL, data: null};
                 
             }, 
@@ -171,7 +171,7 @@ export function uploadGasBackingSheet(contractId: string, file: Blob){
     };
 }
 
-export function uploadElectricityBackingSheet(contractId: string, file: Blob){
+export function uploadElectricityBackingSheet(contractId: string, useGeneric: boolean, file: Blob){
     return (dispatch: Dispatch<any>) => {
         let uploadPromise = ApiService.uploadElectricityBackingSheet(contractId, file);
         dispatch({ type: types.UPLOAD_ELECTRICITY_BACKING_SHEET_WORKING });
@@ -181,7 +181,7 @@ export function uploadElectricityBackingSheet(contractId: string, file: Blob){
             200, 
             data => {
                 var uploadResponse = data as UploadResponse;
-                ApiService.reportSuccessfulBackingSheetUpload(contractId, uploadResponse.uploadedFiles, UtilityType.Electricity);
+                ApiService.reportSuccessfulBackingSheetUpload(contractId, useGeneric, uploadResponse.uploadedFiles,  UtilityType.Electricity);
                 return { type: types.UPLOAD_ELECTRICITY_BACKING_SHEET_SUCCESSFUL, data: null};
             }, 
             error => {
@@ -337,7 +337,7 @@ export function exportContractRates(tenderId: string, quoteId: string){
             fetchPromise,
             200, 
             data => {
-                var resp = data as QuoteExportResponse;
+                var resp = data as ExportResponse;
                 window.open(resp.exportUri, '_blank');
                 return { type: types.EXPORT_CONTRACT_RATES_SUCCESSFUL, data: data};
             }, 

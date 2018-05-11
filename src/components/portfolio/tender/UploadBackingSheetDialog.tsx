@@ -21,8 +21,8 @@ interface StateProps {
 }
 
 interface DispatchProps {
-    uploadElectricityBackingSheet: (contractId: string, file: Blob) => void;
-    uploadGasBackingSheet: (contractId: string, file: Blob) => void;
+    uploadElectricityBackingSheet: (contractId: string, useGeneric: boolean, file: Blob) => void;
+    uploadGasBackingSheet: (contractId: string, useGeneric: boolean, file: Blob) => void;
 }
 
 interface UploadBackingSheetState {
@@ -39,13 +39,14 @@ class UploadBackingSheetDialog extends React.Component<UploadBackingSheetDialogP
         this.upload = this.upload.bind(this);
         this.onFileChosen = this.onFileChosen.bind(this);
     }
+    useGeneric: HTMLInputElement;
     
     upload() {
         if(this.props.utilityType == "GAS"){
-            this.props.uploadGasBackingSheet(this.props.contractId, this.state.file);
+            this.props.uploadGasBackingSheet(this.props.contractId, this.useGeneric.checked, this.state.file);
             return;
         }
-        this.props.uploadElectricityBackingSheet(this.props.contractId, this.state.file);
+        this.props.uploadElectricityBackingSheet(this.props.contractId, this.useGeneric.checked, this.state.file);
     }
 
     onFileChosen(e: any){
@@ -66,6 +67,16 @@ class UploadBackingSheetDialog extends React.Component<UploadBackingSheetDialogP
                         <p>Select the file you wish to upload.</p>
                         <form>
                             <fieldset className="uk-fieldset">
+                                <div className='uk-margin uk-grid-small uk-child-width-auto uk-grid'>
+                                    <label>
+                                        <input 
+                                            className='uk-checkbox'
+                                            type='checkbox' 
+                                            defaultChecked={false}
+                                            ref={ref => this.useGeneric = ref}
+                                            /> Use Generic Template
+                                    </label>
+                                </div>
                                 <div className="uk-margin">
                                     <div className="uk-form-file"><input type="file" onChange={this.onFileChosen}/></div>
                                 </div>
@@ -83,8 +94,8 @@ class UploadBackingSheetDialog extends React.Component<UploadBackingSheetDialogP
 
 const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, UploadBackingSheetDialogProps> = (dispatch) => {
     return {
-        uploadElectricityBackingSheet: (contractId: string, file: Blob) => dispatch(uploadElectricityBackingSheet(contractId, file)),
-        uploadGasBackingSheet: (contractId: string, file: Blob) => dispatch(uploadGasBackingSheet(contractId, file))        
+        uploadElectricityBackingSheet: (contractId: string, useGeneric: boolean, file: Blob) => dispatch(uploadElectricityBackingSheet(contractId, useGeneric, file)),
+        uploadGasBackingSheet: (contractId: string, useGeneric: boolean, file: Blob) => dispatch(uploadGasBackingSheet(contractId, useGeneric, file))        
     };
 };
   

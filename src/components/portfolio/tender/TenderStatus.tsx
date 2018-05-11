@@ -66,7 +66,7 @@ class TenderStatus extends React.Component<TenderStatusProps & StateProps & Disp
         var meterCount = this.getMeterCount();
         var eligibleSupplierCount = this.getSupplierCount();
 
-        var totalCommission = tender.commission * tender.annualConsumption;
+        var totalCommission = (tender.commission / 100) * tender.annualConsumption;
 
         var supplierModalId = "modal-select-suppliers-" + tender.tenderId;
         var toggleSupplierModalClass = "target: #" + supplierModalId;

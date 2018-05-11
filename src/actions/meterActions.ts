@@ -6,6 +6,7 @@ import * as types from "./actionTypes";
 import { Dispatch } from 'redux';
 
 import { makeApiRequest } from "./Common";
+import { ExportResponse } from "../model/Models";
 
 
 export function getMeters(portfolioId: string){    
@@ -93,6 +94,25 @@ export function fetchMeterConsumption(portfolioId: string){
             }, 
             error => {
                 return { type: types.FETCH_METER_CONSUMPTION_FAILED, errorMessage: error };
+            });
+    }
+};
+
+export function exportMeterConsumption(portfolioId: string){    
+    return (dispatch: Dispatch<any>) => {
+        let fetchPromise = ApiService.exportMeterConsumption(portfolioId);
+        dispatch( { type: types.EXPORT_METER_CONSUMPTION_WORKING });
+
+        makeApiRequest(dispatch,
+            fetchPromise,
+            200, 
+            data => {
+                var resp = data as ExportResponse;
+                window.open(resp.exportUri, '_blank');
+                return { type: types.EXPORT_METER_CONSUMPTION_SUCCESSFUL, data: data};
+            }, 
+            error => {
+                return { type: types.EXPORT_METER_CONSUMPTION_FAILED, errorMessage: error };
             });
     }
 };

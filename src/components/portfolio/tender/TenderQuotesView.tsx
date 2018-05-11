@@ -79,8 +79,6 @@ class TenderQuotesView extends React.Component<TenderQuotesViewProps & StateProp
             .map((quote) => {
                 var supplier = this.props.suppliers.find(su => su.supplierId == quote.supplierId);
                 var supplierText = supplier == null ? "Unknown" : supplier.name;
-                var billingAccuracy = supplier == null || supplier.serviceRatings.length == 0 ? "Unknown" : supplier.serviceRatings[0].score;
-                var serviceDesk = supplier == null || supplier.serviceRatings.length == 0 ? "Unknown" : supplier.serviceRatings[1].score;
 
                 var viewBackingSheetClass = `target: #modal-view-quote-bs-${this.props.tender.tenderId}`;
 
@@ -97,8 +95,7 @@ class TenderQuotesView extends React.Component<TenderQuotesViewProps & StateProp
                         <td>{!isPending ? `${quote.contractLength} months` : (<p>-</p>)}</td>
                         <td>{!isPending ? (quote.sheetCount) : (<p>-</p>)}</td>
                         <td>{!isPending ? format(quote.totalIncCCL, { locale: 'en-GB'}) : (<p>-</p>)}</td>
-                        <td>{billingAccuracy}</td>
-                        <td>{serviceDesk}</td>
+                        <td>{!isPending ? format(quote.appu, {locale: 'en-GB'}) : (<p>-</p>)}</td>
                         <td>
                             {!isPending ? (
                                 <div>
@@ -152,8 +149,7 @@ class TenderQuotesView extends React.Component<TenderQuotesViewProps & StateProp
                             <th>Contract Length</th>
                             <th>Meter count</th>
                             <th>Contract Value</th>
-                            <th>Billing Accuracy</th>
-                            <th>Service Desk</th>
+                            <th>Avg pence per unit</th>
                         </tr>
                     </thead>
                     <tbody>

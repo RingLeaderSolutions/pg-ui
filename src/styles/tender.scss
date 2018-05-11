@@ -12,23 +12,7 @@
     }
 
     table { border: none; border-collapse: collapse; }
-    table th { border-left: 1px solid #ffffff; }
+    table th { text-transform: none; }
     table td { border-left: 1px solid #eeeeee; }
     table td:first-child, table th:first-child { border-left: none; }
-
-    th {
-        color: black !important;
-    }
-
-    .green-header {
-        background-color: #d6f5d6;
-    }
-
-    .yellow-header {
-        background-color: burlywood;
-    }
-
-    .blue-header {
-        background-color: lightblue;
-    }
 }

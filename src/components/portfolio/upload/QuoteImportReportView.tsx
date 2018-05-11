@@ -51,13 +51,21 @@ class QuoteImportReportView extends React.Component<QuoteImportReportViewProps &
     // }
 
     renderUnmappedColumnsTable(template: ImportTemplateReport){
-        var rows = template.unmappedColumns.map((col) => {
-           return (
-               <tr key={col}>
-                   <td>{col}</td>
-               </tr>
-           )
-        });
+        var rows = template.unmappedColumns
+            .sort(
+                (col1: string, col2: string) => {        
+                    if (col1 < col2) return -1;
+                    if (col1 > col2) return 1;
+                    return 0;
+                })
+            .map((col) => {
+            return (
+                <tr key={col}>
+                    <td>{col}</td>
+                </tr>
+            )
+            });
+            
         return (
             <table className="uk-table uk-table-divider">
                 <thead>

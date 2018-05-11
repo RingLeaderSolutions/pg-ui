@@ -41,7 +41,7 @@ class Portfolios extends React.Component<PortfoliosProps & StateProps & Dispatch
             tableContent =  (<tr><td colSpan={9}><Spinner /></td></tr>);
         }
         else if(this.props.portfolios == null || this.props.portfolios.length == 0){
-            tableContent =  (<tr><td colSpan={9}><p className="table-warning">There are no portfolios for this team yet. You can create one using the "New Portfolio" button above!</p></td></tr>)
+            tableContent =  (<tr><td colSpan={9}><p className="table-warning">There are no portfolios for this team yet. You can create one using the "New Prospect" button above!</p></td></tr>)
         }
         else {
             tableContent = this.props.portfolios.map(portfolio => {

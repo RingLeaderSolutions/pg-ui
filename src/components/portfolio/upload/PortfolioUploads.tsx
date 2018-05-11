@@ -43,23 +43,30 @@ class PortfolioUploads extends React.Component<PortfolioUploadProps & StateProps
 
     renderUploadsTable(reports: UploadReport[], isImport: boolean){
         var viewClass = isImport ? "target: #modal-view-import" : "target: #modal-view-upload";
-        var rows = reports.map(r => {
-            var requestTime = moment.utc(r.requested).local().fromNow();   
-            return (
-                <tr key={r.id}>
-                    <td>{r.dataType}</td>
-                    <td>{r.notes}</td>
-                    <td>{requestTime}</td>
-                    <td><div className="user">
-                        <img className="avatar" src={r.requestor.avatarUrl} />
-                        <p>{r.requestor.firstName} {r.requestor.lastName}</p>
-                    </div></td>
-                    <td>
-                        <button className='uk-button uk-button-default uk-button-small' data-uk-toggle={viewClass} onClick={() => this.fetchUploadReport(r.resultDocId, isImport)}><span data-uk-icon='icon: menu' data-uk-tooltip="title: Open" /></button>
-                    </td>
-                </tr>
-            )
-        });
+        var rows = reports
+            .sort(
+                (a, b) => {
+                    if (a.requested > b.requested) return -1;
+                    if (a.requested < b.requested) return 1;
+                    return 0;
+                })
+            .map(r => {
+                var requestTime = moment.utc(r.requested).local().fromNow();   
+                return (
+                    <tr key={r.id}>
+                        <td>{r.dataType}</td>
+                        <td>{r.notes}</td>
+                        <td>{requestTime}</td>
+                        <td><div className="user">
+                            <img className="avatar" src={r.requestor.avatarUrl} />
+                            <p>{r.requestor.firstName} {r.requestor.lastName}</p>
+                        </div></td>
+                        <td>
+                            <button className='uk-button uk-button-default uk-button-small' data-uk-toggle={viewClass} onClick={() => this.fetchUploadReport(r.resultDocId, isImport)}><span data-uk-icon='icon: menu' data-uk-tooltip="title: Open" /></button>
+                        </td>
+                    </tr>
+                )
+            });
 
         return (
             <div>

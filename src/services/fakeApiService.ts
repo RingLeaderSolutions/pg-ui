@@ -480,6 +480,7 @@ export class FakeApiService implements IApiService {
                         meterCount: 5,
                         quotes: [
                             {
+                                appu: 0.1010201,
                                 contractBlobId: "x",
                                 expiry: "2017-12-19T00:12:07.167",
                                 portfolioId: "4d584e81-91c2-47b4-85f9-411db125af51",
@@ -814,7 +815,13 @@ export class FakeApiService implements IApiService {
     exportContractRates(tenderId: string, quoteId: string){
         var rateLink = "http://test.com/test.csv";
 
-        return OK(rateLink);
+        return OK( { exportUri: rateLink });
+    }
+
+    exportMeterConsumption(portfolioId: string){
+        var rateLink = "http://test.com/test.csv";
+
+        return OK( { exportUri: rateLink });
     }
 
     excludeMeters(portfolioId: string, meters: string[]){
@@ -841,7 +848,7 @@ export class FakeApiService implements IApiService {
         return OK();
     }
 
-    reportSuccessfulBackingSheetUpload(contractId: string, files: string[], utility: UtilityType) {
+    reportSuccessfulBackingSheetUpload(contractId: string, useGeneric: boolean, files: string[], utility: UtilityType) {
         return OK();
     }
 

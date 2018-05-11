@@ -11,7 +11,7 @@ import UploadSupplyDataDialog from './UploadSupplyDataDialog';
 import GasMeterTable from './GasMeterTable';
 import ElectricityMeterTable from './ElectricityMeterTable';
 
-import { fetchMeterConsumption, excludeMeters } from '../../../actions/meterActions';
+import { fetchMeterConsumption, excludeMeters, exportMeterConsumption } from '../../../actions/meterActions';
 
 interface PortfolioMetersProps {
     portfolio: Portfolio;
@@ -28,6 +28,7 @@ interface StateProps {
 interface DispatchProps {
     fetchMeterConsumption: (portfolioId: string) => void;
     excludeMeters: (portfolioId: string, meters: string[]) => void;    
+    exportMeterConsumption: (portfolioId: string) => void;
 }
 
 interface State {
@@ -54,6 +55,10 @@ class PortfolioMeters extends React.Component<PortfolioMetersProps & StateProps 
             tab: tab
         });
     }
+    
+    exportMeterConsumption(){
+        this.props.exportMeterConsumption(this.props.portfolio.id);
+    }
 
     excludeMeter(event: any, mpanCore: string){
         event.stopPropagation();
@@ -64,11 +69,12 @@ class PortfolioMeters extends React.Component<PortfolioMetersProps & StateProps 
     renderDynamicTable(columns: string[], values: string[][], utilityType: UtilityType){
         var supplyDataDialogClass = utilityType == UtilityType.Electricity ? "target: #modal-upload-supply-data-elec" : "target: #modal-upload-supply-data-gas";
 
-        var rows = values.map((row, index) => {
+        var rows = values.map((row, rowIndex) => {
            return (
-               <tr key={index}>
-                   {row.map((cellValue) => {
-                       return (<td>{cellValue}</td>);
+               <tr key={rowIndex}>
+                   {row.map((cellValue, cellIndex) => {
+                       var key = `${rowIndex},${cellIndex}`;
+                       return (<td key={key}>{cellValue}</td>);
                    })}
                    <td>
                         <button className='uk-button uk-button-default uk-button-small' onClick={(ev) => this.excludeMeter(ev, row[1])}><span data-uk-icon='icon: close' data-uk-tooltip="title: Exclude" /></button>
@@ -79,8 +85,9 @@ class PortfolioMeters extends React.Component<PortfolioMetersProps & StateProps 
             <div>
                 <div>
                     <p className='uk-text-right'>
-                        <button className='uk-button uk-button-primary uk-button-small' data-uk-toggle={supplyDataDialogClass}><span data-uk-icon='icon: upload' />Upload Supply Data</button>
-                        { utilityType == UtilityType.Electricity ? (<button className='uk-button uk-button-primary uk-button-small uk-margin-small-left uk-margin-small-right' data-uk-toggle="target: #modal-upload-consumption"><span data-uk-icon='icon: upload' />Upload Historic Consumption</button>) : null}
+                        <button className='uk-button uk-button-default uk-button-small' onClick={() => this.exportMeterConsumption()} ><span data-uk-icon='icon: cloud-download' /> Export</button>
+                        <button className='uk-button uk-button-primary uk-button-small uk-margin-small-left' data-uk-toggle={supplyDataDialogClass}><span data-uk-icon='icon: upload' /> Upload Supply Data</button>
+                        { utilityType == UtilityType.Electricity ? (<button className='uk-button uk-button-primary uk-button-small uk-margin-small-left uk-margin-small-right' data-uk-toggle="target: #modal-upload-consumption"><span data-uk-icon='icon: upload' /> Upload Historic Consumption</button>) : null}
                     </p>
                 </div>
                 <table className="uk-table uk-table-divider">
@@ -137,7 +144,8 @@ class PortfolioMeters extends React.Component<PortfolioMetersProps & StateProps 
 const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, PortfolioMetersProps> = (dispatch) => {
     return {
         fetchMeterConsumption: (portfolioId: string) => dispatch(fetchMeterConsumption(portfolioId)),
-        excludeMeters: (portfolioId: string, meters: string[]) => dispatch(excludeMeters(portfolioId, meters))
+        excludeMeters: (portfolioId: string, meters: string[]) => dispatch(excludeMeters(portfolioId, meters)),
+        exportMeterConsumption: (portfolioId: string) => dispatch(exportMeterConsumption(portfolioId))
     };
 };
   

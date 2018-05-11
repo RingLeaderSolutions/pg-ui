@@ -49,6 +49,7 @@ export interface TenderIssuanceEmail {
 }
 
 export interface TenderQuote {
+    appu: number;
     contractBlobId: string;
     expiry: string;
     portfolioId: string;
@@ -210,8 +211,4 @@ export interface BackingSheet {
 export interface Tariff {
     id: string;
     name: string;
-}
-
-export interface QuoteExportResponse {
-    exportUri: string;
 }
