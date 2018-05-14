@@ -39,3 +39,39 @@ export function retrieveAccountDetail(accountId: string){
             });
     };
 }
+
+export function createAccount(account: Account){
+    return (dispatch: Dispatch<any>) => {
+        let createPromise = ApiService.createAccount(account);
+        dispatch( { type: types.CREATE_ACCOUNT_WORKING });
+
+        makeApiRequest(dispatch,
+            createPromise,
+            201, 
+            data => {
+                return { type: types.CREATE_ACCOUNT_SUCCESSFUL, data};
+                
+            }, 
+            error => {
+                return { type: types.CREATE_ACCOUNT_FAILED, errorMessage: error };
+            });
+    };
+}
+
+export function updateAccount(account: Account){
+    return (dispatch: Dispatch<any>) => {
+        let createPromise = ApiService.updateAccount(account);
+        dispatch( { type: types.UPDATE_ACCOUNT_WORKING });
+
+        makeApiRequest(dispatch,
+            createPromise,
+            201, 
+            data => {
+                return { type: types.UPDATE_ACCOUNT_SUCCESSFUL, data};
+                
+            }, 
+            error => {
+                return { type: types.UPDATE_ACCOUNT_FAILED, errorMessage: error };
+            });
+    };
+}

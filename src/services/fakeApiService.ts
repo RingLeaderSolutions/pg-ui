@@ -20,6 +20,7 @@ import {
 import { PortfolioDetails, PortfolioDocument } from '../model/PortfolioDetails';
 import { BackingSheet, Tender, TenderContract, TenderSupplier, TenderIssuanceEmail, Tariff, TenderRequirements } from '../model/Tender';
 import { IApiService } from './ApiService';
+import { AccountContact } from '../model/HierarchyObjects';
 
 const responseDelay = 1000;
 const defer = (callback: () => void) => new Promise((resolve, reject) => setTimeout(() => callback(), responseDelay));
@@ -427,7 +428,7 @@ export class FakeApiService implements IApiService {
         return OK(data);
 	}
 		
-    uploadSupplyMeterData(portfolioId: string, file: Blob, utility: UtilityType){
+    uploadSupplyMeterData(accountId: string, file: Blob, utility: UtilityType){
         return OK();
     }
 
@@ -836,7 +837,7 @@ export class FakeApiService implements IApiService {
         return OK();
     }
 
-    reportSuccessfulSupplyMeterDataUpload(portfolioId: string, accountId: string, files: string[], utility: UtilityType) {
+    reportSuccessfulSupplyMeterDataUpload(accountId: string, files: string[], utility: UtilityType) {
         return OK();
     }
 
@@ -960,6 +961,15 @@ export class FakeApiService implements IApiService {
                 postcode: "string"
             }
         ];
+        
+        var contacts: AccountContact[] = [{
+            id: "1",
+            firstName: "Daniel",
+            lastName: "May",
+            email: "daniel@danielmay.co.uk",
+            phoneNumber: "+1 409 217 2046",
+            role: "Administrator"
+        }]
 
         var accountDetail: AccountDetail = {
             id: "1",
@@ -973,11 +983,12 @@ export class FakeApiService implements IApiService {
             creditRating: "A+++",
             hasCCLException: true,
             hasFiTException: false,
-            incorporationDate: "12/04/2012",
+            incorporationDate: "2004-10-19T00:00:00",
             isRegisteredCharity: false,
             isVATEligible: true,
             postcode: "AB12 CD2",
-            sites
+            sites,
+            contacts
         };
         return OK(accountDetail);
     }
@@ -1004,6 +1015,10 @@ export class FakeApiService implements IApiService {
             gasConsumptionEntries: [[ "MOONIEG", "2", "100", "100"]],
         }
         return OK(consumption);
+    }
+
+    updateAccount(account: Account){
+        return OK();
     }
 }
 

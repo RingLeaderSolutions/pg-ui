@@ -8,9 +8,6 @@ import { Link } from 'react-router-dom';
 import UploadHistoricDialog from './UploadHistoricDialog';
 import UploadSupplyDataDialog from './UploadSupplyDataDialog';
 
-import GasMeterTable from './GasMeterTable';
-import ElectricityMeterTable from './ElectricityMeterTable';
-
 import { fetchMeterConsumption, excludeMeters, exportMeterConsumption } from '../../../actions/meterActions';
 
 interface PortfolioMetersProps {
@@ -67,8 +64,6 @@ class PortfolioMeters extends React.Component<PortfolioMetersProps & StateProps 
     }
 
     renderDynamicTable(columns: string[], values: string[][], utilityType: UtilityType){
-        var supplyDataDialogClass = utilityType == UtilityType.Electricity ? "target: #modal-upload-supply-data-elec" : "target: #modal-upload-supply-data-gas";
-
         var rows = values.map((row, rowIndex) => {
            return (
                <tr key={rowIndex}>
@@ -86,7 +81,6 @@ class PortfolioMeters extends React.Component<PortfolioMetersProps & StateProps 
                 <div>
                     <p className='uk-text-right'>
                         <button className='uk-button uk-button-default uk-button-small' onClick={() => this.exportMeterConsumption()} ><span data-uk-icon='icon: cloud-download' /> Export</button>
-                        <button className='uk-button uk-button-primary uk-button-small uk-margin-small-left' data-uk-toggle={supplyDataDialogClass}><span data-uk-icon='icon: upload' /> Upload Supply Data</button>
                         { utilityType == UtilityType.Electricity ? (<button className='uk-button uk-button-primary uk-button-small uk-margin-small-left uk-margin-small-right' data-uk-toggle="target: #modal-upload-consumption"><span data-uk-icon='icon: upload' /> Upload Historic Consumption</button>) : null}
                     </p>
                 </div>
@@ -123,14 +117,6 @@ class PortfolioMeters extends React.Component<PortfolioMetersProps & StateProps 
                             <li>{this.renderDynamicTable(this.props.consumption.gasHeaders, this.props.consumption.gasConsumptionEntries, UtilityType.Gas)}</li>
                         </ul>
                     </div>
-                </div>
-
-                <div id="modal-upload-supply-data-elec" data-uk-modal="center: true">
-                    <UploadSupplyDataDialog details={this.props.details} type={UtilityType.Electricity} />
-                </div>
-
-                <div id="modal-upload-supply-data-gas" data-uk-modal="center: true">
-                    <UploadSupplyDataDialog details={this.props.details} type={UtilityType.Gas} />
                 </div>
 
                 <div id="modal-upload-consumption" data-uk-modal="center: true">

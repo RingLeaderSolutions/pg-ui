@@ -3,7 +3,8 @@ import { HubConnection } from "@aspnet/signalr-client";
 import { NotificationMessage } from '../model/NotificationMessage';
 import { getPortfolioDetails } from '../actions/portfolioActions';
 import { getPortfolioTenders } from '../actions/tenderActions';
-import { getMeters } from '../actions/meterActions';
+import { retrieveAccountDetail } from '../actions/hierarchyActions';
+import { fetchMeterConsumption } from '../actions/meterActions';
 import { ApplicationState } from "../applicationState";
 
 export default function connectSignalR(store: any) {
@@ -14,7 +15,8 @@ export default function connectSignalR(store: any) {
         var currentState: ApplicationState = store.getState();
 
         var currentPortfolio = currentState.portfolio.selected.value;
-        if(!currentPortfolio){
+        var currentAccount = currentState.hierarchy.selected.value;
+        if(!currentPortfolio || !currentAccount){
             return;
         }
 
@@ -27,7 +29,7 @@ export default function connectSignalR(store: any) {
             case "portfoliometers":
                 if(data.EntityId == currentPortfolioId){
                     store.dispatch(getPortfolioDetails(currentPortfolioId));
-                    store.dispatch(getMeters(currentPortfolioId));
+                    store.dispatch(fetchMeterConsumption(currentPortfolioId));
                 }
                 break;
             case "tender":
@@ -35,30 +37,12 @@ export default function connectSignalR(store: any) {
                     store.dispatch(getPortfolioTenders(currentPortfolioId));
                 }
                 break;
+            case "account":
+                if(data.EntityId == currentAccount.id){
+                    store.dispatch(retrieveAccountDetail(currentAccount.id))
+                }
+                break;
         }
-
-        // let messageType = types.NOTIFICATION_PORTFOLIO_CREATED;
-        // switch (data.Description) {
-        //     case 'portfolio created':
-        //         messageType = types.NOTIFICATION_PORTFOLIO_CREATED;
-        //         break;
-        //     case 'portfolio deleted':
-        //         messageType = types.NOTIFICATION_PORTFOLIO_DELETED;
-        //         break;
-        //     case 'mpans included':
-        //         messageType = types.NOTIFICATION_MPANS_INCLUDED;
-        //         break;
-        //     case 'mpans excluded':
-        //         messageType = types.NOTIFICATION_MPANS_EXCLUDED;
-        //         break;
-        //     default:
-        //         return;
-        // }
-
-        // store.dispatch({
-        //     type: types.NOTIFICATION_PORTFOLIO_CREATED,
-        //     message: data
-        // });
     });
 
     connection.start()

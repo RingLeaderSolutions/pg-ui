@@ -9,9 +9,10 @@ import { FormEvent } from "react";
 import * as moment from 'moment';
 import DatePicker from 'react-datepicker';
 
-import { createAccount } from '../../actions/hierarchyActions';
+import { updateAccount } from '../../actions/hierarchyActions';
 
-interface CreateAccountDialogProps {    
+interface UpdateAccountDialogProps {    
+    account: Account;
 }
 
 interface StateProps {
@@ -21,18 +22,18 @@ interface StateProps {
 }
 
 interface DispatchProps {
-    createAccount: (account: Account) => void;
+    updateAccount: (account: Account) => void;
 }
 
-interface CreateAccountDialogState {
+interface UpdateAccountDialogState {
     incorporationDate: moment.Moment;
 }
 
-class CreateAccountDialog extends React.Component<CreateAccountDialogProps & StateProps & DispatchProps, CreateAccountDialogState> {
-    constructor(props: CreateAccountDialogProps & StateProps & DispatchProps){
+class UpdateAccountDialog extends React.Component<UpdateAccountDialogProps & StateProps & DispatchProps, UpdateAccountDialogState> {
+    constructor(props: UpdateAccountDialogProps & StateProps & DispatchProps){
         super();
         this.state = {
-            incorporationDate: moment()
+            incorporationDate: props.account.incorporationDate ? moment(props.account.incorporationDate) : moment(),
         };
 
         this.handleIncorporationDateChange = this.handleIncorporationDateChange.bind(this);
@@ -50,9 +51,9 @@ class CreateAccountDialog extends React.Component<CreateAccountDialogProps & Sta
     fitEligible: HTMLInputElement;
     cclEligible: HTMLInputElement;
 
-    createAccount(){
+    updateAccount(){
         var account: Account = {
-            id: null,
+            id: this.props.account.id,
             accountNumber: null,
             contact: null,
             companyName: this.companyName.value,
@@ -69,7 +70,7 @@ class CreateAccountDialog extends React.Component<CreateAccountDialogProps & Sta
             hasCCLException: !this.cclEligible.checked,
         }
         
-        this.props.createAccount(account);
+        this.props.updateAccount(account);
     }
 
     handleIncorporationDateChange(date: moment.Moment, event: React.SyntheticEvent<any>){
@@ -81,11 +82,12 @@ class CreateAccountDialog extends React.Component<CreateAccountDialogProps & Sta
     }
 
     render() {
+        var { account } = this.props;
         return (
             <div className="uk-modal-dialog">
                 <button className="uk-modal-close-default" type="button" data-uk-close></button>
                 <div className="uk-modal-header">
-                    <h2 className="uk-modal-title">Create Account</h2>
+                    <h2 className="uk-modal-title">Update Account: {account.companyName}</h2>
                 </div>
                 <div className="uk-modal-body">
                     <div className="uk-margin">
@@ -96,6 +98,7 @@ class CreateAccountDialog extends React.Component<CreateAccountDialogProps & Sta
                                     <input 
                                         className='uk-input' 
                                         type='text' 
+                                        defaultValue={account.companyName}
                                         ref={ref => this.companyName = ref} />
                                 </div>
                                 <div className='uk-margin'>
@@ -103,6 +106,7 @@ class CreateAccountDialog extends React.Component<CreateAccountDialogProps & Sta
                                     <input 
                                         className='uk-input' 
                                         type='text' 
+                                        defaultValue={account.companyRegistrationNumber}
                                         ref={ref => this.companyReg = ref} />
                                 </div>
                                 <div className='uk-margin'>
@@ -110,6 +114,7 @@ class CreateAccountDialog extends React.Component<CreateAccountDialogProps & Sta
                                     <input 
                                         className='uk-input' 
                                         type='text' 
+                                        defaultValue={account.address}
                                         ref={ref => this.address = ref} />
                                 </div>
                                 <div className='uk-margin'>
@@ -117,6 +122,7 @@ class CreateAccountDialog extends React.Component<CreateAccountDialogProps & Sta
                                     <input 
                                         className='uk-input' 
                                         type='text' 
+                                        defaultValue={account.postcode}
                                         ref={ref => this.postcode = ref} />
                                 </div>
                                 <div className='uk-margin'>
@@ -124,6 +130,7 @@ class CreateAccountDialog extends React.Component<CreateAccountDialogProps & Sta
                                     <input 
                                         className='uk-input' 
                                         type='text' 
+                                        defaultValue={account.countryOfOrigin}
                                         ref={ref => this.country = ref} />
                                 </div>
                                 <div className="uk-margin">
@@ -140,6 +147,7 @@ class CreateAccountDialog extends React.Component<CreateAccountDialogProps & Sta
                                     <input 
                                         className='uk-input' 
                                         type='text' 
+                                        defaultValue={account.companyStatus}
                                         ref={ref => this.status = ref} />
                                 </div>
                                 <div className='uk-margin'>
@@ -147,6 +155,7 @@ class CreateAccountDialog extends React.Component<CreateAccountDialogProps & Sta
                                     <input 
                                         className='uk-input' 
                                         type='text' 
+                                        defaultValue={account.creditRating}
                                         ref={ref => this.creditRating = ref} />
                                 </div>
                                 <div className='uk-margin'>
@@ -154,7 +163,7 @@ class CreateAccountDialog extends React.Component<CreateAccountDialogProps & Sta
                                         <input 
                                             className='uk-checkbox'
                                             type='checkbox' 
-                                            defaultChecked={true}
+                                            defaultChecked={account.isVATEligible}
                                             ref={ref => this.vatEligible = ref}
                                             /> Is VAT Eligible
                                     </label>
@@ -164,7 +173,7 @@ class CreateAccountDialog extends React.Component<CreateAccountDialogProps & Sta
                                         <input 
                                             className='uk-checkbox'
                                             type='checkbox' 
-                                            defaultChecked={false}
+                                            defaultChecked={account.isRegisteredCharity}
                                             ref={ref => this.registeredCharity = ref}
                                             /> Is Registered Charity
                                     </label>
@@ -174,7 +183,7 @@ class CreateAccountDialog extends React.Component<CreateAccountDialogProps & Sta
                                         <input 
                                             className='uk-checkbox'
                                             type='checkbox' 
-                                            defaultChecked={false}
+                                            defaultChecked={!account.hasFiTException}
                                             ref={ref => this.fitEligible = ref}
                                             /> Is FiT Eligible
                                     </label>
@@ -184,7 +193,7 @@ class CreateAccountDialog extends React.Component<CreateAccountDialogProps & Sta
                                         <input 
                                             className='uk-checkbox'
                                             type='checkbox' 
-                                            defaultChecked={false}
+                                            defaultChecked={!account.hasCCLException}
                                             ref={ref => this.cclEligible = ref}
                                             /> Is CCL Eligible
                                     </label>
@@ -195,25 +204,24 @@ class CreateAccountDialog extends React.Component<CreateAccountDialogProps & Sta
                 </div>
                 <div className="uk-modal-footer uk-text-right">
                     <button className="uk-button uk-button-default uk-margin-right uk-modal-close" type="button">Cancel</button>
-                    <button className="uk-button uk-button-primary uk-modal-close" type="button" onClick={() => this.createAccount()}>Create</button>
+                    <button className="uk-button uk-button-primary uk-modal-close" type="button" onClick={() => this.updateAccount()}>Save</button>
                 </div>
             </div>)
     }
 }
 
-const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, CreateAccountDialogProps> = (dispatch) => {
+const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, UpdateAccountDialogProps> = (dispatch) => {
     return {
-        createAccount: (account: Account) =>  dispatch(createAccount(account))
+        updateAccount: (account: Account) =>  dispatch(updateAccount(account))
     };
 };
   
-const mapStateToProps: MapStateToProps<StateProps, CreateAccountDialogProps> = (state: ApplicationState) => {
+const mapStateToProps: MapStateToProps<StateProps, UpdateAccountDialogProps> = (state: ApplicationState) => {
     return {
         working: state.portfolio.details.working,
         error: state.portfolio.details.error,
         errorMessage: state.portfolio.details.errorMessage,
-        suppliers: state.portfolio.tender.suppliers.value,
     };
 };
   
-export default connect(mapStateToProps, mapDispatchToProps)(CreateAccountDialog);
+export default connect(mapStateToProps, mapDispatchToProps)(UpdateAccountDialog);

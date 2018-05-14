@@ -51,9 +51,6 @@ class PortfolioSetup extends React.Component<PortfolioSetupProps & StateProps & 
                     <div>
                         <PortfolioContactSection details={details} />
                     </div>
-                    <div>
-                        <PortfolioCompanyStatus details={details} />
-                    </div>
                 </div>
                 
                 {/* <div className="uk-margin"><PortfolioRequirementsSection details={details} /></div> */}

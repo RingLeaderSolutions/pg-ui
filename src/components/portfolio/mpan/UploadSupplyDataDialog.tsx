@@ -10,7 +10,7 @@ import { FormEvent } from "react";
 import { uploadSupplyMeterData } from '../../../actions/portfolioActions';
 
 interface UploadSupplyDataDialogProps {
-    details: PortfolioDetails;
+    accountId: string;
     type: UtilityType;
 }
 
@@ -21,7 +21,7 @@ interface StateProps {
 }
 
 interface DispatchProps {
-    uploadSupplyData: (portfolioId: string, accountId: string, file: Blob, type: UtilityType) => void;
+    uploadSupplyData: (accountId: string, file: Blob, type: UtilityType) => void;
 }
 
 interface UploadHistoricState {
@@ -40,9 +40,7 @@ class UploadSupplyDataDialog extends React.Component<UploadSupplyDataDialogProps
     }
     
     upload() {
-        var portfolioId = this.props.details.portfolio.id;
-        var accountId = this.props.details.portfolio.accountId;
-        this.props.uploadSupplyData(portfolioId, accountId, this.state.file, this.props.type);
+        this.props.uploadSupplyData(this.props.accountId, this.state.file, this.props.type);
     }
 
     onFileChosen(e: any){
@@ -52,8 +50,6 @@ class UploadSupplyDataDialog extends React.Component<UploadSupplyDataDialogProps
     }
 
     render() {
-        var { details } = this.props;
-
         return (
             <div className="uk-modal-dialog">
                 <button className="uk-modal-close-default" type="button" data-uk-close></button>
@@ -82,7 +78,7 @@ class UploadSupplyDataDialog extends React.Component<UploadSupplyDataDialogProps
 
 const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, UploadSupplyDataDialogProps> = (dispatch) => {
     return {
-        uploadSupplyData: (portfolioId: string, accountId: string, file: Blob, type: UtilityType) => dispatch(uploadSupplyMeterData(portfolioId, accountId, file, type))        
+        uploadSupplyData: (accountId: string, file: Blob, type: UtilityType) => dispatch(uploadSupplyMeterData(accountId, file, type))        
     };
 };
   

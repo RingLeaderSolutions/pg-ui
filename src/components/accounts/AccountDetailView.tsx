@@ -4,11 +4,13 @@ import ErrorMessage from "../common/ErrorMessage";
 import { RouteComponentProps } from 'react-router';
 import { MapDispatchToPropsFunction, connect, MapStateToProps } from 'react-redux';
 import { ApplicationState } from '../../applicationState';
-import { Portfolio, AccountDetail, SiteDetail, HierarchyMpan, HierarchyMprn } from '../../model/Models';
+import { Portfolio, AccountDetail, SiteDetail, HierarchyMpan, HierarchyMprn, UtilityType } from '../../model/Models';
 import Spinner from '../common/Spinner';
 
 
 import { retrieveAccountDetail } from '../../actions/hierarchyActions';
+import UploadSupplyDataDialog from "../portfolio/mpan/UploadSupplyDataDialog";
+import UpdateAccountDialog from "./UpdateAccountDialog";
 
 interface AccountDetailViewProps extends RouteComponentProps<void> {
 }
@@ -35,22 +37,27 @@ class AccountDetailView extends React.Component<AccountDetailViewProps & StatePr
         }
 
         return (
-            <table className='uk-table uk-table-divider meter-table'>
-                <thead>
-                    <tr>
-                        <th>Site</th>
-                        <th>Meter</th>
-                        <th>Serial Number</th>
-                        <th>Make</th>
-                        <th>Model</th>
-                        <th>Size</th>
-                        <th>AQ</th>
-                        <th>Change of Use</th>
-                        <th>Is Imperial</th>
-                    </tr>
-                </thead>
-                {this.renderSitesAndMeters()}
-            </table>
+            <div>
+                <p className="uk-text-right">
+                    <button className='uk-button uk-button-primary uk-button-small uk-margin-small-right' data-uk-toggle="target: #modal-upload-supply-data-elec"><span data-uk-icon='icon: upload' /> Upload Supply Data</button>
+                </p>
+                <table className='uk-table uk-table-divider meter-table'>
+                    <thead>
+                        <tr>
+                            <th>Site</th>
+                            <th>Meter</th>
+                            <th>Serial Number</th>
+                            <th>Make</th>
+                            <th>Model</th>
+                            <th>Size</th>
+                            <th>AQ</th>
+                            <th>Change of Use</th>
+                            <th>Is Imperial</th>
+                        </tr>
+                    </thead>
+                    {this.renderSitesAndMeters()}
+                </table>
+            </div>
         );
     }
 
@@ -104,32 +111,34 @@ class AccountDetailView extends React.Component<AccountDetailViewProps & StatePr
         }
 
         return (
-            <table className='uk-table uk-table-divider meter-table'>
-                <thead>
-                    <tr>
-                        <th>Site</th>
-                        <th>Meter</th>
-                        <th>Type</th>
-                        <th>Topline</th>
-                        <th>Retrieval</th>
-                        <th>GSP</th>
-                        <th>Measurement</th>
-                        <th>S/N</th>
-                        <th>DA</th>
-                        <th>DC</th>
-                        <th>MO</th>
-                        <th>Voltage</th>
-                        <th>Connection</th>
-                        <th>Postcode</th>
-                        <th>REC</th>
-                        <th>EAC</th>
-                        <th>Capacity</th>
-                        <th>Energised</th>
-                        <th>New Conn.</th>
-                    </tr>
-                </thead>
-                {this.renderSitesAndMpans()}
-            </table>
+            <div>
+                <p className="uk-text-right">
+                    <button className='uk-button uk-button-primary uk-button-small uk-margin-small-right' data-uk-toggle="target: #modal-upload-supply-data-elec"><span data-uk-icon='icon: upload' /> Upload Supply Data</button>
+                </p>
+                <table className='uk-table uk-table-divider meter-table'>
+                    <thead>
+                        <tr>
+                            <th>Site</th>
+                            <th>Meter</th>
+                            <th>Type</th>
+                            <th>Topline</th>
+                            <th>S/N</th>
+                            <th>DA</th>
+                            <th>DC</th>
+                            <th>MO</th>
+                            <th>Voltage</th>
+                            <th>Connection</th>
+                            <th>Postcode</th>
+                            <th>REC</th>
+                            <th>EAC</th>
+                            <th>Capacity</th>
+                            <th>Energised</th>
+                            <th>New Conn.</th>
+                        </tr>
+                    </thead>
+                    {this.renderSitesAndMpans()}
+                </table>
+            </div>
         );
     }
 
@@ -167,9 +176,6 @@ class AccountDetailView extends React.Component<AccountDetailViewProps & StatePr
                     <td>{meter.mpanCore}</td>
                     <td>{meter.meterType}</td>
                     <td className="uk-text-nowrap" data-uk-tooltip={toplineTooltip} >{meter.profileClass} {meter.meterTimeSwitchCode} {meter.llf}</td>
-                    <td>{meter.retrievalMethod}</td>
-                    <td>{meter.gspGroup}</td>
-                    <td>{meter.measurementClass}</td>
                     <td>{meter.serialNumber}</td>
                     <td>{meter.daAgent}</td>
                     <td>{meter.dcAgent}</td>
@@ -204,14 +210,34 @@ class AccountDetailView extends React.Component<AccountDetailViewProps & StatePr
         return (
             <div className="content-inner">
                 <Header title={headerTitle} />
+                <div className="uk-text-right">
+                    <button className="uk-button uk-button-small uk-button-default uk-margin-small-right uk-margin-small-top" data-uk-toggle="target: #modal-update-account">
+                        <span className="uk-margin-small-right" data-uk-icon="icon: pencil"></span>
+                        Edit account
+                    </button>
+                </div>
                 <ul data-uk-tab>
                     <li className="uk-active"><a href="#">Electricity</a></li>
                     <li><a href="#">Gas</a></li>
+                    <li><a href="#">Contacts</a></li>
                 </ul>
                 <ul className="uk-switcher restrict-height-hack">
                     <li>{this.renderElectricityTable()}</li>
                     <li>{this.renderGasTable()}</li>
+                    <li><p>Coming soon.</p></li>
                 </ul>
+
+                <div id="modal-upload-supply-data-elec" data-uk-modal="center: true">
+                    <UploadSupplyDataDialog accountId={this.props.account.id} type={UtilityType.Electricity} />
+                </div>
+
+                <div id="modal-upload-supply-data-gas" data-uk-modal="center: true">
+                    <UploadSupplyDataDialog accountId={this.props.account.id} type={UtilityType.Gas} />
+                </div>
+
+                <div id="modal-update-account" data-uk-modal="center: true">
+                    <UpdateAccountDialog account={selectedAccount} />
+                </div>
             </div>)
     }
 }

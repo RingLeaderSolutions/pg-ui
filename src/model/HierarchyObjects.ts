@@ -18,6 +18,15 @@ export interface Account {
     hasFiTException: boolean
 }
 
+export interface AccountContact {
+    id: string;
+    firstName: string;
+    lastName: string;
+    email: string;
+    phoneNumber: string;
+    role: string;
+}
+
 export interface HierarchySite {
     id: string,
     siteCode: string,
@@ -32,7 +41,8 @@ export interface HierarchySite {
 }
 
 export interface AccountDetail extends Account {
-    sites: SiteDetail[]
+    sites: SiteDetail[];
+    contacts: AccountContact[];
 }
 
 export interface SiteDetail extends HierarchySite {

@@ -26,6 +26,7 @@ export interface IApiService {
   retrieveAccountDetail(accountId: string): Promise<AxiosResponse>;
   createAccountFromCompany(company: CompanyInfo) : Promise<AxiosResponse>;
   createAccount(account: Account) : Promise<AxiosResponse>;
+  updateAccount(account: Account) : Promise<AxiosResponse>;
   updateAccountFlags(accountId: string, accountFlags: AccountCompanyStatusFlags): Promise<AxiosResponse>;
   
   getPortfolioHistory(portfolioId: string): Promise<AxiosResponse>;
@@ -40,7 +41,7 @@ export interface IApiService {
   fetchUploadReport(reportId: string, isImport: boolean): Promise<AxiosResponse>;
 
   uploadLoa(portfolioId: string, file: Blob): Promise<AxiosResponse>;
-  uploadSupplyMeterData(portfolioId: string, file: Blob, utility: UtilityType): Promise<AxiosResponse>;
+  uploadSupplyMeterData(accountId: string, file: Blob, utility: UtilityType): Promise<AxiosResponse>;
   uploadHistorical(portfolioId: string, files: Blob[]): Promise<AxiosResponse>;
   uploadSiteList(portfolioId: string, file: Blob): Promise<AxiosResponse>;
   uploadElectricityBackingSheet(contractId: string, file: Blob): Promise<AxiosResponse>;
@@ -48,7 +49,7 @@ export interface IApiService {
   uploadOffer(tenderId: string, supplierId: string, file: Blob): Promise<AxiosResponse>;
 
   reportSuccessfulLoaUpload(portfolioId: string, accountId: string, files: string[]): Promise<AxiosResponse>;
-  reportSuccessfulSupplyMeterDataUpload(portfolioId: string, accountId: string, files: string[], utility: UtilityType): Promise<AxiosResponse>;
+  reportSuccessfulSupplyMeterDataUpload(accountId: string, files: string[], utility: UtilityType): Promise<AxiosResponse>;
   reportSuccessfulSiteListUpload(portfolioId: string, accountId: string, files: string[]): Promise<AxiosResponse>;
   reportSuccessfulHistoricalUpload(portfolioId: string, files: string[], historicalType: string): Promise<AxiosResponse>;
   reportSuccessfulBackingSheetUpload(contractId: string, useGeneric: boolean, files: string[], utility: UtilityType): Promise<AxiosResponse>;
@@ -204,6 +205,10 @@ export class ApiService implements IApiService {
     createAccount(account: Account){
         return axios.post(`${this.hierarchyApiUri}/api/Account`, account, this.getRequestConfig());         
     }
+
+    updateAccount(account: Account){
+        return axios.put(`${this.hierarchyApiUri}/api/Account/${account.id}`, account, this.getRequestConfig());         
+    }
     
     createAccountFromCompany(company: CompanyInfo) {
         let dateToFormat = moment(company.incorporationDate, "DD/MM/YYYY");
@@ -254,12 +259,12 @@ export class ApiService implements IApiService {
         return axios.post(`${this.uploadApiUri}/api/upload/loa/${portfolioId}`, formData, this.getUploadFileConfig());
     }
 
-    uploadSupplyMeterData(portfolioId: string, file: Blob, utility: UtilityType){
+    uploadSupplyMeterData(accountId: string, file: Blob, utility: UtilityType){
         var formData = new FormData();
         formData.append('files', file);
 
         var prefix = utility == UtilityType.Electricity ? "electricity" : "gas";
-        return axios.post(`${this.uploadApiUri}/api/upload/supply/${prefix}/${portfolioId}`, formData, this.getUploadFileConfig());
+        return axios.post(`${this.uploadApiUri}/api/upload/supply/${prefix}/${accountId}`, formData, this.getUploadFileConfig());
     }
 
     uploadHistorical(portfolioId: string, files: Blob[]){
@@ -417,9 +422,8 @@ export class ApiService implements IApiService {
         return axios.post(`${this.baseApiUri}/portman-web/upload/loa/${portfolioId}`, payload, this.getRequestConfig());
     }
 
-    reportSuccessfulSupplyMeterDataUpload(portfolioId: string, accountId: string, files: string[], utility: UtilityType){
+    reportSuccessfulSupplyMeterDataUpload(accountId: string, files: string[], utility: UtilityType){
         var payload = {
-            portfolioId,
             csvNames: files,
             uploadType: "SUPPLYDATA",
             notes: `Uploaded ${moment().toISOString()}`
@@ -507,7 +511,6 @@ export class ApiService implements IApiService {
     }
 
     reportLogin(){
-        //return new FakeApiService().reportLogin();
         return axios.post(`${this.baseApiUri}/portman-web/admin/logon`, null, this.getRequestConfig());
     }
 

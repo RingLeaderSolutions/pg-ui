@@ -145,24 +145,6 @@ export function retrieveAccount(accountId: string){
     };
 }
 
-export function createAccount(account: Account){
-    return (dispatch: Dispatch<any>) => {
-        let createPromise = ApiService.createAccount(account);
-        dispatch( { type: types.CREATE_ACCOUNT_WORKING });
-
-        makeApiRequest(dispatch,
-            createPromise,
-            201, 
-            data => {
-                return { type: types.CREATE_ACCOUNT_SUCCESSFUL, data};
-                
-            }, 
-            error => {
-                return { type: types.CREATE_ACCOUNT_FAILED, errorMessage: error };
-            });
-    };
-}
-
 export function createAccountFromCompany(company: CompanyInfo){
     return (dispatch: Dispatch<any>) => {
         let createPromise = ApiService.createAccountFromCompany(company);
@@ -299,9 +281,9 @@ export function uploadSiteList(portfolioId: string, accountId: string, file: Blo
     };
 }
 
-export function uploadSupplyMeterData(portfolioId: string, accountId: string, file: Blob, utility: UtilityType){
+export function uploadSupplyMeterData(accountId: string, file: Blob, utility: UtilityType){
     return (dispatch: Dispatch<any>) => {
-        let uploadPromise = ApiService.uploadSupplyMeterData(portfolioId, file, utility);
+        let uploadPromise = ApiService.uploadSupplyMeterData(accountId, file, utility);
         dispatch({ type: types.UPLOAD_SUPPLY_METER_DATA_WORKING });
 
         makeApiRequest(dispatch,
@@ -309,7 +291,7 @@ export function uploadSupplyMeterData(portfolioId: string, accountId: string, fi
             200, 
             data => {
                 var uploadResponse = data as UploadResponse;
-                ApiService.reportSuccessfulSupplyMeterDataUpload(portfolioId, accountId, uploadResponse.uploadedFiles, utility);
+                ApiService.reportSuccessfulSupplyMeterDataUpload(accountId, uploadResponse.uploadedFiles, utility);
                 return { type: types.UPLOAD_SUPPLY_METER_DATA_SUCCESSFUL, data: null};
                 
             }, 

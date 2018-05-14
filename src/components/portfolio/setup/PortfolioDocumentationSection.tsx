@@ -72,51 +72,13 @@ class PortfolioDocumentationSection extends React.Component<PortfolioDocumentati
                 </div>);
         }
 
-        let siteListContent = null;
-        var siteListProvided = this.props.details.siteCount != 0;
-        if(siteListProvided){
-            siteListContent = (
-                <div data-uk-grid>
-                    <div className="uk-width-auto@m">
-                        <span className="icon-standard-cursor" data-uk-icon="icon: check; ratio: 1.5"></span>
-                    </div>
-                    <div className="uk-width-expand@m">
-                        <h3>Site list provided</h3>
-                    </div>
-                </div>);
-        }
-        else {
-            siteListContent = (
-                <div data-uk-grid>
-                    <div className="uk-width-auto@m">
-                        <span className="icon-standard-cursor" data-uk-icon="icon: close; ratio: 1.5"></span>
-                    </div>
-                    <div className="uk-width-expand@m">
-                        <h3>Requires Site List Upload</h3>
-                    </div>
-                    <div className="uk-width-auto@m">
-                        <div className="uk-margin-small uk-float-right">
-                            <button className="uk-button uk-button-primary" type="button" data-uk-toggle="target: #modal-upload-sitelist">
-                                <span className="uk-margin-small-right icon-standard-cursor" data-uk-icon="icon: upload" />
-                                Upload Site List
-                            </button>
-                        </div>
-                    </div>
-                </div>);
-        }
-
         return (
             <div className="uk-card uk-card-default uk-card-body">
                 <h3>Documentation</h3>
-                {siteListContent}
                 <div className="uk-margin">{loaContent}</div>
 
                 <div id="modal-upload-loa" data-uk-modal="center: true">
                     <UploadLOADialog details={this.props.details} />
-                </div>
-
-                <div id="modal-upload-sitelist" data-uk-modal="center: true">
-                    <UploadSiteListDialog details={this.props.details} />
                 </div>
             </div>)
     }
