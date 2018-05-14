@@ -32,15 +32,12 @@ class AccountDetailView extends React.Component<AccountDetailViewProps & StatePr
     }
 
     renderGasTable() {
+        var content;
         if(this.props.account.sites.length === 0){
-            return (<div>No meter data uploaded yet.</div>);
+            content = (<div>No meter data uploaded yet.</div>);
         }
-
-        return (
-            <div>
-                <p className="uk-text-right">
-                    <button className='uk-button uk-button-primary uk-button-small uk-margin-small-right' data-uk-toggle="target: #modal-upload-supply-data-elec"><span data-uk-icon='icon: upload' /> Upload Supply Data</button>
-                </p>
+        else {
+            content = (
                 <table className='uk-table uk-table-divider meter-table'>
                     <thead>
                         <tr>
@@ -56,7 +53,15 @@ class AccountDetailView extends React.Component<AccountDetailViewProps & StatePr
                         </tr>
                     </thead>
                     {this.renderSitesAndMeters()}
-                </table>
+                </table>)
+        }
+
+        return (
+            <div>
+                <p className="uk-text-right">
+                    <button className='uk-button uk-button-primary uk-button-small uk-margin-small-right' data-uk-toggle="target: #modal-upload-supply-data-elec"><span data-uk-icon='icon: upload' /> Upload Supply Data</button>
+                </p>
+                {content}
             </div>
         );
     }
@@ -106,15 +111,12 @@ class AccountDetailView extends React.Component<AccountDetailViewProps & StatePr
 
 
     renderElectricityTable() {
+        var content;
         if(this.props.account.sites.length === 0){
-            return (<div>No meter data uploaded yet.</div>);
+            content = (<div>No meter data uploaded yet.</div>);
         }
-
-        return (
-            <div>
-                <p className="uk-text-right">
-                    <button className='uk-button uk-button-primary uk-button-small uk-margin-small-right' data-uk-toggle="target: #modal-upload-supply-data-elec"><span data-uk-icon='icon: upload' /> Upload Supply Data</button>
-                </p>
+        else {
+            content = (
                 <table className='uk-table uk-table-divider meter-table'>
                     <thead>
                         <tr>
@@ -137,7 +139,15 @@ class AccountDetailView extends React.Component<AccountDetailViewProps & StatePr
                         </tr>
                     </thead>
                     {this.renderSitesAndMpans()}
-                </table>
+                </table>)
+        }
+
+        return (
+            <div>
+                <p className="uk-text-right">
+                    <button className='uk-button uk-button-primary uk-button-small uk-margin-small-right' data-uk-toggle="target: #modal-upload-supply-data-elec"><span data-uk-icon='icon: upload' /> Upload Supply Data</button>
+                </p>
+                {content}
             </div>
         );
     }
