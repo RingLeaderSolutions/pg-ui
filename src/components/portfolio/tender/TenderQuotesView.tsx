@@ -96,7 +96,7 @@ class TenderQuotesView extends React.Component<TenderQuotesViewProps & StateProp
                         <td>{!isPending ? `${quote.contractLength} months` : (<p>-</p>)}</td>
                         <td>{!isPending ? (quote.sheetCount) : (<p>-</p>)}</td>
                         <td>{!isPending ? format(quote.totalIncCCL, { locale: 'en-GB'}) : (<p>-</p>)}</td>
-                        <td>{!isPending ? `${quote.appu}p` : (<p>-</p>)}</td>
+                        <td>{!isPending ? `${quote.appu.toFixed(2)}p` : (<p>-</p>)}</td>
                         <td>
                             {!isPending ? (
                                 <div>
