@@ -1,7 +1,7 @@
 import * as types from "../actions/actionTypes";
 import { HubConnection } from "@aspnet/signalr-client";
 import { NotificationMessage } from '../model/NotificationMessage';
-import { getPortfolioDetails } from '../actions/portfolioActions';
+import { getPortfolioDetails, fetchPortfolioUploads } from '../actions/portfolioActions';
 import { getPortfolioTenders } from '../actions/tenderActions';
 import { retrieveAccountDetail, fetchAccountDocumentation, fetchAccountUploads } from '../actions/hierarchyActions';
 import { fetchMeterConsumption } from '../actions/meterActions';
@@ -23,18 +23,17 @@ export default function connectSignalR(store: any) {
         var currentPortfolioId = currentPortfolio.id;
         switch(data.EntityType.toLowerCase()){
             case "portfolio":
-                if(data.PortfolioId == currentPortfolioId){
-                    store.dispatch(getPortfolioDetails(currentPortfolioId));
-                }
             case "portfoliometers":
                 if(data.PortfolioId == currentPortfolioId){
                     store.dispatch(getPortfolioDetails(currentPortfolioId));
                     store.dispatch(fetchMeterConsumption(currentPortfolioId));
+                    store.dispatch(fetchPortfolioUploads(currentPortfolioId));
                 }
                 break;
             case "tender":
                 if(data.PortfolioId == currentPortfolioId){
                     store.dispatch(getPortfolioTenders(currentPortfolioId));
+                    store.dispatch(fetchPortfolioUploads(currentPortfolioId));
                 }
                 break;
             case "account":
