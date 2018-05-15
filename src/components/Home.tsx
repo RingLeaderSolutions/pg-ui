@@ -30,7 +30,22 @@ class Home extends React.Component<StateProps & DispatchProps, {}> {
         this.props.fetchBackendVersion();
     }
 
+    renderDashboardTriangle(){
+        if(window.location.pathname == "/"){
+            return (<span className="uk-margin-small-right" data-uk-icon="icon: triangle-right"></span>)
+        }
+        
+        return null;
+    }
+    renderSelectedTriangle(pathIdentifier: string){
+        if(window.location.href.includes(pathIdentifier)){
+            return (<span className="uk-margin-small-right" data-uk-icon="icon: triangle-right"></span>)
+        }
+        
+        return null;
+    }
     render(){
+            console.log(window.location.href);
             return (
                 <div className="app-container">
                     <div className="sidebar">
@@ -45,11 +60,17 @@ class Home extends React.Component<StateProps & DispatchProps, {}> {
                         </div>
                         <ul className="uk-nav-default uk-nav-parent-icon" data-uk-nav>
                             <li className="uk-nav-header">Navigation</li>
-                            <li><Link to="/"><span className="uk-margin-small-right" data-uk-icon="icon: thumbnails"></span>Dashboard</Link></li>
+                            <li>
+                                <Link to="/">{this.renderDashboardTriangle()}<span className="uk-margin-small-right" data-uk-icon="icon: thumbnails"></span>Dashboard</Link>
+                            </li>
                             <li className="uk-nav-divider"></li>                    
-                            <li><Link to="/portfolios"><span className="uk-margin-small-right" data-uk-icon="icon: table"></span>Portfolios</Link></li>
+                            <li>
+                                <Link to="/portfolios">{this.renderSelectedTriangle("portfolio")}<span className="uk-margin-small-right" data-uk-icon="icon: table"></span>Portfolios</Link>
+                            </li>
                             <li className="uk-nav-divider"></li>
-                            <li><Link to="/accounts"><span className="uk-margin-small-right" data-uk-icon="icon: social"></span>Accounts</Link></li>
+                            <li>
+                                <Link to="/accounts">{this.renderSelectedTriangle("account")}<span className="uk-margin-small-right" data-uk-icon="icon: social"></span>Accounts</Link>
+                            </li>
                         </ul>
                     </div>
                     <div className="content-container">
