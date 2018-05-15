@@ -11,6 +11,7 @@ import UploadBackingSheetDialog from './UploadBackingSheetDialog';
 import AddExistingContractDialog from './AddExistingContractDialog';
 import TenderBackingSheetsDialog from './TenderBackingSheetsDialog';
 import Spinner from "../../common/Spinner";
+import UpdateExistingContractDialog from "./UpdateExistingContractDialog";
 
 interface TenderContractViewProps {
     tender: Tender;
@@ -45,13 +46,39 @@ class TenderContractView extends React.Component<TenderContractViewProps & Dispa
         var { existingContract } = this.props.tender;
         var existingSupplier = this.props.suppliers.find(s => s.supplierId == existingContract.supplierId);
         var supplierText = existingSupplier == null ? "Unknown" : existingSupplier.name;
+
+        // return (
+        //     <div className="uk-grid uk-child-width-expand@s uk-grid-match" data-uk-grid>
+        //         <p>Ref: <strong>{existingContract.reference}</strong></p>
+        //         <p>Contract Start: <strong>{moment.utc(existingContract.contractStart).format('ll')}</strong></p>
+        //         <p>Contract End: <strong>{moment.utc(existingContract.contractEnd).format('ll')}</strong></p>
+        //         <p>Supplier: <strong>{supplierText}</strong></p>
+        //     </div>);
+
         return (
-            <div className="uk-grid uk-child-width-expand@s uk-grid-match" data-uk-grid>
-                <p>Ref: <strong>{existingContract.reference}</strong></p>
-                <p>Contract Start: <strong>{moment.utc(existingContract.contractStart).format('ll')}</strong></p>
-                <p>Contract End: <strong>{moment.utc(existingContract.contractEnd).format('ll')}</strong></p>
-                <p>Supplier: <strong>{supplierText}</strong></p>
-            </div>);
+            <div className="uk-grid uk-margin-small-left uk-margin-small-right uk-grid-match" data-uk-grid>
+                <div className="uk-card uk-card-default uk-card-small uk-card-body uk-width-1-5 uk-text-center">
+                    <p className="uk-text-bold uk-margin-small">{existingContract.reference}</p>
+                    <p className="uk-text-meta uk-margin-small">Reference</p>
+                </div>
+                <div className="uk-card uk-card-default uk-card-small uk-card-body uk-width-1-5 uk-text-center">
+                    <p className="uk-text-bold uk-margin-small">{moment.utc(existingContract.contractStart).format('ll')}</p>
+                    <p className="uk-text-meta uk-margin-small">Contract Start</p>
+                </div>
+                <div className="uk-card uk-card-default uk-card-small uk-card-body uk-width-1-5 uk-text-center">
+                    <p className="uk-text-bold uk-margin-small">{moment.utc(existingContract.contractEnd).format('ll')}</p>
+                    <p className="uk-text-meta uk-margin-small">Contract End</p>
+                </div>
+                <div className="uk-card uk-card-default uk-card-small uk-card-body uk-width-1-5 uk-text-center">
+                    <p className="uk-text-bold uk-margin-small">{supplierText}</p>
+                    <p className="uk-text-meta uk-margin-small">Supplier</p>
+                </div>
+                <div className="uk-card uk-card-default uk-card-small uk-card-body uk-width-1-5 uk-text-center">
+                    <p className="uk-text-bold uk-margin-small">{existingContract.product}</p>
+                    <p className="uk-text-meta uk-margin-small">Product</p>
+                </div>
+            </div>
+        )
     }
 
     fetchBackingSheets(){
@@ -60,14 +87,6 @@ class TenderContractView extends React.Component<TenderContractViewProps & Dispa
     }
 
     renderContractActions(){
-        var hasDocuments = this.props.tender.existingContract.sheetCount > 0;
-        var warningMessage = null;
-        if(!hasDocuments){
-            warningMessage = (
-                <div className="uk-alert-warning" data-uk-alert>
-                    <p>Comparison is not yet possible - please upload contract rate(s).</p>
-                </div>);
-        }
 
         var uploadBackingSheetDialogName = `modal-upload-backing-${this.props.tender.tenderId}`;
         var showUploadBackingSheetClass = `target: #${uploadBackingSheetDialogName}`;
@@ -75,29 +94,35 @@ class TenderContractView extends React.Component<TenderContractViewProps & Dispa
         var viewContractBackingSheetsName = `modal-view-backing-${this.props.tender.tenderId}`;
         var showViewContractBackingSheetsClass = `target: #${viewContractBackingSheetsName}`;
 
-        var uploadStyle = hasDocuments ? "uk-button-default" : "uk-button-primary";
-        var viewStyle = !hasDocuments ? "uk-button-default" : "uk-button-primary";
-
-        var uploadClass = `uk-button ${uploadStyle} uk-button-small`;
-        var viewClass = `uk-button ${viewStyle} uk-button-small`;
+        var editContractDialogName = `modal-edit-contract-${this.props.tender.tenderId}`;
+        var showEditContractDialogName = `target: #${editContractDialogName}`;
 
         return (
             <div>
-                {warningMessage}
-                <div className="uk-grid uk-margin-top" data-uk-grid>
-                    <div className="uk-width-1-2">
-                        <button className={uploadClass} type="button" data-uk-toggle={showUploadBackingSheetClass}>
-                            <span className="uk-margin-small-right" data-uk-icon="icon: cloud-upload" />
-                            Upload contract rates
+                <div>
+                    <div className="uk-inline">
+                        <button className="uk-button uk-button-default" type="button">
+                            <span data-uk-icon="icon: more" />
                         </button>
-                    </div>
-                    {hasDocuments ? (
-                        <div className="uk-width-expand@m">
-                            <button className={viewClass} type="button" data-uk-toggle={showViewContractBackingSheetsClass} onClick={() => this.fetchBackingSheets()}>
+                        <div data-uk-dropdown="pos:bottom-justify;mode:click">
+                            <ul className="uk-nav uk-dropdown-nav">
+                            <li><a href="#" data-uk-toggle={showUploadBackingSheetClass}>
+                                <span className="uk-margin-small-right" data-uk-icon="icon: cloud-upload" />
+                                Upload Contract Rates
+                            </a></li>
+                            <li className="uk-nav-divider"></li>
+                            <li><a href="#" data-uk-toggle={showViewContractBackingSheetsClass} onClick={() => this.fetchBackingSheets()}>
                                 <span className="uk-margin-small-right" data-uk-icon="icon: copy" />
-                                View contract rates
-                            </button>
-                        </div>) : null}
+                                View Contract Rates
+                            </a></li>
+                            <li className="uk-nav-divider"></li>
+                            <li><a href="#" data-uk-toggle={showEditContractDialogName}>
+                                <span className="uk-margin-small-right" data-uk-icon="icon: pencil" />                                        
+                                Edit contract
+                            </a></li>
+                            </ul>
+                        </div>
+                    </div>
                 </div>
 
                 <div id={uploadBackingSheetDialogName} data-uk-modal="center: true">
@@ -106,6 +131,10 @@ class TenderContractView extends React.Component<TenderContractViewProps & Dispa
 
                 <div id={viewContractBackingSheetsName} data-uk-modal="center: true">
                     <TenderBackingSheetsDialog />
+                </div>
+
+                <div id={editContractDialogName} data-uk-modal="center: true">
+                    <UpdateExistingContractDialog existingContract={this.props.tender.existingContract} portfolioId={this.props.portfolioId} tenderId={this.props.tender.tenderId} />
                 </div>
             </div>
         )
@@ -121,10 +150,27 @@ class TenderContractView extends React.Component<TenderContractViewProps & Dispa
 
         var contractInfo = this.renderContractInfo();
         var actions = this.renderContractActions();
+
+        var hasDocuments = this.props.tender.existingContract.sheetCount > 0;
+        var warningMessage = null;
+        if(!hasDocuments){
+            warningMessage = (
+                <div className="uk-alert-warning uk-margin-small-top uk-margin-small-bottom" data-uk-alert>
+                    <p>Comparison is not yet possible - please upload contract rate(s).</p>
+                </div>);
+        }
         return (
-            <div>
-                {contractInfo}
-                {actions}
+            <div className="uk-card uk-card-small uk-card-default uk-card-body">
+                <div className="uk-grid">
+                    <h3 className="uk-width-expand@s">Existing Contract</h3>
+                    <div>
+                        {actions}
+                    </div>
+                </div>
+                <div>
+                    {contractInfo}
+                    {warningMessage}
+                </div>
             </div>);
     }
 }

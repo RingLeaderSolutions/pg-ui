@@ -71,19 +71,45 @@ class TenderStatus extends React.Component<TenderStatusProps & StateProps & Disp
         var supplierModalId = "modal-select-suppliers-" + tender.tenderId;
         var toggleSupplierModalClass = "target: #" + supplierModalId;
 
+        // return (
+        //     <div className="uk-card uk-card-small uk-card-default uk-card-body">
+        //         <div className="uk-grid uk-child-width-expand@s uk-grid-match" data-uk-grid>
+        //             <p>Assigned suppliers: <strong>{tender.assignedSuppliers.length}/{eligibleSupplierCount}</strong></p>
+        //             {/* <p>Meter count: <strong>{meterCount}</strong></p> */}
+        //             <p>Consumption: <strong>{tender.annualConsumption.toLocaleString()} {tender.acuom}</strong></p>
+        //             <p>Commission Rate: <strong>{tender.commission}p/{tender.acuom}</strong></p>
+        //             <p>Commission: <strong>{format(totalCommission, { locale: 'en-GB'})}</strong></p>
+        //         </div>
+        //         <div className="uk-margin-top uk-margin-bottom">
+        //             <p style={{textAlign:"center"}}><strong>Status:</strong> {tender.packStatusMessage}</p>
+        //         </div>
+        //     </div>)
+
         return (
-            <div className="uk-card uk-card-small uk-card-default uk-card-body">
-                <div className="uk-grid uk-child-width-expand@s uk-grid-match" data-uk-grid>
-                    <p>Assigned suppliers: <strong>{tender.assignedSuppliers.length}/{eligibleSupplierCount}</strong></p>
-                    {/* <p>Meter count: <strong>{meterCount}</strong></p> */}
-                    <p>Consumption: <strong>{tender.annualConsumption.toLocaleString()} {tender.acuom}</strong></p>
-                    <p>Commission Rate: <strong>{tender.commission}p/{tender.acuom}</strong></p>
-                    <p>Commission: <strong>{format(totalCommission, { locale: 'en-GB'})}</strong></p>
+        <div>
+            <div className="uk-margin-top uk-margin-bottom">
+                <p style={{textAlign:"center"}}><strong>Status:</strong> {tender.packStatusMessage}</p>
+            </div>
+            <div className="uk-grid uk-margin-small-left uk-margin-small-right uk-grid-match" data-uk-grid>
+                <div className="uk-card uk-card-default uk-card-small uk-card-body uk-width-1-4 uk-text-center">
+                    <p className="uk-text-bold uk-margin-small">{tender.assignedSuppliers.length}/{eligibleSupplierCount}</p>
+                    <p className="uk-text-meta uk-margin-small">Assigned Suppliers</p>
                 </div>
-                <div className="uk-margin-top uk-margin-bottom">
-                    <p style={{textAlign:"center"}}><strong>Status:</strong> {tender.packStatusMessage}</p>
+                <div className="uk-card uk-card-default uk-card-small uk-card-body uk-width-1-4 uk-text-center">
+                    <p className="uk-text-bold uk-margin-small">{tender.annualConsumption.toLocaleString()} {tender.acuom}</p>
+                    <p className="uk-text-meta uk-margin-small">Consumption</p>
                 </div>
-            </div>)
+                <div className="uk-card uk-card-default uk-card-small uk-card-body uk-width-1-4 uk-text-center">
+                    <p className="uk-text-bold uk-margin-small">{tender.commission}p/{tender.acuom}</p>
+                    <p className="uk-text-meta uk-margin-small">Commission Rate</p>
+                </div>
+                <div className="uk-card uk-card-default uk-card-small uk-card-body uk-width-1-4 uk-text-center">
+                    <p className="uk-text-bold uk-margin-small">{format(totalCommission, { locale: 'en-GB'})}</p>
+                    <p className="uk-text-meta uk-margin-small">Commission</p>
+                </div>
+            </div>
+        </div>
+        )
     }
 }
 

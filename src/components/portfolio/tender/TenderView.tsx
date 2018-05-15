@@ -94,10 +94,7 @@ class TenderView extends React.Component<TenderViewProps & StateProps & Dispatch
                 </div>
 
                 <div className="uk-margin-small">
-                    <div className="uk-card uk-card-default uk-card-body">
-                        <h3>Existing Contract</h3>
-                        <TenderContractView tender={this.props.tender} portfolioId={this.props.details.portfolio.id}/>
-                    </div>
+                    <TenderContractView tender={this.props.tender} portfolioId={this.props.details.portfolio.id}/>
                 </div>
                 
                 <div className="uk-margin-small">
