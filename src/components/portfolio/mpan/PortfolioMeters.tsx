@@ -69,7 +69,14 @@ class PortfolioMeters extends React.Component<PortfolioMetersProps & StateProps 
         var includeDialogName = `modal-include-meters-${utilityType}`;
         var showIncludeDialogClass = `target: #${includeDialogName}`;
 
-        var rows = values.map((row, rowIndex) => {
+        var rows = values
+        .sort(
+            (rowA, rowB) => {
+                if (rowA[0] < rowB[0]) return -1;
+                if (rowA[0] > rowB[0]) return 1;
+                return 0;
+            })
+        .map((row, rowIndex) => {
            return (
                <tr key={rowIndex}>
                    {row.map((cellValue, cellIndex) => {
