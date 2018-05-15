@@ -111,8 +111,8 @@ class IncludeMetersDialog extends React.Component<IncludeMetersDialogProps & Sta
                     </label>
                 </div>
             )
-        })
-
+        });
+        
         return (<div>{content}</div>);
     }
 

@@ -145,7 +145,18 @@ class TenderContractView extends React.Component<TenderContractViewProps & Dispa
             return (<Spinner />);
         }
         if(this.props.tender.existingContract == null){
-            return this.renderAddExistingContract();
+            var content = this.renderAddExistingContract();
+
+            return (
+                <div className="uk-card uk-card-small uk-card-default uk-card-body">
+                    <div className="uk-grid">
+                        <h3 className="uk-width-expand@s">Existing Contract</h3>
+                    </div>
+                    <div>
+                        {content}
+                    </div>
+                </div>
+            )
         }
 
         var contractInfo = this.renderContractInfo();
