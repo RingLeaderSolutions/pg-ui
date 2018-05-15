@@ -61,6 +61,24 @@ export function addExistingContract(portfolioId: string, tenderId: string, contr
     };
 }
 
+export function updateExistingContract(portfolioId: string, tenderId: string, contract: TenderContract){
+    return (dispatch: Dispatch<any>) => {
+        let createPromise = ApiService.updateExistingContract(contract, portfolioId, tenderId);
+        dispatch({ type: types.TENDER_UPDATE_EXISTING_CONTRACT_WORKING });
+
+        makeApiRequest(dispatch,
+            createPromise,
+            200, 
+            data => {
+                return { type: types.TENDER_UPDATE_EXISTING_CONTRACT_SUCCESSFUL, data: null};
+                
+            }, 
+            error => {
+                return { type: types.TENDER_UPDATE_EXISTING_CONTRACT_FAILED, errorMessage: error };
+            });
+    };
+}
+
 export function deleteTender(portfolioId: string, tenderId: string){
     return (dispatch: Dispatch<any>) => {
         let createPromise = ApiService.deleteTender(portfolioId, tenderId);

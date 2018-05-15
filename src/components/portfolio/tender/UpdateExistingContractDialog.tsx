@@ -7,7 +7,7 @@ import ErrorMessage from "../../common/ErrorMessage";
 import * as moment from 'moment';
 import DatePicker from 'react-datepicker';
 
-import { addExistingContract } from '../../../actions/tenderActions';
+import { updateExistingContract } from '../../../actions/tenderActions';
 import { Tender, TenderContract, TenderSupplier } from "../../../model/Tender";
 
 interface UpdateExistingContractDialogProps {
@@ -24,7 +24,7 @@ interface StateProps {
 }
   
 interface DispatchProps {
-    addExistingContract: (portfolioId: string, tenderId: string, contract: TenderContract) => void;
+    updateExistingContract: (portfolioId: string, tenderId: string, contract: TenderContract) => void;
 }
 
 interface UpdateExistingContractState {
@@ -79,7 +79,7 @@ class UpdateExistingContractDialog extends React.Component<UpdateExistingContrac
             status: this.props.existingContract.status,
             sheetCount: this.props.existingContract.sheetCount
         };
-        this.props.addExistingContract(this.props.portfolioId, this.props.tenderId, contract);
+        this.props.updateExistingContract(this.props.portfolioId, this.props.tenderId, contract);
     }
 
     renderSupplierSelect(){
@@ -164,7 +164,7 @@ class UpdateExistingContractDialog extends React.Component<UpdateExistingContrac
                 </div>
                 <div className="uk-modal-footer uk-text-right">
                     <button className="uk-button uk-button-default uk-margin-right uk-modal-close" type="button">Cancel</button>
-                    <button className="uk-button uk-button-primary uk-modal-close" type="button" onClick={() => this.addExistingContract()}>Add</button>
+                    <button className="uk-button uk-button-primary uk-modal-close" type="button" onClick={() => this.addExistingContract()}>Update</button>
                 </div>
             </div>)
     }
@@ -172,7 +172,7 @@ class UpdateExistingContractDialog extends React.Component<UpdateExistingContrac
 
 const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, UpdateExistingContractDialogProps> = (dispatch) => {
     return {
-        addExistingContract: (portfolioId: string, tenderId: string, contract: TenderContract) => dispatch(addExistingContract(portfolioId, tenderId, contract))
+        updateExistingContract: (portfolioId: string, tenderId: string, contract: TenderContract) => dispatch(updateExistingContract(portfolioId, tenderId, contract))
     };
 };
   

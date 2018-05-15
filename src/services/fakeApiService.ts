@@ -645,6 +645,10 @@ export class FakeApiService implements IApiService {
         return OK();
     }
 
+    updateExistingContract(contract: TenderContract, portfolioId: string, tenderId: string) {
+        return OK();
+    }
+
     deleteTender(portfolioId: string, tenderId: string){
         return OK();
     }

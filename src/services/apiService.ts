@@ -69,6 +69,7 @@ export interface IApiService {
   getTenderSuppliers(): Promise<AxiosResponse>;
   getPortfolioTenders(portfolioId: string): Promise<AxiosResponse>;
   addExistingContract(contract: TenderContract, portfolioId: string, tenderId: string): Promise<AxiosResponse>;
+  updateExistingContract(contract: TenderContract, portfolioId: string, tenderId: string): Promise<AxiosResponse>;
   deleteTender(portfolioId: string, tenderId: string): Promise<AxiosResponse>;
   createHHElectricityTender(portfolioId: string): Promise<AxiosResponse>;
   createNHHElectricityTender(portfolioId: string): Promise<AxiosResponse>;
@@ -339,6 +340,10 @@ export class ApiService implements IApiService {
 
     addExistingContract(contract: TenderContract, portfolioId: string, tenderId: string){
         return axios.post(`${this.baseApiUri}/portman-web/tender/${tenderId}/portfolio/${portfolioId}/contract`, contract, this.getRequestConfig());        
+    }
+
+    updateExistingContract(contract: TenderContract, portfolioId: string, tenderId: string){
+        return axios.put(`${this.baseApiUri}/portman-web/tender/${tenderId}/portfolio/${portfolioId}/contract`, contract, this.getRequestConfig());        
     }
 
     deleteTender(portfolioId: string, tenderId: string){
