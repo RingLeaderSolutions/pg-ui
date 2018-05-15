@@ -4,7 +4,7 @@ import ErrorMessage from "../common/ErrorMessage";
 import { RouteComponentProps } from 'react-router';
 import { MapDispatchToPropsFunction, connect, MapStateToProps } from 'react-redux';
 import { ApplicationState } from '../../applicationState';
-import { Portfolio } from '../../model/Models';
+import { Portfolio, PortfolioDetails } from '../../model/Models';
 import Spinner from '../common/Spinner';
 
 import PortfolioSummary from "./summary/PortfolioSummary";
@@ -13,12 +13,14 @@ import PortfolioMeters from "./mpan/PortfolioMeters";
 
 import { getSinglePortfolio, getPortfolioDetails } from '../../actions/portfolioActions';
 import TenderSummary from "./tender/TenderSummary";
+import { Link } from "react-router-dom";
 
 interface PortfolioDetailProps extends RouteComponentProps<void> {
 }
 
 interface StateProps {
   portfolio: Portfolio;
+  detail: PortfolioDetails;
   working: boolean;
   error: boolean;
   errorMessage: string;
@@ -47,11 +49,14 @@ class PortfolioDetail extends React.Component<PortfolioDetailProps & StateProps 
         if(this.props.working || this.props.portfolio == null){
             return (<Spinner />);
         }
-        var { portfolio } = this.props;
-        var headerTitle = `Portfolios: ${portfolio.title}`;
+        var { portfolio, detail } = this.props;
+        var headerTitle = `Portfolio: ${portfolio.title}`;
+        var accountLink = `/account/${detail.portfolio.accountId}`;
         return (
             <div className="content-inner">
-                <Header title={headerTitle} />
+                <Header title={headerTitle}>
+                    <Link to={accountLink}><button className='uk-button uk-button-default uk-button-small'><span data-uk-icon='icon: link' /> Jump to Account</button></Link>
+                </Header>
                 <ul data-uk-tab>
                     <li className="uk-active"><a href="#">Summary</a></li>
                     <li><a href="#">Meters</a></li>
@@ -78,9 +83,10 @@ const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, PortfolioDet
 const mapStateToProps: MapStateToProps<StateProps, PortfolioDetailProps> = (state: ApplicationState) => {
     return {
         portfolio: state.portfolio.selected.value,
-        working: state.portfolio.selected.working,
-        error: state.portfolio.selected.error,
-        errorMessage: state.portfolio.selected.errorMessage
+        detail: state.portfolio.details.value,
+        working: state.portfolio.selected.working || state.portfolio.details.working,
+        error: state.portfolio.selected.error || state.portfolio.details.error,
+        errorMessage: state.portfolio.selected.errorMessage || state.portfolio.details.errorMessage
     };
 };
   
