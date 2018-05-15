@@ -45,7 +45,6 @@ class Home extends React.Component<StateProps & DispatchProps, {}> {
         return null;
     }
     render(){
-            console.log(window.location.href);
             return (
                 <div className="app-container">
                     <div className="sidebar">
