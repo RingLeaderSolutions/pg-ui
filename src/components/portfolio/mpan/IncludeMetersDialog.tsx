@@ -92,7 +92,14 @@ class IncludeMetersDialog extends React.Component<IncludeMetersDialogProps & Sta
             excludedMeters = this.getExcludedMprns();
         }
 
-        var content = excludedMeters.map(em => {
+        var content = excludedMeters
+        .sort(
+            (str1: string, str2: string) => {        
+                if (str1 < str2) return -1;
+                if (str1 > str2) return 1;
+                return 0;
+            })
+        .map(em => {
             return (
                 <div className="uk-margin" key={em}>
                     <label>
