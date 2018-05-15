@@ -158,6 +158,9 @@ class UpdateExistingContractDialog extends React.Component<UpdateExistingContrac
                         </div>
                         
                     </form>
+                    <div className="uk-alert-warning uk-margin-small-top uk-margin-small-bottom" data-uk-alert>
+                        <p>Please note that changing the existing contract's supplier will clear any uploaded contract rates.</p>
+                    </div>
                 </div>
                 <div className="uk-modal-footer uk-text-right">
                     <button className="uk-button uk-button-default uk-margin-right uk-modal-close" type="button">Cancel</button>
