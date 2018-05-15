@@ -9,6 +9,7 @@ import ErrorMessage from "../common/ErrorMessage";
 import { Portfolio } from '../../model/Models';
 import NewPortfolioDialog from './creation/NewPortfolioDialog';
 import Spinner from '../common/Spinner';
+import CreatePortfolioFromAccountDialog from "./creation/CreatePortfolioFromAccountDialog";
 
 interface PortfoliosProps extends RouteComponentProps<void> {
 }
@@ -102,11 +103,11 @@ class Portfolios extends React.Component<PortfoliosProps & StateProps & Dispatch
                                 <input className="uk-search-input" type="search" placeholder="Search..." disabled/>
                             </form>
                             <div className="actions-portfolios">
-                                <button className="uk-button uk-button-primary" disabled>
+                                <button className="uk-button uk-button-primary" data-uk-toggle="target: #modal-new-portfolio">
                                     <span className="uk-margin-small-right" data-uk-icon="plus-circle"></span>
                                     New portfolio
                                 </button>
-                                <button className="uk-button uk-button-primary uk-margin-small-left" data-uk-toggle="target: #modal-new-portfolio">
+                                <button className="uk-button uk-button-primary uk-margin-small-left" data-uk-toggle="target: #modal-new-prospect">
                                     <span className="uk-margin-small-right" data-uk-icon="plus-circle"></span>
                                     New prospect
                                 </button>
@@ -133,8 +134,12 @@ class Portfolios extends React.Component<PortfoliosProps & StateProps & Dispatch
                         </div>
                     </div>
                 </div>
-                <div id="modal-new-portfolio" data-uk-modal="center: true">
+                <div id="modal-new-prospect" data-uk-modal="center: true">
                     <NewPortfolioDialog />
+                </div>
+
+                <div id="modal-new-portfolio" data-uk-modal="center: true">
+                    <CreatePortfolioFromAccountDialog />
                 </div>
             </div>)
     }

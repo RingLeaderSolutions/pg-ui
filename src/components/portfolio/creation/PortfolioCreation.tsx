@@ -5,7 +5,7 @@ import ErrorMessage from '../../common/ErrorMessage';
 import Spinner from '../../common/Spinner';
 import { CompanyInfo } from '../../../model/Models';
 
-import { createPortfolio } from '../../../actions/portfolioActions';
+import { createPortfolioFromCompany } from '../../../actions/portfolioActions';
 
 interface StateProps {
     working: boolean;
@@ -17,12 +17,12 @@ interface StateProps {
   }
   
   interface DispatchProps {
-      createPortfolio: (accountId: string, company: CompanyInfo) => void;
+    createPortfolioFromCompany: (accountId: string, company: CompanyInfo) => void;
   }
 
 class PortfolioCreation extends React.Component<DispatchProps & StateProps, {}> {
     componentDidMount(){
-        this.props.createPortfolio(this.props.accountId, this.props.company);
+        this.props.createPortfolioFromCompany(this.props.accountId, this.props.company);
     }
     
     render(){
@@ -58,7 +58,7 @@ class PortfolioCreation extends React.Component<DispatchProps & StateProps, {}> 
 
 const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, {}> = (dispatch) => {
     return {
-        createPortfolio: (accountId: string, company: CompanyInfo) => dispatch(createPortfolio(accountId, company)),
+        createPortfolioFromCompany: (accountId: string, company: CompanyInfo) => dispatch(createPortfolioFromCompany(accountId, company)),
     }
 }
 

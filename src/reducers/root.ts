@@ -149,6 +149,7 @@ const hierarchyState: Reducer<HierarchyState> = combineReducers<HierarchyState>(
 });
 
 import selectedUploadReportReducer from './selectedUploadReportReducer';
+import fetchUsersReducer from './fetchUsersReducer';
 
 // Combine all reducers to form the master ApplicationState
 const rootReducer: Reducer<ApplicationState> = combineReducers<ApplicationState>({
@@ -160,7 +161,8 @@ const rootReducer: Reducer<ApplicationState> = combineReducers<ApplicationState>
     meters: completeMeterReducer,
     backend_version: fetchBackendVersionReducer,
     hierarchy: hierarchyState,
-    selected_upload_report: selectedUploadReportReducer
+    selected_upload_report: selectedUploadReportReducer,
+    users: fetchUsersReducer
 });
 
 export default rootReducer;

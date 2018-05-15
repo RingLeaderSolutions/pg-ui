@@ -9,7 +9,8 @@ import { Portfolio,
          UploadResponse,
          UploadReport,
          Account,
-         UploadReportsResponse} from "../Model/Models";
+         UploadReportsResponse,
+         User} from "../Model/Models";
 
 import * as types from "./actionTypes";
 import { makeApiRequest } from "./Common";
@@ -18,6 +19,7 @@ import { Dispatch } from 'redux';
 import { PortfolioRequirements } from "../model/PortfolioDetails";
 import { AccountCompanyStatusFlags } from "../model/HierarchyObjects";
 import { Tariff } from "../model/Tender";
+import { PortfolioCreationRequest } from "../model/Portfolio";
 
 export function getAllPortfolios(){
     return (dispatch: Dispatch<any>) => {
@@ -180,9 +182,27 @@ export function updateCompanyStatus(accountId: string, statusFlags: AccountCompa
     };
 }
 
-export function createPortfolio(accountId: string, company: CompanyInfo){
+export function createPortfolioFromCompany(accountId: string, company: CompanyInfo){
     return (dispatch: Dispatch<any>) => {
-        let createPromise = ApiService.createPortfolio(accountId, company);
+        let createPromise = ApiService.createPortfolioFromCompany(accountId, company);
+        dispatch( { type: types.CREATE_PORTFOLIO_WORKING });
+
+        makeApiRequest(dispatch,
+            createPromise,
+            200, 
+            data => {
+                return { type: types.CREATE_PORTFOLIO_SUCCESSFUL, data: data as PortfolioDetails};
+                
+            }, 
+            error => {
+                return { type: types.CREATE_PORTFOLIO_FAILED, errorMessage: error };
+            });
+    };
+}
+
+export function createPortfolio(portfolio: PortfolioCreationRequest){
+    return (dispatch: Dispatch<any>) => {
+        let createPromise = ApiService.createPortfolio(portfolio);
         dispatch( { type: types.CREATE_PORTFOLIO_WORKING });
 
         makeApiRequest(dispatch,
@@ -392,6 +412,25 @@ export function fetchUploadReport(reportId: string, isImport: boolean){
             });
     };
 }
+
+export function fetchUsers(){
+    return (dispatch: Dispatch<any>) => {
+        let fetchTariffsPromise = ApiService.fetchUsers();
+        dispatch({ type: types.FETCH_USERS_WORKING });
+
+        makeApiRequest(dispatch,
+            fetchTariffsPromise,
+            200, 
+            data => {
+                return { type: types.FETCH_USERS_SUCCESSFUL, data: data as User[]};
+                
+            }, 
+            error => {
+                return { type: types.FETCH_USERS_FAILED, errorMessage: error };
+            });
+    };
+}
+
 
 export function deselectPortfolio(){
     return (dispatch: Dispatch<any>) => {    

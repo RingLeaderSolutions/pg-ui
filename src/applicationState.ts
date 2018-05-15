@@ -7,6 +7,7 @@ import { MeterState } from './reducers/meters/MeterState';
 import { RequestState } from './reducers/RequestState';
 import { HierarchyState } from './reducers/hierarchy/HierarchyState';
 import { SelectedUploadReportState } from './reducers/selectedUploadReportReducer';
+import { UsersState } from './reducers/fetchUsersReducer';
 
 export interface ApplicationState {    
     portfolio: PortfolioState;
@@ -18,4 +19,5 @@ export interface ApplicationState {
     backend_version: RequestState;
     hierarchy: HierarchyState;
     selected_upload_report: SelectedUploadReportState;
+    users: UsersState;
 }

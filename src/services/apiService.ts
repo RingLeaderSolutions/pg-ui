@@ -7,6 +7,7 @@ import { Mpan } from '../model/Meter';
 import { Tender, TenderContract, TenderSupplier, TenderRequirements } from '../model/Tender';
 import * as moment from 'moment';
 import { AccountContact } from '../model/HierarchyObjects';
+import { PortfolioCreationRequest } from '../model/Portfolio';
 
 export interface IApiService {
   getAllPortfolios(): Promise<AxiosResponse>;
@@ -18,7 +19,8 @@ export interface IApiService {
 
   searchCompany(companyNumber: string): Promise<AxiosResponse>;
   
-  createPortfolio(accountId: string, company: CompanyInfo): Promise<AxiosResponse>;
+  createPortfolio(portfolio: PortfolioCreationRequest) : Promise<AxiosResponse>;
+  createPortfolioFromCompany(accountId: string, company: CompanyInfo): Promise<AxiosResponse>;
   updatePortfolioContact(contact: PortfolioContact): Promise<AxiosResponse>;
   updatePortfolioRequirements(requirements: PortfolioRequirements): Promise<AxiosResponse>;
   
@@ -88,6 +90,7 @@ export interface IApiService {
   getActiveUsers(): Promise<AxiosResponse>;
   assignPortfolioUsers(portfolioId: string, users: User[]): Promise<AxiosResponse>;
   fetchBackendVersion(): Promise<AxiosResponse>;
+  fetchUsers(): Promise<AxiosResponse>;
 
   getTariffs(): Promise<AxiosResponse>;
 }
@@ -244,7 +247,11 @@ export class ApiService implements IApiService {
         return axios.put(`${this.hierarchyApiUri}/api/Account/status/${accountId}`, accountFlags, this.getRequestConfig());          
     }
 
-    createPortfolio(accountId: string, company: CompanyInfo){
+    createPortfolio(portfolio: PortfolioCreationRequest){       
+        return axios.post(`${this.baseApiUri}/portman-web/portfolio`, portfolio, this.getRequestConfig());                        
+    }
+
+    createPortfolioFromCompany(accountId: string, company: CompanyInfo){
         let portfolio = {
             title: company.companyName,
             accountId,
@@ -567,6 +574,10 @@ export class ApiService implements IApiService {
         };
 
         return axios.post(`${this.baseApiUri}/portman-web/documentation/account`, payload, this.getRequestConfig());
+    }
+
+    fetchUsers(){
+        return axios.get(`${this.baseApiUri}/portman-web/admin/users`, this.getRequestConfig());        
     }
 
     getEndpointPrefix(utility: UtilityType) {

@@ -1,7 +1,7 @@
 import * as types from "../actions/actionTypes";
 import { HubConnection } from "@aspnet/signalr-client";
 import { NotificationMessage } from '../model/NotificationMessage';
-import { getPortfolioDetails, fetchPortfolioUploads } from '../actions/portfolioActions';
+import { getPortfolioDetails, fetchPortfolioUploads, getAllPortfolios } from '../actions/portfolioActions';
 import { getPortfolioTenders } from '../actions/tenderActions';
 import { retrieveAccountDetail, fetchAccountDocumentation, fetchAccountUploads } from '../actions/hierarchyActions';
 import { fetchMeterConsumption } from '../actions/meterActions';
@@ -28,6 +28,9 @@ export default function connectSignalR(store: any) {
                     store.dispatch(getPortfolioDetails(currentPortfolioId));
                     store.dispatch(fetchMeterConsumption(currentPortfolioId));
                     store.dispatch(fetchPortfolioUploads(currentPortfolioId));
+                }
+                if(data.Category == "created"){
+                    store.dispatch(getAllPortfolios())
                 }
                 break;
             case "tender":

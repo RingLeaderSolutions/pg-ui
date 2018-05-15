@@ -17,6 +17,17 @@ export interface Portfolio {
     supportExec: User;
 }
 
+export interface PortfolioCreationRequest { 
+    title: string;
+    category: string;
+    teamId: number;
+    ownerId: number;
+    supportOwner: number;
+    accountId: string;
+    contractStart: string;
+    contractEnd: string;
+}
+
 export interface Client {
     id: string;
     name: string;

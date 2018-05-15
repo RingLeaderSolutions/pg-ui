@@ -22,6 +22,7 @@ import { PortfolioDetails } from '../model/PortfolioDetails';
 import { BackingSheet, Tender, TenderContract, TenderSupplier, TenderIssuanceEmail, Tariff, TenderRequirements } from '../model/Tender';
 import { IApiService } from './ApiService';
 import { AccountContact } from '../model/HierarchyObjects';
+import { PortfolioCreationRequest } from '../model/Portfolio';
 
 const responseDelay = 1000;
 const defer = (callback: () => void) => new Promise((resolve, reject) => setTimeout(() => callback(), responseDelay));
@@ -252,7 +253,7 @@ export class FakeApiService implements IApiService {
         return OK(account);
     }
 
-    createPortfolio(accountId: string, company: CompanyInfo){
+    createPortfolioFromCompany(accountId: string, company: CompanyInfo){
         var response = {
             id: "a1b01d44-5971-4be0-a197-0226c44372ea",
             title: company.companyName,
@@ -1052,6 +1053,27 @@ export class FakeApiService implements IApiService {
 
     reportSuccessfulAccountDocumentUpload(accountId: string, documentType: string, files: string[]){
         return OK();        
+    }
+
+    fetchUsers(){
+        return OK(); 
+    }
+    
+    createPortfolio(portfolio: PortfolioCreationRequest){
+        var response = {
+            id: "a1b01d44-5971-4be0-a197-0226c44372ea",
+            title: "X",
+            status: "tender",
+            category: "direct",
+            teamId: 989,
+            ownerId: 1,
+            supportOwner: 7,
+            accountId: "1",
+            //contact: null,
+            contractStart: "2017-12-01T00:00:00",
+            contractEnd: "2018-03-01T00:00:00"
+        }
+        return OK(response)
     }
 }
 
