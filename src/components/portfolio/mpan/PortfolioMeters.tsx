@@ -10,6 +10,7 @@ import UploadSupplyDataDialog from './UploadSupplyDataDialog';
 
 import { fetchMeterConsumption, excludeMeters, exportMeterConsumption } from '../../../actions/meterActions';
 import IncludeMetersDialog from "./IncludeMetersDialog";
+import ExcludeAllMetersDialog from "./ExcludeAllMetersDialog";
 
 interface PortfolioMetersProps {
     portfolio: Portfolio;
@@ -69,6 +70,9 @@ class PortfolioMeters extends React.Component<PortfolioMetersProps & StateProps 
         var includeDialogName = `modal-include-meters-${utilityType}`;
         var showIncludeDialogClass = `target: #${includeDialogName}`;
 
+        var excludeAllDialogName = `modal-exclude-all-meters-${utilityType}`;
+        var showExcludeAllDialogClass = `target: #${excludeAllDialogName}`;
+
         var rows = values
         .sort(
             (rowA, rowB) => {
@@ -92,11 +96,38 @@ class PortfolioMeters extends React.Component<PortfolioMetersProps & StateProps 
         return (
             <div>
                 <div>
-                    <p className='uk-text-right'>
-                        <button className='uk-button uk-button-default uk-button-small' data-uk-toggle={showIncludeDialogClass}><span data-uk-icon='icon: plus' /> Include Meters</button>
-                        <button className='uk-button uk-button-default uk-button-small' onClick={() => this.exportMeterConsumption()} ><span data-uk-icon='icon: cloud-download' /> Export</button>
-                        { utilityType == UtilityType.Electricity ? (<button className='uk-button uk-button-primary uk-button-small uk-margin-small-left uk-margin-small-right' data-uk-toggle="target: #modal-upload-consumption"><span data-uk-icon='icon: upload' /> Upload Historic Consumption</button>) : null}
-                    </p>
+                    <div className="uk-grid" data-uk-grid>
+                        <div className="uk-width-expand@s">
+                        </div>
+                        <div className="uk-width-auto@s">
+                        { utilityType == UtilityType.Electricity ? (<button className='uk-button uk-button-primary uk-margin-small-left uk-margin-small-right' data-uk-toggle="target: #modal-upload-consumption"><span data-uk-icon='icon: upload' /> Upload Historic Consumption</button>) : null}
+                        </div>
+                        <div className="uk-width-auto@s">
+                            <div className="uk-inline">
+                                <button className="uk-button uk-button-default uk-margin-small-right" type="button">
+                                    <span data-uk-icon="icon: more" />
+                                </button>
+                                <div data-uk-dropdown="pos:bottom-justify;mode:click">
+                                    <ul className="uk-nav uk-dropdown-nav">
+                                        <li><a href="#" data-uk-toggle={showIncludeDialogClass}>
+                                            <span className="uk-margin-small-right" data-uk-icon="icon: plus" />
+                                            Include Meters
+                                        </a></li>
+                                        <li className="uk-nav-divider"></li>
+                                        <li><a href="#" data-uk-toggle={showExcludeAllDialogClass}>
+                                            <span className="uk-margin-small-right" data-uk-icon="icon: close" />
+                                            Exclude All Meters
+                                        </a></li>
+                                        <li className="uk-nav-divider"></li>
+                                        <li><a href="#" onClick={() => this.exportMeterConsumption()}>
+                                            <span className="uk-margin-small-right" data-uk-icon="icon: cloud-download" />
+                                            Export (.XLS)
+                                        </a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <table className="uk-table uk-table-divider">
                     <thead>
@@ -113,6 +144,9 @@ class PortfolioMeters extends React.Component<PortfolioMetersProps & StateProps 
                 <div id={includeDialogName} data-uk-modal="center: true">
                     <IncludeMetersDialog portfolio={this.props.details} includedMeters={includedMeters} utility={utilityType}/>
                 </div>
+                <div id={excludeAllDialogName} data-uk-modal="center: true">
+                    <ExcludeAllMetersDialog portfolio={this.props.details} includedMeters={includedMeters} />
+                </div>
             </div>);
     }
 
@@ -122,14 +156,14 @@ class PortfolioMeters extends React.Component<PortfolioMetersProps & StateProps 
         }
 
         return (
-            <div>
-                <div className='uk-flex uk-flex-column portfolio-meters'>
-                    <div className="uk-overflow-auto">
+            <div className="restrict-height-hack">
+                <div className='uk-flex uk-flex-column portfolio-meters restrict-height-hack'>
+                    <div className="uk-overflow-auto restrict-height-hack">
                         <ul data-uk-tab>
                             <li><a href="#">Electricity</a></li>
                             <li><a href="#">Gas</a></li>
                         </ul>
-                        <ul className="uk-switcher restrict-height-hack">
+                        <ul className="uk-switcher">
                             <li>{this.renderDynamicTable(this.props.consumption.electricityHeaders, this.props.consumption.electrictyConsumptionEntries, UtilityType.Electricity)}</li>
                             <li>{this.renderDynamicTable(this.props.consumption.gasHeaders, this.props.consumption.gasConsumptionEntries, UtilityType.Gas)}</li>
                         </ul>
