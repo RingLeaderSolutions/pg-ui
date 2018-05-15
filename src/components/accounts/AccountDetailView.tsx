@@ -11,6 +11,9 @@ import Spinner from '../common/Spinner';
 import { retrieveAccountDetail } from '../../actions/hierarchyActions';
 import UploadSupplyDataDialog from "../portfolio/mpan/UploadSupplyDataDialog";
 import UpdateAccountDialog from "./UpdateAccountDialog";
+import AccountContactsView from "./AccountContactsView";
+import AccountDocumentsView from "./AccountDocumentsView";
+import AccountUploadsView from "./AccountUploadsView";
 
 interface AccountDetailViewProps extends RouteComponentProps<void> {
 }
@@ -34,7 +37,7 @@ class AccountDetailView extends React.Component<AccountDetailViewProps & StatePr
     renderGasTable() {
         var content;
         if(this.props.account.sites.length === 0){
-            content = (<div>No meter data uploaded yet.</div>);
+            content = (<div>No meter data has been uploaded yet.</div>);
         }
         else {
             content = (
@@ -113,7 +116,7 @@ class AccountDetailView extends React.Component<AccountDetailViewProps & StatePr
     renderElectricityTable() {
         var content;
         if(this.props.account.sites.length === 0){
-            content = (<div>No meter data uploaded yet.</div>);
+            content = (<div>No meter data has been uploaded yet.</div>);
         }
         else {
             content = (
@@ -230,11 +233,15 @@ class AccountDetailView extends React.Component<AccountDetailViewProps & StatePr
                     <li className="uk-active"><a href="#">Electricity</a></li>
                     <li><a href="#">Gas</a></li>
                     <li><a href="#">Contacts</a></li>
+                    <li><a href="#">Documentation</a></li>
+                    <li><a href="#">Uploads</a></li>
                 </ul>
                 <ul className="uk-switcher restrict-height-hack">
                     <li>{this.renderElectricityTable()}</li>
                     <li>{this.renderGasTable()}</li>
-                    <li><p>Coming soon.</p></li>
+                    <li><AccountContactsView /></li>
+                    <li><AccountDocumentsView account={this.props.account}/></li>
+                    <li><AccountUploadsView accountId={this.props.account.id}/></li>
                 </ul>
 
                 <div id="modal-upload-supply-data-elec" data-uk-modal="center: true">

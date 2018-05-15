@@ -3,14 +3,14 @@ import { reduceReducers, requestResponseReducer } from '../common';
 import { UploadReportsResponse } from '../../model/Models';
 import { RequestState, initialRequestState } from '../RequestState';
 
-export interface PortfolioUploadsState extends RequestState {
+export interface AccountUploadsState extends RequestState {
     value: UploadReportsResponse;
 }
 
-const portfolioUploadsReducer = requestResponseReducer(
-    types.FETCH_PORTFOLIO_UPLOADS_WORKING,
-    types.FETCH_PORTFOLIO_UPLOADS_SUCCESSFUL,
-    types.FETCH_PORTFOLIO_UPLOADS_FAILED,
+const accountUploadsReducer = requestResponseReducer(
+    types.FETCH_ACCOUNT_UPLOADS_WORKING,
+    types.FETCH_ACCOUNT_UPLOADS_SUCCESSFUL,
+    types.FETCH_ACCOUNT_UPLOADS_FAILED,
     (state, action) => {
         return {
             ...state,
@@ -21,4 +21,4 @@ const portfolioUploadsReducer = requestResponseReducer(
     }
 );
 
-export default reduceReducers((state = initialRequestState) => state, portfolioUploadsReducer);
+export default reduceReducers((state = initialRequestState) => state, accountUploadsReducer);

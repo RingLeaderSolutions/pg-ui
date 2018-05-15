@@ -12,7 +12,7 @@ import TenderBackingSheetsDialog from './TenderBackingSheetsDialog';
 import TenderQuoteSummariesDialog from './TenderQuoteSummariesDialog';
 import QuoteCollateralDialog from './QuoteCollateralDialog';
 
-import { fetchQuoteBackingSheets, exportContractRates, deleteQuote } from '../../../actions/tenderActions';
+import { fetchQuoteBackingSheets, exportContractRates, deleteQuote, generateTenderPack } from '../../../actions/tenderActions';
 import { Tender, BackingSheet, TenderSupplier, TenderQuote, TenderIssuance, TenderPack } from "../../../model/Tender";
 import { format } from 'currency-formatter';
 import GenerateSummaryReportDialog from "./GenerateSummaryReportDialog";
@@ -33,6 +33,7 @@ interface DispatchProps {
     fetchQuoteBackingSheets: (tenderId: string, quoteId: string) => void;
     exportContractRates: (tenderId: string, quoteId: string) => void;
     deleteQuote: (tenderId: string, quoteId: string) => void;
+    generateTenderPack: (portfolioId: string, tenderId: string) => void;
 }
 
 class TenderQuotesView extends React.Component<TenderQuotesViewProps & StateProps & DispatchProps, {}> {
@@ -95,7 +96,7 @@ class TenderQuotesView extends React.Component<TenderQuotesViewProps & StateProp
                         <td>{!isPending ? `${quote.contractLength} months` : (<p>-</p>)}</td>
                         <td>{!isPending ? (quote.sheetCount) : (<p>-</p>)}</td>
                         <td>{!isPending ? format(quote.totalIncCCL, { locale: 'en-GB'}) : (<p>-</p>)}</td>
-                        <td>{!isPending ? format(quote.appu, {locale: 'en-GB'}) : (<p>-</p>)}</td>
+                        <td>{!isPending ? `${quote.appu}p` : (<p>-</p>)}</td>
                         <td>
                             {!isPending ? (
                                 <div>
@@ -223,6 +224,7 @@ class TenderQuotesView extends React.Component<TenderQuotesViewProps & StateProp
                                         <span className="uk-margin-small-right" data-uk-icon="icon: table" />
                                         View Existing
                                     </a></li>
+                                    <li className="uk-nav-divider"></li>
                                     <li><a href="#" data-uk-toggle={createRecommendationDialogClass}>
                                         <span className="uk-margin-small-right" data-uk-icon="icon: plus" />
                                         Create New
@@ -250,6 +252,10 @@ class TenderQuotesView extends React.Component<TenderQuotesViewProps & StateProp
                 </div>
             </div>
         )
+    }
+
+    generateNewPack(){
+        this.props.generateTenderPack(this.props.tender.portfolioId, this.props.tender.tenderId);
     }
 
     renderSectionContent(){
@@ -291,8 +297,6 @@ class TenderQuotesView extends React.Component<TenderQuotesViewProps & StateProp
                 </ul>
             </div>
         )
-
-
     }
     render(){
         if(this.props.working){
@@ -317,15 +321,30 @@ class TenderQuotesView extends React.Component<TenderQuotesViewProps & StateProp
                         <h3>Issued Requirements</h3>
                     </div>
                     <div className="uk-width-1-2">
-                    
-                        <button className="uk-button uk-button-primary uk-button-small uk-align-right" type="button" data-uk-toggle={issuePackDialogClass} disabled={!canIssue}>
-                            <span className="uk-margin-small-right" data-uk-icon="icon: push" />
-                            Issue
-                        </button>
-                        <button className="uk-button uk-button-default uk-button-small uk-align-right" type="button" data-uk-toggle={unissuedDialogClass}>
-                            <span className="uk-margin-small-right" data-uk-icon="icon: album" />
-                            View Unissued
-                        </button>
+                        <div className="uk-inline">
+                            <button className="uk-button uk-button-default uk-button-small uk-align-right" type="button">
+                                <span className="uk-margin-small-right" data-uk-icon="icon: table" />                        
+                                Packs
+                            </button>
+                            <div data-uk-dropdown="pos:bottom-justify;mode:click">
+                                <ul className="uk-nav uk-dropdown-nav">
+                                <li><a href="#" onClick={() => this.generateNewPack()} >
+                                    <span className="uk-margin-small-right" data-uk-icon="icon: plus" />
+                                    Generate New
+                                </a></li>
+                                <li className="uk-nav-divider"></li>
+                                <li><a href="#" data-uk-toggle={unissuedDialogClass} >
+                                    <span className="uk-margin-small-right" data-uk-icon="icon: album" />
+                                    View Unissued
+                                </a></li>
+                                <li className="uk-nav-divider"></li>
+                                { canIssue ? (<li><a href="#" data-uk-toggle={issuePackDialogClass}>
+                                    <span className="uk-margin-small-right" data-uk-icon="icon: push" />
+                                    Issue
+                                </a></li>) : null }
+                                </ul>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div>
@@ -350,7 +369,8 @@ const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, TenderQuotes
     return {
         fetchQuoteBackingSheets: (tenderId: string, quoteId: string) => dispatch(fetchQuoteBackingSheets(tenderId, quoteId)),
         exportContractRates: (tenderId: string, quoteId: string) => dispatch(exportContractRates(tenderId, quoteId)),
-        deleteQuote: (tenderId: string, quoteId: string) => dispatch(deleteQuote(tenderId, quoteId))
+        deleteQuote: (tenderId: string, quoteId: string) => dispatch(deleteQuote(tenderId, quoteId)),
+        generateTenderPack: (portfolioId: string, tenderId: string) => dispatch(generateTenderPack(portfolioId, tenderId))
     };
 };
   

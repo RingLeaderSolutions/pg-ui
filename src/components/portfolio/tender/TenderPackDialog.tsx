@@ -7,7 +7,6 @@ import ErrorMessage from "../../common/ErrorMessage";
 import * as moment from 'moment';
 import DatePicker from 'react-datepicker';
 
-import { generateTenderPack } from '../../../actions/tenderActions';
 import { Tender, TenderPack, TenderSupplier } from "../../../model/Tender";
 
 interface TenderPackDialogProps {
@@ -23,14 +22,9 @@ interface StateProps {
 }
   
 interface DispatchProps {
-    generateTenderPack: (portfolioId: string, tenderId: string) => void;
 }
 
 class TenderPackDialog extends React.Component<TenderPackDialogProps & StateProps & DispatchProps, {}> {
-    generateTenderPack(){
-        this.props.generateTenderPack(this.props.portfolioId, this.props.tender.tenderId);
-    }
-
     renderPackTableContent(){
         return this.props.tender.unissuedPacks.map(p => {
             var supplier = this.props.suppliers.find(s => s.supplierId == p.supplierId);
@@ -106,12 +100,6 @@ class TenderPackDialog extends React.Component<TenderPackDialogProps & StateProp
                     <div className="uk-margin">
                         {content}
                     </div>
-                    <div className="uk-margin">
-                        <button className="uk-button uk-button-primary" type="button" onClick={() => this.generateTenderPack()}>
-                            <span className="uk-margin-small-right" data-uk-icon="icon: bolt" />
-                            Generate new tender pack
-                        </button>   
-                    </div>    
                 </div>
             </div>)
     }
@@ -119,7 +107,6 @@ class TenderPackDialog extends React.Component<TenderPackDialogProps & StateProp
 
 const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, TenderPackDialogProps> = (dispatch) => {
     return {
-        generateTenderPack: (portfolioId: string, tenderId: string) => dispatch(generateTenderPack(portfolioId, tenderId))
     };
 };
   

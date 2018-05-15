@@ -1,31 +1,30 @@
 import * as React from "react";
-import { Portfolio, PortfolioDetails, UtilityType } from '../../../model/Models';
+import { Portfolio, PortfolioDetails, UtilityType } from '../../model/Models';
 import { MapDispatchToPropsFunction, connect, MapStateToProps } from 'react-redux';
-import { ApplicationState } from '../../../applicationState';
+import { ApplicationState } from '../../applicationState';
 
-import Spinner from '../../common/Spinner';
-import ErrorMessage from "../../common/ErrorMessage";
+import Spinner from './Spinner';
+import ErrorMessage from "./ErrorMessage";
 import * as moment from 'moment';
 import DatePicker from 'react-datepicker';
 
-import { SupplyDataUploadReport } from "../../../model/Models";
-import UploadSupplyDataDialog from "../mpan/UploadSupplyDataDialog";
+import { UploadReportDetail } from "../../model/Models";
+import UploadSupplyDataDialog from "../portfolio/mpan/UploadSupplyDataDialog";
 
-interface SupplyDataReportViewProps {
+interface UploadReportViewProps {
 }
 
 interface StateProps {
     working: boolean;
     error: boolean;
     errorMessage: string;
-    uploadReport: SupplyDataUploadReport;
+    uploadReport: UploadReportDetail;
 }
   
 interface DispatchProps {
 }
 
-class SupplyDataReportView extends React.Component<SupplyDataReportViewProps & StateProps & DispatchProps, {}> {
-
+class UploadReportView extends React.Component<UploadReportViewProps & StateProps & DispatchProps, {}> {
     renderTableRows(){
         return this.props.uploadReport.uploadFiles.map(f => {
             return f.activity.map( (a, index) => {
@@ -36,10 +35,10 @@ class SupplyDataReportView extends React.Component<SupplyDataReportViewProps & S
                         <td>{a.entity}</td>
                         <td>{a.message}</td>
                         <td>{a.failure ? (
-                            <span className="icon-standard-cursor" data-uk-tooltip="title: Success" data-uk-icon="icon: check"></span>
+                            <span className="icon-standard-cursor" data-uk-tooltip="title: Failure" data-uk-icon="icon: close"></span>
                         ) : 
                         (
-                            <span className="icon-standard-cursor" data-uk-tooltip="title: Failure" data-uk-icon="icon: close"></span>
+                            <span className="icon-standard-cursor" data-uk-tooltip="title: Successful" data-uk-icon="icon: check"></span>
                         )}</td>
                         <td>{index == 0 ? f.successCount : null}</td>
                         <td>{index == 0 ? f.failureCount : null}</td>
@@ -58,7 +57,7 @@ class SupplyDataReportView extends React.Component<SupplyDataReportViewProps & S
                         <th>Category</th>
                         <th>Entity</th>
                         <th>Result</th>
-                        <th>Failure</th>
+                        <th>Successful</th>
                         <th># Successful</th>
                         <th># Failed</th>
                     </tr>
@@ -88,18 +87,18 @@ class SupplyDataReportView extends React.Component<SupplyDataReportViewProps & S
     }
 }
 
-const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, SupplyDataReportViewProps> = (dispatch) => {
+const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, UploadReportViewProps> = (dispatch) => {
     return {
     };
 };
   
-const mapStateToProps: MapStateToProps<StateProps, SupplyDataReportViewProps> = (state: ApplicationState) => {
+const mapStateToProps: MapStateToProps<StateProps, UploadReportViewProps> = (state: ApplicationState) => {
     return {
-        uploadReport: state.portfolio.selected_upload_report.value as SupplyDataUploadReport,
-        working: state.portfolio.selected_upload_report.working,
-        error: state.portfolio.selected_upload_report.error,
-        errorMessage: state.portfolio.selected_upload_report.errorMessage
+        uploadReport: state.selected_upload_report.value as UploadReportDetail,
+        working: state.selected_upload_report.working,
+        error: state.selected_upload_report.error,
+        errorMessage: state.selected_upload_report.errorMessage
     };
 };
   
-export default connect(mapStateToProps, mapDispatchToProps)(SupplyDataReportView);
+export default connect(mapStateToProps, mapDispatchToProps)(UploadReportView);

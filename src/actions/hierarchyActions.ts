@@ -1,10 +1,11 @@
 import ApiService from "../services/ApiService";
-import { Account, AccountDetail } from "../Model/Models";
+import { Account, AccountDetail, UploadResponse, UploadReportsResponse } from "../Model/Models";
 
 import * as types from "./actionTypes";
 import { makeApiRequest } from "./Common";
 
 import { Dispatch } from 'redux';
+import { AccountContact, AccountDocument } from "../model/HierarchyObjects";
 
 export function retrieveAccounts(){
     return (dispatch: Dispatch<any>) => {
@@ -65,13 +66,123 @@ export function updateAccount(account: Account){
 
         makeApiRequest(dispatch,
             createPromise,
-            201, 
+            200, 
             data => {
                 return { type: types.UPDATE_ACCOUNT_SUCCESSFUL, data};
                 
             }, 
             error => {
                 return { type: types.UPDATE_ACCOUNT_FAILED, errorMessage: error };
+            });
+    };
+}
+
+export function createContact(contact: AccountContact){
+    return (dispatch: Dispatch<any>) => {
+        let createPromise = ApiService.createContact(contact);
+        dispatch( { type: types.CREATE_ACCOUNT_CONTACT_WORKING });
+
+        makeApiRequest(dispatch,
+            createPromise,
+            201, 
+            data => {
+                return { type: types.CREATE_ACCOUNT_CONTACT_SUCCESSFUL, data};
+                
+            }, 
+            error => {
+                return { type: types.CREATE_ACCOUNT_CONTACT_FAILED, errorMessage: error };
+            });
+    };
+}
+
+export function updateContact(contact: AccountContact){
+    return (dispatch: Dispatch<any>) => {
+        let createPromise = ApiService.updateContact(contact);
+        dispatch( { type: types.UPDATE_ACCOUNT_CONTACT_WORKING });
+
+        makeApiRequest(dispatch,
+            createPromise,
+            200, 
+            data => {
+                return { type: types.UPDATE_ACCOUNT_CONTACT_SUCCESSFUL, data};
+                
+            }, 
+            error => {
+                return { type: types.UPDATE_ACCOUNT_CONTACT_FAILED, errorMessage: error };
+            });
+    };
+}
+
+export function deleteContact(accountContactId: string){
+    return (dispatch: Dispatch<any>) => {
+        let createPromise = ApiService.deleteContact(accountContactId);
+        dispatch( { type: types.DELETE_ACCOUNT_CONTACT_WORKING });
+
+        makeApiRequest(dispatch,
+            createPromise,
+            200, 
+            data => {
+                return { type: types.DELETE_ACCOUNT_CONTACT_SUCCESSFUL, data};
+                
+            }, 
+            error => {
+                return { type: types.DELETE_ACCOUNT_CONTACT_FAILED, errorMessage: error };
+            });
+    };
+}
+
+export function fetchAccountDocumentation(accountId: string){
+    return (dispatch: Dispatch<any>) => {
+        let createPromise = ApiService.fetchAccountDocumentation(accountId);
+        dispatch( { type: types.FETCH_ACCOUNT_DOCUMENTATION_WORKING });
+
+        makeApiRequest(dispatch,
+            createPromise,
+            200, 
+            data => {
+                return { type: types.FETCH_ACCOUNT_DOCUMENTATION_SUCCESSFUL, data: data as AccountDocument[]};
+                
+            }, 
+            error => {
+                return { type: types.FETCH_ACCOUNT_DOCUMENTATION_FAILED, errorMessage: error };
+            });
+    };
+}
+
+export function uploadAccountDocument(accountId: string, documentType: string, file: Blob){
+    return (dispatch: Dispatch<any>) => {
+        let uploadPromise = ApiService.uploadAccountDocument(accountId, file);
+        dispatch({ type: types.UPLOAD_ACCOUNT_DOCUMENTATION_WORKING });
+
+        makeApiRequest(dispatch,
+            uploadPromise,
+            200, 
+            data => {
+                var uploadResponse = data as UploadResponse;
+                ApiService.reportSuccessfulAccountDocumentUpload(accountId, documentType, uploadResponse.uploadedFiles);
+                return { type: types.UPLOAD_ACCOUNT_DOCUMENTATION_SUCCESSFUL, data: null};
+                
+            }, 
+            error => {
+                return { type: types.UPLOAD_ACCOUNT_DOCUMENTATION_FAILED, errorMessage: error };
+            });
+    };
+}
+
+export function fetchAccountUploads(accountId: string){
+    return (dispatch: Dispatch<any>) => {
+        let createPromise = ApiService.fetchAccountUploads(accountId);
+        dispatch( { type: types.FETCH_ACCOUNT_UPLOADS_WORKING });
+
+        makeApiRequest(dispatch,
+            createPromise,
+            200, 
+            data => {
+                return { type: types.FETCH_ACCOUNT_UPLOADS_SUCCESSFUL, data: data as UploadReportsResponse};
+                
+            }, 
+            error => {
+                return { type: types.FETCH_ACCOUNT_UPLOADS_FAILED, errorMessage: error };
             });
     };
 }

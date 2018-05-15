@@ -63,6 +63,24 @@ export function updateMeter(portfolioId: string, meter: Mpan){
     };
 }
 
+export function includeMeters(portfolioId: string, meters: string[]){
+    return (dispatch: Dispatch<any>) => {
+        let includePromise = ApiService.includeMeters(portfolioId, meters);
+        dispatch({ type: types.INCLUDE_METERS_WORKING });
+
+        makeApiRequest(dispatch,
+            includePromise,
+            200, 
+            data => {
+                return { type: types.INCLUDE_METERS_SUCCESSFUL, data: null};
+                
+            }, 
+            error => {
+                return { type: types.INCLUDE_METERS_FAILED, errorMessage: error };
+            });
+    };
+}
+
 export function excludeMeters(portfolioId: string, meters: string[]){
     return (dispatch: Dispatch<any>) => {
         let excludePromise = ApiService.excludeMeters(portfolioId, meters);

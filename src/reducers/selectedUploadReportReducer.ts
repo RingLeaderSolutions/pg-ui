@@ -1,7 +1,7 @@
-import * as types from '../../actions/actionTypes';
-import { reduceReducers, requestResponseReducer } from '../common';
-import { UploadReportBase } from '../../model/Models';
-import { RequestState, initialRequestState } from '../RequestState';
+import * as types from '../actions/actionTypes';
+import { reduceReducers, requestResponseReducer } from './common';
+import { UploadReportBase } from '../model/Models';
+import { RequestState, initialRequestState } from './RequestState';
 
 export interface SelectedUploadReportState extends RequestState {
     value: UploadReportBase;

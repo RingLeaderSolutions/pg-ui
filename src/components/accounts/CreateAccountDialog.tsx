@@ -15,9 +15,6 @@ interface CreateAccountDialogProps {
 }
 
 interface StateProps {
-  working: boolean;
-  error: boolean;
-  errorMessage: string;
 }
 
 interface DispatchProps {
@@ -209,10 +206,6 @@ const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, CreateAccoun
   
 const mapStateToProps: MapStateToProps<StateProps, CreateAccountDialogProps> = (state: ApplicationState) => {
     return {
-        working: state.portfolio.details.working,
-        error: state.portfolio.details.error,
-        errorMessage: state.portfolio.details.errorMessage,
-        suppliers: state.portfolio.tender.suppliers.value,
     };
 };
   

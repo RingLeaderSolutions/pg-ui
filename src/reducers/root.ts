@@ -93,7 +93,6 @@ import portfolioHistoryReducer from './portfolio/portfolioHistoryReducer';
 import updateRequirementsReducer from './portfolio/updateRequirementsReducer';
 import createContactReducer from './portfolio/createContactReducer';
 import portfolioUploadsReducer from './portfolio/portfolioUploadsReducer';
-import selectedUploadReportReducer from './portfolio/selectedUploadReportReducer';
 
 const portfolioReducer: Reducer<PortfolioState> = combineReducers<PortfolioState>({
     account: portfolioAccountReducer,
@@ -103,8 +102,7 @@ const portfolioReducer: Reducer<PortfolioState> = combineReducers<PortfolioState
     tender: tenderReducer,
     update_requirements: updateRequirementsReducer,
     create_contact: createContactReducer,
-    uploads: portfolioUploadsReducer,
-    selected_upload_report: selectedUploadReportReducer
+    uploads: portfolioUploadsReducer
 });
 
 import notificationMessageReducer from './notifications/notificationMessageReducer';
@@ -140,11 +138,17 @@ import fetchBackendVersionReducer from './fetchBackendVersionReducer';
 import { HierarchyState } from './hierarchy/HierarchyState'
 import retrieveAccountsReducer from './hierarchy/retrieveAccountsReducer';
 import retrieveAccountDetailReducer from './hierarchy/retrieveAccountDetailReducer';
+import fetchAccountDocumentationReducer from './hierarchy/fetchAccountDocumentationReducer';
+import fetchAccountUploadsReducer from './hierarchy/fetchAccountUploadsReducer';
 
 const hierarchyState: Reducer<HierarchyState> = combineReducers<HierarchyState>({
     accounts: retrieveAccountsReducer,
-    selected: retrieveAccountDetailReducer
+    selected: retrieveAccountDetailReducer,
+    selected_documentation: fetchAccountDocumentationReducer,
+    selected_uploads: fetchAccountUploadsReducer
 });
+
+import selectedUploadReportReducer from './selectedUploadReportReducer';
 
 // Combine all reducers to form the master ApplicationState
 const rootReducer: Reducer<ApplicationState> = combineReducers<ApplicationState>({
@@ -155,7 +159,8 @@ const rootReducer: Reducer<ApplicationState> = combineReducers<ApplicationState>
     auth: authReducer,
     meters: completeMeterReducer,
     backend_version: fetchBackendVersionReducer,
-    hierarchy: hierarchyState
+    hierarchy: hierarchyState,
+    selected_upload_report: selectedUploadReportReducer
 });
 
 export default rootReducer;

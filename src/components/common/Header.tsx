@@ -19,7 +19,8 @@ export default class Header extends React.Component<HeaderProps, {}> {
         <NotificationContainer />
         <div className="header-content">
           <h3>{this.props.title}</h3>
-          <img className="avatar avatar-large" src={require('../../images/avatar.jpg')} title="Log out" data-uk-tooltip onClick={this.logOut}/>
+          <span data-uk-icon="icon: sign-out; ratio: 2" title="Log out" data-uk-tooltip onClick={this.logOut}/>
+          {/* <img className="avatar avatar-large" src={require('../../images/avatar.jpg')} title="Log out" data-uk-tooltip onClick={this.logOut}/> */}
         </div>
         <hr />
       </div>);

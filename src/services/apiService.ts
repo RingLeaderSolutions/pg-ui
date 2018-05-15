@@ -6,6 +6,7 @@ import StorageService from './storageService';
 import { Mpan } from '../model/Meter';
 import { Tender, TenderContract, TenderSupplier, TenderRequirements } from '../model/Tender';
 import * as moment from 'moment';
+import { AccountContact } from '../model/HierarchyObjects';
 
 export interface IApiService {
   getAllPortfolios(): Promise<AxiosResponse>;
@@ -28,13 +29,19 @@ export interface IApiService {
   createAccount(account: Account) : Promise<AxiosResponse>;
   updateAccount(account: Account) : Promise<AxiosResponse>;
   updateAccountFlags(accountId: string, accountFlags: AccountCompanyStatusFlags): Promise<AxiosResponse>;
-  
+  createContact(contact: AccountContact): Promise<AxiosResponse>;
+  updateContact(contact: AccountContact): Promise<AxiosResponse>;
+  deleteContact(accountContactId: string): Promise<AxiosResponse>;
+  fetchAccountDocumentation(accountId: string): Promise<AxiosResponse>;
+  fetchAccountUploads(accountId: string): Promise<AxiosResponse>;
+
   getPortfolioHistory(portfolioId: string): Promise<AxiosResponse>;
 
   getAllMeters(portfolioId: string): Promise<AxiosResponse>;
   fetchMeterConsumption(portfolioId: string): Promise<AxiosResponse>;
   updateMeter(portfolioId: string, meter: Mpan): Promise<AxiosResponse>;
   excludeMeters(portfolioId: string, meters: string[]): Promise<AxiosResponse>;
+  includeMeters(portfolioId: string, meters: string[]): Promise<AxiosResponse>;
   exportMeterConsumption(portfolioID: string): Promise<AxiosResponse>;
 
   fetchPortfolioUploads(portfolioId: string): Promise<AxiosResponse>;
@@ -47,6 +54,7 @@ export interface IApiService {
   uploadElectricityBackingSheet(contractId: string, file: Blob): Promise<AxiosResponse>;
   uploadGasBackingSheet(contractId: string, file: Blob): Promise<AxiosResponse>;
   uploadOffer(tenderId: string, supplierId: string, file: Blob): Promise<AxiosResponse>;
+  uploadAccountDocument(accountId: string, file: Blob): Promise<AxiosResponse>;
 
   reportSuccessfulLoaUpload(portfolioId: string, accountId: string, files: string[]): Promise<AxiosResponse>;
   reportSuccessfulSupplyMeterDataUpload(accountId: string, files: string[], utility: UtilityType): Promise<AxiosResponse>;
@@ -54,6 +62,7 @@ export interface IApiService {
   reportSuccessfulHistoricalUpload(portfolioId: string, files: string[], historicalType: string): Promise<AxiosResponse>;
   reportSuccessfulBackingSheetUpload(contractId: string, useGeneric: boolean, files: string[], utility: UtilityType): Promise<AxiosResponse>;
   reportSuccessfulOfferUpload(tenderId: string, supplierId: string, useGeneric: boolean, files: string[], utility: UtilityType): Promise<AxiosResponse>;
+  reportSuccessfulAccountDocumentUpload(accountId: string, documentType: string, files: string[]): Promise<AxiosResponse>;
 
   getTenderSuppliers(): Promise<AxiosResponse>;
   getPortfolioTenders(portfolioId: string): Promise<AxiosResponse>;
@@ -410,6 +419,13 @@ export class ApiService implements IApiService {
         return axios.put(`${this.baseApiUri}/portman-web/portfolio/${portfolioId}/exclude/meters`, payload, this.getRequestConfig());
     }
 
+    includeMeters(portfolioId: string, meters: string[]){
+        var payload = {
+            meters
+        };
+        return axios.put(`${this.baseApiUri}/portman-web/portfolio/${portfolioId}/include/meters`, payload, this.getRequestConfig());
+    }
+
     reportSuccessfulLoaUpload(portfolioId: string, accountId: string, files: string[]) {
         var payload = {
             id: "",
@@ -512,6 +528,45 @@ export class ApiService implements IApiService {
 
     reportLogin(){
         return axios.post(`${this.baseApiUri}/portman-web/admin/logon`, null, this.getRequestConfig());
+    }
+
+    createContact(contact: AccountContact){
+        return axios.post(`${this.hierarchyApiUri}/api/Contact`, contact, this.getRequestConfig());         
+    }
+
+    updateContact(contact: AccountContact){
+        return axios.put(`${this.hierarchyApiUri}/api/Contact/${contact.id}`, contact, this.getRequestConfig());         
+    }
+
+    deleteContact(accountContactId: string){
+        return axios.delete(`${this.hierarchyApiUri}/api/Contact/${accountContactId}`, this.getRequestConfig());         
+    }
+
+    fetchAccountDocumentation(accountId: string){
+        return axios.get(`${this.baseApiUri}/portman-web/documentation/account/${accountId}`, this.getRequestConfig());        
+    }
+
+    fetchAccountUploads(accountId: string){
+        return axios.get(`${this.baseApiUri}/portman-web/upload/query/account/${accountId}`, this.getRequestConfig());        
+    }
+
+    uploadAccountDocument(accountId: string, file: Blob){
+        var formData = new FormData();
+        formData.append('files', file);
+
+        return axios.post(`${this.uploadApiUri}/api/upload/account/${accountId}`, formData, this.getUploadFileConfig());
+    }
+
+    reportSuccessfulAccountDocumentUpload(accountId: string, documentType: string, files: string[]){
+        var payload = {
+            blobFileName: files[0],
+            accountId,
+            documentType,
+            received: moment().format("YYYY-MM-DDTHH:mm:ss"),
+            expiry: moment().add(1, 'years').format("YYYY-MM-DDTHH:mm:ss"),
+        };
+
+        return axios.post(`${this.baseApiUri}/portman-web/documentation/account`, payload, this.getRequestConfig());
     }
 
     getEndpointPrefix(utility: UtilityType) {

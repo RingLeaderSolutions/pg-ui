@@ -9,6 +9,7 @@ import UploadHistoricDialog from './UploadHistoricDialog';
 import UploadSupplyDataDialog from './UploadSupplyDataDialog';
 
 import { fetchMeterConsumption, excludeMeters, exportMeterConsumption } from '../../../actions/meterActions';
+import IncludeMetersDialog from "./IncludeMetersDialog";
 
 interface PortfolioMetersProps {
     portfolio: Portfolio;
@@ -64,6 +65,10 @@ class PortfolioMeters extends React.Component<PortfolioMetersProps & StateProps 
     }
 
     renderDynamicTable(columns: string[], values: string[][], utilityType: UtilityType){
+        var includedMeters = values.map(r => r[1]);
+        var includeDialogName = `modal-include-meters-${utilityType}`;
+        var showIncludeDialogClass = `target: #${includeDialogName}`;
+
         var rows = values.map((row, rowIndex) => {
            return (
                <tr key={rowIndex}>
@@ -76,10 +81,12 @@ class PortfolioMeters extends React.Component<PortfolioMetersProps & StateProps 
                     </td>
                </tr>);
         });
+
         return (
             <div>
                 <div>
                     <p className='uk-text-right'>
+                        <button className='uk-button uk-button-default uk-button-small' data-uk-toggle={showIncludeDialogClass}><span data-uk-icon='icon: plus' /> Include Meters</button>
                         <button className='uk-button uk-button-default uk-button-small' onClick={() => this.exportMeterConsumption()} ><span data-uk-icon='icon: cloud-download' /> Export</button>
                         { utilityType == UtilityType.Electricity ? (<button className='uk-button uk-button-primary uk-button-small uk-margin-small-left uk-margin-small-right' data-uk-toggle="target: #modal-upload-consumption"><span data-uk-icon='icon: upload' /> Upload Historic Consumption</button>) : null}
                     </p>
@@ -96,6 +103,9 @@ class PortfolioMeters extends React.Component<PortfolioMetersProps & StateProps 
                         {rows}
                     </tbody>
                 </table>
+                <div id={includeDialogName} data-uk-modal="center: true">
+                    <IncludeMetersDialog portfolio={this.props.details} includedMeters={includedMeters} utility={utilityType}/>
+                </div>
             </div>);
     }
 

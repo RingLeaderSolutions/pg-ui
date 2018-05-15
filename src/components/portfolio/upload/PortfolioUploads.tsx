@@ -3,12 +3,12 @@ import ErrorMessage from "../../common/ErrorMessage";
 import { RouteComponentProps } from 'react-router';
 import { MapDispatchToPropsFunction, connect, MapStateToProps } from 'react-redux';
 import { ApplicationState } from '../../../applicationState';
-import { UploadReport, SupplyDataUploadReport, Portfolio, PortfolioUploadReports } from '../../../model/Models';
+import { UploadReport, UploadReportDetail, Portfolio, UploadReportsResponse } from '../../../model/Models';
 import Spinner from '../../common/Spinner';
 import * as moment from 'moment';
 
 import { fetchPortfolioUploads, fetchUploadReport } from '../../../actions/portfolioActions';
-import SupplyDataReportView from "./SupplyDataReportView";
+import UploadReportView from "../../common/UploadReportView";
 import QuoteImportReportView from "./QuoteImportReportView";
 
 interface PortfolioUploadProps {
@@ -16,7 +16,7 @@ interface PortfolioUploadProps {
 }
 
 interface StateProps {
-  reports: PortfolioUploadReports;
+  reports: UploadReportsResponse;
   working: boolean;
   error: boolean;
   errorMessage: string;
@@ -42,7 +42,7 @@ class PortfolioUploads extends React.Component<PortfolioUploadProps & StateProps
     }
 
     renderUploadsTable(reports: UploadReport[], isImport: boolean){
-        var viewClass = isImport ? "target: #modal-view-import" : "target: #modal-view-upload";
+        var viewClass = isImport ? "target: #modal-view-import" : "target: #modal-view-portfolio-upload";
         var rows = reports
             .sort(
                 (a, b) => {
@@ -88,6 +88,7 @@ class PortfolioUploads extends React.Component<PortfolioUploadProps & StateProps
             </div>
         )
     }
+
     render() {
         if(this.props.error){
             return (<ErrorMessage content={this.props.errorMessage} />);
@@ -114,8 +115,8 @@ class PortfolioUploads extends React.Component<PortfolioUploadProps & StateProps
                             <li>{this.renderUploadsTable(this.props.reports.imports, true)}</li>
                         </ul>
                     </div>
-                    <div id="modal-view-upload" data-uk-modal="center: true">
-                        <SupplyDataReportView />
+                    <div id="modal-view-portfolio-upload" data-uk-modal="center: true">
+                        <UploadReportView />
                     </div>
 
                     <div id="modal-view-import" data-uk-modal="center: true">

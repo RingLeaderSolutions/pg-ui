@@ -8,8 +8,8 @@ import ErrorMessage from "../../common/ErrorMessage";
 import * as moment from 'moment';
 import DatePicker from 'react-datepicker';
 
-import { QuoteImportUploadReport } from "../../../model/Models";
-import { ImportTemplateReport, FieldAction } from "../../../model/Uploads";
+import { ImportReportDetail } from "../../../model/Models";
+import { TemplateResult, FieldAction } from "../../../model/Uploads";
 
 interface QuoteImportReportViewProps {
 }
@@ -18,7 +18,7 @@ interface StateProps {
     working: boolean;
     error: boolean;
     errorMessage: string;
-    uploadReport: QuoteImportUploadReport;
+    uploadReport: ImportReportDetail;
 }
   
 interface DispatchProps {
@@ -50,7 +50,7 @@ class QuoteImportReportView extends React.Component<QuoteImportReportViewProps &
     //         </table>)
     // }
 
-    renderUnmappedColumnsTable(template: ImportTemplateReport){
+    renderUnmappedColumnsTable(template: TemplateResult){
         var rows = template.unmappedColumns
             .sort(
                 (col1: string, col2: string) => {        
@@ -79,7 +79,7 @@ class QuoteImportReportView extends React.Component<QuoteImportReportViewProps &
             </table>)
     }
 
-    renderImportResultsTable(template: ImportTemplateReport){
+    renderImportResultsTable(template: TemplateResult){
         var rows = template.recordActions.map((ra) => {
             return ra.fieldActions.map((fieldAction: FieldAction, index: number) => {
                 return (
@@ -143,10 +143,10 @@ const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, QuoteImportR
   
 const mapStateToProps: MapStateToProps<StateProps, QuoteImportReportViewProps> = (state: ApplicationState) => {
     return {
-        uploadReport: state.portfolio.selected_upload_report.value as QuoteImportUploadReport,
-        working: state.portfolio.selected_upload_report.working,
-        error: state.portfolio.selected_upload_report.error,
-        errorMessage: state.portfolio.selected_upload_report.errorMessage
+        uploadReport: state.selected_upload_report.value as ImportReportDetail,
+        working: state.selected_upload_report.working,
+        error: state.selected_upload_report.error,
+        errorMessage: state.selected_upload_report.errorMessage
     };
 };
   

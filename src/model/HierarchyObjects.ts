@@ -20,6 +20,7 @@ export interface Account {
 
 export interface AccountContact {
     id: string;
+    accountId: string;
     firstName: string;
     lastName: string;
     email: string;
@@ -102,4 +103,13 @@ export interface HierarchyMprn {
     emergencyContactName: string,
     emergencyContactTelephone: string,
     tariffId: string
+}
+
+export interface AccountDocument {
+    id: string;
+    blobFileName: string;
+    accountId: string;
+    documentType: string;
+    received: string;
+    expiry: string;
 }

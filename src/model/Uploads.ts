@@ -1,6 +1,6 @@
 import { User } from './User';
 
-export interface PortfolioUploadReports {
+export interface UploadReportsResponse {
     imports: UploadReport[];
     uploads: UploadReport[];
 }
@@ -19,12 +19,12 @@ export interface UploadReportBase {
 
 }
 
-export interface QuoteImportUploadReport extends UploadReportBase {
+export interface ImportReportDetail extends UploadReportBase {
     user: User,
-    templateResults: ImportTemplateReport[]
+    templateResults: TemplateResult[]
 }
 
-export interface ImportTemplateReport {
+export interface TemplateResult {
     name: string,
     recordCount: number,
     type: string,
@@ -43,10 +43,10 @@ export interface FieldAction {
     description: string
 }
 
-export interface SupplyDataUploadReport extends UploadReportBase {
+export interface UploadReportDetail extends UploadReportBase {
     workRequestId: string,
     requestId: string,
-    portfolioId: string,
+    entityId: string,
     account: string,
     status: string,
     who: string,

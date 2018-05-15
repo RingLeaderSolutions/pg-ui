@@ -3,7 +3,7 @@ import { HubConnection } from "@aspnet/signalr-client";
 import { NotificationMessage } from '../model/NotificationMessage';
 import { getPortfolioDetails } from '../actions/portfolioActions';
 import { getPortfolioTenders } from '../actions/tenderActions';
-import { retrieveAccountDetail } from '../actions/hierarchyActions';
+import { retrieveAccountDetail, fetchAccountDocumentation, fetchAccountUploads } from '../actions/hierarchyActions';
 import { fetchMeterConsumption } from '../actions/meterActions';
 import { ApplicationState } from "../applicationState";
 
@@ -16,18 +16,18 @@ export default function connectSignalR(store: any) {
 
         var currentPortfolio = currentState.portfolio.selected.value;
         var currentAccount = currentState.hierarchy.selected.value;
-        if(!currentPortfolio || !currentAccount){
+        if(!currentPortfolio && !currentAccount){
             return;
         }
 
         var currentPortfolioId = currentPortfolio.id;
         switch(data.EntityType.toLowerCase()){
             case "portfolio":
-                if(data.EntityId == currentPortfolioId){
+                if(data.PortfolioId == currentPortfolioId){
                     store.dispatch(getPortfolioDetails(currentPortfolioId));
                 }
             case "portfoliometers":
-                if(data.EntityId == currentPortfolioId){
+                if(data.PortfolioId == currentPortfolioId){
                     store.dispatch(getPortfolioDetails(currentPortfolioId));
                     store.dispatch(fetchMeterConsumption(currentPortfolioId));
                 }
@@ -39,7 +39,9 @@ export default function connectSignalR(store: any) {
                 break;
             case "account":
                 if(data.EntityId == currentAccount.id){
-                    store.dispatch(retrieveAccountDetail(currentAccount.id))
+                    store.dispatch(retrieveAccountDetail(currentAccount.id));
+                    store.dispatch(fetchAccountDocumentation(currentAccount.id));
+                    store.dispatch(fetchAccountUploads(currentAccount.id));
                 }
                 break;
         }

@@ -26,11 +26,19 @@ interface DispatchProps {
 class TenderBackingSheetsDialog extends React.Component<TenderBackingSheetsDialogProps & StateProps & DispatchProps, {}> {
 
     renderDynamicTable(columns: string[], values: string[][]){
-        var rows = values.map((row, index) => {
+        var rows = values
+        .sort(
+            (rowA, rowB) => {
+                if (rowA[0] < rowB[0]) return -1;
+                if (rowA[0] > rowB[0]) return 1;
+                return 0;
+            })
+        .map((row, rowIndex) => {
            return (
-               <tr key={index}>
-                   {row.map((cellValue) => {
-                       return (<td>{cellValue}</td>);
+               <tr key={rowIndex}>
+                   {row.map((cellValue, cellIndex) => {
+                       var key = `${rowIndex},${cellIndex}`;
+                       return (<td key={key}>{cellValue}</td>);
                    })}
                </tr>);
         });
@@ -38,8 +46,8 @@ class TenderBackingSheetsDialog extends React.Component<TenderBackingSheetsDialo
             <table className="uk-table uk-table-divider">
                 <thead>
                     <tr>
-                        {columns.map(c => {
-                            return (<th key={c}>{c}</th>)
+                        {columns.map((c, colIndex) => {
+                            return (<th key={colIndex}>{c}</th>)
                         })}
                     </tr>
                 </thead>

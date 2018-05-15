@@ -36,15 +36,6 @@ export interface PortfolioRequirements {
     greenPercentage: number;
 }
 
-export interface PortfolioDocument {
-    id: string;
-    blobFileName: string;
-    accountId: string;
-    documentType: string;
-    received: string;
-    expiry: string;
-}
-
 export interface MeterGroup {
     groupName: string,
     meterCount: number,
@@ -58,6 +49,5 @@ export interface PortfolioDetails {
     portfolio: PortfolioSummary;
     meterGroups: MeterGroup[];
     requirements?: PortfolioRequirements;
-    documentation?: PortfolioDocument[];
     siteCount: number;
 }

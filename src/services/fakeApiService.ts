@@ -15,9 +15,10 @@ import {
     User,
     UtilityType,
     AccountDetail,
-    SiteDetail
+    SiteDetail,
+    AccountDocument
 } from '../model/Models';
-import { PortfolioDetails, PortfolioDocument } from '../model/PortfolioDetails';
+import { PortfolioDetails } from '../model/PortfolioDetails';
 import { BackingSheet, Tender, TenderContract, TenderSupplier, TenderIssuanceEmail, Tariff, TenderRequirements } from '../model/Tender';
 import { IApiService } from './ApiService';
 import { AccountContact } from '../model/HierarchyObjects';
@@ -281,15 +282,6 @@ export class FakeApiService implements IApiService {
 			portfolioId: "4d584e81-91c2-47b4-85f9-411db125af51"
         };
 
-        var documentation: PortfolioDocument[] = [{
-            id: "d7b3ae3d-5b65-4e6b-87c1-d68e9b9d8be7",
-            blobFileName: "loa_rls_20171121.pdf",
-            accountId: "493e1708-2457-48ba-8925-09856d6e9732",
-            documentType: "loa",
-            received: "2017-11-21T05:49:53",
-            expiry: "2018-11-20T05:49:53"
-        }];
-
         var portfolioDetails: PortfolioDetails = {
             portfolio: {
                 id: "4d584e81-91c2-47b4-85f9-411db125af51",
@@ -316,7 +308,6 @@ export class FakeApiService implements IApiService {
                 electricityRequired: true,
                 greenPercentage: 100.0
             },
-            documentation: null,
             meterGroups: [{
                 consumption: 1234.32,
                 groupName: "GAS",
@@ -829,6 +820,10 @@ export class FakeApiService implements IApiService {
         return OK();
     }
 
+    includeMeters(portfolioId: string, meters: string[]){
+        return OK();
+    }
+
     uploadOffer(tenderId: string, supplierId: string, file: Blob) {
         return OK();
     }
@@ -963,7 +958,8 @@ export class FakeApiService implements IApiService {
         ];
         
         var contacts: AccountContact[] = [{
-            id: "1",
+            id: "2",
+            accountId: "1",
             firstName: "Daniel",
             lastName: "May",
             email: "daniel@danielmay.co.uk",
@@ -1019,6 +1015,43 @@ export class FakeApiService implements IApiService {
 
     updateAccount(account: Account){
         return OK();
+    }
+
+    createContact(contact: AccountContact){
+        return OK();
+    }
+
+    updateContact(contact: AccountContact){
+        return OK();   
+    }
+
+    deleteContact(accountContactId: string){
+        return OK();     
+    }
+
+    fetchAccountDocumentation(accountId: string){
+        var documentation: AccountDocument[] = [{
+            id: "d7b3ae3d-5b65-4e6b-87c1-d68e9b9d8be7",
+            blobFileName: "loa_rls_20171121.pdf",
+            accountId: "493e1708-2457-48ba-8925-09856d6e9732",
+            documentType: "loa",
+            received: "2017-11-21T05:49:53",
+            expiry: "2018-11-20T05:49:53"
+        }];
+
+        return OK(documentation);
+    }
+
+    fetchAccountUploads(accountId: string){
+        return OK();  
+    }
+
+    uploadAccountDocument(accountId: string, file: Blob){
+        return OK();
+    }
+
+    reportSuccessfulAccountDocumentUpload(accountId: string, documentType: string, files: string[]){
+        return OK();        
     }
 }
 

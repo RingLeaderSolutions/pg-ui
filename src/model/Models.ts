@@ -4,8 +4,7 @@ export { Portfolio,
 
 export { PortfolioDetails,
          PortfolioContact,
-         PortfolioRequirements,
-         PortfolioDocument } from './PortfolioDetails'
+         PortfolioRequirements } from './PortfolioDetails'
 
 export { Account,
          AccountCompanyStatusFlags,
@@ -13,7 +12,8 @@ export { Account,
          SiteDetail,
          HierarchySite,
          HierarchyMpan,
-         HierarchyMprn } from './HierarchyObjects';
+         HierarchyMprn,
+         AccountDocument } from './HierarchyObjects';
          
 export { User } from './User';
 
@@ -26,7 +26,7 @@ export { DashboardPortfolioSummary,
 export { Client } from './Client';
 
 export { CompanyInfo } from './CompanyInfo';
-export { UploadReport, SupplyDataUploadReport, UploadFileReport, UploadResultItem, PortfolioUploadReports, UploadReportBase, QuoteImportUploadReport } from './Uploads';
+export { UploadReport, UploadReportDetail, UploadFileReport, UploadResultItem, UploadReportsResponse, UploadReportBase, ImportReportDetail } from './Uploads';
 
 export enum UtilityType {
     Gas,
