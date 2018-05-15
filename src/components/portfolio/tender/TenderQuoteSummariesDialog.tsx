@@ -61,7 +61,7 @@ class TenderQuoteSummariesDialog extends React.Component<TenderQuoteSummariesDia
 
     renderSummaryTable(){
         if(this.props.tender.summaries == null || this.props.tender.summaries.length == 0){
-            return (<p>No reccomendations have been generated.</p>);
+            return (<p>No recomendations have been generated.</p>);
         }
 
         var tableContent = this.renderSummaryTableContent();
