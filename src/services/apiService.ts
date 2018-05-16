@@ -36,7 +36,8 @@ export interface IApiService {
   deleteContact(accountContactId: string): Promise<AxiosResponse>;
   fetchAccountDocumentation(accountId: string): Promise<AxiosResponse>;
   fetchAccountUploads(accountId: string): Promise<AxiosResponse>;
-
+  fetchAccountPortfolios(accountId: string): Promise<AxiosResponse>;
+  
   getPortfolioHistory(portfolioId: string): Promise<AxiosResponse>;
 
   getAllMeters(portfolioId: string): Promise<AxiosResponse>;
@@ -583,6 +584,10 @@ export class ApiService implements IApiService {
 
     fetchUsers(){
         return axios.get(`${this.baseApiUri}/portman-web/admin/users`, this.getRequestConfig());        
+    }
+
+    fetchAccountPortfolios(accountId: string){
+        return axios.get(`${this.baseApiUri}/portman-web/portfolios/account/${accountId}/jumplist`, this.getRequestConfig());        
     }
 
     getEndpointPrefix(utility: UtilityType) {

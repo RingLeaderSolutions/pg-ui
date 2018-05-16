@@ -235,3 +235,21 @@ export function clearAccountCreation(){
         dispatch( { type: types.CREATE_ACCOUNT_CLEAR });
     };
 }
+
+export function fetchAccountPortfolios(accountId: string){
+    return (dispatch: Dispatch<any>) => {
+        let createPromise = ApiService.fetchAccountPortfolios(accountId);
+        dispatch( { type: types.FETCH_ACCOUNT_PORTFOLIOS_WORKING });
+
+        makeApiRequest(dispatch,
+            createPromise,
+            200, 
+            data => {
+                return { type: types.FETCH_ACCOUNT_PORTFOLIOS_SUCCESSFUL, data};
+                
+            }, 
+            error => {
+                return { type: types.FETCH_ACCOUNT_PORTFOLIOS_FAILED, errorMessage: error };
+            });
+    };
+}

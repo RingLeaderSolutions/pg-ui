@@ -1079,6 +1079,10 @@ export class FakeApiService implements IApiService {
         }
         return OK(response)
     }
+
+    fetchAccountPortfolios(accountId: string){
+        return OK();
+    }
 }
 
 export default new FakeApiService();

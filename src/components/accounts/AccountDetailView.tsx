@@ -8,17 +8,19 @@ import { Portfolio, AccountDetail, SiteDetail, HierarchyMpan, HierarchyMprn, Uti
 import Spinner from '../common/Spinner';
 
 
-import { retrieveAccountDetail } from '../../actions/hierarchyActions';
+import { retrieveAccountDetail, fetchAccountPortfolios } from '../../actions/hierarchyActions';
 import UploadSupplyDataDialog from "../portfolio/mpan/UploadSupplyDataDialog";
 import UpdateAccountDialog from "./UpdateAccountDialog";
 import AccountContactsView from "./AccountContactsView";
 import AccountDocumentsView from "./AccountDocumentsView";
 import AccountUploadsView from "./AccountUploadsView";
+import { Link } from "react-router-dom";
 
 interface AccountDetailViewProps extends RouteComponentProps<void> {
 }
 
 interface StateProps {
+  portfolios: any;
   account: AccountDetail;
   working: boolean;
   error: boolean;
@@ -27,6 +29,7 @@ interface StateProps {
 
 interface DispatchProps {
     retrieveAccountDetail: (accountId: string) => void;
+    fetchAccountPortfolios: (accountId: string) => void;
 }
 
 class AccountDetailView extends React.Component<AccountDetailViewProps & StateProps & DispatchProps, {}> {
@@ -35,6 +38,7 @@ class AccountDetailView extends React.Component<AccountDetailViewProps & StatePr
     }
 
     renderGasTable() {
+        var portfolioButtons = this.renderPortfolioButtons();
         var content;
         if(this.props.account.sites.length === 0){
             content = (<div>No meter data has been uploaded yet.</div>);
@@ -62,6 +66,7 @@ class AccountDetailView extends React.Component<AccountDetailViewProps & StatePr
         return (
             <div>
                 <p className="uk-text-right">
+                {portfolioButtons}
                     <button className='uk-button uk-button-primary uk-button-small uk-margin-small-right' data-uk-toggle="target: #modal-upload-supply-data-elec"><span data-uk-icon='icon: upload' /> Upload Supply Data</button>
                 </p>
                 {content}
@@ -113,7 +118,16 @@ class AccountDetailView extends React.Component<AccountDetailViewProps & StatePr
     }
 
 
+    renderPortfolioButtons(){
+        return Object.keys(this.props.portfolios).map(p => {
+            var portfolioId = this.props.portfolios[p];
+            var portfolioLink = `/portfolio/${portfolioId}`;
+            return (<Link to={portfolioLink} key={portfolioId}><button className='uk-button uk-button-default uk-button-small uk-margin-small-right' data-uk-tooltip="title: Jump to portfolio"><span data-uk-icon='icon: link' /> {p}</button></Link>)
+        })
+    }
+
     renderElectricityTable() {
+        var portfolioButtons = this.renderPortfolioButtons();
         var content;
         if(this.props.account.sites.length === 0){
             content = (<div>No meter data has been uploaded yet.</div>);
@@ -148,6 +162,7 @@ class AccountDetailView extends React.Component<AccountDetailViewProps & StatePr
         return (
             <div>
                 <p className="uk-text-right">
+                    {portfolioButtons}
                     <button className='uk-button uk-button-primary uk-button-small uk-margin-small-right' data-uk-toggle="target: #modal-upload-supply-data-elec"><span data-uk-icon='icon: upload' /> Upload Supply Data</button>
                 </p>
                 {content}
@@ -209,6 +224,7 @@ class AccountDetailView extends React.Component<AccountDetailViewProps & StatePr
     componentDidMount(){
         var accountId = this.props.location.pathname.split('/')[2];        
         this.props.retrieveAccountDetail(accountId);
+        this.props.fetchAccountPortfolios(accountId);
     }
 
     render() {
@@ -261,16 +277,18 @@ class AccountDetailView extends React.Component<AccountDetailViewProps & StatePr
 
 const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, AccountDetailViewProps> = (dispatch) => {
     return {
-        retrieveAccountDetail: (accountId: string) => dispatch(retrieveAccountDetail(accountId))        
+        retrieveAccountDetail: (accountId: string) => dispatch(retrieveAccountDetail(accountId)),
+        fetchAccountPortfolios: (accountId: string) => dispatch(fetchAccountPortfolios(accountId))
     };
 };
   
 const mapStateToProps: MapStateToProps<StateProps, AccountDetailViewProps> = (state: ApplicationState) => {
     return {
         account: state.hierarchy.selected.value,
-        working: state.hierarchy.selected.working,
-        error: state.hierarchy.selected.error,
-        errorMessage: state.hierarchy.selected.errorMessage
+        portfolios: state.hierarchy.selected_portfolios.value,
+        working: state.hierarchy.selected.working || state.hierarchy.selected_portfolios.working,
+        error: state.hierarchy.selected.error || state.hierarchy.selected_portfolios.error,
+        errorMessage: state.hierarchy.selected.errorMessage || state.hierarchy.selected_portfolios.errorMessage
     };
 };
   

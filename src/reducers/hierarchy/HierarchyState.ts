@@ -3,6 +3,7 @@ import { AccountDetailState } from './retrieveAccountDetailReducer';
 import { AccountDocumentationState } from './fetchAccountDocumentationReducer';
 import { AccountUploadsState } from './fetchAccountUploadsReducer';
 import { CreateAccountState } from './createAccount/CreateAccountState';
+import { RequestState } from '../RequestState';
 
 export interface HierarchyState {
     accounts: AccountsState;
@@ -10,4 +11,5 @@ export interface HierarchyState {
     selected_documentation: AccountDocumentationState;
     selected_uploads: AccountUploadsState;
     create_account: CreateAccountState;
+    selected_portfolios: RequestState;
 }
