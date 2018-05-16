@@ -9,6 +9,7 @@ import ErrorMessage from "../common/ErrorMessage";
 import { Account } from '../../model/Models';
 import Spinner from '../common/Spinner';
 import CreateAccountDialog from "./CreateAccountDialog";
+import NewAccountDialog from "./NewAccountDialog";
 
 interface AccountsProps extends RouteComponentProps<void> {
 }
@@ -111,7 +112,7 @@ class Accounts extends React.Component<AccountsProps & StateProps & DispatchProp
                     </div>
                 </div>
                 <div id="modal-new-account" data-uk-modal="center: true">
-                    <CreateAccountDialog />
+                    <NewAccountDialog />
                 </div>
             </div>)
     }

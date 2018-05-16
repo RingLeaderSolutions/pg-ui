@@ -107,7 +107,7 @@ class PortfolioMeters extends React.Component<PortfolioMetersProps & StateProps 
                                 <button className="uk-button uk-button-default uk-margin-small-right" type="button">
                                     <span data-uk-icon="icon: more" />
                                 </button>
-                                <div data-uk-dropdown="pos:bottom-justify;mode:click">
+                                <div data-uk-dropdown="pos:bottom-justify;mode:hover">
                                     <ul className="uk-nav uk-dropdown-nav">
                                         <li><a href="#" data-uk-toggle={showIncludeDialogClass}>
                                             <span className="uk-margin-small-right" data-uk-icon="icon: plus" />

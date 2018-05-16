@@ -7,7 +7,6 @@ import { ApplicationState } from '../../applicationState';
 import Header from "../common/Header";
 import ErrorMessage from "../common/ErrorMessage";
 import { Portfolio } from '../../model/Models';
-import NewPortfolioDialog from './creation/NewPortfolioDialog';
 import Spinner from '../common/Spinner';
 import CreatePortfolioFromAccountDialog from "./creation/CreatePortfolioFromAccountDialog";
 
@@ -107,10 +106,6 @@ class Portfolios extends React.Component<PortfoliosProps & StateProps & Dispatch
                                     <span className="uk-margin-small-right" data-uk-icon="plus-circle"></span>
                                     New portfolio
                                 </button>
-                                <button className="uk-button uk-button-primary uk-margin-small-left" data-uk-toggle="target: #modal-new-prospect">
-                                    <span className="uk-margin-small-right" data-uk-icon="plus-circle"></span>
-                                    New prospect
-                                </button>
                             </div>
                         </div>
                         <div className="container-table-portfolios">
@@ -133,9 +128,6 @@ class Portfolios extends React.Component<PortfoliosProps & StateProps & Dispatch
                             </table>
                         </div>
                     </div>
-                </div>
-                <div id="modal-new-prospect" data-uk-modal="center: true">
-                    <NewPortfolioDialog />
                 </div>
 
                 <div id="modal-new-portfolio" data-uk-modal="center: true">

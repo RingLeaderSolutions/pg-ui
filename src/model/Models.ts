@@ -41,9 +41,6 @@ export interface ExportResponse {
     exportUri: string;
 }
 
-// Application data model
-export { PortfolioCreationStage } from './app/PortfolioCreationStage';
-
 export interface UploadResponse {
     success: boolean;
     uploadedFiles: string[];

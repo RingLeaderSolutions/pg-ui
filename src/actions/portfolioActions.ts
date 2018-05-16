@@ -98,35 +98,6 @@ export function getPortfolioHistory(portfolioId: string){
     };
 }
 
-export function searchCompany(registrationNumber: string){
-    return (dispatch: Dispatch<any>) => {
-        let searchPromise = ApiService.searchCompany(registrationNumber);
-        dispatch( { type: types.COMPANY_SEARCH_WORKING });
-
-        makeApiRequest(dispatch,
-            searchPromise,
-            200, 
-            data => {
-                return { type: types.COMPANY_SEARCH_SUCCESSFUL, data: data as CompanyInfo};
-                
-            }, 
-            error => {
-                return { type: types.COMPANY_SEARCH_FAILED, errorMessage: error };
-            });
-    };
-}
-
-export function clearCompany(){
-    return (dispatch: Dispatch<any>) => {
-        dispatch( { type: types.COMPANY_SEARCH_CLEAR });
-    };
-}
-
-export function selectCompany(){
-    return (dispatch: Dispatch<any>) => {
-        dispatch( { type: types.COMPANY_SEARCH_SELECTED });
-    };
-}
 
 export function retrieveAccount(accountId: string){
     return (dispatch: Dispatch<any>) => {
@@ -215,12 +186,6 @@ export function createPortfolio(portfolio: PortfolioCreationRequest){
             error => {
                 return { type: types.CREATE_PORTFOLIO_FAILED, errorMessage: error };
             });
-    };
-}
-
-export function clearPortfolioCreation(){
-    return (dispatch: Dispatch<any>) => {
-        dispatch( { type: types.CLEAR_PORTFOLIO_CREATION });
     };
 }
 

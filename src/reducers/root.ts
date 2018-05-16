@@ -16,28 +16,12 @@ const dashboardReducer: Reducer<DashboardState> = combineReducers<DashboardState
     timeline: dashboardTimelineReducer
 });
 
-// Portfolios - contains all portfolios and manages creation state
-import { CreatePortfolioState } from './portfolios/create/CreatePortfolioState';
-import companySearchReducer from './portfolios/create/companySearchReducer';
-import createAccountReducer from './portfolios/create/createAccountReducer';
-import createPortfolioReducer from './portfolios/create/createPortfolioReducer';
-import creationStageReducer from './portfolios/create/creationStageReducer';
-
-const portfolioCreationReducer: Reducer<CreatePortfolioState> = combineReducers<CreatePortfolioState>({
-    stage: creationStageReducer,
-
-    company: companySearchReducer,
-    account: createAccountReducer,
-    portfolio: createPortfolioReducer
-});
-
 import allPortfoliosReducer from './portfolios/allPortfoliosReducer';
 import { AllPortfoliosState } from './portfolios/allPortfoliosReducer';
 import { PortfoliosState } from './portfolios/PortfoliosState';
 
 const portfoliosReducer: Reducer<PortfoliosState> = combineReducers<PortfoliosState>({
-    all: allPortfoliosReducer,
-    create: portfolioCreationReducer
+    all: allPortfoliosReducer
 });
 
 import { TenderState } from './tender/TenderState';
@@ -135,6 +119,20 @@ var completeMeterReducer = reduceReducers((state: MeterState = {
 
 import fetchBackendVersionReducer from './fetchBackendVersionReducer';
 
+// Portfolios - contains all portfolios and manages creation state
+import { CreateAccountState } from './hierarchy/createAccount/CreateAccountState';
+import companySearchReducer from './hierarchy/createAccount/companySearchReducer';
+import createAccountReducer from './hierarchy/createAccount/createAccountReducer';
+import creationStageReducer from './hierarchy/createAccount/creationStageReducer';
+
+const accountCreationReducer: Reducer<CreateAccountState> = combineReducers<CreateAccountState>({
+    stage: creationStageReducer,
+
+    company: companySearchReducer,
+    account: createAccountReducer
+});
+
+
 import { HierarchyState } from './hierarchy/HierarchyState'
 import retrieveAccountsReducer from './hierarchy/retrieveAccountsReducer';
 import retrieveAccountDetailReducer from './hierarchy/retrieveAccountDetailReducer';
@@ -145,7 +143,8 @@ const hierarchyState: Reducer<HierarchyState> = combineReducers<HierarchyState>(
     accounts: retrieveAccountsReducer,
     selected: retrieveAccountDetailReducer,
     selected_documentation: fetchAccountDocumentationReducer,
-    selected_uploads: fetchAccountUploadsReducer
+    selected_uploads: fetchAccountUploadsReducer,
+    create_account: accountCreationReducer
 });
 
 import selectedUploadReportReducer from './selectedUploadReportReducer';

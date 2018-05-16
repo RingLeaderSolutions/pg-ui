@@ -1,11 +1,11 @@
 import * as React from "react";
 import { MapDispatchToPropsFunction, connect, MapStateToProps } from 'react-redux';
-import { ApplicationState } from '../../../applicationState';
-import ErrorMessage from '../../common/ErrorMessage';
-import Spinner from '../../common/Spinner';
-import { CompanyInfo } from '../../../model/Models';
+import { ApplicationState } from '../../applicationState';
+import ErrorMessage from '../common/ErrorMessage';
+import Spinner from '../common/Spinner';
+import { CompanyInfo } from '../../model/Models';
 
-import { searchCompany, clearCompany, selectCompany } from '../../../actions/portfolioActions';
+import { searchCompany, clearCompany, selectCompany } from '../../actions/hierarchyActions';
 
 interface StateProps {
     working: boolean;
@@ -106,7 +106,6 @@ class CompanySearch extends React.Component<DispatchProps & StateProps, {}> {
 
         return (
             <div>
-                <button className="uk-modal-close-default" type="button" data-uk-close></button>
                 <div className="uk-modal-header">
                     <h2 className="uk-modal-title">New Prospect</h2>
                 </div>
@@ -148,10 +147,10 @@ const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, {}> = (dispa
 
 const mapStateToProps: MapStateToProps<StateProps, {}> = (state: ApplicationState) => {
     return {
-        working: state.portfolios.create.company.working,
-        error: state.portfolios.create.company.error,
-        errorMessage: state.portfolios.create.company.errorMessage,
-        company: state.portfolios.create.company.value
+        working: state.hierarchy.create_account.company.working,
+        error: state.hierarchy.create_account.company.error,
+        errorMessage: state.hierarchy.create_account.company.errorMessage,
+        company: state.hierarchy.create_account.company.value
     };
 };
   

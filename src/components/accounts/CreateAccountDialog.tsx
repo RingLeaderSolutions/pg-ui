@@ -3,7 +3,7 @@ import Header from "../common/Header";
 import ErrorMessage from "../common/ErrorMessage";
 import { MapDispatchToPropsFunction, connect, MapStateToProps } from 'react-redux';
 import { ApplicationState } from '../../applicationState';
-import { Account } from '../../model/Models';
+import { Account, CompanyInfo } from '../../model/Models';
 import Spinner from '../common/Spinner';
 import { FormEvent } from "react";
 import * as moment from 'moment';
@@ -15,6 +15,7 @@ interface CreateAccountDialogProps {
 }
 
 interface StateProps {
+    company: CompanyInfo;
 }
 
 interface DispatchProps {
@@ -29,10 +30,11 @@ class CreateAccountDialog extends React.Component<CreateAccountDialogProps & Sta
     constructor(props: CreateAccountDialogProps & StateProps & DispatchProps){
         super();
         this.state = {
-            incorporationDate: moment()
+            incorporationDate: props.company ? moment(props.company.incorporationDate, "DD-MM-YYYY") : moment()
         };
 
         this.handleIncorporationDateChange = this.handleIncorporationDateChange.bind(this);
+        this.createAccount = this.createAccount.bind(this);
     }
 
     companyName: HTMLInputElement;
@@ -47,7 +49,7 @@ class CreateAccountDialog extends React.Component<CreateAccountDialogProps & Sta
     fitEligible: HTMLInputElement;
     cclEligible: HTMLInputElement;
 
-    createAccount(){
+    createAccount(event: any){
         var account: Account = {
             id: null,
             accountNumber: null,
@@ -67,6 +69,7 @@ class CreateAccountDialog extends React.Component<CreateAccountDialogProps & Sta
         }
         
         this.props.createAccount(account);
+        event.preventDefault();        
     }
 
     handleIncorporationDateChange(date: moment.Moment, event: React.SyntheticEvent<any>){
@@ -78,9 +81,11 @@ class CreateAccountDialog extends React.Component<CreateAccountDialogProps & Sta
     }
 
     render() {
+        var { company } = this.props;
+        var address = company ? `${company.addressLine1}, ${company.addressLine2}, ${company.postTown}, ${company.county}` : null;
+
         return (
-            <div className="uk-modal-dialog">
-                <button className="uk-modal-close-default" type="button" data-uk-close></button>
+            <div>
                 <div className="uk-modal-header">
                     <h2 className="uk-modal-title">Create Account</h2>
                 </div>
@@ -93,6 +98,7 @@ class CreateAccountDialog extends React.Component<CreateAccountDialogProps & Sta
                                     <input 
                                         className='uk-input' 
                                         type='text' 
+                                        defaultValue={company ? company.companyName : null}
                                         ref={ref => this.companyName = ref} />
                                 </div>
                                 <div className='uk-margin'>
@@ -100,6 +106,7 @@ class CreateAccountDialog extends React.Component<CreateAccountDialogProps & Sta
                                     <input 
                                         className='uk-input' 
                                         type='text' 
+                                        defaultValue={company ? company.companyNumber : null}
                                         ref={ref => this.companyReg = ref} />
                                 </div>
                                 <div className='uk-margin'>
@@ -107,6 +114,7 @@ class CreateAccountDialog extends React.Component<CreateAccountDialogProps & Sta
                                     <input 
                                         className='uk-input' 
                                         type='text' 
+                                        defaultValue={address}
                                         ref={ref => this.address = ref} />
                                 </div>
                                 <div className='uk-margin'>
@@ -114,6 +122,7 @@ class CreateAccountDialog extends React.Component<CreateAccountDialogProps & Sta
                                     <input 
                                         className='uk-input' 
                                         type='text' 
+                                        defaultValue={company ? company.postcode : null}
                                         ref={ref => this.postcode = ref} />
                                 </div>
                                 <div className='uk-margin'>
@@ -121,6 +130,7 @@ class CreateAccountDialog extends React.Component<CreateAccountDialogProps & Sta
                                     <input 
                                         className='uk-input' 
                                         type='text' 
+                                        defaultValue={company ? company.countryOfOrigin : null}
                                         ref={ref => this.country = ref} />
                                 </div>
                                 <div className="uk-margin">
@@ -191,8 +201,7 @@ class CreateAccountDialog extends React.Component<CreateAccountDialogProps & Sta
                     </div>
                 </div>
                 <div className="uk-modal-footer uk-text-right">
-                    <button className="uk-button uk-button-default uk-margin-right uk-modal-close" type="button">Cancel</button>
-                    <button className="uk-button uk-button-primary uk-modal-close" type="button" onClick={() => this.createAccount()}>Create</button>
+                    <button className="uk-button uk-button-primary" type="button" onClick={this.createAccount}>Create</button>
                 </div>
             </div>)
     }
@@ -206,6 +215,7 @@ const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, CreateAccoun
   
 const mapStateToProps: MapStateToProps<StateProps, CreateAccountDialogProps> = (state: ApplicationState) => {
     return {
+        company: state.hierarchy.create_account.company.value
     };
 };
   

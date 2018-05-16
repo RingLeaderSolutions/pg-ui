@@ -22,7 +22,7 @@ const createAccountReducer = requestResponseReducer(
 
 const clearCreationReducer = (state: AccountCreationState, action: any) => {
     switch(action.type){
-        case types.CLEAR_PORTFOLIO_CREATION:
+        case types.CREATE_ACCOUNT_CLEAR:
           return {
               ...state,
               value: null

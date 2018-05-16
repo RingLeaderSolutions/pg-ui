@@ -1,5 +1,5 @@
 import ApiService from "../services/ApiService";
-import { Account, AccountDetail, UploadResponse, UploadReportsResponse } from "../Model/Models";
+import { Account, AccountDetail, UploadResponse, UploadReportsResponse, CompanyInfo } from "../Model/Models";
 
 import * as types from "./actionTypes";
 import { makeApiRequest } from "./Common";
@@ -184,5 +184,54 @@ export function fetchAccountUploads(accountId: string){
             error => {
                 return { type: types.FETCH_ACCOUNT_UPLOADS_FAILED, errorMessage: error };
             });
+    };
+}
+
+
+export function selectCompanySearchMethod(){
+    return (dispatch: Dispatch<any>) => {
+        dispatch( { type: types.SELECT_METHOD_COMPANY_SEARCH });
+    };
+}
+
+export function selectManualMethod(){
+    return (dispatch: Dispatch<any>) => {
+        dispatch( { type: types.SELECT_METHOD_MANUAL });
+    };
+}
+
+export function searchCompany(registrationNumber: string){
+    return (dispatch: Dispatch<any>) => {
+        let searchPromise = ApiService.searchCompany(registrationNumber);
+        dispatch( { type: types.COMPANY_SEARCH_WORKING });
+
+        makeApiRequest(dispatch,
+            searchPromise,
+            200, 
+            data => {
+                return { type: types.COMPANY_SEARCH_SUCCESSFUL, data: data as CompanyInfo};
+                
+            }, 
+            error => {
+                return { type: types.COMPANY_SEARCH_FAILED, errorMessage: error };
+            });
+    };
+}
+
+export function clearCompany(){
+    return (dispatch: Dispatch<any>) => {
+        dispatch( { type: types.COMPANY_SEARCH_CLEAR });
+    };
+}
+
+export function selectCompany(){
+    return (dispatch: Dispatch<any>) => {
+        dispatch( { type: types.COMPANY_SEARCH_SELECTED });
+    };
+}
+
+export function clearAccountCreation(){
+    return (dispatch: Dispatch<any>) => {
+        dispatch( { type: types.CREATE_ACCOUNT_CLEAR });
     };
 }
