@@ -4,7 +4,8 @@ import ErrorMessage from "../common/ErrorMessage";
 import { RouteComponentProps } from 'react-router';
 import { MapDispatchToPropsFunction, connect, MapStateToProps } from 'react-redux';
 import { ApplicationState } from '../../applicationState';
-import { Portfolio, AccountDetail, SiteDetail, HierarchyMpan, HierarchyMprn, UtilityType } from '../../model/Models';
+import { Portfolio, AccountDetail, SiteDetail, HierarchyMpan, HierarchyMprn, UtilityType, } from '../../model/Models';
+import { AccountContact } from '../../model/HierarchyObjects';
 import Spinner from '../common/Spinner';
 
 
@@ -37,7 +38,14 @@ class AccountContactsView extends React.Component<AccountContactsViewProps & Sta
             return (<tr><td colSpan={6}>No contacts have been added yet.</td></tr>);
         }
         
-        return this.props.account.contacts.map(c => {
+        return this.props.account.contacts
+        .sort(
+            (c1: AccountContact, c2: AccountContact) => {        
+                if (c1.firstName < c2.firstName) return -1;
+                if (c1.firstName > c2.firstName) return 1;
+                return 0;
+            })
+        .map(c => {
             var updateContactDialogName = `modal-update-contact-${c.id}`;
             var viewUpdateContactDialogClass = `target: #${updateContactDialogName}`;
 

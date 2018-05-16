@@ -49,7 +49,14 @@ class Accounts extends React.Component<AccountsProps & StateProps & DispatchProp
             tableContent =  (<tr><td colSpan={9}><p className="table-warning">There are no accounts. Create one using the button above!</p></td></tr>)
         }
         else {
-            tableContent = this.props.accounts.map(account => {
+            tableContent = this.props.accounts
+            .sort(
+                (acc1: Account, acc2: Account) => {        
+                    if (acc1.companyName < acc2.companyName) return -1;
+                    if (acc1.companyName > acc2.companyName) return 1;
+                    return 0;
+                })
+            .map(account => {
                 var link = { pathname: `/account/${account.id}`, state: { accountId: account.id }};
 
                 return (

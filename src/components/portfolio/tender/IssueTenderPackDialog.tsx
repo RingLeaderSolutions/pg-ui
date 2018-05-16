@@ -47,34 +47,52 @@ class IssueTenderPackDialog extends React.Component<IssueTenderPackDialogProps &
             return (<Spinner />)
         }
 
-        return (
-            <div className="uk-margin">
-            <form>
-                <div className='uk-flex'>
-                    <div className='uk-card uk-card-default uk-card-body uk-flex-1'>
-                        <fieldset className='uk-fieldset'>
-                            <div className='uk-margin'>
-                                <label className='uk-form-label'>Subject</label>
-                                <input className='uk-input' 
-                                    defaultValue={this.props.email.subject}
-                                    ref={ref => this.subjectElement = ref}/>
-                            </div>
-
-                            <div className='uk-margin'>
-                                <label className='uk-form-label'>Body</label>
-                                <textarea className='uk-textarea' 
-                                    rows={4}
-                                    defaultValue={this.props.email.body}
-                                    ref={ref => this.bodyElement = ref}/>
-                            </div>
-                        </fieldset>
+        var deadline = moment(this.props.tender.deadline);
+        var now = moment();
+        if(deadline.isSameOrBefore(now, 'day')){
+            return (
+                <div>
+                    <div className="uk-alert-danger uk-margin-small-top uk-margin-small-bottom uk-modal-body" data-uk-alert>
+                        <p>Sorry! The deadline set for this tender ({deadline.format('DD-MM-YYYY')}) is now in the past. </p>
+                        <p>If you wish to issue a new requirements pack, please update the deadline by editing the tender.</p>
+                    </div>
+                    <div className="uk-modal-footer uk-text-right">
+                        <button className="uk-button uk-button-default uk-margin-right uk-modal-close" type="button">OK</button>
                     </div>
                 </div>
-            </form>
-            <div className="uk-modal-footer uk-text-right">
-                <button className="uk-button uk-button-default uk-margin-right uk-modal-close" type="button">Cancel</button>
-                <button className="uk-button uk-button-primary uk-modal-close" type="button" onClick={() => this.issueTender()}>Issue</button>
-            </div>
+            )
+        }
+
+        return (
+            <div>
+                <div className="uk-modal-body">
+                    <form>
+                        <div className='uk-flex'>
+                            <div className='uk-flex-1'>
+                                <fieldset className='uk-fieldset'>
+                                    <div className='uk-margin'>
+                                        <label className='uk-form-label'>Subject</label>
+                                        <input className='uk-input' 
+                                            defaultValue={this.props.email.subject}
+                                            ref={ref => this.subjectElement = ref}/>
+                                    </div>
+
+                                    <div className='uk-margin'>
+                                        <label className='uk-form-label'>Body</label>
+                                        <textarea className='uk-textarea' 
+                                            rows={4}
+                                            defaultValue={this.props.email.body}
+                                            ref={ref => this.bodyElement = ref}/>
+                                    </div>
+                                </fieldset>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div className="uk-modal-footer uk-text-right">
+                    <button className="uk-button uk-button-default uk-margin-right uk-modal-close" type="button">Cancel</button>
+                    <button className="uk-button uk-button-primary uk-modal-close" type="button" onClick={() => this.issueTender()}>Issue</button>
+                </div>
             </div>);
     }
 
@@ -97,10 +115,8 @@ class IssueTenderPackDialog extends React.Component<IssueTenderPackDialogProps &
                 <div className="uk-modal-header">
                     <h2 className="uk-modal-title">Issue Tender Requirements</h2>
                 </div>
-                <div className="uk-modal-body">
-                    <div className="uk-margin">
-                        {content}
-                    </div>
+                <div>
+                    {content}
                 </div>
             </div>)
     }

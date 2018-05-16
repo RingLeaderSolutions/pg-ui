@@ -3,7 +3,7 @@ import { HubConnection } from "@aspnet/signalr-client";
 import { NotificationMessage } from '../model/NotificationMessage';
 import { getPortfolioDetails, fetchPortfolioUploads, getAllPortfolios } from '../actions/portfolioActions';
 import { getPortfolioTenders } from '../actions/tenderActions';
-import { retrieveAccountDetail, fetchAccountDocumentation, fetchAccountUploads } from '../actions/hierarchyActions';
+import { retrieveAccountDetail, fetchAccountDocumentation, fetchAccountUploads, retrieveAccounts } from '../actions/hierarchyActions';
 import { fetchMeterConsumption } from '../actions/meterActions';
 import { ApplicationState } from "../applicationState";
 
@@ -16,34 +16,33 @@ export default function connectSignalR(store: any) {
 
         var currentPortfolio = currentState.portfolio.selected.value;
         var currentAccount = currentState.hierarchy.selected.value;
-        if(!currentPortfolio && !currentAccount){
-            return;
-        }
 
-        var currentPortfolioId = currentPortfolio.id;
         switch(data.EntityType.toLowerCase()){
             case "portfolio":
             case "portfoliometers":
-                if(data.PortfolioId == currentPortfolioId){
-                    store.dispatch(getPortfolioDetails(currentPortfolioId));
-                    store.dispatch(fetchMeterConsumption(currentPortfolioId));
-                    store.dispatch(fetchPortfolioUploads(currentPortfolioId));
+                if(currentPortfolio && data.PortfolioId == currentPortfolio.id){
+                    store.dispatch(getPortfolioDetails(currentPortfolio.id));
+                    store.dispatch(fetchMeterConsumption(currentPortfolio.id));
+                    store.dispatch(fetchPortfolioUploads(currentPortfolio.id));
                 }
                 if(data.Category == "created"){
                     store.dispatch(getAllPortfolios())
                 }
                 break;
             case "tender":
-                if(data.PortfolioId == currentPortfolioId){
-                    store.dispatch(getPortfolioTenders(currentPortfolioId));
-                    store.dispatch(fetchPortfolioUploads(currentPortfolioId));
+                if(currentPortfolio && data.PortfolioId == currentPortfolio.id){
+                    store.dispatch(getPortfolioTenders(currentPortfolio.id));
+                    store.dispatch(fetchPortfolioUploads(currentPortfolio.id));
                 }
                 break;
             case "account":
-                if(data.EntityId == currentAccount.id){
+                if(currentAccount && data.EntityId == currentAccount.id){
                     store.dispatch(retrieveAccountDetail(currentAccount.id));
                     store.dispatch(fetchAccountDocumentation(currentAccount.id));
                     store.dispatch(fetchAccountUploads(currentAccount.id));
+                }
+                if(data.Category == "created" || data.Category == "deleted"){
+                    store.dispatch(retrieveAccounts())
                 }
                 break;
         }
