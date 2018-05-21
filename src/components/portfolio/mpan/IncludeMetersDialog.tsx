@@ -31,6 +31,7 @@ interface DispatchProps {
 }
 
 interface IncludedMetersDialogState {
+    excludedMeters: string[];
     includedMeters: string[];
 }
 
@@ -38,26 +39,47 @@ class IncludeMetersDialog extends React.Component<IncludeMetersDialogProps & Sta
     constructor() {
         super();
         this.state = {
-            includedMeters: []
+            includedMeters: [],
+            excludedMeters: []
         }
     }
 
     componentDidMount(){
         this.props.retrieveAccountDetail(this.props.portfolio.portfolio.accountId)
     }
+
     completeInclusion(){
         this.props.includeMeters(this.props.portfolio.portfolio.id, this.state.includedMeters);
+    }
+
+    componentWillReceiveProps(nextProps: IncludeMetersDialogProps & StateProps & DispatchProps){
+        if(nextProps.account != null){
+            var excludedMeters: string[];
+            if(this.props.utility == UtilityType.Electricity){
+                excludedMeters =  this.getExcludedMpans(nextProps.account);
+            }
+            else {
+                excludedMeters = this.getExcludedMprns(nextProps.account);
+            }
+
+            this.setState({
+                ...this.state,
+                excludedMeters
+            });
+        }
     }
 
     handleChange(meter: string){
         if(this.state.includedMeters.indexOf(meter) < 0){
             this.setState({
+                ...this.state,
                 includedMeters: [...this.state.includedMeters, meter]
             });
             return;    
         }
 
         this.setState({
+            ...this.state,
             includedMeters: this.state.includedMeters.filter(im => im != meter)
         });
     }
@@ -69,30 +91,36 @@ class IncludeMetersDialog extends React.Component<IncludeMetersDialogProps & Sta
         }, new Array<TOut>());
     }
 
-    getExcludedMpans() : string[]{
-        var mpans = this.selectMany(this.props.account.sites, (s) => s.mpans);
+    getExcludedMpans(account: AccountDetail) : string[]{
+        var mpans = this.selectMany(account.sites, (s) => s.mpans);
         var cores = mpans.map(mp => mp.mpanCore);
 
         return cores.filter(c => this.props.includedMeters.indexOf(c) < 0);
     }
 
-    getExcludedMprns() : string[]{
-        var mprns = this.selectMany(this.props.account.sites, (s) => s.mprns);
+    getExcludedMprns(account: AccountDetail) : string[]{
+        var mprns = this.selectMany(account.sites, (s) => s.mprns);
         var cores = mprns.map(mp => mp.mprnCore);
 
         return cores.filter(c => this.props.includedMeters.indexOf(c) < 0);
     }
 
-    renderExcludedMeters(){
-        var excludedMeters: string[];
-        if(this.props.utility == UtilityType.Electricity){
-            excludedMeters =  this.getExcludedMpans();
-        }
-        else {
-            excludedMeters = this.getExcludedMprns();
-        }
+    includeAllMeters(){
+        this.setState({
+            ...this.state,
+            includedMeters: this.state.excludedMeters
+        });
+    }
 
-        var content = excludedMeters
+    includeNoMeters(){
+        this.setState({
+            ...this.state,
+            includedMeters: []
+        });
+    }
+
+    renderExcludedMeters(){
+        var content = this.state.excludedMeters
         .sort(
             (str1: string, str2: string) => {        
                 if (str1 < str2) return -1;
@@ -100,6 +128,7 @@ class IncludeMetersDialog extends React.Component<IncludeMetersDialogProps & Sta
                 return 0;
             })
         .map(em => {
+            var isSelected = this.state.includedMeters.find(im => im == em) != null;
             return (
                 <div className="uk-margin" key={em}>
                     <label>
@@ -107,6 +136,7 @@ class IncludeMetersDialog extends React.Component<IncludeMetersDialogProps & Sta
                             className='uk-checkbox'
                             type='checkbox' 
                             onChange={() => this.handleChange(em)}
+                            checked={isSelected}
                             /> {em}
                     </label>
                 </div>
@@ -124,6 +154,8 @@ class IncludeMetersDialog extends React.Component<IncludeMetersDialogProps & Sta
             return (<Spinner />);
         }
 
+        console.log(this.state.includedMeters);
+
         var saveDisabled = this.state.includedMeters.length == 0;
         return (
             <div className="uk-modal-dialog">
@@ -136,6 +168,14 @@ class IncludeMetersDialog extends React.Component<IncludeMetersDialogProps & Sta
                         <form>
                             <fieldset className="uk-fieldset">
                                 {this.renderExcludedMeters()}
+                                <hr />
+                                <button className="uk-button uk-button-small uk-button-default uk-margin-right" onClick={() => this.includeAllMeters()} type="button">
+                                    <span className="uk-margin-small-right" data-uk-icon="icon: check" /> Select All
+                                </button>
+                                <button className="uk-button uk-button-small uk-button-default uk-margin-right" onClick={() => this.includeNoMeters()} type="button">
+                                    <span className="uk-margin-small-right" data-uk-icon="icon: close" /> Select None
+                                </button>
+                                
                             </fieldset>
                         </form>
                     </div>
