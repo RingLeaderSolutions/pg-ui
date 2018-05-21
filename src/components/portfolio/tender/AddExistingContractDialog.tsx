@@ -115,21 +115,6 @@ class AddExistingContractDialog extends React.Component<AddExistingContractDialo
                                         <input className='uk-input' 
                                             ref={ref => this.contractRef = ref}/>
                                     </div>
-                                    <div className='uk-margin'>
-                                        <label className='uk-form-label'>Product</label>
-                                        <select className='uk-select' 
-                                            ref={ref => this.product = ref}>
-                                            <option value="" disabled>Select</option>
-                                            <option>Fixed</option>
-                                            <option>Flexi</option>
-                                        </select>
-                                    </div>
-
-                                    <div className='uk-margin'>
-                                        <label className='uk-form-label'>Supplier</label>
-                                        {this.renderSupplierSelect()}
-                                    </div>
-
                                     <div className="uk-margin">
                                         <label className="uk-form-label" data-for="contract-start-input">Contract Start</label>
                                         <div className="uk-form-controls">
@@ -148,6 +133,20 @@ class AddExistingContractDialog extends React.Component<AddExistingContractDialo
                                                         selected={this.state.contractEnd}
                                                         onChange={this.handleContractEndChange}/>
                                         </div>
+                                    </div>
+                                    <div className='uk-margin'>
+                                        <label className='uk-form-label'>Product</label>
+                                        <select className='uk-select' 
+                                            ref={ref => this.product = ref}>
+                                            <option value="" disabled>Select</option>
+                                            <option>Fixed</option>
+                                            <option>Flexi</option>
+                                        </select>
+                                    </div>
+
+                                    <div className='uk-margin'>
+                                        <label className='uk-form-label'>Supplier</label>
+                                        {this.renderSupplierSelect()}
                                     </div>
                                 </fieldset>
                             </div>
