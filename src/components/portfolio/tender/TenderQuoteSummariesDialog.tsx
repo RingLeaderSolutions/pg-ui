@@ -36,10 +36,11 @@ class TenderQuoteSummariesDialog extends React.Component<TenderQuoteSummariesDia
             var supplier = this.props.suppliers.find(su => su.supplierId == s.supplierId);
             var supplierText = supplier == null ? "Unknown" : supplier.name;
 
+            var created = moment.utc(s.created).local().fromNow();   
             return (
                 <tr key={s.summaryId}>
                     <td><span className="uk-label uk-label-success">{s.summaryId.substring(0, 8)}</span></td>
-                    <td>{s.created}</td>
+                    <td>{created}</td>
                     <td>{s.meterCount}</td>
                     <td>{s.supplierCount}</td>
                     <td>{supplierText}</td>
