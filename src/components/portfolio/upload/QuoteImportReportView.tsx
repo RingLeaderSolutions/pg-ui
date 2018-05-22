@@ -120,11 +120,17 @@ class QuoteImportReportView extends React.Component<QuoteImportReportViewProps &
                     <h2 className="uk-modal-title">Quote Import: {template.type}</h2>
                 </div>
                 <div className="uk-modal-body uk-overflow-auto">
+                    {this.props.uploadReport.originalFileNameURI ? (
+                        <p className="download-report">
+                            <a className="uk-button uk-button-default uk-button-small" data-uk-tooltip="title: Download" href={this.props.uploadReport.originalFileNameURI} target="_blank">
+                                <span data-uk-icon="icon: cloud-download" />
+                            </a>
+                        </p>) : null}
                         <ul data-uk-tab>
                             <li><a href="#">Import results</a></li>
                             <li><a href="#">Unmapped Columns</a></li>
                         </ul>
-                        <ul className="uk-switcher restrict-height-hack">
+                        <ul className="uk-switcher">
                             <li>{this.renderImportResultsTable(template)}</li>
                             <li>{this.renderUnmappedColumnsTable(template)}</li>
                         </ul>

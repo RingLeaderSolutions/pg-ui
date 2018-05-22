@@ -48,7 +48,15 @@
     width: 100% !important;
 
     .uk-modal-body {
-        height: 80%;
+        height: 600px;
+
+        .uk-switcher {
+            height: 85%;
+        }
+    }
+
+    .download-report {
+        float: right;
     }
 }
 

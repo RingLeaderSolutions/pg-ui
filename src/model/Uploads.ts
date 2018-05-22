@@ -21,7 +21,9 @@ export interface UploadReportBase {
 
 export interface ImportReportDetail extends UploadReportBase {
     user: User,
-    templateResults: TemplateResult[]
+    templateResults: TemplateResult[];
+    originalFileName: string;
+    originalFileNameURI: string;
 }
 
 export interface TemplateResult {

@@ -154,8 +154,6 @@ class IncludeMetersDialog extends React.Component<IncludeMetersDialogProps & Sta
             return (<Spinner />);
         }
 
-        console.log(this.state.includedMeters);
-
         var saveDisabled = this.state.includedMeters.length == 0;
         return (
             <div className="uk-modal-dialog">
@@ -175,7 +173,6 @@ class IncludeMetersDialog extends React.Component<IncludeMetersDialogProps & Sta
                                 <button className="uk-button uk-button-small uk-button-default uk-margin-right" onClick={() => this.includeNoMeters()} type="button">
                                     <span className="uk-margin-small-right" data-uk-icon="icon: close" /> Select None
                                 </button>
-                                
                             </fieldset>
                         </form>
                     </div>
