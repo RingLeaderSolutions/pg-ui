@@ -1,6 +1,5 @@
 import * as React from "react";
 import NotificationContainer from './NotificationContainer';
-import { Link } from 'react-router-dom';
 
 import AuthService from '../../services/AuthService';
 

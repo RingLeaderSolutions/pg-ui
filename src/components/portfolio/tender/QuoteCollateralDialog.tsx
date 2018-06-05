@@ -1,13 +1,7 @@
 import * as React from "react";
-import { Portfolio, PortfolioDetails, UtilityType } from '../../../model/Models';
 import { MapDispatchToPropsFunction, connect, MapStateToProps } from 'react-redux';
-import { ApplicationState } from '../../../applicationState';
-import Spinner from '../../common/Spinner';
-import ErrorMessage from "../../common/ErrorMessage";
-import * as moment from 'moment';
-import DatePicker from 'react-datepicker';
 
-import { Tender, TenderPack, TenderSupplier, TenderQuoteCollateral } from "../../../model/Tender";
+import { TenderQuoteCollateral } from "../../../model/Tender";
 
 interface QuoteCollateralDialogProps {
     collateral: TenderQuoteCollateral[];
@@ -78,14 +72,12 @@ class QuoteCollateralDialog extends React.Component<QuoteCollateralDialogProps &
     }
 }
 
-const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, QuoteCollateralDialogProps> = (dispatch) => {
-    return {
-    };
+const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, QuoteCollateralDialogProps> = () => {
+    return {};
 };
   
-const mapStateToProps: MapStateToProps<StateProps, QuoteCollateralDialogProps> = (state: ApplicationState) => {
-    return {
-    };
+const mapStateToProps: MapStateToProps<StateProps, QuoteCollateralDialogProps> = () => {
+    return {};
 };
   
 export default connect(mapStateToProps, mapDispatchToProps)(QuoteCollateralDialog);

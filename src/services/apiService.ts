@@ -72,9 +72,7 @@ export interface IApiService {
   addExistingContract(contract: TenderContract, portfolioId: string, tenderId: string): Promise<AxiosResponse>;
   updateExistingContract(contract: TenderContract, portfolioId: string, tenderId: string): Promise<AxiosResponse>;
   deleteTender(portfolioId: string, tenderId: string): Promise<AxiosResponse>;
-  createHHElectricityTender(portfolioId: string): Promise<AxiosResponse>;
-  createNHHElectricityTender(portfolioId: string): Promise<AxiosResponse>;
-  createGasTender(portfolioId: string): Promise<AxiosResponse>;
+  createTender(portfolioId: string, tender: Tender, utilityType: UtilityType, halfHourly?: boolean): Promise<AxiosResponse>;
   updateTenderSuppliers(tenderId: string, supplierIds: string[]): Promise<AxiosResponse>;
   updateTender(tenderId: string, tender: Tender): Promise<AxiosResponse>;
   getContractBackingSheets(tenderId: string, contractId: string): Promise<AxiosResponse>;
@@ -85,7 +83,6 @@ export interface IApiService {
   issueSummaryReport(tenderId: string, reportId: string): Promise<AxiosResponse>;
   fetchTenderIssuanceEmail(tenderId: string): Promise<AxiosResponse>;
   exportContractRates(tenderId: string, quoteId: string): Promise<AxiosResponse>;
-  updateTenderRequirements(requirements: TenderRequirements): Promise<AxiosResponse>;
   deleteQuote(tenderId: string, quoteId: string): Promise<AxiosResponse>;
 
   reportLogin(): Promise<AxiosResponse>;
@@ -351,16 +348,21 @@ export class ApiService implements IApiService {
         return axios.delete(`${this.baseApiUri}/portman-web/tender/portfolio/${portfolioId}/tender/${tenderId}`, this.getRequestConfig());
     }
 
-    createHHElectricityTender(portfolioId: string){
-        return axios.post(`${this.baseApiUri}/portman-web/tender/portfolio/${portfolioId}/electricity/hh`, null, this.getRequestConfig());
-    }
+    createTender(portfolioId: string, tender: Tender, utilityType: UtilityType, halfHourly?: boolean){
+        var endPointSuffix: string;
+        if(utilityType == UtilityType.Electricity){
+            if(halfHourly){
+                endPointSuffix = "electricity/hh";
+            }
+            else {
+                endPointSuffix = "electricity/nhh";
+            }
+        }
+        else {
+            endPointSuffix = "gas";
+        }
 
-    createNHHElectricityTender(portfolioId: string){
-        return axios.post(`${this.baseApiUri}/portman-web/tender/portfolio/${portfolioId}/electricity/nhh`, null, this.getRequestConfig());
-    }
-
-    createGasTender(portfolioId: string){
-        return axios.post(`${this.baseApiUri}/portman-web/tender/portfolio/${portfolioId}/gas`, null, this.getRequestConfig());
+        return axios.post(`${this.baseApiUri}/portman-web/tender/portfolio/${portfolioId}/${endPointSuffix}`, tender, this.getRequestConfig());
     }
 
     updateTenderSuppliers(tenderId: string, supplierIds: string[]){
@@ -507,10 +509,6 @@ export class ApiService implements IApiService {
         return axios.post(`${this.baseApiUri}/portman-web/upload/offer/supplier/${supplierId}/${suffix}`, payload, this.getRequestConfig());
     }
 
-    updateTenderRequirements(requirements: TenderRequirements){
-        return axios.post(`${this.baseApiUri}/portman-web/tender/requirements`, requirements, this.getRequestConfig());        
-    }
-
     deleteQuote(tenderId: string, quoteId: string){
         return axios.delete(`${this.baseApiUri}/portman-web/tender/${tenderId}/quote/${quoteId}`, this.getRequestConfig());                
     }
@@ -540,7 +538,8 @@ export class ApiService implements IApiService {
     }
 
     reportLogin(){
-        return axios.post(`${this.baseApiUri}/portman-web/admin/logon`, null, this.getRequestConfig());
+        //return axios.post(`${this.baseApiUri}/portman-web/admin/logon`, null, this.getRequestConfig());
+        return new FakeApiService().reportLogin();
     }
 
     createContact(contact: AccountContact){

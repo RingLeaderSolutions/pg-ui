@@ -1,5 +1,4 @@
 import * as React from "react";
-import Header from "../../common/Header";
 import { MapDispatchToPropsFunction, connect, MapStateToProps } from 'react-redux';
 import { ApplicationState } from '../../../applicationState';
 import { Portfolio, PortfolioDetails } from '../../../model/Models';
@@ -68,9 +67,8 @@ class PortfolioMeterStatus extends React.Component<PortfolioMeterStatusProps & S
     }
 }
 
-const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, PortfolioMeterStatusProps> = (dispatch) => {
-    return {
-    };
+const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, PortfolioMeterStatusProps> = () => {
+    return {};
 };
   
 const mapStateToProps: MapStateToProps<StateProps, PortfolioMeterStatusProps> = (state: ApplicationState) => {

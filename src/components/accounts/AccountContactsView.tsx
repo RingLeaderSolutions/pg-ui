@@ -1,16 +1,13 @@
 import * as React from "react";
-import Header from "../common/Header";
 import ErrorMessage from "../common/ErrorMessage";
-import { RouteComponentProps } from 'react-router';
 import { MapDispatchToPropsFunction, connect, MapStateToProps } from 'react-redux';
 import { ApplicationState } from '../../applicationState';
-import { Portfolio, AccountDetail, SiteDetail, HierarchyMpan, HierarchyMprn, UtilityType, } from '../../model/Models';
+import { AccountDetail } from '../../model/Models';
 import { AccountContact } from '../../model/HierarchyObjects';
 import Spinner from '../common/Spinner';
 
 
 import { deleteContact } from '../../actions/hierarchyActions';
-import UpdateAccountDialog from "./UpdateAccountDialog";
 import CreateContactDialog from "./CreateContactDialog";
 import UpdateContactDialog from "./UpdateContactDialog";
 

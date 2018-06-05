@@ -1,5 +1,4 @@
-import { RequestState } from '../RequestState';
-import { MeterPortfolio, Mpan } from '../../model/Meter';
+import { Mpan } from '../../model/Meter';
 import { MeterUpdateState } from './meterUpdateReducer';
 import { MetersRetrievalState } from './metersRetrievalReducer';
 import { MeterConsumptionState } from './fetchMeterConsumptionReducer';

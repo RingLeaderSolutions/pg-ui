@@ -1,14 +1,10 @@
 import * as React from "react";
-import { Portfolio, PortfolioDetails, UtilityType } from '../../../model/Models';
 import { MapDispatchToPropsFunction, connect, MapStateToProps } from 'react-redux';
 import { ApplicationState } from '../../../applicationState';
 
 import Spinner from '../../common/Spinner';
-import ErrorMessage from "../../common/ErrorMessage";
-import * as moment from 'moment';
-import DatePicker from 'react-datepicker';
 
-import { Tender, BackingSheet, ContractRatesResponse } from "../../../model/Tender";
+import { ContractRatesResponse } from "../../../model/Tender";
 
 interface TenderBackingSheetsDialogProps {
 }
@@ -79,9 +75,8 @@ class TenderBackingSheetsDialog extends React.Component<TenderBackingSheetsDialo
     }
 }
 
-const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, TenderBackingSheetsDialogProps> = (dispatch) => {
-    return {
-    };
+const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, TenderBackingSheetsDialogProps> = () => {
+    return {};
 };
   
 const mapStateToProps: MapStateToProps<StateProps, TenderBackingSheetsDialogProps> = (state: ApplicationState) => {

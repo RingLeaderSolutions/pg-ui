@@ -97,56 +97,20 @@ export function deleteTender(portfolioId: string, tenderId: string){
     };
 }
 
-export function createHHElectricityTender(portfolioId: string){
+export function createTender(portfolioId: string, tender: Tender, utilityType: UtilityType, isHalfHourly: boolean){
     return (dispatch: Dispatch<any>) => {
-        let createPromise = ApiService.createHHElectricityTender(portfolioId);
-        dispatch({ type: types.CREATE_HH_ELECTRICITY_TENDER_WORKING });
+        let createPromise = ApiService.createTender(portfolioId, tender, utilityType, isHalfHourly);
+        dispatch({ type: types.CREATE_TENDER_WORKING });
 
         makeApiRequest(dispatch,
             createPromise,
             200, 
             data => {
-                return { type: types.CREATE_HH_ELECTRICITY_TENDER_SUCCESSFUL, data: null};
+                return { type: types.CREATE_TENDER_SUCCESSFUL, data: null};
                 
             }, 
             error => {
-                return { type: types.CREATE_HH_ELECTRICITY_TENDER_FAILED, errorMessage: error };
-            });
-    };
-}
-
-export function createNHHElectricityTender(portfolioId: string){
-    return (dispatch: Dispatch<any>) => {
-        let createPromise = ApiService.createNHHElectricityTender(portfolioId);
-        dispatch({ type: types.CREATE_NHH_ELECTRICITY_TENDER_WORKING });
-
-        makeApiRequest(dispatch,
-            createPromise,
-            200, 
-            data => {
-                return { type: types.CREATE_NHH_ELECTRICITY_TENDER_SUCCESSFUL, data: null};
-                
-            }, 
-            error => {
-                return { type: types.CREATE_NHH_ELECTRICITY_TENDER_FAILED, errorMessage: error };
-            });
-    };
-}
-
-export function createGasTender(portfolioId: string){
-    return (dispatch: Dispatch<any>) => {
-        let createPromise = ApiService.createGasTender(portfolioId);
-        dispatch({ type: types.CREATE_GAS_TENDER_WORKING });
-
-        makeApiRequest(dispatch,
-            createPromise,
-            200, 
-            data => {
-                return { type: types.CREATE_GAS_TENDER_SUCCESSFUL, data: null};
-                
-            }, 
-            error => {
-                return { type: types.CREATE_GAS_TENDER_FAILED, errorMessage: error };
+                return { type: types.CREATE_TENDER_FAILED, errorMessage: error };
             });
     };
 }
@@ -403,22 +367,6 @@ export function uploadElectricityOffer(tenderId: string, supplierId: string, use
     };
 }
 
-export function updateTenderRequirements(requirements: TenderRequirements){    
-    return (dispatch: Dispatch<any>) => {
-        let fetchPromise = ApiService.updateTenderRequirements(requirements);
-        dispatch( { type: types.UPDATE_TENDER_REQUIREMENTS_WORKING });
-
-        makeApiRequest(dispatch,
-            fetchPromise,
-            200, 
-            data => {
-                return { type: types.UPDATE_TENDER_REQUIREMENTS_SUCCESSFUL, data: null};
-            }, 
-            error => {
-                return { type: types.UPDATE_TENDER_REQUIREMENTS_FAILED, errorMessage: error };
-            });
-    }
-};
 
 export function deleteQuote(tenderId: string, quoteId: string){
     return (dispatch: Dispatch<any>) => {

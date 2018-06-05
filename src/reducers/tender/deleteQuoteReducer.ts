@@ -1,12 +1,12 @@
 import * as types from '../../actions/actionTypes';
 import { reduceReducers, requestResponseReducer } from '../common';
-import { RequestState, idleInitialRequestState } from '../RequestState';
+import { idleInitialRequestState } from '../RequestState';
 
 const deleteQuoteReducer = requestResponseReducer(
     types.DELETE_QUOTE_WORKING,
     types.DELETE_QUOTE_SUCCESSFUL,
     types.DELETE_QUOTE_FAILED,
-    (state, action) => {
+    (state) => {
         return {
             ...state,
             working: false,  

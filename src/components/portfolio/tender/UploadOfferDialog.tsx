@@ -1,12 +1,7 @@
 import * as React from "react";
-import Header from "../../common/Header";
-import ErrorMessage from "../../common/ErrorMessage";
 import { MapDispatchToPropsFunction, connect, MapStateToProps } from 'react-redux';
 import { ApplicationState } from '../../../applicationState';
-import { PortfolioDetails, PortfolioContact } from '../../../model/Models';
-import Spinner from '../../common/Spinner';
-import { FormEvent } from "react";
-import { Tender, TenderContract, TenderSupplier } from "../../../model/Tender";
+import { TenderSupplier } from "../../../model/Tender";
 
 import { uploadElectricityOffer, uploadGasOffer } from '../../../actions/tenderActions';
 
@@ -32,7 +27,7 @@ interface UploadOfferState {
 }
 
 class UploadOfferDialog extends React.Component<UploadOfferDialogProps & StateProps & DispatchProps, UploadOfferState> {
-    constructor(props: UploadOfferDialogProps & StateProps & DispatchProps){
+    constructor(){
         super();
         this.state = {
             file: null

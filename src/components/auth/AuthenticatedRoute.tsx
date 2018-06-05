@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Route, RouteProps, RouteComponentProps, Redirect } from 'react-router';
+import { Route, RouteProps, Redirect } from 'react-router';
 
 import AuthService from '../../services/AuthService';
 

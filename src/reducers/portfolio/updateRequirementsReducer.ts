@@ -1,13 +1,12 @@
 import * as types from '../../actions/actionTypes';
 import { reduceReducers, requestResponseReducer } from '../common';
-import { PortfolioDetails } from '../../model/Models';
-import { RequestState, idleInitialRequestState } from '../RequestState';
+import { idleInitialRequestState } from '../RequestState';
 
 const updateRequirementsReducer = requestResponseReducer(
     types.UPDATE_PORTFOLIO_REQUIREMENTS_WORKING,
     types.UPDATE_PORTFOLIO_REQUIREMENTS_SUCCESSFUL,
     types.UPDATE_PORTFOLIO_REQUIREMENTS_FAILED,
-    (state, action) => {
+    (state) => {
         return {
             ...state,
             working: false,

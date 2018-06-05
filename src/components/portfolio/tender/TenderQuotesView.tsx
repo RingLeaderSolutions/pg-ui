@@ -1,19 +1,16 @@
 import * as React from "react";
-import { Portfolio, PortfolioDetails, UtilityType } from '../../../model/Models';
 import { MapDispatchToPropsFunction, connect, MapStateToProps } from 'react-redux';
 import { ApplicationState } from '../../../applicationState';
 
 import Spinner from '../../common/Spinner';
-import ErrorMessage from "../../common/ErrorMessage";
 import * as moment from 'moment';
-import DatePicker from 'react-datepicker';
 
 import TenderBackingSheetsDialog from './TenderBackingSheetsDialog';
 import TenderQuoteSummariesDialog from './TenderQuoteSummariesDialog';
 import QuoteCollateralDialog from './QuoteCollateralDialog';
 
 import { fetchQuoteBackingSheets, exportContractRates, deleteQuote, generateTenderPack } from '../../../actions/tenderActions';
-import { Tender, BackingSheet, TenderSupplier, TenderQuote, TenderIssuance, TenderPack } from "../../../model/Tender";
+import { Tender, TenderSupplier, TenderQuote, TenderIssuance, TenderPack } from "../../../model/Tender";
 import { format } from 'currency-formatter';
 import GenerateSummaryReportDialog from "./GenerateSummaryReportDialog";
 import UploadOfferDialog from "./UploadOfferDialog";
@@ -79,7 +76,6 @@ class TenderQuotesView extends React.Component<TenderQuotesViewProps & StateProp
             })
             .map((quote) => {
                 var supplier = this.props.suppliers.find(su => su.supplierId == quote.supplierId);
-                var supplierText = supplier == null ? "Unknown" : supplier.name;
 
                 var viewBackingSheetClass = `target: #modal-view-quote-bs-${this.props.tender.tenderId}`;
 

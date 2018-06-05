@@ -1,6 +1,6 @@
 import * as types from '../actions/actionTypes';
 import { reduceReducers, requestResponseReducer } from './common';
-import { PortfolioDetails, User } from '../model/Models';
+import { User } from '../model/Models';
 import { RequestState, idleInitialRequestState } from './RequestState';
 
 export interface UsersState extends RequestState {

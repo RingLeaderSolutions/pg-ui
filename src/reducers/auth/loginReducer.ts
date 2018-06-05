@@ -1,6 +1,4 @@
 import * as types from '../../actions/actionTypes';
-import { reduceReducers, requestResponseReducer } from '../common';
-import { NotificationMessage } from '../../model/NotificationMessage';
 import { RequestState, initialRequestState } from '../RequestState';
 
 export interface LoginState extends RequestState {

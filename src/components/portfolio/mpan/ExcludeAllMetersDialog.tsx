@@ -1,13 +1,7 @@
 import * as React from "react";
-import Header from "../../common/Header";
-import ErrorMessage from "../../common/ErrorMessage";
 import { MapDispatchToPropsFunction, connect, MapStateToProps } from 'react-redux';
 import { ApplicationState } from '../../../applicationState';
-import { UtilityType, Portfolio, AccountDetail, HierarchyMpan, PortfolioDetails } from '../../../model/Models';
-import Spinner from '../../common/Spinner';
-import { FormEvent } from "react";
-import * as moment from 'moment';
-import DatePicker from 'react-datepicker';
+import { PortfolioDetails } from '../../../model/Models';
 
 import { excludeMeters } from '../../../actions/meterActions';
 
@@ -55,9 +49,8 @@ const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, ExcludeAllMe
     };
 };
   
-const mapStateToProps: MapStateToProps<StateProps, ExcludeAllMetersDialogProps> = (state: ApplicationState) => {
-    return {
-    };
+const mapStateToProps: MapStateToProps<StateProps, ExcludeAllMetersDialogProps> = () => {
+    return {};
 };
   
 export default connect(mapStateToProps, mapDispatchToProps)(ExcludeAllMetersDialog);

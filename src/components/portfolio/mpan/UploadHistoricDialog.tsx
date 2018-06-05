@@ -1,11 +1,7 @@
 import * as React from "react";
-import Header from "../../common/Header";
-import ErrorMessage from "../../common/ErrorMessage";
 import { MapDispatchToPropsFunction, connect, MapStateToProps } from 'react-redux';
 import { ApplicationState } from '../../../applicationState';
-import { PortfolioDetails, PortfolioContact } from '../../../model/Models';
-import Spinner from '../../common/Spinner';
-import { FormEvent } from "react";
+import { PortfolioDetails } from '../../../model/Models';
 
 import { uploadHistoric } from '../../../actions/portfolioActions';
 
@@ -28,7 +24,7 @@ interface UploadHistoricState {
 }
 
 class UploadHistoricDialog extends React.Component<UploadHistoricDialogProps & StateProps & DispatchProps, UploadHistoricState> {
-    constructor(props: UploadHistoricDialogProps & StateProps & DispatchProps){
+    constructor(){
         super();
         this.state = {
             files: null
@@ -51,7 +47,6 @@ class UploadHistoricDialog extends React.Component<UploadHistoricDialogProps & S
     }
 
     render() {
-        var { details } = this.props;
 
         return (
             <div className="uk-modal-dialog">

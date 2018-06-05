@@ -7,9 +7,7 @@ export interface TenderState {
     suppliers: TenderSuppliersState;
     addExistingContract: RequestState;
     delete_tender: RequestState;
-    create_hh_electricity_tender: RequestState;
-    create_nhh_electricity_tender: RequestState;
-    create_gas_tender: RequestState;
+    create_tender: RequestState;
     update_tender_suppliers: RequestState;
     update_tender: RequestState;
     generate_pack: RequestState;
@@ -19,6 +17,5 @@ export interface TenderState {
     backing_sheets: RequestState;
     issuance_email: RequestState;
     tariffs: RequestState;
-    update_requirements: RequestState;
     delete_quote: RequestState;
 }

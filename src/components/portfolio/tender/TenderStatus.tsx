@@ -1,9 +1,8 @@
 import * as React from "react";
-import Header from "../../common/Header";
 import ErrorMessage from "../../common/ErrorMessage";
 import { MapDispatchToPropsFunction, connect, MapStateToProps } from 'react-redux';
 import { ApplicationState } from '../../../applicationState';
-import { Portfolio, PortfolioDetails, UtilityType } from '../../../model/Models';
+import { PortfolioDetails, UtilityType } from '../../../model/Models';
 import Spinner from '../../common/Spinner';
 
 import { format } from 'currency-formatter';
@@ -63,13 +62,11 @@ class TenderStatus extends React.Component<TenderStatusProps & StateProps & Disp
         
         var { tender } = this.props;
 
-        var meterCount = this.getMeterCount();
         var eligibleSupplierCount = this.getSupplierCount();
 
         var totalCommission = (tender.commission / 100) * tender.annualConsumption;
 
         var supplierModalId = "modal-select-suppliers-" + tender.tenderId;
-        var toggleSupplierModalClass = "target: #" + supplierModalId;
 
         // return (
         //     <div className="uk-card uk-card-small uk-card-default uk-card-body">
@@ -113,9 +110,8 @@ class TenderStatus extends React.Component<TenderStatusProps & StateProps & Disp
     }
 }
 
-const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, TenderStatusProps> = (dispatch) => {
-    return {    
-    };
+const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, TenderStatusProps> = () => {
+    return {};
 };
   
 const mapStateToProps: MapStateToProps<StateProps, TenderStatusProps> = (state: ApplicationState) => {

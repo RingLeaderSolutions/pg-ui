@@ -1,5 +1,5 @@
 import * as React from "react";
-import { MapDispatchToPropsFunction, connect, MapStateToProps } from 'react-redux';
+import { connect, MapStateToProps } from 'react-redux';
 import { ApplicationState } from '../../applicationState';
 import { NotificationMessage } from '../../model/NotificationMessage';
 

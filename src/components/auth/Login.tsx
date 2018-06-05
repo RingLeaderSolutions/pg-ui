@@ -1,7 +1,6 @@
 import * as React from "react";
 import { MapDispatchToPropsFunction, connect, MapStateToProps } from 'react-redux';
 import { ApplicationState } from '../../applicationState';
-import Spinner from '../common/Spinner';
 
 import { login } from '../../actions/authActions';
 

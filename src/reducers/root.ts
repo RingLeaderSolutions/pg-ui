@@ -1,7 +1,7 @@
 import { combineReducers, Reducer } from 'redux';
 import { ApplicationState } from '../applicationState';
-import { reduceReducers, requestResponseReducer } from './common';
-import { RequestState, initialRequestState } from './RequestState';
+import { reduceReducers } from './common';
+import { initialRequestState } from './RequestState';
 
 // Combine dashboard reducers to form the DashboardState
 import { DashboardState } from './dashboard/DashboardState';
@@ -17,7 +17,6 @@ const dashboardReducer: Reducer<DashboardState> = combineReducers<DashboardState
 });
 
 import allPortfoliosReducer from './portfolios/allPortfoliosReducer';
-import { AllPortfoliosState } from './portfolios/allPortfoliosReducer';
 import { PortfoliosState } from './portfolios/PortfoliosState';
 
 const portfoliosReducer: Reducer<PortfoliosState> = combineReducers<PortfoliosState>({
@@ -31,9 +30,7 @@ import tendersReducer from './tender/tendersReducer';
 import tenderSuppliersReducer from './tender/tenderSuppliersReducer';
 import deleteTenderReducer from './tender/deleteTenderReducer';
 import deleteQuoteReducer from './tender/deleteQuoteReducer';
-import createGasTenderReducer from './tender/createGasTenderReducer';
-import createHHElectricityTenderReducer from './tender/createHHElectricityTenderReducer';
-import createNHHElectricityTenderReducer from './tender/createNHHElectricityTenderReducer';
+import createTenderReducer from './tender/createTenderReducer';
 import updateTenderSuppliersReducer from './tender/updateTenderSuppliersReducer';
 import updateTenderReducer from './tender/updateTenderReducer';
 import generateTenderPackReducer from './tender/generateTenderPackReducer';
@@ -43,16 +40,13 @@ import generateSummaryReportReducer from './tender/generateSummaryReportReducer'
 import fetchBackingSheetsReducer from './tender/fetchBackingSheetsReducer';
 import fetchTenderIssuanceEmailReducer from './tender/fetchTenderIssuanceEmailReducer';
 import fetchTariffsReducer from './tender/fetchTariffsReducer';
-import updateTenderRequirementsReducer from './tender/updateTenderRequirementsReducer';
 
 const tenderReducer: Reducer<TenderState> = combineReducers<TenderState>({
     tenders: tendersReducer,
     suppliers: tenderSuppliersReducer,
     addExistingContract: addExistingContractReducer,
     delete_tender: deleteTenderReducer,
-    create_hh_electricity_tender: createHHElectricityTenderReducer,
-    create_nhh_electricity_tender: createNHHElectricityTenderReducer,
-    create_gas_tender: createGasTenderReducer,
+    create_tender: createTenderReducer,
     update_tender_suppliers: updateTenderSuppliersReducer,
     update_tender: updateTenderReducer,
     generate_pack: generateTenderPackReducer,
@@ -62,7 +56,6 @@ const tenderReducer: Reducer<TenderState> = combineReducers<TenderState>({
     backing_sheets: fetchBackingSheetsReducer,
     issuance_email: fetchTenderIssuanceEmailReducer,
     tariffs: fetchTariffsReducer,
-    update_requirements: updateTenderRequirementsReducer,
     delete_quote: deleteQuoteReducer
 });
 

@@ -1,7 +1,6 @@
 import AuthService from "../services/AuthService";
 import * as types from "./actionTypes";
 
-import { makeApiRequest } from "./Common";
 import { Dispatch } from 'redux';
 
 export function login(email: string, password: string, redirectRoute?: string){

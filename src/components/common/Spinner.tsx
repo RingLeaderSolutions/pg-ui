@@ -1,5 +1,4 @@
 import * as React from "react";
-import { MapDispatchToPropsFunction, connect, MapStateToProps } from 'react-redux';
 
 interface SpinnerProps{
     hasMargin?: boolean;

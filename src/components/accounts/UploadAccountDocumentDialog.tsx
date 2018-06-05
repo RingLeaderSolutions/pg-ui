@@ -1,10 +1,6 @@
 import * as React from "react";
-import Header from "../common/Header";
-import ErrorMessage from "../common/ErrorMessage";
 import { MapDispatchToPropsFunction, connect, MapStateToProps } from 'react-redux';
 import { ApplicationState } from '../../applicationState';
-import Spinner from '../common/Spinner';
-import { FormEvent } from "react";
 
 import { uploadAccountDocument } from '../../actions/hierarchyActions';
 
@@ -27,7 +23,7 @@ interface UploadLOAState {
 }
 
 class UploadAccountDocumentDialog extends React.Component<UploadAccountDocumentDialogProps & StateProps & DispatchProps, UploadLOAState> {
-    constructor(props: UploadAccountDocumentDialogProps & StateProps & DispatchProps){
+    constructor(){
         super();
         this.state = {
             file: null

@@ -1,11 +1,7 @@
 import * as React from "react";
-import { Portfolio, PortfolioDetails, UtilityType } from '../../../model/Models';
 import { MapDispatchToPropsFunction, connect, MapStateToProps } from 'react-redux';
 import { ApplicationState } from '../../../applicationState';
 import Spinner from '../../common/Spinner';
-import ErrorMessage from "../../common/ErrorMessage";
-import * as moment from 'moment';
-import DatePicker from 'react-datepicker';
 
 import { addExistingContract } from '../../../actions/tenderActions';
 import { Tender, TenderContract, TenderSupplier } from "../../../model/Tender";
@@ -26,49 +22,16 @@ interface DispatchProps {
     addExistingContract: (portfolioId: string, tenderId: string, contract: TenderContract) => void;
 }
 
-interface AddExistingContractState {
-    contractStart: moment.Moment;
-    contractEnd: moment.Moment;
-}
-
-class AddExistingContractDialog extends React.Component<AddExistingContractDialogProps & StateProps & DispatchProps, AddExistingContractState> {
-    constructor(){
-        super();
-        this.state = {
-            contractStart: moment(),
-            contractEnd: moment()
-        }
-
-        this.handleContractStartChange = this.handleContractStartChange.bind(this);
-        this.handleContractEndChange = this.handleContractEndChange.bind(this);
-    }
+class AddExistingContractDialog extends React.Component<AddExistingContractDialogProps & StateProps & DispatchProps, {}> {
     contractRef: HTMLInputElement;
     supplier: HTMLSelectElement;
     product: HTMLSelectElement;
-
-    handleContractStartChange(date: moment.Moment, event: React.SyntheticEvent<any>){
-        this.setState({
-            contractStart: date
-        });
-
-        event.preventDefault();
-    }
-
-    handleContractEndChange(date: moment.Moment, event: React.SyntheticEvent<any>){
-        this.setState({
-            contractEnd: date
-        });
-        
-        event.preventDefault();
-    }
 
     addExistingContract(){
         var contract: TenderContract = {
             contractId: null,
             supplierId: this.supplier.value,
             accountId: null,
-            contractStart: this.state.contractStart.format("YYYY-MM-DDTHH:mm:ss"),
-            contractEnd: this.state.contractEnd.format("YYYY-MM-DDTHH:mm:ss"),
             product: this.product.value,
             reference: this.contractRef.value,
             utility: null,
@@ -114,25 +77,6 @@ class AddExistingContractDialog extends React.Component<AddExistingContractDialo
                                         <label className='uk-form-label'>Contract Ref</label>
                                         <input className='uk-input' 
                                             ref={ref => this.contractRef = ref}/>
-                                    </div>
-                                    <div className="uk-margin">
-                                        <label className="uk-form-label" data-for="contract-start-input">Contract Start</label>
-                                        <div className="uk-form-controls">
-                                            <DatePicker id="contract-start-input"
-                                                        className="uk-input"
-                                                        selected={this.state.contractStart}
-                                                        onChange={this.handleContractStartChange}/>
-                                        </div>
-                                    </div>
-
-                                    <div className="uk-margin">
-                                        <label className="uk-form-label" data-for="contract-end-input">Contract End</label>
-                                        <div className="uk-form-controls">
-                                            <DatePicker id="contract-end-input"
-                                                        className="uk-input"
-                                                        selected={this.state.contractEnd}
-                                                        onChange={this.handleContractEndChange}/>
-                                        </div>
                                     </div>
                                     <div className='uk-margin'>
                                         <label className='uk-form-label'>Product</label>

@@ -1,15 +1,10 @@
 import * as React from "react";
-import { Portfolio, PortfolioDetails, UtilityType } from '../../model/Models';
 import { MapDispatchToPropsFunction, connect, MapStateToProps } from 'react-redux';
 import { ApplicationState } from '../../applicationState';
 
 import Spinner from './Spinner';
-import ErrorMessage from "./ErrorMessage";
-import * as moment from 'moment';
-import DatePicker from 'react-datepicker';
 
 import { UploadReportDetail } from "../../model/Models";
-import UploadSupplyDataDialog from "../portfolio/mpan/UploadSupplyDataDialog";
 
 interface UploadReportViewProps {
 }
@@ -48,7 +43,6 @@ class UploadReportView extends React.Component<UploadReportViewProps & StateProp
     }
 
     renderTable(){
-        var rows = this.renderTableRows();
         return (
             <table className="uk-table uk-table-divider">
                 <thead>
@@ -87,9 +81,8 @@ class UploadReportView extends React.Component<UploadReportViewProps & StateProp
     }
 }
 
-const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, UploadReportViewProps> = (dispatch) => {
-    return {
-    };
+const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, UploadReportViewProps> = () => {
+    return {};
 };
   
 const mapStateToProps: MapStateToProps<StateProps, UploadReportViewProps> = (state: ApplicationState) => {

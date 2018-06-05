@@ -1,12 +1,8 @@
 import * as React from "react";
-import { Portfolio, PortfolioDetails, UtilityType } from '../../../model/Models';
 import { MapDispatchToPropsFunction, connect, MapStateToProps } from 'react-redux';
 import { ApplicationState } from '../../../applicationState';
 
 import Spinner from '../../common/Spinner';
-import ErrorMessage from "../../common/ErrorMessage";
-import * as moment from 'moment';
-import DatePicker from 'react-datepicker';
 
 import { ImportReportDetail } from "../../../model/Models";
 import { TemplateResult, FieldAction } from "../../../model/Uploads";
@@ -142,9 +138,8 @@ class QuoteImportReportView extends React.Component<QuoteImportReportViewProps &
     }
 }
 
-const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, QuoteImportReportViewProps> = (dispatch) => {
-    return {
-    };
+const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, QuoteImportReportViewProps> = () => {
+    return {};
 };
   
 const mapStateToProps: MapStateToProps<StateProps, QuoteImportReportViewProps> = (state: ApplicationState) => {

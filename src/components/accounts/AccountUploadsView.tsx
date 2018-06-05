@@ -1,10 +1,8 @@
 import * as React from "react";
-import Header from "../common/Header";
 import ErrorMessage from "../common/ErrorMessage";
-import { RouteComponentProps } from 'react-router';
 import { MapDispatchToPropsFunction, connect, MapStateToProps } from 'react-redux';
 import { ApplicationState } from '../../applicationState';
-import { Portfolio, AccountDetail, SiteDetail, HierarchyMpan, HierarchyMprn, UtilityType, UploadReportsResponse } from '../../model/Models';
+import { UploadReportsResponse } from '../../model/Models';
 import Spinner from '../common/Spinner';
 import * as moment from 'moment';
 
@@ -12,8 +10,6 @@ import * as moment from 'moment';
 import { fetchAccountUploads } from '../../actions/hierarchyActions';
 import { fetchUploadReport } from '../../actions/portfolioActions';
 
-import UploadSupplyDataDialog from "../portfolio/mpan/UploadSupplyDataDialog";
-import UpdateAccountDialog from "./UpdateAccountDialog";
 import UploadReportView from "../common/UploadReportView";
 
 interface AccountUploadsViewProps {

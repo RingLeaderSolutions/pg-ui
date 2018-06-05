@@ -2,11 +2,9 @@ import * as React from "react";
 import { MapDispatchToPropsFunction, connect, MapStateToProps } from 'react-redux';
 import { ApplicationState } from '../../../applicationState';
 import { Portfolio, PortfolioDetails, UtilityType } from '../../../model/Models';
-import { MeterPortfolio, Mpan, MeterType, MeterConsumptionSummary } from '../../../model/Meter';
+import { MeterConsumptionSummary } from '../../../model/Meter';
 import Spinner from '../../common/Spinner';
-import { Link } from 'react-router-dom';
 import UploadHistoricDialog from './UploadHistoricDialog';
-import UploadSupplyDataDialog from './UploadSupplyDataDialog';
 
 import { fetchMeterConsumption, excludeMeters, exportMeterConsumption } from '../../../actions/meterActions';
 import IncludeMetersDialog from "./IncludeMetersDialog";

@@ -1,11 +1,6 @@
 import * as React from "react";
-import Header from "../../common/Header";
-import ErrorMessage from "../../common/ErrorMessage";
 import { MapDispatchToPropsFunction, connect, MapStateToProps } from 'react-redux';
 import { ApplicationState } from '../../../applicationState';
-import { PortfolioDetails, PortfolioContact } from '../../../model/Models';
-import Spinner from '../../common/Spinner';
-import { FormEvent } from "react";
 
 import { uploadElectricityBackingSheet, uploadGasBackingSheet } from '../../../actions/tenderActions';
 
@@ -30,7 +25,7 @@ interface UploadBackingSheetState {
 }
 
 class UploadBackingSheetDialog extends React.Component<UploadBackingSheetDialogProps & StateProps & DispatchProps, UploadBackingSheetState> {
-    constructor(props: UploadBackingSheetDialogProps & StateProps & DispatchProps){
+    constructor(){
         super();
         this.state = {
             file: null

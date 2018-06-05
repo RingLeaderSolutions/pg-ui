@@ -1,13 +1,13 @@
 import * as React from "react";
-import { Portfolio, PortfolioDetails, UtilityType } from '../../../model/Models';
+import { PortfolioDetails, UtilityType } from '../../../model/Models';
 import { MapDispatchToPropsFunction, connect, MapStateToProps } from 'react-redux';
 import { ApplicationState } from '../../../applicationState';
 import Spinner from '../../common/Spinner';
 import ErrorMessage from "../../common/ErrorMessage";
 
-import { getPortfolioTenders, deleteTender, getTenderSuppliers } from '../../../actions/tenderActions';
+import { deleteTender } from '../../../actions/tenderActions';
 
-import { Tender, TenderSupplier } from "../../../model/Tender";
+import { Tender } from "../../../model/Tender";
 import TenderStatus from "./TenderStatus";
 import TenderContractView from "./TenderContractView";
 import TenderQuotesView from "./TenderQuotesView";

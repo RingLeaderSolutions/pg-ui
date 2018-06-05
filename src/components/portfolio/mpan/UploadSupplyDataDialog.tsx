@@ -1,11 +1,7 @@
 import * as React from "react";
-import Header from "../../common/Header";
-import ErrorMessage from "../../common/ErrorMessage";
 import { MapDispatchToPropsFunction, connect, MapStateToProps } from 'react-redux';
 import { ApplicationState } from '../../../applicationState';
-import { PortfolioDetails, PortfolioContact, UtilityType } from '../../../model/Models';
-import Spinner from '../../common/Spinner';
-import { FormEvent } from "react";
+import { UtilityType } from '../../../model/Models';
 
 import { uploadSupplyMeterData } from '../../../actions/portfolioActions';
 
@@ -29,7 +25,7 @@ interface UploadHistoricState {
 }
 
 class UploadSupplyDataDialog extends React.Component<UploadSupplyDataDialogProps & StateProps & DispatchProps, UploadHistoricState> {
-    constructor(props: UploadSupplyDataDialogProps & StateProps & DispatchProps){
+    constructor(){
         super();
         this.state = {
             file: null

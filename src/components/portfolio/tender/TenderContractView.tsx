@@ -1,12 +1,10 @@
 import * as React from "react";
-import { Portfolio, PortfolioDetails, UtilityType } from '../../../model/Models';
 import { MapDispatchToPropsFunction, connect, MapStateToProps } from 'react-redux';
 import { ApplicationState } from '../../../applicationState';
 
 import * as moment from 'moment';
 import { fetchContractBackingSheets } from '../../../actions/tenderActions';
 import { Tender, TenderSupplier } from "../../../model/Tender";
-import TenderStatus from "./TenderStatus";
 import UploadBackingSheetDialog from './UploadBackingSheetDialog';
 import AddExistingContractDialog from './AddExistingContractDialog';
 import TenderBackingSheetsDialog from './TenderBackingSheetsDialog';
@@ -60,14 +58,6 @@ class TenderContractView extends React.Component<TenderContractViewProps & Dispa
                 <div className="uk-card uk-card-default uk-card-small uk-card-body uk-width-1-5 uk-text-center">
                     <p className="uk-text-bold uk-margin-small">{existingContract.reference}</p>
                     <p className="uk-text-meta uk-margin-small">Reference</p>
-                </div>
-                <div className="uk-card uk-card-default uk-card-small uk-card-body uk-width-1-5 uk-text-center">
-                    <p className="uk-text-bold uk-margin-small">{moment.utc(existingContract.contractStart).format('ll')}</p>
-                    <p className="uk-text-meta uk-margin-small">Contract Start</p>
-                </div>
-                <div className="uk-card uk-card-default uk-card-small uk-card-body uk-width-1-5 uk-text-center">
-                    <p className="uk-text-bold uk-margin-small">{moment.utc(existingContract.contractEnd).format('ll')}</p>
-                    <p className="uk-text-meta uk-margin-small">Contract End</p>
                 </div>
                 <div className="uk-card uk-card-default uk-card-small uk-card-body uk-width-1-5 uk-text-center">
                     <p className="uk-text-bold uk-margin-small">{supplierText}</p>

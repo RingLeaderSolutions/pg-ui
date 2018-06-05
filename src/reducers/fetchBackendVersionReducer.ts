@@ -1,7 +1,6 @@
 import * as types from '../actions/actionTypes';
 import { reduceReducers, requestResponseReducer } from './common';
-import { PortfolioDetails } from '../model/Models';
-import { RequestState, idleInitialRequestState } from './RequestState';
+import { idleInitialRequestState } from './RequestState';
 
 const fetchBackendVersionReducer = requestResponseReducer(
     types.FETCH_BACKEND_VERSION_WORKING,

@@ -1,7 +1,7 @@
 import * as types from '../../actions/actionTypes';
 import { reduceReducers, requestResponseReducer } from '../common';
 import { RequestState, initialRequestState } from '../RequestState';
-import { MeterPortfolio, MeterConsumptionSummary } from '../../model/Meter';
+import { MeterConsumptionSummary } from '../../model/Meter';
 
 export interface MeterConsumptionState extends RequestState {
     value: MeterConsumptionSummary;

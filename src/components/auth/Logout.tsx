@@ -1,6 +1,5 @@
 import * as React from "react";
 import { RouteComponentProps } from 'react-router';
-import Spinner from '../common/Spinner';
 
 import AuthService from '../../services/AuthService';
 import { Link } from "react-router-dom";

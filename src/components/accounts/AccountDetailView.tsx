@@ -4,7 +4,7 @@ import ErrorMessage from "../common/ErrorMessage";
 import { RouteComponentProps } from 'react-router';
 import { MapDispatchToPropsFunction, connect, MapStateToProps } from 'react-redux';
 import { ApplicationState } from '../../applicationState';
-import { Portfolio, AccountDetail, SiteDetail, HierarchyMpan, HierarchyMprn, UtilityType } from '../../model/Models';
+import { AccountDetail, SiteDetail, HierarchyMpan, HierarchyMprn, UtilityType } from '../../model/Models';
 import Spinner from '../common/Spinner';
 
 

@@ -1,6 +1,6 @@
 import * as types from '../../actions/actionTypes';
 import { reduceReducers, requestResponseReducer } from '../common';
-import { RequestState, idleInitialRequestState } from '../RequestState';
+import { idleInitialRequestState } from '../RequestState';
 
 const fetchTenderIssuanceEmailReducer = requestResponseReducer(
     types.FETCH_TENDER_ISSUANCE_EMAIL_WORKING,

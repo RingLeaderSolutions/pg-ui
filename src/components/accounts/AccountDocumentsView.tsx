@@ -1,17 +1,13 @@
 import * as React from "react";
-import Header from "../common/Header";
 import ErrorMessage from "../common/ErrorMessage";
-import { RouteComponentProps } from 'react-router';
 import { MapDispatchToPropsFunction, connect, MapStateToProps } from 'react-redux';
 import { ApplicationState } from '../../applicationState';
-import { Portfolio, AccountDetail, SiteDetail, HierarchyMpan, HierarchyMprn, UtilityType, AccountDocument } from '../../model/Models';
+import { AccountDetail, AccountDocument } from '../../model/Models';
 import Spinner from '../common/Spinner';
 import * as moment from 'moment';
 
 
 import { fetchAccountDocumentation } from '../../actions/hierarchyActions';
-import UploadSupplyDataDialog from "../portfolio/mpan/UploadSupplyDataDialog";
-import UpdateAccountDialog from "./UpdateAccountDialog";
 import UploadAccountDocumentDialog from "./UploadAccountDocumentDialog";
 
 interface AccountDocumentsViewProps {
@@ -66,7 +62,6 @@ class AccountDocumentsView extends React.Component<AccountDocumentsViewProps & S
         if(this.props.working || this.props.account == null){
             return (<Spinner />);
         }
-        var selectedAccount = this.props.account;
         return (
             <div>
                 <p className="uk-text-right">

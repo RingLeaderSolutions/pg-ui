@@ -1,7 +1,6 @@
 import * as React from "react";
 import Spinner from './Spinner';
 import ErrorMessage from './ErrorMessage';
-import { MapDispatchToPropsFunction, connect, MapStateToProps } from 'react-redux';
 
 interface CounterCardProps {
   title: string;

@@ -1,12 +1,11 @@
 import * as React from "react";
-import Header from "../../common/Header";
 import ErrorMessage from "../../common/ErrorMessage";
 import { MapDispatchToPropsFunction, connect, MapStateToProps } from 'react-redux';
 import { ApplicationState } from '../../../applicationState';
 import { Portfolio, PortfolioDetails, UtilityType } from '../../../model/Models';
 import Spinner from '../../common/Spinner';
-import CreateElectricityTenderView from "./CreateElectricityTenderView";
-import CreateGasTenderView from "./CreateGasTenderView";
+import CreateTenderView from "./CreateTenderView";
+
 
 import { getPortfolioTenders } from '../../../actions/tenderActions';
 import { Tender } from "../../../model/Tender";
@@ -53,7 +52,7 @@ class TenderSummary extends React.Component<TenderSummaryProps & StateProps & Di
             return (<TenderView tender={tender} details={this.props.details} utility={UtilityType.Gas} />);
         }
 
-        return (<CreateGasTenderView portfolioId={this.props.portfolio.id} />);
+        return (<CreateTenderView portfolioId={this.props.portfolio.id} utilityType={UtilityType.Gas} isHalfHourly={false} />);
     }
 
     generateHHTender(){
@@ -62,7 +61,7 @@ class TenderSummary extends React.Component<TenderSummaryProps & StateProps & Di
         if(tender != null){
             return (<TenderView tender={tender} details={this.props.details} utility={UtilityType.Electricity} />);
         }
-        return (<CreateElectricityTenderView portfolioId={this.props.portfolio.id} isHalfHourly={true} />);
+        return (<CreateTenderView portfolioId={this.props.portfolio.id} utilityType={UtilityType.Electricity} isHalfHourly={true} />);
     }
 
     generateNHHTender(){
@@ -71,7 +70,7 @@ class TenderSummary extends React.Component<TenderSummaryProps & StateProps & Di
         if(tender != null){
             return (<TenderView tender={tender} details={this.props.details} utility={UtilityType.Electricity} />);
         }
-        return (<CreateElectricityTenderView portfolioId={this.props.portfolio.id} isHalfHourly={false} />);
+        return (<CreateTenderView portfolioId={this.props.portfolio.id} utilityType={UtilityType.Electricity} isHalfHourly={false} />);
     }
 
     renderContent(content: any){
@@ -121,7 +120,6 @@ class TenderSummary extends React.Component<TenderSummaryProps & StateProps & Di
         var gasTenders = this.generateGasTender();
         var hhTender = this.generateHHTender();
         var nhhTender = this.generateNHHTender();
-        var { tenders } = this.props;
 
         var content = (
             <div>

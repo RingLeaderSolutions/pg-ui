@@ -8,7 +8,6 @@ import Header from "../common/Header";
 import ErrorMessage from "../common/ErrorMessage";
 import { Account } from '../../model/Models';
 import Spinner from '../common/Spinner';
-import CreateAccountDialog from "./CreateAccountDialog";
 import NewAccountDialog from "./NewAccountDialog";
 
 interface AccountsProps extends RouteComponentProps<void> {

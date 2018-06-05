@@ -1,13 +1,12 @@
 import * as types from '../../actions/actionTypes';
 import { reduceReducers, requestResponseReducer } from '../common';
-import { PortfolioDetails } from '../../model/Models';
-import { RequestState, idleInitialRequestState } from '../RequestState';
+import { idleInitialRequestState } from '../RequestState';
 
 const addContactReducer = requestResponseReducer(
     types.CREATE_PORTFOLIO_CONTACT_WORKING,
     types.CREATE_PORTFOLIO_CONTACT_SUCCESSFUL,
     types.CREATE_PORTFOLIO_CONTACT_FAILED,
-    (state, action) => {
+    (state) => {
         return {
             ...state,
             working: false,

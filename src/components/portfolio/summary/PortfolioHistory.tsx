@@ -1,5 +1,4 @@
 import * as React from "react";
-import Header from "../../common/Header";
 import { MapDispatchToPropsFunction, connect, MapStateToProps } from 'react-redux';
 import { ApplicationState } from '../../../applicationState';
 import { Portfolio, PortfolioHistoryEntry } from '../../../model/Models';

@@ -1,5 +1,3 @@
-import { Decipher } from "crypto";
-
 export interface MeterPortfolio {
     portfolioId: string;
     sites: MeterSite[];

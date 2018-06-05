@@ -546,8 +546,6 @@ export class FakeApiService implements IApiService {
                     contractId: "bc6f7888-d4cf-443b-aa28-e79c58ba14bb",
                     supplierId: "1",
                     accountId: "493e1708-2457-48ba-8925-09856d6e9732",
-                    contractStart: "2016-12-19T00:12:07.167",
-                    contractEnd: "2019-01-19T00:12:07.167",
                     product: "fixed",
                     reference: "havenGas16",
                     utility: "GAS",
@@ -563,7 +561,7 @@ export class FakeApiService implements IApiService {
                     paymentTerms: 21,
                     portfolioId: "4d584e81-91c2-47b4-85f9-411db125af51",
                     product: "fixed",
-                    startDate: "2017-11-21T05:49:53",
+                    endDate: "2017-11-21T05:49:53",
                     tariffId: "2",
                     tenderId: "5122951b-b942-4f25-8ee0-5f2e255a5f50"
                 },
@@ -653,15 +651,7 @@ export class FakeApiService implements IApiService {
         return OK();
     }
 
-    createHHElectricityTender(portfolioId: string){
-        return OK();
-    }
-
-    createNHHElectricityTender(portfolioId: string){
-        return OK();
-    }
-
-    createGasTender(portfolioId: string){
+    createTender(portfolioId: string, tender: Tender, utilityType: UtilityType, halfHourly?: boolean){
         return OK();
     }
 
@@ -854,10 +844,6 @@ export class FakeApiService implements IApiService {
     }
 
     reportSuccessfulOfferUpload(tenderId: string, supplierId: string, useGeneric: boolean, files: string[], utility: UtilityType) {
-        return OK();
-    }
-
-    updateTenderRequirements(requirements: TenderRequirements){
         return OK();
     }
 

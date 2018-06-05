@@ -10,7 +10,6 @@ import PortfolioDetail from "./portfolio/PortfolioDetail";
 import AccountDetailView from "./accounts/AccountDetailView";
 
 import {
-    BrowserRouter as Router,
     Route,
     Link
 } from 'react-router-dom';
@@ -51,7 +50,7 @@ class Home extends React.Component<StateProps & DispatchProps, {}> {
                         <div className="app-title">
                             <img src={require('../images/tpi-flow-logo.png')} alt="TPI Flow" /> 
                             <div className="environment">
-                                <span className="uk-label">{appConfig.environment_name} v0.1.25</span>
+                                <span className="uk-label">{appConfig.environment_name} v0.1.26</span>
                             </div>
                             <div className="environment">
                                 <span className="uk-label">Backend v{this.props.backendVersion}</span>

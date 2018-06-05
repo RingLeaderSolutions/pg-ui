@@ -1,12 +1,12 @@
 import * as types from '../../actions/actionTypes';
 import { reduceReducers, requestResponseReducer } from '../common';
-import { RequestState, idleInitialRequestState } from '../RequestState';
+import { idleInitialRequestState } from '../RequestState';
 
 const updateTenderSuppliersReducer = requestResponseReducer(
     types.UPDATE_TENDER_SUPPLIERS_WORKING,
     types.UPDATE_TENDER_SUPPLIERS_SUCCESSFUL,
     types.UPDATE_TENDER_SUPPLIERS_FAILED,
-    (state, action) => {
+    (state) => {
         return {
             ...state,
             working: false,  

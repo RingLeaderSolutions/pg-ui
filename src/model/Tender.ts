@@ -1,36 +1,36 @@
 export interface Tender {
-    tenderId: string;
+    tenderId?: string;
     tenderTitle: string;
     billingMethod: string;
     portfolioId: string;
-    created: string;
+    created?: string;
     deadline: string;
     deadlineNotes: string;
-    status: string;
-    assignedSuppliers: TenderSupplier[];
-    summaries: TenderQuoteSummary[];
-    unissuedPacks: TenderPack[];
-    issuances: TenderIssuance[];
-    existingContract: TenderContract;
+    status?: string;
+    assignedSuppliers?: TenderSupplier[];
+    summaries?: TenderQuoteSummary[];
+    unissuedPacks?: TenderPack[];
+    issuances?: TenderIssuance[];
+    existingContract?: TenderContract;
     utility: string;
     commission: number;
     allInclusive: boolean;
     halfHourly: boolean;
-    acuom: string;
-    annualConsumption: number;
+    acuom?: string;
+    annualConsumption?: number;
     requirements: TenderRequirements;
-    packStatusMessage: string;
+    packStatusMessage?: string;
 }
 
 export interface TenderRequirements {
     id: string;
     portfolioId: string;
-    tenderId: string;
+    tenderId?: string;
     durationMonths: number;
     greenPercentage: number;
     paymentTerms: number;
     product: string;
-    startDate: string;
+    endDate: string;
     tariffId: string;
 }
 
@@ -106,8 +106,6 @@ export interface TenderContract {
     contractId: string;
     supplierId: string;
     accountId: string;
-    contractStart: string;
-    contractEnd: string;
     product: string;
     reference: string;
     utility: string;

@@ -7,7 +7,6 @@ import { Portfolio,
          UtilityType,
          BackendVersion,
          UploadResponse,
-         UploadReport,
          Account,
          UploadReportsResponse,
          User} from "../Model/Models";

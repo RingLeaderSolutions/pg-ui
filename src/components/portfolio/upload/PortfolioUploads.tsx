@@ -1,9 +1,8 @@
 import * as React from "react";
 import ErrorMessage from "../../common/ErrorMessage";
-import { RouteComponentProps } from 'react-router';
 import { MapDispatchToPropsFunction, connect, MapStateToProps } from 'react-redux';
 import { ApplicationState } from '../../../applicationState';
-import { UploadReport, UploadReportDetail, Portfolio, UploadReportsResponse } from '../../../model/Models';
+import { UploadReport, Portfolio, UploadReportsResponse } from '../../../model/Models';
 import Spinner from '../../common/Spinner';
 import * as moment from 'moment';
 

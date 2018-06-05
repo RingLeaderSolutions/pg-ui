@@ -1,7 +1,6 @@
 import * as types from '../../actions/actionTypes';
 import { reduceReducers, requestResponseReducer } from '../common';
-import { UploadReportsResponse } from '../../model/Models';
-import { RequestState, initialRequestState } from '../RequestState';
+import { initialRequestState } from '../RequestState';
 
 const accountPortfoliosReducer = requestResponseReducer(
     types.FETCH_ACCOUNT_PORTFOLIOS_WORKING,

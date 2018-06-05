@@ -1,14 +1,12 @@
 import * as React from "react";
-import { Portfolio, PortfolioDetails, UtilityType } from '../../../model/Models';
 import { MapDispatchToPropsFunction, connect, MapStateToProps } from 'react-redux';
 import { ApplicationState } from '../../../applicationState';
 import Spinner from '../../common/Spinner';
 import ErrorMessage from "../../common/ErrorMessage";
 import * as moment from 'moment';
-import DatePicker from 'react-datepicker';
 
 import { issueTenderPack, fetchTenderIssuanceEmail } from '../../../actions/tenderActions';
-import { Tender, TenderPack, TenderSupplier, TenderIssuanceEmail } from "../../../model/Tender";
+import { Tender, TenderSupplier, TenderIssuanceEmail } from "../../../model/Tender";
 
 interface IssueTenderPackDialogProps {
     tender: Tender;
@@ -97,7 +95,6 @@ class IssueTenderPackDialog extends React.Component<IssueTenderPackDialogProps &
     }
 
     render() {
-        let { tender } = this.props;
         let content;
         if(this.props.suppliers == null || this.props.working){
             content = (<Spinner hasMargin={true} />);

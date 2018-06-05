@@ -1,5 +1,4 @@
 import * as React from "react";
-import Header from "../../common/Header";
 import CounterCard from "../../common/CounterCard";
 import { Portfolio } from '../../../model/Models';
 import PortfolioMeterStatus from "./PortfolioMeterStatus";

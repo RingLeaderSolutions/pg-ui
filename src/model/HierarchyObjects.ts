@@ -1,5 +1,3 @@
-import { MeasurementClasses } from "./Meter";
-
 export interface Account {
     id: string;
     accountNumber: string;

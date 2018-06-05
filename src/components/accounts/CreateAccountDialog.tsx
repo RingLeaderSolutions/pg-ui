@@ -1,11 +1,7 @@
 import * as React from "react";
-import Header from "../common/Header";
-import ErrorMessage from "../common/ErrorMessage";
 import { MapDispatchToPropsFunction, connect, MapStateToProps } from 'react-redux';
 import { ApplicationState } from '../../applicationState';
 import { Account, CompanyInfo } from '../../model/Models';
-import Spinner from '../common/Spinner';
-import { FormEvent } from "react";
 import * as moment from 'moment';
 import DatePicker from 'react-datepicker';
 

@@ -5,7 +5,6 @@ import DashboardSummary from "./DashboardSummary";
 import DashboardStatus from "./DashboardStatus";
 import DashboardTimeline from "./DashboardTimeline";
 
-var ReactHighCharts = require("react-highcharts");
 
 const Dashboard : React.SFC<{}> = () => {
     return (
