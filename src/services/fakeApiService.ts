@@ -20,7 +20,7 @@ import {
 } from '../model/Models';
 import { PortfolioDetails } from '../model/PortfolioDetails';
 import { BackingSheet, Tender, TenderContract, TenderSupplier, TenderIssuanceEmail, Tariff, TenderRequirements } from '../model/Tender';
-import { IApiService } from './ApiService';
+import { IApiService } from './apiService';
 import { AccountContact } from '../model/HierarchyObjects';
 import { PortfolioCreationRequest } from '../model/Portfolio';
 
@@ -1075,6 +1075,10 @@ export class FakeApiService implements IApiService {
     }
 
     deletePortfolio(portfolioId: string){       
+        return OK();
+    }
+
+    fetchInstanceDetails(){
         return OK();
     }
 }

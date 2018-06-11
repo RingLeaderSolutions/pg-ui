@@ -1,7 +1,7 @@
 import { WebAuth, AuthOptions, CrossOriginLoginOptions, Auth0Error, ParseHashOptions, Auth0DecodedHash, LogoutOptions } from "auth0-js";
 import StorageService from "./storageService";
 import * as jwtDecode from "jwt-decode";
-import ApiService from "./ApiService";
+import ApiService from "./apiService";
 
 export interface IAuthService {
     login(email: string, password: string, redirectUri: string, callback: (error: Auth0Error) => void): void;

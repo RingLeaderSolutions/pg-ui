@@ -1,11 +1,10 @@
-import ApiService from "../services/ApiService";
+import ApiService from "../services/apiService";
 import { Portfolio,
          PortfolioHistoryEntry,
          CompanyInfo,
          PortfolioDetails,
          PortfolioContact, 
          UtilityType,
-         BackendVersion,
          UploadResponse,
          Account,
          UploadReportsResponse,
@@ -300,24 +299,6 @@ export function uploadHistoric(portfolioId: string, files: Blob[], historicalTyp
             }, 
             error => {
                 return { type: types.UPLOAD_HISTORICAL_FAILED, errorMessage: error };
-            });
-    };
-}
-
-export function fetchBackendVersion(){
-    return (dispatch: Dispatch<any>) => {
-        let fetchVersionPromise = ApiService.fetchBackendVersion();
-        dispatch({ type: types.FETCH_BACKEND_VERSION_WORKING });
-
-        makeApiRequest(dispatch,
-            fetchVersionPromise,
-            200, 
-            data => {
-                return { type: types.FETCH_BACKEND_VERSION_SUCCESSFUL, data: (data as BackendVersion).version};
-                
-            }, 
-            error => {
-                return { type: types.FETCH_BACKEND_VERSION_FAILED, errorMessage: error };
             });
     };
 }

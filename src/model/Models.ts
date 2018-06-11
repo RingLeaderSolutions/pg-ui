@@ -46,3 +46,16 @@ export interface UploadResponse {
     uploadedFiles: string[];
     error: string;
 }
+
+export interface InstanceDetail {
+    address: string;
+    buildType: string;
+    consul: string;
+    contactus: string;
+    email: string;
+    logoUri: string;
+    mongodb: string;
+    name: string;
+    sumamryElectricityTemplate: string;
+    summaryGasTemplate: string;
+}

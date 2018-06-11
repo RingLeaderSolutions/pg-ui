@@ -17,6 +17,7 @@ export interface ApplicationState {
     auth: AuthState;
     meters: MeterState;
     backend_version: RequestState;
+    instance_detail: RequestState;
     hierarchy: HierarchyState;
     selected_upload_report: SelectedUploadReportState;
     users: UsersState;

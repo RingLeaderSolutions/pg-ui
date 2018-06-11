@@ -92,7 +92,7 @@ export interface IApiService {
   assignPortfolioUsers(portfolioId: string, users: User[]): Promise<AxiosResponse>;
   fetchBackendVersion(): Promise<AxiosResponse>;
   fetchUsers(): Promise<AxiosResponse>;
-
+  fetchInstanceDetails(): Promise<AxiosResponse>;
   getTariffs(): Promise<AxiosResponse>;
 }
 
@@ -600,6 +600,10 @@ export class ApiService implements IApiService {
 
     getEndpointPrefix(utility: UtilityType) {
         return utility == UtilityType.Gas ? "gas" : "electricity";
+    }
+
+    fetchInstanceDetails(){
+        return axios.get(`${this.baseApiUri}/portman-web/admin/instance`, this.getRequestConfig());
     }
 }
 

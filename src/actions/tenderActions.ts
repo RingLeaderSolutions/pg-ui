@@ -1,4 +1,4 @@
-import ApiService from "../services/ApiService";
+import ApiService from "../services/apiService";
 
 import { Tender, TenderContract, TenderSupplier, BackingSheet, TenderIssuanceEmail, TenderRequirements, ContractRatesResponse } from "../Model/Tender";
 import { UploadResponse, UtilityType, ExportResponse } from "../model/Models";

@@ -1,6 +1,6 @@
 import * as types from '../actions/actionTypes';
 import { reduceReducers, requestResponseReducer } from './common';
-import { idleInitialRequestState } from './RequestState';
+import { initialRequestState } from './RequestState';
 
 const fetchBackendVersionReducer = requestResponseReducer(
     types.FETCH_BACKEND_VERSION_WORKING,
@@ -16,4 +16,4 @@ const fetchBackendVersionReducer = requestResponseReducer(
     }
 );
 
-export default reduceReducers((state = idleInitialRequestState) => state, fetchBackendVersionReducer);
+export default reduceReducers((state = initialRequestState) => state, fetchBackendVersionReducer);

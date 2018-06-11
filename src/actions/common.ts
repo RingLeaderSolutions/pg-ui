@@ -1,6 +1,5 @@
 import { Dispatch, Action } from 'redux';
 import { AxiosPromise } from 'axios';
-import axios from 'axios';
 
 export function makeApiRequest<T>(
   dispatch: Dispatch<any>, 

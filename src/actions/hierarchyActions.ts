@@ -1,4 +1,4 @@
-import ApiService from "../services/ApiService";
+import ApiService from "../services/apiService";
 import { Account, AccountDetail, UploadResponse, UploadReportsResponse, CompanyInfo } from "../Model/Models";
 
 import * as types from "./actionTypes";

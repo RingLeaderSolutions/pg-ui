@@ -1,4 +1,4 @@
-import ApiService from "../services/ApiService";
+import ApiService from "../services/apiService";
 import { DashboardPortfolioSummary, DashboardPortfolioStatus, DashboardPortfolioTimeline } from "../Model/Models";
 
 import * as types from "./actionTypes";
