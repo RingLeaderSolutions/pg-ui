@@ -136,8 +136,8 @@ class Portfolios extends React.Component<PortfoliosProps & StateProps & Dispatch
             })
 
             if(!match){
-                var tenderAnalyst = `${portfolio.tenderAnalyst.firstName} ${portfolio.tenderAnalyst.lastName}`.toLocaleLowerCase();
-                var accountMgr = `${portfolio.accountMgr.firstName} ${portfolio.accountMgr.lastName}`.toLocaleLowerCase();
+                var tenderAnalyst = portfolio.tenderAnalyst ?  `${portfolio.tenderAnalyst.firstName} ${portfolio.tenderAnalyst.lastName}`.toLocaleLowerCase() : '';
+                var accountMgr = portfolio.accountMgr ? `${portfolio.accountMgr.firstName} ${portfolio.accountMgr.lastName}`.toLocaleLowerCase() : '';
 
                 if(tenderAnalyst.includes(lowerSearchText) || accountMgr.includes(lowerSearchText)){
                     match = true;
