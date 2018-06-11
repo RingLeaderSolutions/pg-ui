@@ -2,18 +2,16 @@ import * as React from "react";
 import ErrorMessage from "../../common/ErrorMessage";
 import { MapDispatchToPropsFunction, connect, MapStateToProps } from 'react-redux';
 import { ApplicationState } from '../../../applicationState';
-import { Account, User } from '../../../model/Models';
+import { User } from '../../../model/Models';
 import Spinner from '../../common/Spinner';
+import { fetchUsers, editPortfolio } from '../../../actions/portfolioActions';
+import { PortfolioCreationRequest, Portfolio } from "../../../model/Portfolio";
 
-import { retrieveAccounts } from '../../../actions/hierarchyActions';
-import { fetchUsers, createPortfolio } from '../../../actions/portfolioActions';
-import { PortfolioCreationRequest } from "../../../model/Portfolio";
-
-interface CreatePortfolioFromAccountDialogProps {    
+interface UpdatePortfolioDialogProps { 
+    portfolio: Portfolio;   
 }
 
 interface StateProps {
-    accounts: Account[];
     users: User[];
     working: boolean;
     error: boolean;
@@ -21,24 +19,23 @@ interface StateProps {
 }
 
 interface DispatchProps {
-    createPortfolio: (portfolio: PortfolioCreationRequest) => void;
+    editPortfolio: (portfolio: PortfolioCreationRequest) => void;
     fetchUsers: () => void;
-    retrieveAccounts: () => void;
 }
 
-class CreatePortfolioFromAccountDialog extends React.Component<CreatePortfolioFromAccountDialogProps & StateProps & DispatchProps, {}> {
+class UpdatePortfolioDialog extends React.Component<UpdatePortfolioDialogProps & StateProps & DispatchProps, {}> {
     title: HTMLInputElement;
     account: HTMLSelectElement;
     supportExec: HTMLSelectElement;
     salesLead: HTMLSelectElement;
 
     componentDidMount(){
-        this.props.retrieveAccounts();
         this.props.fetchUsers();
     }
 
-    createPortfolio(){
+    editPortfolio(){
         var portfolio: PortfolioCreationRequest = {
+            id: this.props.portfolio.id,
             accountId: this.account.value,
             title: this.title.value,
             teamId: 989,
@@ -47,21 +44,16 @@ class CreatePortfolioFromAccountDialog extends React.Component<CreatePortfolioFr
             ownerId: Number(this.salesLead.value)
         }
         
-        this.props.createPortfolio(portfolio);
+        this.props.editPortfolio(portfolio);
     }
-
 
     render() {
         if(this.props.error){
             return (<ErrorMessage content={this.props.errorMessage} />);
         }
-        if(this.props.working || this.props.accounts == null || this.props.users == null){
+        if(this.props.working || this.props.users == null){
             return (<Spinner />);
         }
-
-        var accountOptions = this.props.accounts.map(a => {
-            return (<option key={a.id} value={a.id}>{a.companyName}</option>)
-        });
 
         var userOptions = this.props.users.map(u => {
             return (<option key={u.id} value={u.id}>{u.firstName} {u.lastName}</option>)
@@ -71,30 +63,24 @@ class CreatePortfolioFromAccountDialog extends React.Component<CreatePortfolioFr
             <div className="uk-modal-dialog">
                 <button className="uk-modal-close-default" type="button" data-uk-close></button>
                 <div className="uk-modal-header">
-                    <h2 className="uk-modal-title">Create New Portfolio</h2>
+                    <h2 className="uk-modal-title">Edit Portfolio</h2>
                 </div>
                 <div className="uk-modal-body">
                     <div className="uk-margin">
                         <form>
                             <fieldset className="uk-fieldset">
                                 <div className='uk-margin'>
-                                    <label className='uk-form-label'>Account</label>
-                                    <select className='uk-select' 
-                                        ref={ref => this.account = ref}>
-                                        <option value="" disabled>Select</option>
-                                        {accountOptions}
-                                    </select>
-                                </div>
-                                <div className='uk-margin'>
                                     <label className='uk-form-label'>Name</label>
                                     <input 
                                         className='uk-input' 
                                         type='text' 
+                                        defaultValue={this.props.portfolio.title}
                                         ref={ref => this.title = ref} />
                                 </div>
                                 <div className='uk-margin'>
                                     <label className='uk-form-label'>Account Manager</label>
                                     <select className='uk-select' 
+                                        defaultValue={this.props.portfolio.salesLead.id}
                                         ref={ref => this.salesLead = ref}>
                                         <option value="" disabled>Select</option>
                                         {userOptions}
@@ -103,6 +89,7 @@ class CreatePortfolioFromAccountDialog extends React.Component<CreatePortfolioFr
                                 <div className='uk-margin'>
                                     <label className='uk-form-label'>Tender Analyst</label>
                                     <select className='uk-select' 
+                                        defaultValue={this.props.portfolio.supportExec.id}
                                         ref={ref => this.supportExec = ref}>
                                         <option value="" disabled>Select</option>
                                         {userOptions}
@@ -114,28 +101,26 @@ class CreatePortfolioFromAccountDialog extends React.Component<CreatePortfolioFr
                 </div>
                 <div className="uk-modal-footer uk-text-right">
                     <button className="uk-button uk-button-default uk-margin-right uk-modal-close" type="button">Cancel</button>
-                    <button className="uk-button uk-button-primary uk-modal-close" type="button" onClick={() => this.createPortfolio()}>Create</button>
+                    <button className="uk-button uk-button-primary uk-modal-close" type="button" onClick={() => this.editPortfolio()}>Create</button>
                 </div>
             </div>)
     }
 }
 
-const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, CreatePortfolioFromAccountDialogProps> = (dispatch) => {
+const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, UpdatePortfolioDialogProps> = (dispatch) => {
     return {
-        createPortfolio: (portfolio: PortfolioCreationRequest) => dispatch(createPortfolio(portfolio)),
+        editPortfolio: (portfolio: PortfolioCreationRequest) => dispatch(editPortfolio(portfolio)),
         fetchUsers: () => dispatch(fetchUsers()),
-        retrieveAccounts: () => dispatch(retrieveAccounts())
     };
 };
   
-const mapStateToProps: MapStateToProps<StateProps, CreatePortfolioFromAccountDialogProps> = (state: ApplicationState) => {
+const mapStateToProps: MapStateToProps<StateProps, UpdatePortfolioDialogProps> = (state: ApplicationState) => {
     return {
-        accounts: state.hierarchy.accounts.value,
         users: state.users.value,
-        working: state.hierarchy.accounts.working || state.users.working,
-        error: state.hierarchy.accounts.error || state.users.error,
-        errorMessage: state.hierarchy.accounts.errorMessage || state.users.errorMessage
+        working: state.users.working,
+        error: state.users.error,
+        errorMessage: state.users.errorMessage
     };
 };
   
-export default connect(mapStateToProps, mapDispatchToProps)(CreatePortfolioFromAccountDialog);
+export default connect(mapStateToProps, mapDispatchToProps)(UpdatePortfolioDialog);

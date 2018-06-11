@@ -561,7 +561,6 @@ export class FakeApiService implements IApiService {
                     paymentTerms: 21,
                     portfolioId: "4d584e81-91c2-47b4-85f9-411db125af51",
                     product: "fixed",
-                    endDate: "2017-11-21T05:49:53",
                     tariffId: "2",
                     tenderId: "5122951b-b942-4f25-8ee0-5f2e255a5f50"
                 },
@@ -583,7 +582,8 @@ export class FakeApiService implements IApiService {
                 allInclusive: true,
                 utility: "GAS",
                 acuom: "BTU",
-                annualConsumption: 1000
+                annualConsumption: 1000,
+                meterCount: 10
             }
         ];
 
@@ -1067,6 +1067,14 @@ export class FakeApiService implements IApiService {
     }
 
     fetchAccountPortfolios(accountId: string){
+        return OK();
+    }
+
+    editPortfolio(portfolio: PortfolioCreationRequest){       
+        return OK();        
+    }
+
+    deletePortfolio(portfolioId: string){       
         return OK();
     }
 }

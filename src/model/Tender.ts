@@ -20,6 +20,7 @@ export interface Tender {
     annualConsumption?: number;
     requirements: TenderRequirements;
     packStatusMessage?: string;
+    meterCount?: number;
 }
 
 export interface TenderRequirements {
@@ -30,7 +31,6 @@ export interface TenderRequirements {
     greenPercentage: number;
     paymentTerms: number;
     product: string;
-    endDate: string;
     tariffId: string;
 }
 
@@ -113,6 +113,8 @@ export interface TenderContract {
     uploaded: string;
     status: string;
     sheetCount: number;
+    averagePPU?: number;
+    totalIncCCL?: number;
 }
 
 export interface TenderQuoteSummary {

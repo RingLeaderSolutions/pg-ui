@@ -31,20 +31,16 @@ interface DispatchProps {
 
 interface UpdateTenderState {
     deadline: moment.Moment;
-    endDate: moment.Moment;    
 }
 
 class UpdateTenderDialog extends React.Component<UpdateTenderDialogProps & StateProps & DispatchProps, UpdateTenderState> {
     constructor(props: UpdateTenderDialogProps & StateProps & DispatchProps){
         super();
-        var { requirements } = props.tender;        
         this.state = {
-            deadline: props.tender.deadline ? moment(props.tender.deadline) : moment(),
-            endDate: requirements ? requirements.endDate ? moment(requirements.endDate) : moment() : moment()             
+            deadline: props.tender.deadline ? moment(props.tender.deadline) : moment()
         };
 
         this.handleDeadlineChange = this.handleDeadlineChange.bind(this);
-        this.handleendDateChange = this.handleendDateChange.bind(this);
         this.updateTender = this.updateTender.bind(this);
     }
     // Standard
@@ -64,14 +60,6 @@ class UpdateTenderDialog extends React.Component<UpdateTenderDialogProps & State
 
     componentDidMount(){
         this.props.fetchTariffs();
-    }
-
-    handleendDateChange(date: moment.Moment, event: React.SyntheticEvent<any>){
-        this.setState({
-            endDate: date
-        });
-
-        event.preventDefault();
     }
 
     handleDeadlineChange(date: moment.Moment, event: React.SyntheticEvent<any>){
@@ -95,7 +83,6 @@ class UpdateTenderDialog extends React.Component<UpdateTenderDialogProps & State
             greenPercentage: Number(this.greenPercentage.value),
 
             product: this.product.value,
-            endDate: this.state.endDate.format("YYYY-MM-DDTHH:mm:ss"),
             tariffId: this.tariff ? this.tariff.value : null
         };
 
@@ -135,8 +122,7 @@ class UpdateTenderDialog extends React.Component<UpdateTenderDialogProps & State
                 product: "",
                 tariffId: "",
                 paymentTerms: 0,
-                greenPercentage: 0,
-                endDate: this.state.endDate.unix().toString()
+                greenPercentage: 0
             }
         }
 
@@ -171,16 +157,6 @@ class UpdateTenderDialog extends React.Component<UpdateTenderDialogProps & State
                                                 <option>Semi Flex</option>
                                                 <option>Flex</option>
                                             </select>
-                                        </div>
-                                    </div>
-
-                                    <div className="uk-margin">
-                                        <label className="uk-form-label" data-for="contract-start-input">Contract End</label>
-                                        <div className="uk-form-controls">
-                                            <DatePicker id="contract-start-input"
-                                                        className="uk-input"
-                                                        selected={this.state.endDate}
-                                                        onChange={this.handleendDateChange}/>
                                         </div>
                                     </div>
                                 </div>

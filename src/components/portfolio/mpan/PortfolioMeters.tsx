@@ -9,6 +9,7 @@ import UploadHistoricDialog from './UploadHistoricDialog';
 import { fetchMeterConsumption, excludeMeters, exportMeterConsumption } from '../../../actions/meterActions';
 import IncludeMetersDialog from "./IncludeMetersDialog";
 import ExcludeAllMetersDialog from "./ExcludeAllMetersDialog";
+import ReactTable, { Column } from "react-table";
 
 interface PortfolioMetersProps {
     portfolio: Portfolio;
@@ -30,6 +31,10 @@ interface DispatchProps {
 
 interface State {
     tab: string
+}
+
+interface MeterTableEntry {
+    [key: string]: any;
 }
 
 class PortfolioMeters extends React.Component<PortfolioMetersProps & StateProps & DispatchProps, State> {
@@ -64,32 +69,39 @@ class PortfolioMeters extends React.Component<PortfolioMetersProps & StateProps 
     }
 
     renderDynamicTable(columns: string[], values: string[][], utilityType: UtilityType){
+        var tableColumns: Column[] = columns.map((c, index) => {
+            return {
+                Header: c,
+                accessor: String(index)
+            }
+        });
+
+        tableColumns.push({
+            Header: '',
+            accessor: 'core',
+            sortable: false,
+            Cell: row => {
+                var mpanCore = row.value;
+                return (<button className='uk-button uk-button-default uk-button-small' onClick={(ev) => this.excludeMeter(ev, mpanCore)}><span data-uk-icon='icon: close' data-uk-tooltip="title: Exclude" /></button>)   
+            }
+        });
+
+        var data: MeterTableEntry[] = values.map(rowArray => {
+           var rowObject: MeterTableEntry = {};
+           for(var i = 0; i < rowArray.length; i++){
+               var accessor = String(i);
+               rowObject[accessor] = rowArray[i];
+           }
+           rowObject['core'] = rowArray[1];
+           return rowObject;
+        });
+
         var includedMeters = values.map(r => r[1]);
         var includeDialogName = `modal-include-meters-${utilityType}`;
         var showIncludeDialogClass = `target: #${includeDialogName}`;
 
         var excludeAllDialogName = `modal-exclude-all-meters-${utilityType}`;
         var showExcludeAllDialogClass = `target: #${excludeAllDialogName}`;
-
-        var rows = values
-        .sort(
-            (rowA, rowB) => {
-                if (rowA[0] < rowB[0]) return -1;
-                if (rowA[0] > rowB[0]) return 1;
-                return 0;
-            })
-        .map((row, rowIndex) => {
-           return (
-               <tr key={rowIndex}>
-                   {row.map((cellValue, cellIndex) => {
-                       var key = `${rowIndex},${cellIndex}`;
-                       return (<td key={key}>{cellValue}</td>);
-                   })}
-                   <td>
-                        <button className='uk-button uk-button-default uk-button-small' onClick={(ev) => this.excludeMeter(ev, row[1])}><span data-uk-icon='icon: close' data-uk-tooltip="title: Exclude" /></button>
-                    </td>
-               </tr>);
-        });
 
         return (
             <div>
@@ -127,18 +139,12 @@ class PortfolioMeters extends React.Component<PortfolioMetersProps & StateProps 
                         </div>
                     </div>
                 </div>
-                <table className="uk-table uk-table-divider">
-                    <thead>
-                        <tr>
-                            {columns.map(c => {
-                                return (<th key={c}>{c}</th>)
-                            })}
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {rows}
-                    </tbody>
-                </table>
+
+                <ReactTable 
+                    showPagination={false}
+                    columns={tableColumns}
+                    data={data}/>
+
                 <div id={includeDialogName} data-uk-modal="center: true">
                     <IncludeMetersDialog portfolio={this.props.details} includedMeters={includedMeters} utility={utilityType}/>
                 </div>
@@ -147,7 +153,7 @@ class PortfolioMeters extends React.Component<PortfolioMetersProps & StateProps 
                 </div>
             </div>);
     }
-
+    
     render() {
         if(this.props.working || this.props.consumption == null){
             return (<Spinner />);

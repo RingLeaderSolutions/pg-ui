@@ -1,14 +1,16 @@
 import * as React from "react";
-import { Link } from "react-router-dom";
+import { withRouter } from "react-router-dom";
 import { RouteComponentProps } from 'react-router';
 import { MapDispatchToPropsFunction, connect, MapStateToProps } from 'react-redux';
 import { getAllPortfolios, deselectPortfolio } from '../../actions/portfolioActions';
 import { ApplicationState } from '../../applicationState';
 import Header from "../common/Header";
 import ErrorMessage from "../common/ErrorMessage";
-import { Portfolio } from '../../model/Models';
+import { Portfolio, User } from '../../model/Models';
 import Spinner from '../common/Spinner';
 import CreatePortfolioFromAccountDialog from "./creation/CreatePortfolioFromAccountDialog";
+import ReactTable, { Column } from "react-table";
+import { UserCellRenderer, UserSorter } from "../common/TableHelpers";
 
 interface PortfoliosProps extends RouteComponentProps<void> {
 }
@@ -25,81 +27,180 @@ interface DispatchProps {
   deselectPortfolio: () => void;
 }
 
-class Portfolios extends React.Component<PortfoliosProps & StateProps & DispatchProps, {}> {
+interface PortfoliosState {
+    searchText: string;
+    tableData: PortfolioTableEntry[];
+}
+
+interface PortfolioTableEntry {
+    [key: string]: any;
+    portfolioId: string;
+    name: string;
+    status: string;
+    tenderAnalyst: User;
+    accountMgr: User;
+    siteCount: number;
+    meterCount: number;
+}
+
+class Portfolios extends React.Component<PortfoliosProps & StateProps & DispatchProps, PortfoliosState> {
+    columns: Column[] = [{
+        Header: 'Name',
+        accessor: 'name'
+    },{
+        Header: 'Status',
+        accessor: 'status'
+    },{
+        id: 'accountMgr',
+        Header: 'Account Manager',
+        accessor: 'accountMgr',
+        Cell: UserCellRenderer,
+        sortMethod: UserSorter
+    },{
+        id: 'tenderAnalyst',
+        Header: 'Tender Analyst',
+        accessor: "tenderAnalyst",
+        Cell: UserCellRenderer,
+        sortMethod: UserSorter
+    },{
+        Header: 'Sites',
+        accessor: 'siteCount'
+    },{
+        Header: 'Meters',
+        accessor: 'meterCount'
+    }];
+    stringProperties: string[] = ["portfolioId", "name", "status"];
+    numberProperties: string[] = ["siteCount", "meterCount"];
+
+    constructor() {
+        super();
+        this.state = {
+            searchText: '',
+            tableData: []
+        };
+    }
+
     componentDidMount() {
         this.props.getPortfolios();
         this.props.deselectPortfolio();
+    }
+
+    componentWillReceiveProps(nextProps: PortfoliosProps & StateProps & DispatchProps){
+        if(nextProps.portfolios == null){
+            return;
+        }
+
+        var tableData: PortfolioTableEntry[] = this.filterPortfolios(nextProps.portfolios, this.state.searchText);
+        this.setState({
+            ...this.state,
+            tableData
+        })
+    }
+
+    handleSearch(ev: any){
+        var raw = String(ev.target.value);
+        if(this.state.searchText === raw){
+            return;
+        }
+
+        var tableData: PortfolioTableEntry[] = this.filterPortfolios(this.props.portfolios, raw);
+
+        this.setState({
+            ...this.state,
+            searchText: raw,
+            tableData
+        });
+    }
+
+    filterPortfolios(portfolios: Portfolio[], searchText: string): PortfolioTableEntry[] {
+        var tableData : PortfolioTableEntry[] = this.createTableData(portfolios);
+        if(searchText == null || searchText == ""){
+            return tableData;
+        }
+        
+        var lowerSearchText = searchText.trim().toLocaleLowerCase();
+        var filtered = tableData.filter(portfolio => {
+            var match = false;
+            this.stringProperties.forEach(property => {
+                var value: string = portfolio[property] as string;
+                if(value && value.toLocaleLowerCase().includes(lowerSearchText)){
+                    match = true;
+                }
+            });
+
+            this.numberProperties.forEach(property => {
+                var value: string = String(portfolio[property] as number);
+                if(value && value.includes(lowerSearchText)){
+                    match = true;
+                }
+            })
+
+            if(!match){
+                var tenderAnalyst = `${portfolio.tenderAnalyst.firstName} ${portfolio.tenderAnalyst.lastName}`.toLocaleLowerCase();
+                var accountMgr = `${portfolio.accountMgr.firstName} ${portfolio.accountMgr.lastName}`.toLocaleLowerCase();
+
+                if(tenderAnalyst.includes(lowerSearchText) || accountMgr.includes(lowerSearchText)){
+                    match = true;
+                }    
+            }
+            return match;
+        });
+
+        return filtered;
+    }
+
+    createTableData(portfolios: Portfolio[]): PortfolioTableEntry[]{
+        return portfolios.map(portfolio => {
+            return {
+                portfolioId: portfolio.id,
+                name: portfolio.title,
+                status: portfolio.status,
+                accountMgr: portfolio.salesLead,
+                tenderAnalyst: portfolio.supportExec,
+                siteCount: portfolio.sites,
+                meterCount: portfolio.mpans
+            }
+        });
     }
 
     render() {
         var tableContent;
         
         if(this.props.error){
-            tableContent = (<tr><td colSpan={9}><ErrorMessage content={this.props.errorMessage}/></td></tr>);
+            tableContent = (<ErrorMessage content={this.props.errorMessage}/>);
         }
         else if(this.props.working){
-            tableContent =  (<tr><td colSpan={9}><Spinner /></td></tr>);
+            tableContent =  (<Spinner />);
         }
         else if(this.props.portfolios == null || this.props.portfolios.length == 0){
-            tableContent =  (<tr><td colSpan={9}><p className="table-warning">There are no portfolios for this team yet. You can create one using the "New Prospect" button above!</p></td></tr>)
+            tableContent =  (<p className="table-warning">There are no portfolios for this team yet. You can create one using the "New Prospect" button above!</p>)
         }
         else {
-            tableContent = this.props.portfolios.map(portfolio => {
-                var link = { pathname: `/portfolio/${portfolio.id}`, state: { portfolioId: portfolio.id }};
-                var hasSalesLead = portfolio.salesLead != null;
-                var hasSupportOwner = portfolio.supportExec != null;
-                var noUser = (<p style={ { margin: '0px' } }>None</p>);
-
-                var salesLead = hasSalesLead ? 
-                    (<div className="user">
-                        <img className="avatar" src={portfolio.salesLead.avatarUrl} />
-                        <p>{portfolio.salesLead.firstName} {portfolio.salesLead.lastName}</p>
-                    </div>) : noUser;
-
-                var supportOwner = hasSupportOwner ? 
-                    (<div className="user">
-                        <img className="avatar" src={portfolio.supportExec.avatarUrl} />
-                        <p>{portfolio.supportExec.firstName} {portfolio.supportExec.lastName}</p>
-                    </div>) : noUser;
-
-                return (
-                    <tr key={portfolio.id}>
-                        <td className="uk-table-link"><Link to={link} className="uk-link-reset">{portfolio.title}</Link></td>
-                        <td className="uk-table-link">
-                            <Link to={link} className="uk-link-reset">
-                                {/* <div className="circle circle-orange" />< */}
-                                {portfolio.status}
-                            </Link>
-                        </td>
-                        <td className="uk-table-link"><Link to={link} className="uk-link-reset">{salesLead}</Link></td>
-                        <td className="uk-table-link"><Link to={link} className="uk-link-reset">{supportOwner}</Link></td>
-                        <td className="uk-table-link"><Link to={link} className="uk-link-reset">{portfolio.contractStart}</Link></td>
-                        <td className="uk-table-link"><Link to={link} className="uk-link-reset">{portfolio.contractEnd}</Link></td>
-                        <td className="uk-table-link"><Link to={link} className="uk-link-reset">{portfolio.sites}</Link></td>
-                        <td className="uk-table-link"><Link to={link} className="uk-link-reset">{portfolio.mpans}</Link></td>
-                    </tr>
-                );
-            });
+            tableContent = (
+                <ReactTable 
+                    showPagination={false}
+                    columns={this.columns}
+                    data={this.state.tableData}
+                    getTrProps={(state: any, rowInfo: any, column: any, instance: any) => ({
+                        onClick: (e: any) => {
+                            this.props.history.push(`/portfolio/${rowInfo.original.portfolioId}`);
+                        },
+                        style: {
+                            cursor: 'pointer'
+                        } 
+                      })}/>
+            )
         }
 
         return (
             <div className="content-inner">
                 <Header title="Portfolios" />
                 <div className="content-portfolios">
-                    {/* <div className="filters-portfolios">
-                        <ul className="uk-tab-right" data-uk-tab>
-                            <li><a>All Portfolios</a></li>
-                            <li><a><div className="circle circle-grey" /><p>Qualified</p></a></li>
-                            <li><a><div className="circle circle-blue" /><p>Indicative Pricing Only</p></a></li>
-                            <li><a><div className="circle circle-orange" /><p>Proposal</p></a></li>
-                            <li><a><div className="circle circle-green" /><p>Priced</p></a></li>
-                        </ul>
-                    </div> */}
                     <div className="table-portfolios">
                         <div className="search-portfolios">
                             <form className="uk-search uk-search-default">
                                 <span data-uk-search-icon="search"></span>
-                                <input className="uk-search-input" type="search" placeholder="Search..." disabled/>
+                                <input className="uk-search-input" type="search" placeholder="Search..." value={this.state.searchText} onChange={(e) => this.handleSearch(e)}/>
                             </form>
                             <div className="actions-portfolios">
                                 <button className="uk-button uk-button-primary" data-uk-toggle="target: #modal-new-portfolio">
@@ -109,23 +210,7 @@ class Portfolios extends React.Component<PortfoliosProps & StateProps & Dispatch
                             </div>
                         </div>
                         <div className="container-table-portfolios">
-                            <table className="uk-table uk-table-divider uk-table-hover">
-                                <thead>
-                                    <tr>
-                                        <th>Name</th>
-                                        <th>Status</th>
-                                        <th>Account Manager</th>
-                                        <th>Tender Analyst</th>
-                                        <th>Start</th>
-                                        <th>End</th>
-                                        <th>Sites</th>
-                                        <th>Meters</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {tableContent}
-                                </tbody>
-                            </table>
+                            {tableContent}
                         </div>
                     </div>
                 </div>
@@ -153,4 +238,4 @@ const mapStateToProps: MapStateToProps<StateProps, PortfoliosProps> = (state: Ap
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Portfolios);
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Portfolios));

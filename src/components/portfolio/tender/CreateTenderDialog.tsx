@@ -31,20 +31,17 @@ interface DispatchProps {
 }
 
 interface CreateTenderState {
-    deadline: moment.Moment;
-    endDate: moment.Moment;    
+    deadline: moment.Moment;   
 }
 
 class CreateTenderDialog extends React.Component<CreateTenderDialogProps & StateProps & DispatchProps, CreateTenderState> {
     constructor(props: CreateTenderDialogProps & StateProps & DispatchProps){
         super();
         this.state = {
-            deadline: moment(),
-            endDate:  moment()             
+            deadline: moment()        
         };
 
         this.handleDeadlineChange = this.handleDeadlineChange.bind(this);
-        this.handleendDateChange = this.handleendDateChange.bind(this);
         this.createTender = this.createTender.bind(this);
     }
     // Standard
@@ -66,14 +63,6 @@ class CreateTenderDialog extends React.Component<CreateTenderDialogProps & State
         this.props.fetchTariffs();
     }
 
-    handleendDateChange(date: moment.Moment, event: React.SyntheticEvent<any>){
-        this.setState({
-            endDate: date
-        });
-
-        event.preventDefault();
-    }
-
     handleDeadlineChange(date: moment.Moment, event: React.SyntheticEvent<any>){
         this.setState({
             deadline: date
@@ -93,7 +82,6 @@ class CreateTenderDialog extends React.Component<CreateTenderDialogProps & State
             greenPercentage: Number(this.greenPercentage.value),
 
             product: this.product.value,
-            endDate: this.state.endDate.format("YYYY-MM-DDTHH:mm:ss"),
             tariffId: this.tariff ? this.tariff.value : null
         };
 
@@ -151,16 +139,6 @@ class CreateTenderDialog extends React.Component<CreateTenderDialogProps & State
                                                 <option>Semi Flex</option>
                                                 <option>Flex</option>
                                             </select>
-                                        </div>
-                                    </div>
-
-                                    <div className="uk-margin">
-                                        <label className="uk-form-label" data-for="contract-start-input">Contract End</label>
-                                        <div className="uk-form-controls">
-                                            <DatePicker id="contract-start-input"
-                                                        className="uk-input"
-                                                        selected={this.state.endDate}
-                                                        onChange={this.handleendDateChange}/>
                                         </div>
                                     </div>
                                 </div>
@@ -278,8 +256,7 @@ class CreateTenderDialog extends React.Component<CreateTenderDialogProps & State
     }
     render() {
         if(this.props.working || this.props.tariffs == null){
-            var spinner = (<Spinner hasMargin={true}/>);
-            return (<div className="uk-modal-dialog"> <Spinner /> </div>);
+            return (<div className="uk-modal-dialog"> <Spinner hasMargin={true}/> </div>);
         }
         return (
             <div className="uk-modal-dialog">

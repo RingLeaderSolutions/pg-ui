@@ -2,7 +2,6 @@ import * as React from "react";
 import { MapDispatchToPropsFunction, connect, MapStateToProps } from 'react-redux';
 import { ApplicationState } from '../../../applicationState';
 
-import * as moment from 'moment';
 import { fetchContractBackingSheets } from '../../../actions/tenderActions';
 import { Tender, TenderSupplier } from "../../../model/Tender";
 import UploadBackingSheetDialog from './UploadBackingSheetDialog';
@@ -10,6 +9,7 @@ import AddExistingContractDialog from './AddExistingContractDialog';
 import TenderBackingSheetsDialog from './TenderBackingSheetsDialog';
 import Spinner from "../../common/Spinner";
 import UpdateExistingContractDialog from "./UpdateExistingContractDialog";
+import { format } from 'currency-formatter';
 
 interface TenderContractViewProps {
     tender: Tender;
@@ -53,6 +53,7 @@ class TenderContractView extends React.Component<TenderContractViewProps & Dispa
         //         <p>Supplier: <strong>{supplierText}</strong></p>
         //     </div>);
 
+        var appu = `${existingContract.averagePPU.toFixed(4)}p`;
         return (
             <div className="uk-grid uk-margin-small-left uk-margin-small-right uk-grid-match" data-uk-grid>
                 <div className="uk-card uk-card-default uk-card-small uk-card-body uk-width-1-5 uk-text-center">
@@ -66,6 +67,14 @@ class TenderContractView extends React.Component<TenderContractViewProps & Dispa
                 <div className="uk-card uk-card-default uk-card-small uk-card-body uk-width-1-5 uk-text-center">
                     <p className="uk-text-bold uk-margin-small">{existingContract.product}</p>
                     <p className="uk-text-meta uk-margin-small">Product</p>
+                </div>
+                <div className="uk-card uk-card-default uk-card-small uk-card-body uk-width-1-5 uk-text-center">
+                    <p className="uk-text-bold uk-margin-small">{appu}</p>
+                    <p className="uk-text-meta uk-margin-small">Avg Pence Per Unit</p>
+                </div>
+                <div className="uk-card uk-card-default uk-card-small uk-card-body uk-width-1-5 uk-text-center">
+                    <p className="uk-text-bold uk-margin-small">{format(existingContract.totalIncCCL, { locale: 'en-GB'})}</p>
+                    <p className="uk-text-meta uk-margin-small">Contract Value</p>
                 </div>
             </div>
         )

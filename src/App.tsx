@@ -24,10 +24,10 @@ const UIkit = require('uikit');
 const Icons = require('uikit/dist/js/uikit-icons');
 UIkit.use(Icons);
 
-require('./styles/styles.scss');
+import 'react-table/react-table.css'
 require('./styles/uikit.css');
-
 import 'react-datepicker/dist/react-datepicker.css';
+require('./styles/styles.scss');
 
 declare global {
     interface NodeModule {

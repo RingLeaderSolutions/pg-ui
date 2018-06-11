@@ -358,7 +358,6 @@ export function fetchPortfolioUploads(portfolioId: string){
     };
 }
 
-
 export function fetchUploadReport(reportId: string, isImport: boolean){
     return (dispatch: Dispatch<any>) => {
         let fetchTariffsPromise = ApiService.fetchUploadReport(reportId, isImport);
@@ -395,6 +394,41 @@ export function fetchUsers(){
     };
 }
 
+export function deletePortfolio(portfolioId: string){
+    return (dispatch: Dispatch<any>) => {
+        let createPromise = ApiService.deletePortfolio(portfolioId);
+        dispatch( { type: types.DELETE_PORTFOLIO_WORKING });
+
+        makeApiRequest(dispatch,
+            createPromise,
+            200, 
+            data => {
+                return { type: types.DELETE_PORTFOLIO_SUCCESSFUL, data: data as PortfolioDetails};
+                
+            }, 
+            error => {
+                return { type: types.DELETE_PORTFOLIO_FAILED, errorMessage: error };
+            });
+    };
+}
+
+export function editPortfolio(portfolio: PortfolioCreationRequest){
+    return (dispatch: Dispatch<any>) => {
+        let createPromise = ApiService.editPortfolio(portfolio);
+        dispatch( { type: types.EDIT_PORTFOLIO_WORKING });
+
+        makeApiRequest(dispatch,
+            createPromise,
+            200, 
+            data => {
+                return { type: types.EDIT_PORTFOLIO_SUCCESSFUL, data: data as PortfolioDetails};
+                
+            }, 
+            error => {
+                return { type: types.EDIT_PORTFOLIO_FAILED, errorMessage: error };
+            });
+    };
+}
 
 export function deselectPortfolio(){
     return (dispatch: Dispatch<any>) => {    

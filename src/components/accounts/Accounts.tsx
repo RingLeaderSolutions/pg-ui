@@ -9,6 +9,8 @@ import ErrorMessage from "../common/ErrorMessage";
 import { Account } from '../../model/Models';
 import Spinner from '../common/Spinner';
 import NewAccountDialog from "./NewAccountDialog";
+import ReactTable, { Column } from "react-table";
+import { BooleanCellRenderer } from "../common/TableHelpers";
 
 interface AccountsProps extends RouteComponentProps<void> {
 }
@@ -24,17 +26,147 @@ interface DispatchProps {
   retrieveAccounts: () => void;
 }
 
-class Accounts extends React.Component<AccountsProps & StateProps & DispatchProps, {}> {
+interface AccountsState {
+    searchText: string;
+    tableData: AccountTableEntry[];
+}
+
+interface AccountTableEntry {
+    [key: string]: any;
+    accountId: string;
+    name: string;
+    regNumber: string;
+    country: string;
+    postcode: string;
+    incorporationDate: string;
+    status: string;
+    creditRating: string;
+    registeredCharity: boolean;
+    cclException: boolean;
+    vatEligible: boolean;
+    fitException: boolean;
+}
+
+class Accounts extends React.Component<AccountsProps & StateProps & DispatchProps, AccountsState> {
+    columns: Column[] = [{
+        Header: 'Name',
+        accessor: 'name'
+    },{
+        Header: 'Reg No.',
+        accessor: 'regNumber'
+    },{
+        Header: 'Country',
+        accessor: 'country'
+    },{
+        Header: 'Postcode',
+        accessor: "postcode",
+    },{
+        Header: 'Incorporation Date',
+        accessor: 'incorporationDate'
+    },{
+        Header: 'Status',
+        accessor: 'status'
+    },{
+        Header: 'Credit Rating',
+        accessor: 'creditRating'
+    },{
+        Header: 'Reg Charity',
+        accessor: 'registeredCharity',
+        Cell: BooleanCellRenderer
+    },{
+        Header: 'CCL Exception',
+        accessor: 'cclException',
+        Cell: BooleanCellRenderer
+    },{
+        Header: 'VAT Eligible',
+        accessor: 'vatEligible',
+        Cell: BooleanCellRenderer
+    },{
+        Header: 'FIT Exception',
+        accessor: 'fitException',
+        Cell: BooleanCellRenderer
+    }];
+    stringProperties: string[] = ["accountId", "name", "country", "postcode", "incorporationDate", "status", "creditRating"];
+
+    constructor() {
+        super();
+        this.state = {
+            searchText: '',
+            tableData: []
+        };
+    }
+
     componentDidMount() {
         this.props.retrieveAccounts();
     }
 
-    renderBooleanValue(value: boolean){
-        if(value){
-            return (<span data-uk-icon="icon: check"></span>)
+    componentWillReceiveProps(nextProps: AccountsProps & StateProps & DispatchProps){
+        if(nextProps.accounts == null){
+            return;
         }
-        return (<span data-uk-icon="icon: close"></span>)        
+
+        var tableData: AccountTableEntry[] = this.filterAccounts(nextProps.accounts, this.state.searchText);
+        this.setState({
+            ...this.state,
+            tableData
+        })
     }
+
+    handleSearch(ev: any){
+        var raw = String(ev.target.value);
+        if(this.state.searchText === raw){
+            return;
+        }
+
+        var tableData: AccountTableEntry[] = this.filterAccounts(this.props.accounts, raw);
+
+        this.setState({
+            ...this.state,
+            searchText: raw,
+            tableData
+        });
+    }
+
+    filterAccounts(accounts: Account[], searchText: string): AccountTableEntry[] {
+        var tableData : AccountTableEntry[] = this.createTableData(accounts);
+        if(searchText == null || searchText == ""){
+            return tableData;
+        }
+        
+        var lowerSearchText = searchText.trim().toLocaleLowerCase();
+        var filtered = tableData.filter(account => {
+            var match = false;
+            this.stringProperties.forEach(property => {
+                var value: string = account[property] as string;
+                if(value && value.toLocaleLowerCase().includes(lowerSearchText)){
+                    match = true;
+                }
+            });
+            return match;
+        });
+
+        return filtered;
+    }
+
+    createTableData(accounts: Account[]): AccountTableEntry[]{
+        return accounts.map(account => {
+            return {
+                accountId: account.id,
+                name: account.companyName,
+                regNumber: account.companyRegistrationNumber,
+                country: account.countryOfOrigin,
+                postcode: account.postcode,
+                incorporationDate: account.incorporationDate,
+                status: account.companyStatus,
+                creditRating: account.creditRating,
+                registeredCharity: account.isRegisteredCharity,
+                cclException: account.hasCCLException,
+                vatEligible: account.isVATEligible,
+                fitException: account.hasFiTException
+            }
+        });
+    }
+
     render() {
         var tableContent;
         
@@ -48,32 +180,20 @@ class Accounts extends React.Component<AccountsProps & StateProps & DispatchProp
             tableContent =  (<tr><td colSpan={9}><p className="table-warning">There are no accounts. Create one using the button above!</p></td></tr>)
         }
         else {
-            tableContent = this.props.accounts
-            .sort(
-                (acc1: Account, acc2: Account) => {        
-                    if (acc1.companyName < acc2.companyName) return -1;
-                    if (acc1.companyName > acc2.companyName) return 1;
-                    return 0;
-                })
-            .map(account => {
-                var link = { pathname: `/account/${account.id}`, state: { accountId: account.id }};
-
-                return (
-                    <tr key={account.id}>
-                        <td className="uk-table-link"><Link to={link} className="uk-link-reset">{account.companyName}</Link></td>
-                        <td className="uk-table-link"><Link to={link} className="uk-link-reset">{account.companyRegistrationNumber}</Link></td>
-                        <td className="uk-table-link"><Link to={link} className="uk-link-reset">{account.countryOfOrigin}</Link></td>
-                        <td className="uk-table-link"><Link to={link} className="uk-link-reset">{account.postcode}</Link></td>
-                        <td className="uk-table-link"><Link to={link} className="uk-link-reset">{account.incorporationDate}</Link></td>
-                        <td className="uk-table-link"><Link to={link} className="uk-link-reset">{account.companyStatus}</Link></td>
-                        <td className="uk-table-link"><Link to={link} className="uk-link-reset">{account.creditRating}</Link></td>
-                        <td className="uk-table-link"><Link to={link} className="uk-link-reset">{this.renderBooleanValue(account.isRegisteredCharity)}</Link></td>
-                        <td className="uk-table-link"><Link to={link} className="uk-link-reset">{this.renderBooleanValue(account.hasCCLException)}</Link></td>
-                        <td className="uk-table-link"><Link to={link} className="uk-link-reset">{this.renderBooleanValue(account.isVATEligible)}</Link></td>
-                        <td className="uk-table-link"><Link to={link} className="uk-link-reset">{this.renderBooleanValue(account.hasFiTException)}</Link></td>
-                    </tr>
-                );
-            });
+            tableContent = (
+                <ReactTable 
+                    showPagination={false}
+                    columns={this.columns}
+                    data={this.state.tableData}
+                    getTrProps={(state: any, rowInfo: any, column: any, instance: any) => ({
+                        onClick: (e: any) => {
+                            this.props.history.push(`/account/${rowInfo.original.accountId}`);
+                        },
+                        style: {
+                            cursor: 'pointer'
+                        } 
+                      })}/>
+            )
         }
 
         return (
@@ -84,7 +204,7 @@ class Accounts extends React.Component<AccountsProps & StateProps & DispatchProp
                         <div className="search-accounts">
                             <form className="uk-search uk-search-default">
                                 <span data-uk-search-icon="search"></span>
-                                <input className="uk-search-input" type="search" placeholder="Search..." disabled/>
+                                <input className="uk-search-input" type="search" placeholder="Search..." value={this.state.searchText} onChange={(e) => this.handleSearch(e)}/>
                             </form>
                             <div className="actions-accounts">
                                 <button className="uk-button uk-button-primary" data-uk-toggle="target: #modal-new-account">
@@ -94,26 +214,7 @@ class Accounts extends React.Component<AccountsProps & StateProps & DispatchProp
                             </div>
                         </div>
                         <div className="container-table-accounts">
-                            <table className="uk-table uk-table-divider uk-table-hover">
-                                <thead>
-                                    <tr>
-                                        <th>Name</th>
-                                        <th>Reg No.</th>
-                                        <th>Country</th>
-                                        <th>Postcode</th>
-                                        <th>Incorporation Date</th>
-                                        <th>Status</th>
-                                        <th>Credit Rating</th>
-                                        <th>Reg Charity</th>
-                                        <th>CCL Exception</th>
-                                        <th>VAT Eligible</th>
-                                        <th>FiT Exception</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {tableContent}
-                                </tbody>
-                            </table>
+                            {tableContent}
                         </div>
                     </div>
                 </div>

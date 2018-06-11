@@ -23,7 +23,9 @@ export interface IApiService {
   createPortfolioFromCompany(accountId: string, company: CompanyInfo): Promise<AxiosResponse>;
   updatePortfolioContact(contact: PortfolioContact): Promise<AxiosResponse>;
   updatePortfolioRequirements(requirements: PortfolioRequirements): Promise<AxiosResponse>;
-  
+  deletePortfolio(portfolioId: string) : Promise<AxiosResponse>;
+  editPortfolio(portfolio: PortfolioCreationRequest) : Promise<AxiosResponse>;
+
   retrieveAccounts(): Promise<AxiosResponse>;  
   retrieveAccount(accountId: string): Promise<AxiosResponse>;
   retrieveAccountDetail(accountId: string): Promise<AxiosResponse>;
@@ -248,6 +250,14 @@ export class ApiService implements IApiService {
 
     createPortfolio(portfolio: PortfolioCreationRequest){       
         return axios.post(`${this.baseApiUri}/portman-web/portfolio`, portfolio, this.getRequestConfig());                        
+    }
+
+    editPortfolio(portfolio: PortfolioCreationRequest){       
+        return axios.put(`${this.baseApiUri}/portman-web/portfolio`, portfolio, this.getRequestConfig());                        
+    }
+
+    deletePortfolio(portfolioId: string){       
+        return axios.delete(`${this.baseApiUri}/portman-web/portfolio/${portfolioId}`, this.getRequestConfig());                        
     }
 
     createPortfolioFromCompany(accountId: string, company: CompanyInfo){
@@ -538,8 +548,7 @@ export class ApiService implements IApiService {
     }
 
     reportLogin(){
-        //return axios.post(`${this.baseApiUri}/portman-web/admin/logon`, null, this.getRequestConfig());
-        return new FakeApiService().reportLogin();
+        return axios.post(`${this.baseApiUri}/portman-web/admin/logon`, null, this.getRequestConfig());
     }
 
     createContact(contact: AccountContact){

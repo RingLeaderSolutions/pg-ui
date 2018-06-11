@@ -3,6 +3,8 @@ import CounterCard from "../../common/CounterCard";
 import { Portfolio } from '../../../model/Models';
 import PortfolioMeterStatus from "./PortfolioMeterStatus";
 import PortfolioHistory from "./PortfolioHistory";
+import UpdatePortfolioDialog from "../creation/UpdatePortfolioDialog";
+import DeletePortfolioDialog from "../creation/DeletePortfolioDialog";
 
 interface PortfolioSummaryProps {
     portfolio: Portfolio
@@ -24,31 +26,32 @@ class PortfolioSummary extends React.Component<PortfolioSummaryProps, {}> {
         var salesLead = portfolio.salesLead == null ? this.missingFieldText : `${portfolio.salesLead.firstName} ${portfolio.salesLead.lastName}`;        
         var supportExec = portfolio.supportExec == null ? this.missingFieldText : `${portfolio.supportExec.firstName} ${portfolio.supportExec.lastName}`;
 
-        var client = this.missingFieldText, clientContact = this.missingFieldText;
-        if(portfolio.client != null){
-            client = portfolio.client.name;
-            clientContact = portfolio.client.contact == null ? this.missingFieldText : `${portfolio.client.contact.firstName} ${portfolio.client.contact.lastName}`;
-        }
-
         return (
             <div className="content-inner-portfolio">
+                <div className="uk-grid" data-uk-grid>
+                    <div className="uk-width-expand@s"></div>
+                    <div className="uk-width-auto@s">
+                        <button className='uk-button uk-button-default uk-button-small' data-uk-toggle="target: #modal-edit-portfolio"><span data-uk-icon='icon: pencil' /> Edit portfolio</button>
+                    </div>
+                    <div className="uk-width-auto@s">
+                        <button className='uk-button uk-button-danger uk-button-small' data-uk-toggle="target: #modal-delete-portfolio"><span data-uk-icon='icon: close' /> Delete portfolio</button>
+                    </div>
+                </div>
                 <div className="uk-child-width-expand@s uk-grid-match uk-text-center" data-uk-grid>
-                    <CounterCard title={client} label="Client" small/>
-                    <CounterCard title={clientContact} label="Client Contact" small/>
                     <CounterCard title={salesLead} label="Account Manager" small/>
                     <CounterCard title={supportExec} label="Tender Analyst" small/>
                     <CounterCard title={this.formatForDisplay(portfolio.creditRating)} label="Credit Score" small/>
-                </div>
-                <div className="uk-child-width-expand@s uk-grid-match uk-text-center" data-uk-grid>
-                    <CounterCard title={this.formatForDisplay(portfolio.contractStart)} label="Contract Start" small/>
-                    <CounterCard title={this.formatForDisplay(portfolio.contractEnd)} label="Contract End" small/>
-                    <CounterCard title={this.missingFieldText} label="Upload Activity" small/>
-                    <CounterCard title={String(portfolio.accounts)} label="Accounts" small/>
                     <CounterCard title={String(portfolio.mpans)} label="Meters" small />
                 </div>
                 <div className="uk-child-width-expand@s uk-grid-match uk-text-center" data-uk-grid>
                     <PortfolioMeterStatus portfolio={portfolio} />
                     <PortfolioHistory portfolio={portfolio} />
+                </div>
+                <div id="modal-edit-portfolio" data-uk-modal="center: true">
+                    <UpdatePortfolioDialog portfolio={portfolio}/>
+                </div>
+                <div id="modal-delete-portfolio" data-uk-modal="center: true">
+                    <DeletePortfolioDialog portfolioId={portfolio.id}/>
                 </div>
             </div>)
     }

@@ -1,6 +1,5 @@
 import * as React from "react";
 import { MapDispatchToPropsFunction, connect, MapStateToProps } from 'react-redux';
-import { ApplicationState } from '../../../applicationState';
 import { PortfolioDetails } from '../../../model/Models';
 
 import { excludeMeters } from '../../../actions/meterActions';

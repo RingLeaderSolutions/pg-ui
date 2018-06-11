@@ -18,14 +18,13 @@ export interface Portfolio {
 }
 
 export interface PortfolioCreationRequest { 
+    id?: string;
     title: string;
     category: string;
     teamId: number;
     ownerId: number;
     supportOwner: number;
     accountId: string;
-    contractStart: string;
-    contractEnd: string;
 }
 
 export interface Client {

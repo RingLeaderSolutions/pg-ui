@@ -17,17 +17,18 @@
         .table-warning {
             text-align: center;
         }
-        .search-accounts {
-            flex: none;
-            margin: $margin-medium $margin-medium;
-            display: flex;
-            .uk-search {
-                flex-grow: 1;
-            }
-            .actions-accounts {
-                margin-left: $margin-medium;
-            }
-        }
+    }
+}
+
+.search-accounts {
+    flex: none;
+    margin: $margin-medium $margin-medium;
+    display: flex;
+    .uk-search {
+        flex-grow: 1;
+    }
+    .actions-accounts {
+        margin-left: $margin-medium;
     }
 }
 

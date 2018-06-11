@@ -109,6 +109,7 @@ class QuoteImportReportView extends React.Component<QuoteImportReportViewProps &
             return (<div className="uk-modal-dialog upload-report-modal uk-modal-body"><Spinner hasMargin={true} /></div>);
         }
         var template = this.props.uploadReport.templateResults[0];
+        var downloadTooltip = `title: ${this.props.uploadReport.originalFileName}`
         return (
             <div className="uk-modal-dialog upload-report-modal">
                 <button className="uk-modal-close-default" type="button" data-uk-close></button>
@@ -116,12 +117,17 @@ class QuoteImportReportView extends React.Component<QuoteImportReportViewProps &
                     <h2 className="uk-modal-title">Quote Import: {template.type}</h2>
                 </div>
                 <div className="uk-modal-body uk-overflow-auto">
-                    {this.props.uploadReport.originalFileNameURI ? (
-                        <p className="download-report">
-                            <a className="uk-button uk-button-default uk-button-small" data-uk-tooltip="title: Download" href={this.props.uploadReport.originalFileNameURI} target="_blank">
-                                <span data-uk-icon="icon: cloud-download" />
-                            </a>
-                        </p>) : null}
+                    <div className="uk-grid" data-uk-grid>
+                        <div className="uk-width-expand@s"></div>
+                        <div className="uk-width-auto@s" data-uk-tooltip={downloadTooltip}>
+                            {this.props.uploadReport.originalFileNameURI ? (
+                                <p className="download-report">
+                                    <a className="uk-button uk-button-default uk-button-small" href={this.props.uploadReport.originalFileNameURI} target="_blank">
+                                        <span data-uk-icon="icon: cloud-download" /> Download
+                                    </a>
+                                </p>) : null}
+                        </div>
+                    </div>
                         <ul data-uk-tab>
                             <li><a href="#">Import results</a></li>
                             <li><a href="#">Unmapped Columns</a></li>
