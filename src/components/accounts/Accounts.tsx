@@ -171,13 +171,13 @@ class Accounts extends React.Component<AccountsProps & StateProps & DispatchProp
         var tableContent;
         
         if(this.props.error){
-            tableContent = (<tr><td colSpan={9}><ErrorMessage content={this.props.errorMessage}/></td></tr>);
+            tableContent = (<ErrorMessage content={this.props.errorMessage}/>);
         }
         else if(this.props.working){
-            tableContent =  (<tr><td colSpan={9}><Spinner /></td></tr>);
+            tableContent =  (<Spinner />);
         }
         else if(this.props.accounts == null || this.props.accounts.length == 0){
-            tableContent =  (<tr><td colSpan={9}><p className="table-warning">There are no accounts. Create one using the button above!</p></td></tr>)
+            tableContent =  (<p className="table-warning">There are no accounts. Create one using the button above!</p>)
         }
         else {
             tableContent = (

@@ -150,17 +150,19 @@ class Portfolios extends React.Component<PortfoliosProps & StateProps & Dispatch
     }
 
     createTableData(portfolios: Portfolio[]): PortfolioTableEntry[]{
-        return portfolios.map(portfolio => {
-            return {
-                portfolioId: portfolio.id,
-                name: portfolio.title,
-                status: portfolio.status,
-                accountMgr: portfolio.salesLead,
-                tenderAnalyst: portfolio.supportExec,
-                siteCount: portfolio.sites,
-                meterCount: portfolio.mpans
-            }
-        });
+        return portfolios
+            .filter(p => p.id != null)
+            .map(portfolio => {
+                return {
+                    portfolioId: portfolio.id,
+                    name: portfolio.title,
+                    status: portfolio.status,
+                    accountMgr: portfolio.salesLead,
+                    tenderAnalyst: portfolio.supportExec,
+                    siteCount: portfolio.sites,
+                    meterCount: portfolio.mpans
+                }
+            });
     }
 
     render() {
@@ -173,7 +175,7 @@ class Portfolios extends React.Component<PortfoliosProps & StateProps & Dispatch
             tableContent =  (<Spinner />);
         }
         else if(this.props.portfolios == null || this.props.portfolios.length == 0){
-            tableContent =  (<p className="table-warning">There are no portfolios for this team yet. You can create one using the "New Prospect" button above!</p>)
+            tableContent =  (<p className="table-warning">There are no portfolios for this team yet. You can create one using the "New Portfolio" button above!</p>)
         }
         else {
             tableContent = (
