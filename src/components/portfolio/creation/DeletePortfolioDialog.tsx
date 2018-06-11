@@ -2,7 +2,6 @@ import * as React from "react";
 import { MapDispatchToPropsFunction, connect, MapStateToProps } from 'react-redux';
 
 import { deletePortfolio } from '../../../actions/portfolioActions';
-import { withRouter } from "react-router-dom";
 
 interface DeletePortfolioDialogProps {    
     portfolioId: string;
@@ -51,4 +50,4 @@ const mapStateToProps: MapStateToProps<StateProps, DeletePortfolioDialogProps> =
     return {};
 };
   
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(DeletePortfolioDialog));
+export default connect(mapStateToProps, mapDispatchToProps)(DeletePortfolioDialog);
