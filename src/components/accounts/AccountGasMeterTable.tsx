@@ -179,7 +179,19 @@ class AccountGasMeterTable extends React.Component<AccountGasMeterTableProps & S
 
     render() {
         if(this.props.sites.length === 0){
-            return (<div>No meter data has been uploaded yet.</div>);
+            return (
+                <div>
+                    <div className="search-accounts">
+                        <form className="uk-search uk-search-default">
+                            <span data-uk-search-icon="search"></span>
+                            <input className="uk-search-input" type="search" placeholder="Search..." disabled/>
+                        </form>
+                        <div className="actions-accounts">
+                            <button className='uk-button uk-button-primary uk-margin-small-right' data-uk-toggle="target: #modal-upload-supply-data-gas"><span data-uk-icon='icon: upload' /> Upload Supply Data</button>    
+                        </div>
+                    </div>
+                    <div>No meter data has been uploaded yet.</div>
+                </div>);
         }
 
         var portfolioButtons = this.renderPortfolioButtons();
