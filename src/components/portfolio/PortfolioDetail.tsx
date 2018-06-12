@@ -64,7 +64,7 @@ class PortfolioDetail extends React.Component<PortfolioDetailProps & StateProps 
                     <li><a href="#">Uploads</a></li>
                 </ul>
                 <ul className="uk-switcher restrict-height-hack">
-                    <li><PortfolioSummary portfolio={portfolio}/></li>
+                    <li><PortfolioSummary portfolio={portfolio} detail={detail}/></li>
                     <li className="restrict-height-hack"><PortfolioMeters portfolio={portfolio}/></li>
                     <li><TenderSummary portfolio={portfolio}/></li>
                     <li><PortfolioUploads portfolio={portfolio} /></li>

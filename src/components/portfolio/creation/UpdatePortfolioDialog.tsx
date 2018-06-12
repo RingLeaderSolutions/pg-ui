@@ -2,13 +2,14 @@ import * as React from "react";
 import ErrorMessage from "../../common/ErrorMessage";
 import { MapDispatchToPropsFunction, connect, MapStateToProps } from 'react-redux';
 import { ApplicationState } from '../../../applicationState';
-import { User } from '../../../model/Models';
+import { User, PortfolioDetails } from '../../../model/Models';
 import Spinner from '../../common/Spinner';
 import { fetchUsers, editPortfolio } from '../../../actions/portfolioActions';
 import { PortfolioCreationRequest, Portfolio } from "../../../model/Portfolio";
 
 interface UpdatePortfolioDialogProps { 
     portfolio: Portfolio;   
+    detail: PortfolioDetails;
 }
 
 interface StateProps {
@@ -36,7 +37,7 @@ class UpdatePortfolioDialog extends React.Component<UpdatePortfolioDialogProps &
     editPortfolio(){
         var portfolio: PortfolioCreationRequest = {
             id: this.props.portfolio.id,
-            accountId: this.account.value,
+            accountId: this.props.detail.portfolio.accountId,
             title: this.title.value,
             teamId: 989,
             category: "direct",
@@ -101,7 +102,7 @@ class UpdatePortfolioDialog extends React.Component<UpdatePortfolioDialogProps &
                 </div>
                 <div className="uk-modal-footer uk-text-right">
                     <button className="uk-button uk-button-default uk-margin-right uk-modal-close" type="button">Cancel</button>
-                    <button className="uk-button uk-button-primary uk-modal-close" type="button" onClick={() => this.editPortfolio()}>Create</button>
+                    <button className="uk-button uk-button-primary uk-modal-close" type="button" onClick={() => this.editPortfolio()}>Update</button>
                 </div>
             </div>)
     }

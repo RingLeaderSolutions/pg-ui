@@ -1,13 +1,14 @@
 import * as React from "react";
 import CounterCard from "../../common/CounterCard";
-import { Portfolio } from '../../../model/Models';
+import { Portfolio, PortfolioDetails } from '../../../model/Models';
 import PortfolioMeterStatus from "./PortfolioMeterStatus";
 import PortfolioHistory from "./PortfolioHistory";
 import UpdatePortfolioDialog from "../creation/UpdatePortfolioDialog";
 import DeletePortfolioDialog from "../creation/DeletePortfolioDialog";
 
 interface PortfolioSummaryProps {
-    portfolio: Portfolio
+    portfolio: Portfolio;
+    detail: PortfolioDetails;
 }
 class PortfolioSummary extends React.Component<PortfolioSummaryProps, {}> {
     missingFieldText: string = "-";
@@ -21,7 +22,7 @@ class PortfolioSummary extends React.Component<PortfolioSummaryProps, {}> {
     }
 
     render() {
-        var { portfolio } = this.props;
+        var { portfolio, detail } = this.props;
 
         var salesLead = portfolio.salesLead == null ? this.missingFieldText : `${portfolio.salesLead.firstName} ${portfolio.salesLead.lastName}`;        
         var supportExec = portfolio.supportExec == null ? this.missingFieldText : `${portfolio.supportExec.firstName} ${portfolio.supportExec.lastName}`;
@@ -48,7 +49,7 @@ class PortfolioSummary extends React.Component<PortfolioSummaryProps, {}> {
                     <PortfolioHistory portfolio={portfolio} />
                 </div>
                 <div id="modal-edit-portfolio" data-uk-modal="center: true">
-                    <UpdatePortfolioDialog portfolio={portfolio}/>
+                    <UpdatePortfolioDialog portfolio={portfolio} detail={detail}/>
                 </div>
                 <div id="modal-delete-portfolio" data-uk-modal="center: true">
                     <DeletePortfolioDialog portfolioId={portfolio.id}/>
