@@ -3,7 +3,7 @@ import { User } from '../../model/Models';
 import * as React from "react";
 
 export const UserCellRenderer: TableCellRenderer = row => {
-    if(row == null) {
+    if(row.value == null) {
         return  (<p style={ { margin: '0px' } }>None</p>);
     }
     
