@@ -106,12 +106,13 @@ class PortfolioUploads extends React.Component<PortfolioUploadProps & StateProps
                     </div>
                     <div>
                         <ul data-uk-tab>
-                            <li><a href="#">Uploads</a></li>
-                            <li><a href="#">Imports</a></li>
+                            <li><a href="#">Imports ({this.props.reports.imports.length})</a></li>
+                            <li><a href="#">Uploads ({this.props.reports.uploads.length})</a></li>
+                            
                         </ul>
                         <ul className="uk-switcher restrict-height-hack">
-                            <li>{this.renderUploadsTable(this.props.reports.uploads, false)}</li>
                             <li>{this.renderUploadsTable(this.props.reports.imports, true)}</li>
+                            <li>{this.renderUploadsTable(this.props.reports.uploads, false)}</li>
                         </ul>
                     </div>
                     <div id="modal-view-portfolio-upload" data-uk-modal="center: true">

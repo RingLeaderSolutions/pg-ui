@@ -20,10 +20,15 @@ export default function connectSignalR(store: any) {
         switch(data.EntityType.toLowerCase()){
             case "portfolio":
             case "portfoliometers":
-                if(currentPortfolio && data.PortfolioId == currentPortfolio.id && data.Category != "deleted"){
-                    store.dispatch(getPortfolioDetails(currentPortfolio.id));
-                    store.dispatch(fetchMeterConsumption(currentPortfolio.id));
-                    store.dispatch(fetchPortfolioUploads(currentPortfolio.id));
+                if(currentPortfolio && data.PortfolioId == currentPortfolio.id){
+                    if(data.Category == "deleted"){
+                        window.location.replace('/portfolios');
+                    }
+                    else {
+                        store.dispatch(getPortfolioDetails(currentPortfolio.id));
+                        store.dispatch(fetchMeterConsumption(currentPortfolio.id));
+                        store.dispatch(fetchPortfolioUploads(currentPortfolio.id));
+                    }
                 }
                 if(data.Category == "created" || data.Category == "deleted"){
                     store.dispatch(getAllPortfolios())

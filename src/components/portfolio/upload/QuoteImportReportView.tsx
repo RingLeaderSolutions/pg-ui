@@ -6,6 +6,7 @@ import Spinner from '../../common/Spinner';
 
 import { ImportReportDetail } from "../../../model/Models";
 import { TemplateResult, FieldAction } from "../../../model/Uploads";
+import ErrorMessage from "../../common/ErrorMessage";
 
 interface QuoteImportReportViewProps {
 }
@@ -104,12 +105,46 @@ class QuoteImportReportView extends React.Component<QuoteImportReportViewProps &
             </table>)
     }
 
+    renderValidationErrors(uploadReport: ImportReportDetail){
+        var rows = uploadReport.fieldValidationErrorsList.map((ve, index) => {
+            var key = `ve-${index}`;
+            return (
+                <tr key={key}>
+                    <td>{ve.entity}</td>
+                    <td>{ve.errors.join(', ')}</td>
+                </tr> 
+            );
+        });
+        
+        return (
+            <table className="uk-table uk-table-divider">
+                <thead>
+                    <tr>
+                        <th>Record</th>
+                        <th>Validation Error(s)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {rows}
+                </tbody>
+            </table>)
+        }
+
     render() {
-        if(this.props.working || this.props.uploadReport == null || this.props.uploadReport.templateResults == null){
+        var { uploadReport } = this.props;
+        if(this.props.working || uploadReport == null || uploadReport.templateResults == null){
             return (<div className="uk-modal-dialog upload-report-modal uk-modal-body"><Spinner hasMargin={true} /></div>);
         }
-        var template = this.props.uploadReport.templateResults[0];
-        var downloadTooltip = `title: ${this.props.uploadReport.originalFileName}`
+        if(this.props.error || uploadReport.templateResults.length == 0){
+            return (<ErrorMessage content="Sorry! We've encountered an error loading the import report for this. Please contact support."/>);
+        }
+        var template = uploadReport.templateResults[0];
+        var downloadTooltip = `title: ${uploadReport.originalFileName}`
+        
+        var unmappedCount = template.unmappedColumns.length;
+        var hasValidationErrors = uploadReport.fieldValidationErrorsList != null && uploadReport.fieldValidationErrorsList.length > 0;
+        var validationErrorCount = hasValidationErrors ? uploadReport.fieldValidationErrorsList.length : 0;
+
         return (
             <div className="uk-modal-dialog upload-report-modal">
                 <button className="uk-modal-close-default" type="button" data-uk-close></button>
@@ -120,9 +155,9 @@ class QuoteImportReportView extends React.Component<QuoteImportReportViewProps &
                     <div className="uk-grid" data-uk-grid>
                         <div className="uk-width-expand@s"></div>
                         <div className="uk-width-auto@s" data-uk-tooltip={downloadTooltip}>
-                            {this.props.uploadReport.originalFileNameURI ? (
+                            {uploadReport.originalFileNameURI ? (
                                 <p className="download-report">
-                                    <a className="uk-button uk-button-default uk-button-small" href={this.props.uploadReport.originalFileNameURI} target="_blank">
+                                    <a className="uk-button uk-button-default uk-button-small" href={uploadReport.originalFileNameURI} target="_blank">
                                         <span data-uk-icon="icon: cloud-download" /> Download
                                     </a>
                                 </p>) : null}
@@ -130,11 +165,13 @@ class QuoteImportReportView extends React.Component<QuoteImportReportViewProps &
                     </div>
                         <ul data-uk-tab>
                             <li><a href="#">Import results</a></li>
-                            <li><a href="#">Unmapped Columns</a></li>
+                            { unmappedCount > 0 ? (<li><a href="#">Unmapped Columns ({unmappedCount})</a></li>) : null }
+                            { hasValidationErrors ? (<li><a href="#">Validation Errors ({validationErrorCount})</a></li>) : null }
                         </ul>
                         <ul className="uk-switcher">
                             <li>{this.renderImportResultsTable(template)}</li>
-                            <li>{this.renderUnmappedColumnsTable(template)}</li>
+                            { unmappedCount > 0 ? (<li>{this.renderUnmappedColumnsTable(template)}</li>) : null }
+                            { hasValidationErrors ? (<li>{this.renderValidationErrors(uploadReport)}</li>) : null }
                         </ul>
                 </div>
                 <div className="uk-modal-footer uk-text-right">

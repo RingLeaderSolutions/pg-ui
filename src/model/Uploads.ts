@@ -24,6 +24,12 @@ export interface ImportReportDetail extends UploadReportBase {
     templateResults: TemplateResult[];
     originalFileName: string;
     originalFileNameURI: string;
+    fieldValidationErrorsList: ValidationError[];
+}
+
+export interface ValidationError {
+    entity: string;
+    errors: string[];
 }
 
 export interface TemplateResult {
