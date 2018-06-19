@@ -53,15 +53,18 @@ class CreateTenderView extends React.Component<CreateTenderProps & StateProps & 
             utilityDescription  = "Gas";
         }
 
+        var modalName = `modal-create-tender-${utilityDescription}-${this.props.isHalfHourly}`;
+        var modalToggle = `target: #${modalName}`;
+
         var content = (
             <div>
                 <div className="uk-grid uk-flex-center" data-uk-grid>
-                    <button className="uk-button uk-button-primary" type="button" data-uk-toggle="target: #modal-create-tender">
+                    <button className="uk-button uk-button-primary" type="button" data-uk-toggle={modalToggle}>
                         <span className="uk-margin-small-right" data-uk-icon={buttonIcon} />
                         {buttonContent}
                     </button>
                 </div>
-                <div id="modal-create-tender" data-uk-modal="center: true">
+                <div id={modalName} data-uk-modal="center: true">
                     <CreateTenderDialog portfolioId={this.props.portfolioId} utility={this.props.utilityType} utilityDescription={utilityDescription} isHalfHourly={this.props.isHalfHourly} />
                 </div>
             </div>)
