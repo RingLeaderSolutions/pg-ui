@@ -69,12 +69,12 @@ class TenderContractView extends React.Component<TenderContractViewProps & Dispa
                     <p className="uk-text-meta uk-margin-small">Product</p>
                 </div>
                 <div className="uk-card uk-card-default uk-card-small uk-card-body uk-width-1-5 uk-text-center">
-                    <p className="uk-text-bold uk-margin-small">{appu}</p>
-                    <p className="uk-text-meta uk-margin-small">Avg Pence Per Unit</p>
-                </div>
-                <div className="uk-card uk-card-default uk-card-small uk-card-body uk-width-1-5 uk-text-center">
                     <p className="uk-text-bold uk-margin-small">{format(existingContract.totalIncCCL, { locale: 'en-GB'})}</p>
                     <p className="uk-text-meta uk-margin-small">Contract Value</p>
+                </div>
+                <div className="uk-card uk-card-default uk-card-small uk-card-body uk-width-1-5 uk-text-center">
+                    <p className="uk-text-bold uk-margin-small">{appu}</p>
+                    <p className="uk-text-meta uk-margin-small">Avg Pence Per Unit</p>
                 </div>
             </div>
         )
