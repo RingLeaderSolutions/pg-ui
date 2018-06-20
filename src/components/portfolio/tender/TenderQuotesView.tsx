@@ -16,6 +16,7 @@ import GenerateSummaryReportDialog from "./GenerateSummaryReportDialog";
 import UploadOfferDialog from "./UploadOfferDialog";
 import IssueTenderPackDialog from "./IssueTenderPackDialog";
 import TenderPackDialog from "./TenderPackDialog";
+const UIkit = require('uikit'); 
 
 interface TenderQuotesViewProps {
     tender: Tender;
@@ -251,6 +252,17 @@ class TenderQuotesView extends React.Component<TenderQuotesViewProps & StateProp
     }
 
     generateNewPack(){
+        var deadlineHasPassed = moment().diff(moment(this.props.tender.deadline), 'days') > 0;
+        if(deadlineHasPassed){
+            UIkit.modal.alert("Sorry, this tender's deadline is now in the past. Please update this before generating a new requirements pack.")
+            return;
+        }
+
+        if(this.props.tender.assignedSuppliers.length <= 0){
+            UIkit.modal.alert("Sorry, this tender does not have any assigned suppliers. Please assign at least one supplier before generating a new requirements pack..")
+            return;
+        }
+
         this.props.generateTenderPack(this.props.tender.portfolioId, this.props.tender.tenderId);
     }
 
@@ -294,6 +306,7 @@ class TenderQuotesView extends React.Component<TenderQuotesViewProps & StateProp
             </div>
         )
     }
+    
     render(){
         if(this.props.working){
             return (<Spinner hasMargin={true} />)
@@ -308,7 +321,7 @@ class TenderQuotesView extends React.Component<TenderQuotesViewProps & StateProp
         var backingSheetsDialogName = `modal-view-quote-bs-${this.props.tender.tenderId}`;
 
         var canIssue = this.props.tender.unissuedPacks != null && this.props.tender.unissuedPacks.length != 0;
-
+        
         var content = this.renderSectionContent();
         return (
             <div className="uk-card uk-card-default uk-card-body">
@@ -324,7 +337,7 @@ class TenderQuotesView extends React.Component<TenderQuotesViewProps & StateProp
                             </button>
                             <div data-uk-dropdown="pos:bottom-justify;mode:click">
                                 <ul className="uk-nav uk-dropdown-nav">
-                                <li><a href="#" onClick={() => this.generateNewPack()} >
+                                <li><a href="#" onClick={() => this.generateNewPack()}>
                                     <span className="uk-margin-small-right" data-uk-icon="icon: plus" />
                                     Generate New
                                 </a></li>
