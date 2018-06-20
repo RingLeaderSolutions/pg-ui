@@ -38,14 +38,14 @@ export default function connectSignalR(store: any) {
                 break;
             case "tender":
                 if(currentPortfolio && data.PortfolioId == currentPortfolio.id){
-                    switch(data.Category){
-                        case "tenderpack_issued":
-                            showSuccessNotification('Requirements issued: ' + data.Description);
-                            return;
-                        case "tenderpack_generated":
-                            showSuccessNotification('Tender requirements successfully generated.');  
-                            break;
-                    }
+                    // switch(data.Category){
+                    //     case "tenderpack_issued":
+                    //         showSuccessNotification('Requirements issued: ' + data.Description);
+                    //         return;
+                    //     case "tenderpack_generated":
+                    //         showSuccessNotification('Tender requirements successfully generated.');  
+                    //         break;
+                    // }
                     store.dispatch(getPortfolioTenders(currentPortfolio.id));
                     store.dispatch(fetchPortfolioUploads(currentPortfolio.id));
                 }
