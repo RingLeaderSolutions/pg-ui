@@ -20,20 +20,25 @@ interface StateProps {
       continueOnboarding: () => void;
   }
 
-class CompanySearch extends React.Component<DispatchProps & StateProps, {}> {
+interface CompanySearchState {
+    registrationNumber: string;
+}
+
+class CompanySearch extends React.Component<DispatchProps & StateProps, CompanySearchState> {
     constructor(props: StateProps & DispatchProps) {
         super(props);
+        this.state = {
+            registrationNumber: ''
+        }
 
         this.searchCompany = this.searchCompany.bind(this);
         this.clearCompany = this.clearCompany.bind(this);
         this.onboard = this.onboard.bind(this);
     }
-    registrationNumber: HTMLInputElement;
-
     searchCompany(event: any) {
         event.preventDefault();
 
-        const number = this.registrationNumber.value;
+        const number = this.state.registrationNumber.trim();
         this.props.searchCompany(number);
     }
 
@@ -45,6 +50,14 @@ class CompanySearch extends React.Component<DispatchProps & StateProps, {}> {
     onboard(event: any){
         event.preventDefault();
         this.props.continueOnboarding();
+    }
+
+    updateRegistrationNumber(ev: any){
+        var reg = ev.target.value;
+        this.setState({
+            ...this.state,
+            registrationNumber: reg
+        });
     }
 
     render(){
@@ -104,6 +117,7 @@ class CompanySearch extends React.Component<DispatchProps & StateProps, {}> {
             )
         }
 
+        var canSearch = this.state.registrationNumber.length > 0;
         return (
             <div>
                 <div className="uk-modal-header">
@@ -117,11 +131,11 @@ class CompanySearch extends React.Component<DispatchProps & StateProps, {}> {
                             <div className="uk-width-expand@s">
                                 <div className="uk-inline">
                                     <span className="uk-form-icon" data-uk-icon="icon: world"></span>
-                                    <input id="registrationNumber" className="uk-input" type="input" placeholder="Registration Number" ref={ref => this.registrationNumber = ref} />
+                                    <input id="registrationNumber" className="uk-input" type="input" placeholder="Registration Number" value={this.state.registrationNumber} onChange={e => this.updateRegistrationNumber(e)} />
                                 </div>
                             </div>
                             <div className="uk-width-auto@s">
-                                <button className="uk-button uk-button-primary" type="button" onClick={this.searchCompany}>
+                                <button className="uk-button uk-button-primary" type="button" onClick={this.searchCompany} disabled={!canSearch}>
                                     <span className="uk-margin-small-right" data-uk-icon="icon: search" />
                                     Search
                                 </button>
