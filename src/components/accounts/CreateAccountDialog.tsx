@@ -89,114 +89,121 @@ class CreateAccountDialog extends React.Component<CreateAccountDialogProps & Sta
                     <div className="uk-margin">
                         <form>
                             <fieldset className="uk-fieldset">
-                                <div className='uk-margin'>
-                                    <label className='uk-form-label'>Company Name</label>
-                                    <input 
-                                        className='uk-input' 
-                                        type='text' 
-                                        defaultValue={company ? company.companyName : null}
-                                        ref={ref => this.companyName = ref} />
-                                </div>
-                                <div className='uk-margin'>
-                                    <label className='uk-form-label'>Company Registration No.</label>
-                                    <input 
-                                        className='uk-input' 
-                                        type='text' 
-                                        defaultValue={company ? company.companyNumber : null}
-                                        ref={ref => this.companyReg = ref} />
-                                </div>
-                                <div className='uk-margin'>
-                                    <label className='uk-form-label'>Address</label>
-                                    <input 
-                                        className='uk-input' 
-                                        type='text' 
-                                        defaultValue={address}
-                                        ref={ref => this.address = ref} />
-                                </div>
-                                <div className='uk-margin'>
-                                    <label className='uk-form-label'>Postcode</label>
-                                    <input 
-                                        className='uk-input' 
-                                        type='text' 
-                                        defaultValue={company ? company.postcode : null}
-                                        ref={ref => this.postcode = ref} />
-                                </div>
-                                <div className='uk-margin'>
-                                    <label className='uk-form-label'>Country</label>
-                                    <input 
-                                        className='uk-input' 
-                                        type='text' 
-                                        defaultValue={company ? company.countryOfOrigin : null}
-                                        ref={ref => this.country = ref} />
-                                </div>
-                                <div className="uk-margin">
-                                <label className="uk-form-label" data-for="deadline-input">Incorporation Date</label>
-                                <div className="uk-form-controls">
-                                    <DatePicker id="deadline-input"
-                                                className="uk-input"
-                                                selected={this.state.incorporationDate}
-                                                onChange={this.handleIncorporationDateChange}/>
-                                </div>
-                            </div>
-                                <div className='uk-margin'>
-                                    <label className='uk-form-label'>Status</label>
-                                    <input 
-                                        className='uk-input' 
-                                        type='text' 
-                                        ref={ref => this.status = ref} />
-                                </div>
-                                <div className='uk-margin'>
-                                    <label className='uk-form-label'>Credit Rating</label>
-                                    <input 
-                                        className='uk-input' 
-                                        type='text' 
-                                        ref={ref => this.creditRating = ref} />
-                                </div>
-                                <div className='uk-margin'>
-                                    <label>
-                                        <input 
-                                            className='uk-checkbox'
-                                            type='checkbox' 
-                                            defaultChecked={true}
-                                            ref={ref => this.vatEligible = ref}
-                                            /> Is VAT Eligible
-                                    </label>
-                                </div>
-                                <div className='uk-margin'>
-                                    <label>
-                                        <input 
-                                            className='uk-checkbox'
-                                            type='checkbox' 
-                                            defaultChecked={false}
-                                            ref={ref => this.registeredCharity = ref}
-                                            /> Is Registered Charity
-                                    </label>
-                                </div>
-                                <div className='uk-margin'>
-                                    <label>
-                                        <input 
-                                            className='uk-checkbox'
-                                            type='checkbox' 
-                                            defaultChecked={false}
-                                            ref={ref => this.fitEligible = ref}
-                                            /> Is FiT Eligible
-                                    </label>
-                                </div>
-                                <div className='uk-margin'>
-                                    <label>
-                                        <input 
-                                            className='uk-checkbox'
-                                            type='checkbox' 
-                                            defaultChecked={false}
-                                            ref={ref => this.cclEligible = ref}
-                                            /> Is CCL Eligible
-                                    </label>
+                                <div className="uk-grid" data-uk-grid>
+                                    <div className="uk-width-1-2">
+                                        <div className='uk-margin'>
+                                            <label className='uk-form-label'>Company Name</label>
+                                            <input 
+                                                className='uk-input' 
+                                                type='text' 
+                                                defaultValue={company ? company.companyName : null}
+                                                ref={ref => this.companyName = ref} />
+                                        </div>
+                                        <div className='uk-margin'>
+                                            <label className='uk-form-label'>Company Registration No.</label>
+                                            <input 
+                                                className='uk-input' 
+                                                type='text' 
+                                                defaultValue={company ? company.companyNumber : null}
+                                                ref={ref => this.companyReg = ref} />
+                                        </div>
+                                        <div className='uk-margin'>
+                                            <label className='uk-form-label'>Address</label>
+                                            <input 
+                                                className='uk-input' 
+                                                type='text' 
+                                                defaultValue={address}
+                                                ref={ref => this.address = ref} />
+                                        </div>
+                                        <div className='uk-margin'>
+                                            <label className='uk-form-label'>Postcode</label>
+                                            <input 
+                                                className='uk-input' 
+                                                type='text' 
+                                                defaultValue={company ? company.postcode : null}
+                                                ref={ref => this.postcode = ref} />
+                                        </div>
+                                        <div className='uk-margin'>
+                                            <label className='uk-form-label'>Country</label>
+                                            <input 
+                                                className='uk-input' 
+                                                type='text' 
+                                                defaultValue={company ? company.countryOfOrigin : null}
+                                                ref={ref => this.country = ref} />
+                                        </div>
+                                    </div>
+                                    <div className="uk-width-1-2">
+                                        <div className="uk-margin">
+                                            <label className="uk-form-label" data-for="deadline-input">Incorporation Date</label>
+                                            <div className="uk-form-controls">
+                                                <DatePicker id="deadline-input"
+                                                            className="uk-input"
+                                                            selected={this.state.incorporationDate}
+                                                            onChange={this.handleIncorporationDateChange}/>
+                                            </div>
+                                        </div>
+                                        <div className='uk-margin'>
+                                            <label className='uk-form-label'>Status</label>
+                                            <input 
+                                                className='uk-input' 
+                                                type='text' 
+                                                ref={ref => this.status = ref} />
+                                        </div>
+                                        <div className='uk-margin'>
+                                            <label className='uk-form-label'>Credit Rating</label>
+                                            <input 
+                                                className='uk-input' 
+                                                type='text' 
+                                                ref={ref => this.creditRating = ref} />
+                                        </div>
+                                        <div className='uk-margin'>
+                                            <label>
+                                                <input 
+                                                    className='uk-checkbox'
+                                                    type='checkbox' 
+                                                    defaultChecked={true}
+                                                    ref={ref => this.vatEligible = ref}
+                                                    /> Is VAT Eligible
+                                            </label>
+                                        </div>
+                                        <div className='uk-margin'>
+                                            <label>
+                                                <input 
+                                                    className='uk-checkbox'
+                                                    type='checkbox' 
+                                                    defaultChecked={false}
+                                                    ref={ref => this.registeredCharity = ref}
+                                                    /> Is Registered Charity
+                                            </label>
+                                        </div>
+                                        <div className='uk-margin'>
+                                            <label>
+                                                <input 
+                                                    className='uk-checkbox'
+                                                    type='checkbox' 
+                                                    defaultChecked={false}
+                                                    ref={ref => this.fitEligible = ref}
+                                                    /> Is FiT Eligible
+                                            </label>
+                                        </div>
+                                        <div className='uk-margin'>
+                                            <label>
+                                                <input 
+                                                    className='uk-checkbox'
+                                                    type='checkbox' 
+                                                    defaultChecked={false}
+                                                    ref={ref => this.cclEligible = ref}
+                                                    /> Is CCL Eligible
+                                            </label>
+                                        </div>
+                                    </div>
                                 </div>
                             </fieldset>
                         </form>
                     </div>
                 </div>
                 <div className="uk-modal-footer uk-text-right">
+                    <button className="uk-button uk-button-default uk-margin-right uk-modal-close" type="button">Cancel</button>
                     <button className="uk-button uk-button-primary" type="button" onClick={this.createAccount}>Create</button>
                 </div>
             </div>)
