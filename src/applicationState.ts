@@ -8,6 +8,7 @@ import { RequestState } from './reducers/RequestState';
 import { HierarchyState } from './reducers/hierarchy/HierarchyState';
 import { SelectedUploadReportState } from './reducers/selectedUploadReportReducer';
 import { UsersState } from './reducers/fetchUsersReducer';
+import { ViewState } from './reducers/view/ViewState';
 
 export interface ApplicationState {    
     portfolio: PortfolioState;
@@ -21,4 +22,5 @@ export interface ApplicationState {
     hierarchy: HierarchyState;
     selected_upload_report: SelectedUploadReportState;
     users: UsersState;
+    view: ViewState;
 }

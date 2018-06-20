@@ -133,13 +133,22 @@ import fetchAccountDocumentationReducer from './hierarchy/fetchAccountDocumentat
 import fetchAccountUploadsReducer from './hierarchy/fetchAccountUploadsReducer';
 import fetchAccountPortfoliosReducer from './hierarchy/fetchAccountPortfoliosReducer';
 
-const hierarchyState: Reducer<HierarchyState> = combineReducers<HierarchyState>({
+const hierarchyReducer: Reducer<HierarchyState> = combineReducers<HierarchyState>({
     accounts: retrieveAccountsReducer,
     selected: retrieveAccountDetailReducer,
     selected_documentation: fetchAccountDocumentationReducer,
     selected_uploads: fetchAccountUploadsReducer,
     create_account: accountCreationReducer,
     selected_portfolios: fetchAccountPortfoliosReducer
+});
+
+import { ViewState } from './view/ViewState';
+import { portfolioViewReducer } from './view/portfolioViewReducer';
+import { accountViewReducer } from './view/accountViewReducer';
+
+const viewReducer: Reducer<ViewState> = combineReducers<ViewState>({
+    portfolio: portfolioViewReducer,
+    account: accountViewReducer
 });
 
 import selectedUploadReportReducer from './selectedUploadReportReducer';
@@ -156,9 +165,10 @@ const rootReducer: Reducer<ApplicationState> = combineReducers<ApplicationState>
     meters: completeMeterReducer,
     backend_version: fetchBackendVersionReducer,
     instance_detail: fetchInstanceDetailReducer,
-    hierarchy: hierarchyState,
+    hierarchy: hierarchyReducer,
     selected_upload_report: selectedUploadReportReducer,
-    users: fetchUsersReducer
+    users: fetchUsersReducer,
+    view: viewReducer
 });
 
 export default rootReducer;

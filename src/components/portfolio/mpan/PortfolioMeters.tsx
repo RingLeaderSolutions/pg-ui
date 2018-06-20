@@ -10,6 +10,7 @@ import { fetchMeterConsumption, excludeMeters, exportMeterConsumption } from '..
 import IncludeMetersDialog from "./IncludeMetersDialog";
 import ExcludeAllMetersDialog from "./ExcludeAllMetersDialog";
 import ReactTable, { Column } from "react-table";
+import { selectPortfolioMeterTab } from "../../../actions/viewActions";
 
 interface PortfolioMetersProps {
     portfolio: Portfolio;
@@ -21,43 +22,27 @@ interface StateProps {
     error: boolean;
     errorMessage: string;
     consumption: MeterConsumptionSummary;
+    selectedTab: number;
 }
 
 interface DispatchProps {
     fetchMeterConsumption: (portfolioId: string) => void;
     excludeMeters: (portfolioId: string, meters: string[]) => void;    
     exportMeterConsumption: (portfolioId: string) => void;
-}
-
-interface State {
-    tab: string
+    selectPortfolioMeterTab: (index: number) => void;
 }
 
 interface MeterTableEntry {
     [key: string]: any;
 }
 
-class PortfolioMeters extends React.Component<PortfolioMetersProps & StateProps & DispatchProps, State> {
-    constructor() {
-        super();
-
-        this.state = {
-            tab: 'electricity'
-        };
-    }
-
+class PortfolioMeters extends React.Component<PortfolioMetersProps & StateProps & DispatchProps, {}> {
     componentDidMount(){
         if(this.props.portfolio != null){
             this.props.fetchMeterConsumption(this.props.portfolio.id);      
         }
     }
 
-    selectTab(tab:string){
-        this.setState({
-            tab: tab
-        });
-    }
-    
     exportMeterConsumption(){
         this.props.exportMeterConsumption(this.props.portfolio.id);
     }
@@ -155,6 +140,23 @@ class PortfolioMeters extends React.Component<PortfolioMetersProps & StateProps 
             </div>);
     }
     
+    selectTab(index: number){
+        this.props.selectPortfolioMeterTab(index);
+    }
+
+    renderActiveTabStyle(index: number){
+        return this.props.selectedTab == index ? "uk-active" : null;
+    }
+
+    renderSelectedTable(){
+        switch(this.props.selectedTab){
+            case 0:
+                return this.renderDynamicTable(this.props.consumption.electricityHeaders, this.props.consumption.electrictyConsumptionEntries, UtilityType.Electricity);
+            case 1:
+                return this.renderDynamicTable(this.props.consumption.gasHeaders, this.props.consumption.gasConsumptionEntries, UtilityType.Gas);
+        }
+    }
+
     render() {
         if(this.props.working || this.props.consumption == null){
             return (<Spinner />);
@@ -164,14 +166,13 @@ class PortfolioMeters extends React.Component<PortfolioMetersProps & StateProps 
             <div className="restrict-height-hack">
                 <div className='uk-flex uk-flex-column portfolio-meters restrict-height-hack'>
                     <div className="uk-overflow-auto restrict-height-hack">
-                        <ul data-uk-tab>
-                            <li><a href="#">Electricity</a></li>
-                            <li><a href="#">Gas</a></li>
+                        <ul className="uk-tab">
+                            <li className={this.renderActiveTabStyle(0)} onClick={() => this.selectTab(0)}><a href="#">Electricity</a></li>
+                            <li className={this.renderActiveTabStyle(1)} onClick={() => this.selectTab(1)}><a href="#">Gas</a></li>
                         </ul>
-                        <ul className="uk-switcher">
-                            <li>{this.renderDynamicTable(this.props.consumption.electricityHeaders, this.props.consumption.electrictyConsumptionEntries, UtilityType.Electricity)}</li>
-                            <li>{this.renderDynamicTable(this.props.consumption.gasHeaders, this.props.consumption.gasConsumptionEntries, UtilityType.Gas)}</li>
-                        </ul>
+                        <div>
+                            {this.renderSelectedTable()}
+                        </div>
                     </div>
                 </div>
 
@@ -187,7 +188,8 @@ const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, PortfolioMet
     return {
         fetchMeterConsumption: (portfolioId: string) => dispatch(fetchMeterConsumption(portfolioId)),
         excludeMeters: (portfolioId: string, meters: string[]) => dispatch(excludeMeters(portfolioId, meters)),
-        exportMeterConsumption: (portfolioId: string) => dispatch(exportMeterConsumption(portfolioId))
+        exportMeterConsumption: (portfolioId: string) => dispatch(exportMeterConsumption(portfolioId)),
+        selectPortfolioMeterTab: (index: number) => dispatch(selectPortfolioMeterTab(index))
     };
 };
   
@@ -198,7 +200,9 @@ const mapStateToProps: MapStateToProps<StateProps, PortfolioMetersProps> = (stat
         consumption: state.meters.consumption.value,
         working: state.meters.consumption.working,
         error: state.meters.consumption.error,
-        errorMessage: state.meters.consumption.errorMessage
+        errorMessage: state.meters.consumption.errorMessage,
+
+        selectedTab: state.view.portfolio.meter.selectedIndex
     };
 };
   

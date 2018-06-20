@@ -6,10 +6,10 @@ import { Portfolio, PortfolioDetails, UtilityType } from '../../../model/Models'
 import Spinner from '../../common/Spinner';
 import CreateTenderView from "./CreateTenderView";
 
-
 import { getPortfolioTenders } from '../../../actions/tenderActions';
 import { Tender } from "../../../model/Tender";
 import TenderView from "./TenderView";
+import { selectPortfolioTenderTab } from "../../../actions/viewActions";
 
 interface TenderSummaryProps {
     portfolio: Portfolio;
@@ -21,26 +21,15 @@ interface StateProps {
   working: boolean;
   error: boolean;
   errorMessage: string;
+  selectedTab: number;
 }
 
 interface DispatchProps {
     getPortfolioTenders: (portfolioId: string) => void;
+    selectPortfolioTenderTab: (index: number) => void;
 }
 
-interface State {
-    tab: string
-}
-
-
-class TenderSummary extends React.Component<TenderSummaryProps & StateProps & DispatchProps, State> {
-    constructor() {
-        super();
-
-        this.state = {
-            tab: 'electricity'
-        };
-    }
-
+class TenderSummary extends React.Component<TenderSummaryProps & StateProps & DispatchProps, {}> {
     componentDidMount(){
         let portfolioId = this.props.portfolio.id;     
         this.props.getPortfolioTenders(portfolioId);
@@ -80,27 +69,24 @@ class TenderSummary extends React.Component<TenderSummaryProps & StateProps & Di
             </div>
         )
     }
-
-    renderTenderTabs(){
-        return (
-            <ul data-uk-tab>
-                <li className={this.state.tab === 'electricity-hh' ? 'uk-active' : null}>
-                    <a href='#' onClick={() =>this.selectTab('electricity-hh')}>Electricity (HH)</a>
-                </li>
-                <li className={this.state.tab === 'electricity-nhh' ? 'uk-active' : null}>
-                    <a href='#' onClick={() =>this.selectTab('electricity-nhh')}>Electricity (NHH)</a>
-                </li>
-                <li className={this.state.tab === 'gas' ? 'uk-active' : null}>
-                    <a href='#' onClick={() =>this.selectTab('gas')}>Gas</a>
-                </li>
-            </ul>
-        )
+    
+    selectTab(index: number){
+        this.props.selectPortfolioTenderTab(index);
     }
 
-    selectTab(tab:string){
-        this.setState({
-            tab: tab
-        });
+    renderActiveTabStyle(index: number){
+        return this.props.selectedTab == index ? "uk-active" : null;
+    }
+
+    renderSelectedTender(){
+        switch(this.props.selectedTab){
+            case 0:
+                return this.generateHHTender();
+            case 1:
+                return this.generateNHHTender();
+            case 2:
+                return this.generateGasTender();
+        }
     }
 
     render() {
@@ -123,18 +109,14 @@ class TenderSummary extends React.Component<TenderSummaryProps & StateProps & Di
 
         var content = (
             <div>
-                {this.renderTenderTabs()}
-                <ul className='uk-switcher'>
-                    <li className={this.state.tab === 'electricity-hh' ? 'uk-active' : null}>
-                        {hhTender}
-                    </li>
-                    <li className={this.state.tab === 'electricity-nhh' ? 'uk-active' : null}>
-                        {nhhTender}
-                    </li>
-                    <li className={this.state.tab === 'gas' ? 'uk-active' : null}>
-                        {gasTenders}
-                    </li>
+                <ul className="uk-tab">
+                    <li className={this.renderActiveTabStyle(0)} onClick={() => this.selectTab(0)}><a href='#'>Electricity (HH)</a></li>
+                    <li className={this.renderActiveTabStyle(1)} onClick={() => this.selectTab(1)}><a href='#'>Electricity (NHH)</a></li>
+                    <li className={this.renderActiveTabStyle(2)} onClick={() => this.selectTab(2)}><a href='#'>Gas</a></li>
                 </ul>
+                <div>
+                    {this.renderSelectedTender()}
+                </div>
             </div>
         );
         return this.renderContent(content);
@@ -143,7 +125,8 @@ class TenderSummary extends React.Component<TenderSummaryProps & StateProps & Di
 
 const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, TenderSummaryProps> = (dispatch) => {
     return {
-        getPortfolioTenders: (portfolioId: string) => dispatch(getPortfolioTenders(portfolioId))        
+        getPortfolioTenders: (portfolioId: string) => dispatch(getPortfolioTenders(portfolioId)),
+        selectPortfolioTenderTab: (index: number) => dispatch(selectPortfolioTenderTab(index))
     };
 };
   
@@ -153,7 +136,8 @@ const mapStateToProps: MapStateToProps<StateProps, TenderSummaryProps> = (state:
         tenders: state.portfolio.tender.tenders.value,
         working: state.portfolio.tender.tenders.working || state.portfolio.details.working,
         error: state.portfolio.tender.tenders.error,
-        errorMessage: state.portfolio.tender.tenders.errorMessage
+        errorMessage: state.portfolio.tender.tenders.errorMessage,
+        selectedTab: state.view.portfolio.tender.selectedIndex
     };
 };
   
