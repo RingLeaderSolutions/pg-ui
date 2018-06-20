@@ -7,6 +7,8 @@ import { retrieveAccountDetail, fetchAccountDocumentation, fetchAccountUploads, 
 import { fetchMeterConsumption } from '../actions/meterActions';
 import { ApplicationState } from "../applicationState";
 
+const UIkit = require('uikit'); 
+
 export default function connectSignalR(store: any) {
     let connection = new HubConnection(appConfig.signalRUri);
 
@@ -36,6 +38,14 @@ export default function connectSignalR(store: any) {
                 break;
             case "tender":
                 if(currentPortfolio && data.PortfolioId == currentPortfolio.id){
+                    switch(data.Category){
+                        case "tenderpack_issued":
+                            showSuccessNotification('Requirements issued: ' + data.Description);
+                            return;
+                        case "tenderpack_generated":
+                            showSuccessNotification('Tender requirements successfully generated.');  
+                            break;
+                    }
                     store.dispatch(getPortfolioTenders(currentPortfolio.id));
                     store.dispatch(fetchPortfolioUploads(currentPortfolio.id));
                 }
@@ -57,3 +67,11 @@ export default function connectSignalR(store: any) {
         .then(() => console.log('SignalR hub connected'));
 }
 
+function showSuccessNotification(message: string): void {
+    UIkit.notification({
+        message: '<span uk-icon=\'icon: check\'></span>' + message,
+        status: 'success',
+        pos: 'top-center',
+        timeout: 3000
+    });
+}
