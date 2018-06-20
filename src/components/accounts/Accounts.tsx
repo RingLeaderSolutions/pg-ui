@@ -192,7 +192,8 @@ class Accounts extends React.Component<AccountsProps & StateProps & DispatchProp
                         style: {
                             cursor: 'pointer'
                         } 
-                      })}/>
+                      })}
+                      minRows={0}/>
             )
         }
 

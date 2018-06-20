@@ -43,6 +43,11 @@
     }
 }
 
+.include-meter-list {
+    max-height: 300px;
+    overflow:auto;
+}
+
 .upload-report-modal {
     height: 800px;
     width: 100% !important;

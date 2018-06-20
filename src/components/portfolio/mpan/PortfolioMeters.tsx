@@ -143,7 +143,8 @@ class PortfolioMeters extends React.Component<PortfolioMetersProps & StateProps 
                 <ReactTable 
                     showPagination={false}
                     columns={tableColumns}
-                    data={data}/>
+                    data={data}
+                    minRows={0}/>
 
                 <div id={includeDialogName} data-uk-modal="center: true">
                     <IncludeMetersDialog portfolio={this.props.details} includedMeters={includedMeters} utility={utilityType}/>

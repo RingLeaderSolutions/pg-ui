@@ -213,7 +213,8 @@ class AccountGasMeterTable extends React.Component<AccountGasMeterTableProps & S
                 <ReactTable 
                     showPagination={false}
                     columns={this.columns}
-                    data={this.state.tableData}/>
+                    data={this.state.tableData}
+                    minRows={0}/>
             </div>)
     }
 }

@@ -190,7 +190,8 @@ class Portfolios extends React.Component<PortfoliosProps & StateProps & Dispatch
                         style: {
                             cursor: 'pointer'
                         } 
-                      })}/>
+                      })}
+                      minRows={0}/>
             )
         }
 

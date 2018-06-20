@@ -33,6 +33,17 @@ export enum UtilityType {
     Electricity
 }
 
+export function decodeUtilityType(utility: UtilityType): string {
+    switch(utility){
+        case UtilityType.Electricity:
+            return "Electricity";
+        case UtilityType.Gas:
+            return "Gas";
+        default:
+            return "Unknown";
+    }
+}
+
 export interface BackendVersion {
     version: string;
 }

@@ -248,7 +248,8 @@ class AccountElectricityMeterTable extends React.Component<AccountElectricityMet
                 <ReactTable 
                     showPagination={false}
                     columns={this.columns}
-                    data={this.state.tableData}/>
+                    data={this.state.tableData}
+                    minRows={0}/>
             </div>)
     }
 }

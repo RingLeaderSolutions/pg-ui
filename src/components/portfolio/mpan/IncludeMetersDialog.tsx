@@ -2,7 +2,7 @@ import * as React from "react";
 import ErrorMessage from "../../common/ErrorMessage";
 import { MapDispatchToPropsFunction, connect, MapStateToProps } from 'react-redux';
 import { ApplicationState } from '../../../applicationState';
-import { UtilityType, AccountDetail, PortfolioDetails } from '../../../model/Models';
+import { UtilityType, AccountDetail, PortfolioDetails, HierarchyMpan, HierarchyMprn, decodeUtilityType } from '../../../model/Models';
 import Spinner from '../../common/Spinner';
 
 import { retrieveAccountDetail } from '../../../actions/hierarchyActions';
@@ -27,8 +27,10 @@ interface DispatchProps {
 }
 
 interface IncludedMetersDialogState {
-    excludedMeters: string[];
     includedMeters: string[];
+
+    excludedMpans: HierarchyMpan[];
+    excludedMprns: HierarchyMprn[];
 }
 
 class IncludeMetersDialog extends React.Component<IncludeMetersDialogProps & StateProps & DispatchProps, IncludedMetersDialogState> {
@@ -36,7 +38,8 @@ class IncludeMetersDialog extends React.Component<IncludeMetersDialogProps & Sta
         super();
         this.state = {
             includedMeters: [],
-            excludedMeters: []
+            excludedMpans: [],
+            excludedMprns: []
         }
     }
 
@@ -50,18 +53,20 @@ class IncludeMetersDialog extends React.Component<IncludeMetersDialogProps & Sta
 
     componentWillReceiveProps(nextProps: IncludeMetersDialogProps & StateProps & DispatchProps){
         if(nextProps.account != null){
-            var excludedMeters: string[];
             if(this.props.utility == UtilityType.Electricity){
-                excludedMeters =  this.getExcludedMpans(nextProps.account);
+                var excludedMpans =  this.getExcludedMpans(nextProps.account);
+                this.setState({
+                    ...this.state,
+                    excludedMpans,
+                });
             }
             else {
-                excludedMeters = this.getExcludedMprns(nextProps.account);
+                var excludedMprns = this.getExcludedMprns(nextProps.account);
+                this.setState({
+                    ...this.state,
+                    excludedMprns,
+                });
             }
-
-            this.setState({
-                ...this.state,
-                excludedMeters
-            });
         }
     }
 
@@ -87,24 +92,30 @@ class IncludeMetersDialog extends React.Component<IncludeMetersDialogProps & Sta
         }, new Array<TOut>());
     }
 
-    getExcludedMpans(account: AccountDetail) : string[]{
+    getExcludedMpans(account: AccountDetail) : HierarchyMpan[]{
         var mpans = this.selectMany(account.sites, (s) => s.mpans);
-        var cores = mpans.map(mp => mp.mpanCore);
 
-        return cores.filter(c => this.props.includedMeters.indexOf(c) < 0);
+        return mpans.filter(mp => this.props.includedMeters.indexOf(mp.mpanCore) < 0);
     }
 
-    getExcludedMprns(account: AccountDetail) : string[]{
+    getExcludedMprns(account: AccountDetail) : HierarchyMprn[]{
         var mprns = this.selectMany(account.sites, (s) => s.mprns);
-        var cores = mprns.map(mp => mp.mprnCore);
 
-        return cores.filter(c => this.props.includedMeters.indexOf(c) < 0);
+        return mprns.filter(mp => this.props.includedMeters.indexOf(mp.mprnCore) < 0);
     }
 
     includeAllMeters(){
+        if(this.props.utility == UtilityType.Electricity){
+            this.setState({
+                ...this.state,
+                includedMeters:  this.state.excludedMpans.map(em => em.mpanCore)
+            });
+            return;
+        }
+        
         this.setState({
             ...this.state,
-            includedMeters: this.state.excludedMeters
+            includedMeters: this.state.excludedMprns.map(em => em.mprnCore)
         });
     }
 
@@ -115,31 +126,80 @@ class IncludeMetersDialog extends React.Component<IncludeMetersDialogProps & Sta
         });
     }
 
-    renderExcludedMeters(){
-        var content = this.state.excludedMeters
-        .sort(
-            (str1: string, str2: string) => {        
-                if (str1 < str2) return -1;
-                if (str1 > str2) return 1;
+    renderExcludedMpans(){
+        var excludedMeters = this.state.excludedMpans.sort(
+            (mp1: HierarchyMpan, mp2: HierarchyMpan) => {        
+                if (mp1.mpanCore < mp2.mpanCore) return -1;
+                if (mp1.mpanCore > mp2.mpanCore) return 1;
                 return 0;
-            })
-        .map(em => {
-            var isSelected = this.state.includedMeters.find(im => im == em) != null;
+            });
+            
+        var meters = excludedMeters.map(em => {
+            var isSelected = this.state.includedMeters.find(im => im == em.mpanCore) != null;
+            var hhIndicator = em.meterType == "HH" ? (<span className="uk-margin-small-left" data-uk-icon="clock" data-uk-tooltip="title: Half-hourly meter"></span>) : null;
             return (
-                <div className="uk-margin" key={em}>
+                <div className="uk-width-1-2" key={em.mpanCore}>
                     <label>
                         <input 
                             className='uk-checkbox'
                             type='checkbox' 
-                            onChange={() => this.handleChange(em)}
+                            onChange={() => this.handleChange(em.mpanCore)}
                             checked={isSelected}
-                            /> {em}
+                            /> {em.mpanCore} {hhIndicator}
                     </label>
                 </div>
             )
         });
+
+        return this.renderFullMetersDisplay(meters);
+    }
+
+    renderExcludedMprns(){
+        var excludedMeters = this.state.excludedMprns.sort(
+                (mp1: HierarchyMprn, mp2: HierarchyMprn) => {        
+                    if (mp1.mprnCore < mp2.mprnCore) return -1;
+                    if (mp1.mprnCore > mp2.mprnCore) return 1;
+                    return 0;
+                })
+
+        var meters = excludedMeters.map(em => {
+            var isSelected = this.state.includedMeters.find(im => im == em.mprnCore) != null;
+            return (
+                <div className="uk-width-1-2" key={em.mprnCore}>
+                    <label>
+                        <input 
+                            className='uk-checkbox'
+                            type='checkbox' 
+                            onChange={() => this.handleChange(em.mprnCore)}
+                            checked={isSelected}
+                            /> {em.mprnCore}
+                    </label>
+                </div>
+            )
+        });
+
+        return this.renderFullMetersDisplay(meters);
+    }
+
+    renderFullMetersDisplay(meters: any[]){
+        if(meters.length == 0){
+            return (<p className="uk-margin">All of the meters from this portfolio's account have already been included.</p>)
+        }
         
-        return (<div>{content}</div>);
+        return (
+            <fieldset className="uk-fieldset">
+                <div className="include-meter-list" data-uk-grid>
+                    {meters}
+                </div>
+                <hr />
+                <button className="uk-button uk-button-small uk-button-default uk-margin-right" onClick={() => this.includeAllMeters()} type="button">
+                    <span className="uk-margin-small-right" data-uk-icon="icon: check" /> Select All
+                </button>
+                <button className="uk-button uk-button-small uk-button-default uk-margin-right" onClick={() => this.includeNoMeters()} type="button">
+                    <span className="uk-margin-small-right" data-uk-icon="icon: close" /> Select None
+                </button>
+            </fieldset>
+        )
     }
 
     render() {
@@ -155,21 +215,12 @@ class IncludeMetersDialog extends React.Component<IncludeMetersDialogProps & Sta
             <div className="uk-modal-dialog">
                 <button className="uk-modal-close-default" type="button" data-uk-close></button>
                 <div className="uk-modal-header">
-                    <h2 className="uk-modal-title">Include Meters</h2>
+                    <h2 className="uk-modal-title">Include {decodeUtilityType(this.props.utility)} Meters</h2>
                 </div>
                 <div className="uk-modal-body">
                     <div className="uk-margin">
                         <form>
-                            <fieldset className="uk-fieldset">
-                                {this.renderExcludedMeters()}
-                                <hr />
-                                <button className="uk-button uk-button-small uk-button-default uk-margin-right" onClick={() => this.includeAllMeters()} type="button">
-                                    <span className="uk-margin-small-right" data-uk-icon="icon: check" /> Select All
-                                </button>
-                                <button className="uk-button uk-button-small uk-button-default uk-margin-right" onClick={() => this.includeNoMeters()} type="button">
-                                    <span className="uk-margin-small-right" data-uk-icon="icon: close" /> Select None
-                                </button>
-                            </fieldset>
+                            {this.props.utility == UtilityType.Electricity ? this.renderExcludedMpans() : this.renderExcludedMprns()}
                         </form>
                     </div>
                 </div>
