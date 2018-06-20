@@ -8,6 +8,7 @@ import * as moment from 'moment';
 import { generateSummaryReport } from '../../../actions/tenderActions';
 import { Tender, TenderPack, TenderSupplier, TenderQuote, TenderIssuance } from "../../../model/Tender";
 import { format } from 'currency-formatter';
+import { selectMany } from "../../../helpers/listHelpers";
 
 interface GenerateSummaryReportDialogProps {
     tender: Tender;
@@ -39,9 +40,10 @@ class GenerateSummaryReportDialog extends React.Component<GenerateSummaryReportD
     }
 
     renderPackDialogContent(){
-        let quoteOptions = this.props.issuance.packs.map((p: any) => {
-            return p.quotes
-            .filter((q: TenderQuote) => q.status != "PENDING")
+        var quotes = selectMany(this.props.issuance.packs, (p) => p.quotes);
+
+        let quoteOptions = quotes
+            .filter((q: TenderQuote) => q.status == "SUBMITTED")
             .map((quote: TenderQuote) => {
                 var supplier = this.props.suppliers.find(s => s.supplierId == quote.supplierId);
                 var supplierText = supplier == null ? "Unknown" : supplier.name;
@@ -49,7 +51,6 @@ class GenerateSummaryReportDialog extends React.Component<GenerateSummaryReportD
                 var key = `${supplierText}-${quote.quoteId}`;
                 return (<option key={key} value={quote.quoteId}>{supplierText} - {quote.quoteId.substr(0, 8)}-V{quote.version} - {format(quote.totalIncCCL, { locale: 'en-GB'})}</option>)
             });
-        });
 
         return (
             <div className="uk-margin">

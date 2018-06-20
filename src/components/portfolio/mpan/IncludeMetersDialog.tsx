@@ -7,6 +7,7 @@ import Spinner from '../../common/Spinner';
 
 import { retrieveAccountDetail } from '../../../actions/hierarchyActions';
 import { includeMeters } from '../../../actions/meterActions';
+import { selectMany } from "../../../helpers/listHelpers";
 
 interface IncludeMetersDialogProps {    
     utility: UtilityType;
@@ -85,21 +86,14 @@ class IncludeMetersDialog extends React.Component<IncludeMetersDialogProps & Sta
         });
     }
 
-    selectMany<TIn, TOut>(input: TIn[], selectListFn: (t: TIn) => TOut[]): TOut[] {
-        return input.reduce((out, inx) => {
-            out.push(...selectListFn(inx));
-            return out;
-        }, new Array<TOut>());
-    }
-
     getExcludedMpans(account: AccountDetail) : HierarchyMpan[]{
-        var mpans = this.selectMany(account.sites, (s) => s.mpans);
+        var mpans = selectMany(account.sites, (s) => s.mpans);
 
         return mpans.filter(mp => this.props.includedMeters.indexOf(mp.mpanCore) < 0);
     }
 
     getExcludedMprns(account: AccountDetail) : HierarchyMprn[]{
-        var mprns = this.selectMany(account.sites, (s) => s.mprns);
+        var mprns = selectMany(account.sites, (s) => s.mprns);
 
         return mprns.filter(mp => this.props.includedMeters.indexOf(mp.mprnCore) < 0);
     }
