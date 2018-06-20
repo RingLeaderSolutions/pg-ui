@@ -181,6 +181,11 @@ class TenderQuotesView extends React.Component<TenderQuotesViewProps & StateProp
                 return p.quotes.some(
                     (q:TenderQuote) => q.status != "PENDING") });
 
+        var hasValidQuotes = issuance.packs.some(
+            (p: TenderPack) => {
+                return p.quotes.some(
+                    (q:TenderQuote) => q.status == "SUBMITTED") });
+
 
         var offersTable = this.renderOffersTable(issuance.packs);
         return (
@@ -211,7 +216,7 @@ class TenderQuotesView extends React.Component<TenderQuotesViewProps & StateProp
                     <div className="uk-width-1-2">
                         <div>
                             <div className="uk-inline">
-                                <button className="uk-button uk-button-default uk-button-small uk-align-right" type="button" disabled={!hasReceivedQuotes}>
+                                <button className="uk-button uk-button-default uk-button-small uk-align-right" type="button" disabled={!hasReceivedQuotes || !hasValidQuotes}>
                                     <span className="uk-margin-small-right" data-uk-icon="icon: file-edit" />                        
                                     Recommendations
                                 </button>
@@ -306,7 +311,7 @@ class TenderQuotesView extends React.Component<TenderQuotesViewProps & StateProp
             </div>
         )
     }
-    
+
     render(){
         if(this.props.working){
             return (<Spinner hasMargin={true} />)
