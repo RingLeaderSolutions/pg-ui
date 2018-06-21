@@ -38,14 +38,17 @@ export default function connectSignalR(store: any) {
                 break;
             case "tender":
                 if(currentPortfolio && data.PortfolioId == currentPortfolio.id){
-                    // switch(data.Category){
-                    //     case "tenderpack_issued":
-                    //         showSuccessNotification('Requirements issued: ' + data.Description);
-                    //         return;
-                    //     case "tenderpack_generated":
-                    //         showSuccessNotification('Tender requirements successfully generated.');  
-                    //         break;
-                    // }
+                    switch(data.Category){
+                        case "tenderpack_issue_successful":
+                            showNotification(data.Description, true);
+                            return;
+                        case "tenderpack_generated":
+                            showNotification('Tender requirements successfully generated.', true);
+                            break;
+                        case "tenderpack_issue_failed":
+                            showNotification(data.Description, false);
+                            break;
+                    }
                     store.dispatch(getPortfolioTenders(currentPortfolio.id));
                     store.dispatch(fetchPortfolioUploads(currentPortfolio.id));
                 }
@@ -67,11 +70,14 @@ export default function connectSignalR(store: any) {
         .then(() => console.log('SignalR hub connected'));
 }
 
-function showSuccessNotification(message: string): void {
+function showNotification(message: string, success: boolean){
+    var icon = success ? 'check' : 'close';
+    var iconMessage = `<span uk-icon='icon: ${icon}' class='uk-margin-small-right'></span>${message}`
+
     UIkit.notification({
-        message: '<span uk-icon=\'icon: check\'></span>' + message,
-        status: 'success',
-        pos: 'top-center',
-        timeout: 3000
+        message: iconMessage,
+        status: success ? 'success' : 'danger',
+        pos: 'bottom-left',
+        timeout: success ? 5000 : 3600000
     });
 }
