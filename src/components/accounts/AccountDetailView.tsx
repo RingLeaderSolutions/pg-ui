@@ -4,9 +4,9 @@ import ErrorMessage from "../common/ErrorMessage";
 import { RouteComponentProps } from 'react-router';
 import { MapDispatchToPropsFunction, connect, MapStateToProps } from 'react-redux';
 import { ApplicationState } from '../../applicationState';
-import { AccountDetail, SiteDetail, HierarchyMpan, HierarchyMprn, UtilityType } from '../../model/Models';
+import { AccountDetail, UtilityType } from '../../model/Models';
 import Spinner from '../common/Spinner';
-
+import { selectAccountTab } from "../../actions/viewActions";
 
 import { retrieveAccountDetail, fetchAccountPortfolios } from '../../actions/hierarchyActions';
 import UploadSupplyDataDialog from "../portfolio/mpan/UploadSupplyDataDialog";
@@ -14,7 +14,6 @@ import UpdateAccountDialog from "./UpdateAccountDialog";
 import AccountContactsView from "./AccountContactsView";
 import AccountDocumentsView from "./AccountDocumentsView";
 import AccountUploadsView from "./AccountUploadsView";
-import { Link } from "react-router-dom";
 import AccountGasMeterTable from "./AccountGasMeterTable";
 import AccountElectricityMeterTable from "./AccountElectricityMeterTable";
 
@@ -27,20 +26,45 @@ interface StateProps {
   working: boolean;
   error: boolean;
   errorMessage: string;
+  selectedTab: number;
 }
 
 interface DispatchProps {
     retrieveAccountDetail: (accountId: string) => void;
     fetchAccountPortfolios: (accountId: string) => void;
+    selectAccountTab: (index: number) => void;
 }
 
 class AccountDetailView extends React.Component<AccountDetailViewProps & StateProps & DispatchProps, {}> {
-
     componentDidMount(){
         var accountId = this.props.location.pathname.split('/')[2];        
         this.props.retrieveAccountDetail(accountId);
         this.props.fetchAccountPortfolios(accountId);
     }
+
+    selectTab(index: number){
+        this.props.selectAccountTab(index);
+    }
+
+    renderActiveTabStyle(index: number){
+        return this.props.selectedTab == index ? "uk-active" : null;
+    }
+
+    renderSelectedTab(){
+        switch(this.props.selectedTab){
+            case 0:
+                return (<AccountElectricityMeterTable sites={this.props.account.sites} portfolios={this.props.portfolios} />);
+            case 1:
+                return (<AccountGasMeterTable sites={this.props.account.sites} portfolios={this.props.portfolios} />);
+            case 2:
+                return (<AccountContactsView />);
+            case 3:
+                return (<AccountDocumentsView account={this.props.account}/>);
+            case 4:
+                return (<AccountUploadsView accountId={this.props.account.id}/>);
+        }
+    }
+
 
     render() {
         if(this.props.error){
@@ -60,20 +84,16 @@ class AccountDetailView extends React.Component<AccountDetailViewProps & StatePr
                         Edit account
                     </button>
                 </div>
-                <ul data-uk-tab>
-                    <li className="uk-active"><a href="#">Electricity</a></li>
-                    <li><a href="#">Gas</a></li>
-                    <li><a href="#">Contacts</a></li>
-                    <li><a href="#">Documentation</a></li>
-                    <li><a href="#">Uploads</a></li>
+                <ul className="uk-tab">
+                    <li className={this.renderActiveTabStyle(0)} onClick={() => this.selectTab(0)}><a href="#">Electricity</a></li>
+                    <li className={this.renderActiveTabStyle(1)} onClick={() => this.selectTab(1)}><a href="#">Gas</a></li>
+                    <li className={this.renderActiveTabStyle(2)} onClick={() => this.selectTab(2)}><a href="#">Contacts</a></li>
+                    <li className={this.renderActiveTabStyle(3)} onClick={() => this.selectTab(3)}><a href="#">Documentation</a></li>
+                    <li className={this.renderActiveTabStyle(4)} onClick={() => this.selectTab(4)}><a href="#">Uploads</a></li>
                 </ul>
-                <ul className="uk-switcher restrict-height-hack">
-                    <li><AccountElectricityMeterTable sites={this.props.account.sites} portfolios={this.props.portfolios} /></li>
-                    <li><AccountGasMeterTable sites={this.props.account.sites} portfolios={this.props.portfolios} /></li>
-                    <li><AccountContactsView /></li>
-                    <li><AccountDocumentsView account={this.props.account}/></li>
-                    <li><AccountUploadsView accountId={this.props.account.id}/></li>
-                </ul>
+                <div className="restrict-height-hack">
+                    {this.renderSelectedTab()}
+                </div>
 
                 <div id="modal-upload-supply-data-elec" data-uk-modal="center: true">
                     <UploadSupplyDataDialog accountId={this.props.account.id} type={UtilityType.Electricity} />
@@ -93,7 +113,8 @@ class AccountDetailView extends React.Component<AccountDetailViewProps & StatePr
 const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, AccountDetailViewProps> = (dispatch) => {
     return {
         retrieveAccountDetail: (accountId: string) => dispatch(retrieveAccountDetail(accountId)),
-        fetchAccountPortfolios: (accountId: string) => dispatch(fetchAccountPortfolios(accountId))
+        fetchAccountPortfolios: (accountId: string) => dispatch(fetchAccountPortfolios(accountId)),
+        selectAccountTab: (index: number) => dispatch(selectAccountTab(index))
     };
 };
   
@@ -103,7 +124,8 @@ const mapStateToProps: MapStateToProps<StateProps, AccountDetailViewProps> = (st
         portfolios: state.hierarchy.selected_portfolios.value,
         working: state.hierarchy.selected.working || state.hierarchy.selected_portfolios.working,
         error: state.hierarchy.selected.error || state.hierarchy.selected_portfolios.error,
-        errorMessage: state.hierarchy.selected.errorMessage || state.hierarchy.selected_portfolios.errorMessage
+        errorMessage: state.hierarchy.selected.errorMessage || state.hierarchy.selected_portfolios.errorMessage,
+        selectedTab: state.view.account.selectedIndex
     };
 };
   
