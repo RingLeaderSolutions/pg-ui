@@ -4,6 +4,7 @@ import { ApplicationState } from '../../../applicationState';
 import { TenderSupplier } from "../../../model/Tender";
 
 import { uploadElectricityOffer, uploadGasOffer } from '../../../actions/tenderActions';
+import { closeModalDialog } from "../../../actions/viewActions";
 
 interface UploadOfferDialogProps {
     tenderId: string;
@@ -20,6 +21,7 @@ interface StateProps {
 interface DispatchProps {
     uploadElectricityOffer: (tenderId: string, supplierId: string, useGeneric: boolean, file: Blob) => void;
     uploadGasOffer: (tenderId: string, supplierId: string, useGeneric: boolean, file: Blob) => void;
+    closeModalDialog: () => void;
 }
 
 interface UploadOfferState {
@@ -42,9 +44,12 @@ class UploadOfferDialog extends React.Component<UploadOfferDialogProps & StatePr
     upload() {
         if(this.props.utilityType.toLowerCase() == "gas"){
             this.props.uploadGasOffer(this.props.tenderId, this.supplier.value, this.useGeneric.checked, this.state.file);
-            return;
         }
-        this.props.uploadElectricityOffer(this.props.tenderId, this.supplier.value, this.useGeneric.checked, this.state.file);
+        else {
+            this.props.uploadElectricityOffer(this.props.tenderId, this.supplier.value, this.useGeneric.checked, this.state.file);
+        }
+        
+        this.props.closeModalDialog();
     }
 
     onFileChosen(e: any){
@@ -69,8 +74,7 @@ class UploadOfferDialog extends React.Component<UploadOfferDialogProps & StatePr
 
     render() {
         return (
-            <div className="uk-modal-dialog">
-                <button className="uk-modal-close-default" type="button" data-uk-close></button>
+            <div>
                 <div className="uk-modal-header">
                     <h2 className="uk-modal-title">Upload Offer</h2>
                 </div>
@@ -101,8 +105,8 @@ class UploadOfferDialog extends React.Component<UploadOfferDialogProps & StatePr
                     </div>
                 </div>
                 <div className="uk-modal-footer uk-text-right">
-                    <button className="uk-button uk-button-default uk-margin-right uk-modal-close" type="button">Cancel</button>
-                    <button className="uk-button uk-button-primary uk-modal-close" type="button" onClick={this.upload}>Upload</button>
+                    <button className="uk-button uk-button-default uk-margin-right" type="button"  onClick={() => this.props.closeModalDialog()}>Cancel</button>
+                    <button className="uk-button uk-button-primary" type="button" onClick={this.upload}>Upload</button>
                 </div>
             </div>)
     }
@@ -111,7 +115,8 @@ class UploadOfferDialog extends React.Component<UploadOfferDialogProps & StatePr
 const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, UploadOfferDialogProps> = (dispatch) => {
     return {
         uploadElectricityOffer: (tenderId: string, supplierId: string, useGeneric: boolean, file: Blob) => dispatch(uploadElectricityOffer(tenderId, supplierId, useGeneric, file)),
-        uploadGasOffer: (tenderId: string, supplierId: string, useGeneric: boolean,  file: Blob) => dispatch(uploadGasOffer(tenderId, supplierId, useGeneric, file))
+        uploadGasOffer: (tenderId: string, supplierId: string, useGeneric: boolean,  file: Blob) => dispatch(uploadGasOffer(tenderId, supplierId, useGeneric, file)),
+        closeModalDialog: () => dispatch(closeModalDialog())
     };
 };
   

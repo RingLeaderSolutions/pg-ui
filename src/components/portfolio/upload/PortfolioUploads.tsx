@@ -9,6 +9,8 @@ import * as moment from 'moment';
 import { fetchPortfolioUploads, fetchUploadReport } from '../../../actions/portfolioActions';
 import UploadReportView from "../../common/UploadReportView";
 import QuoteImportReportView from "./QuoteImportReportView";
+import { openModalDialog } from "../../../actions/viewActions";
+import ModalDialog from "../../common/ModalDialog";
 
 interface PortfolioUploadProps {
     portfolio: Portfolio;
@@ -24,24 +26,23 @@ interface StateProps {
 interface DispatchProps {
     fetchPortfolioUploads: (portfolioId: string) => void;
     fetchUploadReport: (reportId: string, isImport: boolean) => void;
+    openModalDialog: (dialogId: string) => void;
 }
 
 class PortfolioUploads extends React.Component<PortfolioUploadProps & StateProps & DispatchProps, {}> {
-    constructor() {
-        super();
-    }
-
     componentDidMount(){
         let portfolioId = this.props.portfolio.id;     
         this.props.fetchPortfolioUploads(portfolioId);
     }
 
-    fetchUploadReport(reportId: string, isImport: boolean){
+    fetchAndDisplayReport(reportId: string, isImport: boolean){
+        var dialogName = isImport ? "view_portfolio_import" : "view_portfolio_upload";
+
         this.props.fetchUploadReport(reportId, isImport);
+        this.props.openModalDialog(dialogName)
     }
 
     renderUploadsTable(reports: UploadReport[], isImport: boolean){
-        var viewClass = isImport ? "target: #modal-view-import" : "target: #modal-view-portfolio-upload";
         var rows = reports
             .sort(
                 (a, b) => {
@@ -61,7 +62,7 @@ class PortfolioUploads extends React.Component<PortfolioUploadProps & StateProps
                             <p>{r.requestor.firstName} {r.requestor.lastName}</p>
                         </div></td>
                         <td>
-                            <button className='uk-button uk-button-default uk-button-small' data-uk-toggle={viewClass} onClick={() => this.fetchUploadReport(r.resultDocId, isImport)}><span data-uk-icon='icon: menu' data-uk-tooltip="title: Open" /></button>
+                            <button className='uk-button uk-button-default uk-button-small' onClick={() => this.fetchAndDisplayReport(r.resultDocId, isImport)}><span data-uk-icon='icon: menu' data-uk-tooltip="title: Open" /></button>
                         </td>
                     </tr>
                 )
@@ -115,13 +116,14 @@ class PortfolioUploads extends React.Component<PortfolioUploadProps & StateProps
                             <li>{this.renderUploadsTable(this.props.reports.uploads, false)}</li>
                         </ul>
                     </div>
-                    <div id="modal-view-portfolio-upload" data-uk-modal="center: true">
-                        <UploadReportView />
-                    </div>
 
-                    <div id="modal-view-import" data-uk-modal="center: true">
+                    <ModalDialog dialogId="view_portfolio_upload" dialogClass="upload-report-modal">
+                        <UploadReportView />
+                    </ModalDialog>
+
+                    <ModalDialog dialogId="view_portfolio_import" dialogClass="upload-report-modal">
                         <QuoteImportReportView />
-                    </div>
+                    </ModalDialog>
                 </div>
             </div>)
     }
@@ -130,7 +132,8 @@ class PortfolioUploads extends React.Component<PortfolioUploadProps & StateProps
 const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, PortfolioUploadProps> = (dispatch) => {
     return {
         fetchPortfolioUploads: (portfolioId: string) => dispatch(fetchPortfolioUploads(portfolioId)),
-        fetchUploadReport: (reportId: string, isImport: boolean) => dispatch(fetchUploadReport(reportId, isImport))
+        fetchUploadReport: (reportId: string, isImport: boolean) => dispatch(fetchUploadReport(reportId, isImport)),
+        openModalDialog: (dialogId: string) => dispatch(openModalDialog(dialogId))
     };
 };
   

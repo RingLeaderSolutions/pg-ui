@@ -7,6 +7,7 @@ import Spinner from '../../common/Spinner';
 import { ImportReportDetail } from "../../../model/Models";
 import { TemplateResult, FieldAction } from "../../../model/Uploads";
 import ErrorMessage from "../../common/ErrorMessage";
+import { closeModalDialog } from "../../../actions/viewActions";
 
 interface QuoteImportReportViewProps {
 }
@@ -19,6 +20,7 @@ interface StateProps {
 }
   
 interface DispatchProps {
+    closeModalDialog: () => void;
 }
 
 class QuoteImportReportView extends React.Component<QuoteImportReportViewProps & StateProps & DispatchProps, {}> {
@@ -133,7 +135,7 @@ class QuoteImportReportView extends React.Component<QuoteImportReportViewProps &
     render() {
         var { uploadReport } = this.props;
         if(this.props.working || uploadReport == null || uploadReport.templateResults == null){
-            return (<div className="uk-modal-dialog upload-report-modal uk-modal-body"><Spinner hasMargin={true} /></div>);
+            return (<div className="uk-modal-body"><Spinner hasMargin={true} /></div>);
         }
         if(this.props.error || uploadReport.templateResults.length == 0){
             return (<ErrorMessage content="Sorry! We've encountered an error loading the import report for this. Please contact support."/>);
@@ -146,8 +148,7 @@ class QuoteImportReportView extends React.Component<QuoteImportReportViewProps &
         var validationErrorCount = hasValidationErrors ? uploadReport.fieldValidationErrorsList.length : 0;
 
         return (
-            <div className="uk-modal-dialog upload-report-modal">
-                <button className="uk-modal-close-default" type="button" data-uk-close></button>
+            <div>
                 <div className="uk-modal-header">
                     <h2 className="uk-modal-title">Quote Import: {template.type}</h2>
                 </div>
@@ -175,14 +176,16 @@ class QuoteImportReportView extends React.Component<QuoteImportReportViewProps &
                         </ul>
                 </div>
                 <div className="uk-modal-footer uk-text-right">
-                    <button className="uk-button uk-button-default uk-margin-right uk-modal-close" type="button">Close</button>
+                    <button className="uk-button uk-button-default uk-margin-right" type="button" onClick={() => this.props.closeModalDialog()}>Close</button>
                 </div>
             </div>)
     }
 }
 
-const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, QuoteImportReportViewProps> = () => {
-    return {};
+const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, QuoteImportReportViewProps> = (dispatch) => {
+    return {
+        closeModalDialog: () => dispatch(closeModalDialog()) 
+    };
 };
   
 const mapStateToProps: MapStateToProps<StateProps, QuoteImportReportViewProps> = (state: ApplicationState) => {

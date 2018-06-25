@@ -1,7 +1,7 @@
 import * as React from "react";
 import { MapDispatchToPropsFunction, connect, MapStateToProps } from 'react-redux';
 import { ApplicationState } from '../../../applicationState';
-import { Portfolio, PortfolioDetails, UtilityType } from '../../../model/Models';
+import { Portfolio, PortfolioDetails, UtilityType, decodeUtilityType } from '../../../model/Models';
 import { MeterConsumptionSummary } from '../../../model/Meter';
 import Spinner from '../../common/Spinner';
 import UploadHistoricDialog from './UploadHistoricDialog';
@@ -10,7 +10,8 @@ import { fetchMeterConsumption, excludeMeters, exportMeterConsumption } from '..
 import IncludeMetersDialog from "./IncludeMetersDialog";
 import ExcludeAllMetersDialog from "./ExcludeAllMetersDialog";
 import ReactTable, { Column } from "react-table";
-import { selectPortfolioMeterTab } from "../../../actions/viewActions";
+import { selectPortfolioMeterTab, openModalDialog } from "../../../actions/viewActions";
+import ModalDialog from "../../common/ModalDialog";
 
 interface PortfolioMetersProps {
     portfolio: Portfolio;
@@ -30,6 +31,8 @@ interface DispatchProps {
     excludeMeters: (portfolioId: string, meters: string[]) => void;    
     exportMeterConsumption: (portfolioId: string) => void;
     selectPortfolioMeterTab: (index: number) => void;
+
+    openModalDialog: (dialogId: string) => void;
 }
 
 interface MeterTableEntry {
@@ -81,12 +84,9 @@ class PortfolioMeters extends React.Component<PortfolioMetersProps & StateProps 
            return rowObject;
         });
 
-        var includedMeters = values.map(r => r[1]);
-        var includeDialogName = `modal-include-meters-${utilityType}`;
-        var showIncludeDialogClass = `target: #${includeDialogName}`;
-
-        var excludeAllDialogName = `modal-exclude-all-meters-${utilityType}`;
-        var showExcludeAllDialogClass = `target: #${excludeAllDialogName}`;
+        var decodedUtilityType = decodeUtilityType(utilityType);
+        var includeDialogId = `include_meters_${decodedUtilityType}`;
+        var excludeDialogId = `exclude_meters_${decodedUtilityType}`;
 
         return (
             <div>
@@ -95,7 +95,7 @@ class PortfolioMeters extends React.Component<PortfolioMetersProps & StateProps 
                         <div className="uk-width-expand@s">
                         </div>
                         <div className="uk-width-auto@s">
-                        { utilityType == UtilityType.Electricity ? (<button className='uk-button uk-button-primary uk-margin-small-left uk-margin-small-right' data-uk-toggle="target: #modal-upload-consumption"><span data-uk-icon='icon: upload' /> Upload Historic Consumption</button>) : null}
+                        { utilityType == UtilityType.Electricity ? (<button className='uk-button uk-button-primary uk-margin-small-left uk-margin-small-right' onClick={() => this.props.openModalDialog('upload_consumption')}><span data-uk-icon='icon: upload' /> Upload Historic Consumption</button>) : null}
                         </div>
                         <div className="uk-width-auto@s">
                             <div className="uk-inline">
@@ -104,12 +104,12 @@ class PortfolioMeters extends React.Component<PortfolioMetersProps & StateProps 
                                 </button>
                                 <div data-uk-dropdown="pos:bottom-justify;mode:hover">
                                     <ul className="uk-nav uk-dropdown-nav">
-                                        <li><a href="#" data-uk-toggle={showIncludeDialogClass}>
+                                        <li><a href="#" onClick={() => this.props.openModalDialog(includeDialogId)}>
                                             <span className="uk-margin-small-right" data-uk-icon="icon: plus" />
                                             Include Meters
                                         </a></li>
                                         <li className="uk-nav-divider"></li>
-                                        <li><a href="#" data-uk-toggle={showExcludeAllDialogClass}>
+                                        <li><a href="#" onClick={() => this.props.openModalDialog(excludeDialogId)}>
                                             <span className="uk-margin-small-right" data-uk-icon="icon: close" />
                                             Exclude All Meters
                                         </a></li>
@@ -130,13 +130,6 @@ class PortfolioMeters extends React.Component<PortfolioMetersProps & StateProps 
                     columns={tableColumns}
                     data={data}
                     minRows={0}/>
-
-                <div id={includeDialogName} data-uk-modal="center: true">
-                    <IncludeMetersDialog portfolio={this.props.details} includedMeters={includedMeters} utility={utilityType}/>
-                </div>
-                <div id={excludeAllDialogName} data-uk-modal="center: true">
-                    <ExcludeAllMetersDialog portfolio={this.props.details} includedMeters={includedMeters} />
-                </div>
             </div>);
     }
     
@@ -162,6 +155,8 @@ class PortfolioMeters extends React.Component<PortfolioMetersProps & StateProps 
             return (<Spinner />);
         }
 
+        var includedElecMeters = this.props.consumption.electrictyConsumptionEntries.map(r => r[1]);
+        var includedGasMeters = this.props.consumption.gasConsumptionEntries.map(r => r[1]);
         return (
             <div className="restrict-height-hack">
                 <div className='uk-flex uk-flex-column portfolio-meters restrict-height-hack'>
@@ -176,9 +171,25 @@ class PortfolioMeters extends React.Component<PortfolioMetersProps & StateProps 
                     </div>
                 </div>
 
-                <div id="modal-upload-consumption" data-uk-modal="center: true">
+                <ModalDialog dialogId="include_meters_Electricity">
+                    <IncludeMetersDialog portfolio={this.props.details} includedMeters={includedElecMeters} utility={UtilityType.Electricity}/>
+                </ModalDialog>
+
+                <ModalDialog dialogId="include_meters_Gas">
+                    <IncludeMetersDialog portfolio={this.props.details} includedMeters={includedGasMeters} utility={UtilityType.Gas}/>
+                </ModalDialog>
+                
+                <ModalDialog dialogId="exclude_meters_Electricity">
+                    <ExcludeAllMetersDialog portfolio={this.props.details} includedMeters={includedElecMeters} />
+                </ModalDialog>
+
+                <ModalDialog dialogId="exclude_meters_Gas">
+                    <ExcludeAllMetersDialog portfolio={this.props.details} includedMeters={includedGasMeters} />
+                </ModalDialog>
+
+                <ModalDialog dialogId="upload_consumption">
                     <UploadHistoricDialog details={this.props.details} />
-                </div>
+                </ModalDialog>
             </div>
         );
     }
@@ -189,7 +200,8 @@ const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, PortfolioMet
         fetchMeterConsumption: (portfolioId: string) => dispatch(fetchMeterConsumption(portfolioId)),
         excludeMeters: (portfolioId: string, meters: string[]) => dispatch(excludeMeters(portfolioId, meters)),
         exportMeterConsumption: (portfolioId: string) => dispatch(exportMeterConsumption(portfolioId)),
-        selectPortfolioMeterTab: (index: number) => dispatch(selectPortfolioMeterTab(index))
+        selectPortfolioMeterTab: (index: number) => dispatch(selectPortfolioMeterTab(index)),
+        openModalDialog: (dialogId: string) => dispatch(openModalDialog(dialogId))
     };
 };
   

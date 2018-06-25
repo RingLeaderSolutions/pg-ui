@@ -30,8 +30,6 @@ class TenderStatus extends React.Component<TenderStatusProps & StateProps & Disp
         super();
     }
 
-
-
     getMeterCount(){
         var { meterGroups } = this.props.details;
         if (meterGroups == null || meterGroups.length == 0){

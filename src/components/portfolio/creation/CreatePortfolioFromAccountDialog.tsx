@@ -8,6 +8,7 @@ import Spinner from '../../common/Spinner';
 import { retrieveAccounts } from '../../../actions/hierarchyActions';
 import { fetchUsers, createPortfolio } from '../../../actions/portfolioActions';
 import { PortfolioCreationRequest } from "../../../model/Portfolio";
+import { closeModalDialog } from "../../../actions/viewActions";
 
 interface CreatePortfolioFromAccountDialogProps {    
 }
@@ -24,6 +25,7 @@ interface DispatchProps {
     createPortfolio: (portfolio: PortfolioCreationRequest) => void;
     fetchUsers: () => void;
     retrieveAccounts: () => void;
+    closeModalDialog: () => void;
 }
 
 class CreatePortfolioFromAccountDialog extends React.Component<CreatePortfolioFromAccountDialogProps & StateProps & DispatchProps, {}> {
@@ -48,6 +50,7 @@ class CreatePortfolioFromAccountDialog extends React.Component<CreatePortfolioFr
         }
         
         this.props.createPortfolio(portfolio);
+        this.props.closeModalDialog();
     }
 
 
@@ -68,8 +71,7 @@ class CreatePortfolioFromAccountDialog extends React.Component<CreatePortfolioFr
         });
 
         return (
-            <div className="uk-modal-dialog">
-                <button className="uk-modal-close-default" type="button" data-uk-close></button>
+            <div>
                 <div className="uk-modal-header">
                     <h2 className="uk-modal-title">Create New Portfolio</h2>
                 </div>
@@ -113,8 +115,8 @@ class CreatePortfolioFromAccountDialog extends React.Component<CreatePortfolioFr
                     </div>
                 </div>
                 <div className="uk-modal-footer uk-text-right">
-                    <button className="uk-button uk-button-default uk-margin-right uk-modal-close" type="button">Cancel</button>
-                    <button className="uk-button uk-button-primary uk-modal-close" type="button" onClick={() => this.createPortfolio()}>Create</button>
+                    <button className="uk-button uk-button-default uk-margin-right" type="button" onClick={() => this.props.closeModalDialog()}>Cancel</button>
+                    <button className="uk-button uk-button-primary" type="button" onClick={() => this.createPortfolio()}>Create</button>
                 </div>
             </div>)
     }
@@ -124,7 +126,8 @@ const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, CreatePortfo
     return {
         createPortfolio: (portfolio: PortfolioCreationRequest) => dispatch(createPortfolio(portfolio)),
         fetchUsers: () => dispatch(fetchUsers()),
-        retrieveAccounts: () => dispatch(retrieveAccounts())
+        retrieveAccounts: () => dispatch(retrieveAccounts()),
+        closeModalDialog: () => dispatch(closeModalDialog())
     };
 };
   

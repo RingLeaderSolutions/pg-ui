@@ -7,6 +7,7 @@ import { selectCompanySearchMethod, selectManualMethod, clearAccountCreation } f
 import { AccountCreationStage } from "../../model/app/AccountCreationStage";
 import CompanySearch from "./CompanySearch";
 import CreateAccountDialog from "./CreateAccountDialog";
+import { closeModalDialog } from "../../actions/viewActions";
 
 
 interface NewAccountDialogProps {    
@@ -20,6 +21,7 @@ interface DispatchProps {
     selectCompanySearchMethod: () => void;
     selectManualMethod: () => void;
     clearAccountCreation: () => void;
+    closeModalDialog: () => void;
 }
 
 class NewAccountDialog extends React.Component<NewAccountDialogProps & StateProps & DispatchProps, {}> {
@@ -43,31 +45,29 @@ class NewAccountDialog extends React.Component<NewAccountDialogProps & StateProp
 
     finishCreation() {
         this.props.clearAccountCreation();
+        this.props.closeModalDialog();
     }
 
     render() {
         switch(this.props.stage){
             case AccountCreationStage.CompanySearch:
                 return (
-                    <div className="uk-modal-dialog new-account-dialog">
-                        <button className="uk-modal-close-default" type="button" data-uk-close onClick={this.finishCreation}></button>
+                    <div className="new-account-dialog">
                         <CompanySearch />
                     </div>);
             case AccountCreationStage.EnterDetail:
                 return (
-                    <div className="uk-modal-dialog new-account-dialog">
-                        <button className="uk-modal-close-default" type="button" data-uk-close onClick={this.finishCreation}></button>
+                    <div className="new-account-dialog">
                         <CreateAccountDialog />
                     </div>);
             case AccountCreationStage.Creation:
                 return (
-                    <div className="uk-modal-dialog uk-modal-body new-account-dialog">
+                    <div className="uk-modal-body new-account-dialog">
                         <Spinner />
                     </div>);
             case AccountCreationStage.Complete:
                 return (
-                    <div className="uk-modal-dialog new-account-dialog">
-                        <button className="uk-modal-close-default" type="button" data-uk-close onClick={this.finishCreation}></button>
+                    <div className="new-account-dialog">
                         <div className="uk-modal-header">
                             <h2 className="uk-modal-title">New Prospect</h2>
                         </div>
@@ -75,14 +75,13 @@ class NewAccountDialog extends React.Component<NewAccountDialogProps & StateProp
                             Your account has been created! Click below to exit this screen.
                         </div>
                         <div className="uk-modal-footer uk-text-right">
-                            <button className="uk-button uk-button-primary uk-modal-close" type="button" onClick={this.finishCreation}>Continue</button>
+                            <button className="uk-button uk-button-primary" type="button" onClick={this.finishCreation}>Continue</button>
                         </div>
                     </div>);
         };
 
         return (
-            <div className="uk-modal-dialog new-account-dialog">
-                <button className="uk-modal-close-default" type="button" data-uk-close onClick={this.finishCreation}></button>
+            <div className="new-account-dialog">
                 <div className="uk-modal-header">
                     <h2 className="uk-modal-title">Create Account</h2>
                 </div>
@@ -122,7 +121,7 @@ class NewAccountDialog extends React.Component<NewAccountDialogProps & StateProp
                     </div>
                 </div>
                 <div className="uk-modal-footer uk-text-right">
-                    <button className="uk-button uk-button-default uk-margin-right uk-modal-close" type="button">Cancel</button>
+                    <button className="uk-button uk-button-default uk-margin-right" type="button" onClick={() => this.props.closeModalDialog()}>Cancel</button>
                 </div>
             </div>)
     }
@@ -132,7 +131,8 @@ const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, NewAccountDi
     return {
         selectCompanySearchMethod: () => dispatch(selectCompanySearchMethod()),
         selectManualMethod: () => dispatch(selectManualMethod()),
-        clearAccountCreation: () => dispatch(clearAccountCreation())
+        clearAccountCreation: () => dispatch(clearAccountCreation()),
+        closeModalDialog: () => dispatch(closeModalDialog())
     };
 };
   

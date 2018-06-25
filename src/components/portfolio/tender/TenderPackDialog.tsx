@@ -6,6 +6,7 @@ import ErrorMessage from "../../common/ErrorMessage";
 import * as moment from 'moment';
 
 import { Tender, TenderSupplier } from "../../../model/Tender";
+import { closeModalDialog } from "../../../actions/viewActions";
 
 interface TenderPackDialogProps {
     tender: Tender;
@@ -20,6 +21,7 @@ interface StateProps {
 }
   
 interface DispatchProps {
+    closeModalDialog: () => void;
 }
 
 class TenderPackDialog extends React.Component<TenderPackDialogProps & StateProps & DispatchProps, {}> {
@@ -88,8 +90,7 @@ class TenderPackDialog extends React.Component<TenderPackDialogProps & StateProp
         }
         
         return (
-            <div className="uk-modal-dialog">
-                <button className="uk-modal-close-default" type="button" data-uk-close></button>
+            <div>
                 <div className="uk-modal-header">
                     <h2 className="uk-modal-title">Tender Requirements</h2>
                 </div>
@@ -102,8 +103,10 @@ class TenderPackDialog extends React.Component<TenderPackDialogProps & StateProp
     }
 }
 
-const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, TenderPackDialogProps> = () => {
-    return {};
+const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, TenderPackDialogProps> = (dispatch) => {
+    return {
+        closeModalDialog: () => dispatch(closeModalDialog()) 
+    };
 };
   
 const mapStateToProps: MapStateToProps<StateProps, TenderPackDialogProps> = (state: ApplicationState) => {

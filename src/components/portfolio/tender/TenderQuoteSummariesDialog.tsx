@@ -8,6 +8,7 @@ import * as moment from 'moment';
 
 import { issueSummaryReport } from '../../../actions/tenderActions';
 import { Tender, TenderSupplier } from "../../../model/Tender";
+import { closeModalDialog } from "../../../actions/viewActions";
 
 interface TenderQuoteSummariesDialogProps {
     tender: Tender;
@@ -22,6 +23,7 @@ interface StateProps {
   
 interface DispatchProps {
     issueSummaryReport: (tenderId: string, summaryReportId: string) => void;
+    closeModalDialog: () => void;
 }
 
 class TenderQuoteSummariesDialog extends React.Component<TenderQuoteSummariesDialogProps & StateProps & DispatchProps, {}> {
@@ -105,8 +107,7 @@ class TenderQuoteSummariesDialog extends React.Component<TenderQuoteSummariesDia
         }
         
         return (
-            <div className="uk-modal-dialog summary-report-dialog">
-                <button className="uk-modal-close-default" type="button" data-uk-close></button>
+            <div>
                 <div className="uk-modal-header">
                     <h2 className="uk-modal-title">Recommendations</h2>
                 </div>
@@ -121,7 +122,8 @@ class TenderQuoteSummariesDialog extends React.Component<TenderQuoteSummariesDia
 
 const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, TenderQuoteSummariesDialogProps> = (dispatch) => {
     return {
-        issueSummaryReport: (tenderId: string, summaryReportId: string) => dispatch(issueSummaryReport(tenderId, summaryReportId))
+        issueSummaryReport: (tenderId: string, summaryReportId: string) => dispatch(issueSummaryReport(tenderId, summaryReportId)),
+        closeModalDialog: () => dispatch(closeModalDialog())
     };
 };
   

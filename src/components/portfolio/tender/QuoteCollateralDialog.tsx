@@ -2,6 +2,7 @@ import * as React from "react";
 import { MapDispatchToPropsFunction, connect, MapStateToProps } from 'react-redux';
 
 import { TenderQuoteCollateral } from "../../../model/Tender";
+import { closeModalDialog } from "../../../actions/viewActions";
 
 interface QuoteCollateralDialogProps {
     collateral: TenderQuoteCollateral[];
@@ -11,6 +12,7 @@ interface StateProps {
 }
   
 interface DispatchProps {
+    closeModalDialog: () => void;
 }
 
 class QuoteCollateralDialog extends React.Component<QuoteCollateralDialogProps & StateProps & DispatchProps, {}> {
@@ -55,8 +57,7 @@ class QuoteCollateralDialog extends React.Component<QuoteCollateralDialogProps &
 
     render() {
         return (
-            <div className="uk-modal-dialog">
-                <button className="uk-modal-close-default" type="button" data-uk-close></button>
+            <div>
                 <div className="uk-modal-header">
                     <h2 className="uk-modal-title">Quote Collateral</h2>
                 </div>
@@ -66,14 +67,16 @@ class QuoteCollateralDialog extends React.Component<QuoteCollateralDialogProps &
                     </div>
                 </div>
                 <div className="uk-modal-footer uk-text-right">
-                    <button className="uk-button uk-button-default uk-margin-right uk-modal-close" type="button">Close</button>
+                    <button className="uk-button uk-button-default uk-margin-right" type="button" onClick={() => this.props.closeModalDialog()}>Close</button>
                 </div>
             </div>)
     }
 }
 
-const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, QuoteCollateralDialogProps> = () => {
-    return {};
+const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, QuoteCollateralDialogProps> = (dispatch) => {
+    return {
+        closeModalDialog: () => dispatch(closeModalDialog()) 
+    };
 };
   
 const mapStateToProps: MapStateToProps<StateProps, QuoteCollateralDialogProps> = () => {

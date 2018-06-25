@@ -8,6 +8,7 @@ import Spinner from '../../common/Spinner';
 import { retrieveAccountDetail } from '../../../actions/hierarchyActions';
 import { includeMeters } from '../../../actions/meterActions';
 import { selectMany } from "../../../helpers/listHelpers";
+import { closeModalDialog } from "../../../actions/viewActions";
 
 interface IncludeMetersDialogProps {    
     utility: UtilityType;
@@ -25,6 +26,7 @@ interface StateProps {
 interface DispatchProps {
     retrieveAccountDetail: (accountId: string) => void;
     includeMeters: (portfolioId: string, meters: string[]) => void;
+    closeModalDialog: () => void;
 }
 
 interface IncludedMetersDialogState {
@@ -50,15 +52,18 @@ class IncludeMetersDialog extends React.Component<IncludeMetersDialogProps & Sta
 
     completeInclusion(){
         this.props.includeMeters(this.props.portfolio.portfolio.id, this.state.includedMeters);
+        this.props.closeModalDialog();
     }
 
     componentWillReceiveProps(nextProps: IncludeMetersDialogProps & StateProps & DispatchProps){
         if(nextProps.account != null){
-            if(this.props.utility == UtilityType.Electricity){
+            if(nextProps.utility == UtilityType.Electricity){
                 var excludedMpans =  this.getExcludedMpans(nextProps.account);
                 this.setState({
                     ...this.state,
+                    excludedMprns: [],
                     excludedMpans,
+                    includedMeters: []
                 });
             }
             else {
@@ -66,6 +71,8 @@ class IncludeMetersDialog extends React.Component<IncludeMetersDialogProps & Sta
                 this.setState({
                     ...this.state,
                     excludedMprns,
+                    excludedMpans: [],
+                    includedMeters: []
                 });
             }
         }
@@ -206,8 +213,7 @@ class IncludeMetersDialog extends React.Component<IncludeMetersDialogProps & Sta
 
         var saveDisabled = this.state.includedMeters.length == 0;
         return (
-            <div className="uk-modal-dialog">
-                <button className="uk-modal-close-default" type="button" data-uk-close></button>
+            <div>
                 <div className="uk-modal-header">
                     <h2 className="uk-modal-title">Include {decodeUtilityType(this.props.utility)} Meters</h2>
                 </div>
@@ -219,8 +225,8 @@ class IncludeMetersDialog extends React.Component<IncludeMetersDialogProps & Sta
                     </div>
                 </div>
                 <div className="uk-modal-footer uk-text-right">
-                    <button className="uk-button uk-button-default uk-margin-right uk-modal-close" type="button">Cancel</button>
-                    <button className="uk-button uk-button-primary uk-modal-close" type="button" onClick={() => this.completeInclusion()} disabled={saveDisabled}>Save</button>
+                    <button className="uk-button uk-button-default uk-margin-right" type="button" onClick={() => this.props.closeModalDialog()}>Cancel</button>
+                    <button className="uk-button uk-button-primary" type="button" onClick={() => this.completeInclusion()} disabled={saveDisabled}>Save</button>
                 </div>
             </div>)
     }
@@ -229,7 +235,8 @@ class IncludeMetersDialog extends React.Component<IncludeMetersDialogProps & Sta
 const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, IncludeMetersDialogProps> = (dispatch) => {
     return {
         retrieveAccountDetail: (accountId: string) => dispatch(retrieveAccountDetail(accountId)),   
-        includeMeters: (portfolioId: string, meters: string[]) => dispatch(includeMeters(portfolioId, meters))        
+        includeMeters: (portfolioId: string, meters: string[]) => dispatch(includeMeters(portfolioId, meters)),
+        closeModalDialog: () => dispatch(closeModalDialog())
     };
 };
   

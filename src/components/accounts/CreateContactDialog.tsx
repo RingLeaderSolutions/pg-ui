@@ -3,6 +3,7 @@ import { MapDispatchToPropsFunction, connect, MapStateToProps } from 'react-redu
 
 import { createContact } from '../../actions/hierarchyActions';
 import { AccountContact } from "../../model/HierarchyObjects";
+import { closeModalDialog } from "../../actions/viewActions";
 
 interface CreateContactDialogProps {    
     accountId: string;
@@ -13,6 +14,7 @@ interface StateProps {
 
 interface DispatchProps {
     createContact: (contact: AccountContact) => void;
+    closeModalDialog: () => void;
 }
 
 
@@ -35,12 +37,12 @@ class CreateContactDialog extends React.Component<CreateContactDialogProps & Sta
         }
         
         this.props.createContact(contact);
+        this.props.closeModalDialog();
     }
 
     render() {
         return (
-            <div className="uk-modal-dialog">
-                <button className="uk-modal-close-default" type="button" data-uk-close></button>
+            <div>
                 <div className="uk-modal-header">
                     <h2 className="uk-modal-title">Create Contact</h2>
                 </div>
@@ -89,8 +91,8 @@ class CreateContactDialog extends React.Component<CreateContactDialogProps & Sta
                     </div>
                 </div>
                 <div className="uk-modal-footer uk-text-right">
-                    <button className="uk-button uk-button-default uk-margin-right uk-modal-close" type="button">Cancel</button>
-                    <button className="uk-button uk-button-primary uk-modal-close" type="button" onClick={() => this.createContact()}>Create</button>
+                    <button className="uk-button uk-button-default uk-margin-right" type="button" onClick={() => this.props.closeModalDialog()}>Cancel</button>
+                    <button className="uk-button uk-button-primary" type="button" onClick={() => this.createContact()}>Create</button>
                 </div>
             </div>)
     }
@@ -98,7 +100,8 @@ class CreateContactDialog extends React.Component<CreateContactDialogProps & Sta
 
 const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, CreateContactDialogProps> = (dispatch) => {
     return {
-        createContact: (contact: AccountContact) =>  dispatch(createContact(contact))
+        createContact: (contact: AccountContact) =>  dispatch(createContact(contact)),
+        closeModalDialog: () => dispatch(closeModalDialog()) 
     };
 };
   

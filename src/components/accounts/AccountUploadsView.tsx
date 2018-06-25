@@ -6,11 +6,12 @@ import { UploadReportsResponse } from '../../model/Models';
 import Spinner from '../common/Spinner';
 import * as moment from 'moment';
 
-
 import { fetchAccountUploads } from '../../actions/hierarchyActions';
 import { fetchUploadReport } from '../../actions/portfolioActions';
 
 import UploadReportView from "../common/UploadReportView";
+import { openModalDialog } from "../../actions/viewActions";
+import ModalDialog from "../common/ModalDialog";
 
 interface AccountUploadsViewProps {
     accountId: string;
@@ -26,6 +27,7 @@ interface StateProps {
 interface DispatchProps {
     fetchAccountUploads: (accountId: string) => void;
     fetchUploadReport: (reportId: string) => void;
+    openModalDialog: (dialogId: string) => void;
 }
 
 class AccountUploadsView extends React.Component<AccountUploadsViewProps & StateProps & DispatchProps, {}> {
@@ -35,6 +37,7 @@ class AccountUploadsView extends React.Component<AccountUploadsViewProps & State
 
     fetchUploadReport(reportId: string){
         this.props.fetchUploadReport(reportId);
+        this.props.openModalDialog('view_account_upload');
     }
 
     renderUploadRows(){
@@ -88,9 +91,9 @@ class AccountUploadsView extends React.Component<AccountUploadsViewProps & State
                         {this.renderUploadRows()}
                     </tbody>
                 </table>
-                <div id="modal-view-account-upload" data-uk-modal="center: true">
+                <ModalDialog dialogId="view_account_upload" dialogClass="upload-report-modal">
                     <UploadReportView />
-                </div>
+                </ModalDialog>
             </div>)
     }
 }
@@ -98,7 +101,8 @@ class AccountUploadsView extends React.Component<AccountUploadsViewProps & State
 const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, AccountUploadsViewProps> = (dispatch) => {
     return {
         fetchAccountUploads: (accountId: string) => dispatch(fetchAccountUploads(accountId)),
-        fetchUploadReport: (reportId: string) => dispatch(fetchUploadReport(reportId, false))
+        fetchUploadReport: (reportId: string) => dispatch(fetchUploadReport(reportId, false)),
+        openModalDialog: (dialogId: string) => dispatch(openModalDialog(dialogId))
     };
 };
   

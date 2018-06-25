@@ -5,6 +5,7 @@ import { SiteDetail } from '../../model/HierarchyObjects';
 import { Link } from "react-router-dom";
 import ReactTable, { Column } from "react-table";
 import { BooleanCellRenderer } from "../common/TableHelpers";
+import { openModalDialog } from "../../actions/viewActions";
 
 interface AccountGasMeterTableProps {
     sites: SiteDetail[];
@@ -15,6 +16,7 @@ interface StateProps {
 }
 
 interface DispatchProps {
+    openModalDialog: (dialogId: string) => void;
 }
 
 interface AccountGasMeterTableState {
@@ -178,6 +180,11 @@ class AccountGasMeterTable extends React.Component<AccountGasMeterTableProps & S
     }
 
     render() {
+        var actions = (
+            <div className="actions-accounts">
+                <button className='uk-button uk-button-primary uk-margin-small-right' onClick={() => this.props.openModalDialog('upload-supply-data-gas')}><span data-uk-icon='icon: upload' /> Upload Supply Data</button>    
+            </div>
+        );
         if(this.props.sites.length === 0){
             return (
                 <div>
@@ -186,9 +193,7 @@ class AccountGasMeterTable extends React.Component<AccountGasMeterTableProps & S
                             <span data-uk-search-icon="search"></span>
                             <input className="uk-search-input" type="search" placeholder="Search..." disabled/>
                         </form>
-                        <div className="actions-accounts">
-                            <button className='uk-button uk-button-primary uk-margin-small-right' data-uk-toggle="target: #modal-upload-supply-data-gas"><span data-uk-icon='icon: upload' /> Upload Supply Data</button>    
-                        </div>
+                        {actions}
                     </div>
                     <div>No meter data has been uploaded yet.</div>
                 </div>);
@@ -205,9 +210,7 @@ class AccountGasMeterTable extends React.Component<AccountGasMeterTableProps & S
                         <span data-uk-search-icon="search"></span>
                         <input className="uk-search-input" type="search" placeholder="Search..." value={this.state.searchText} onChange={(e) => this.handleSearch(e)}/>
                     </form>
-                    <div className="actions-accounts">
-                        <button className='uk-button uk-button-primary uk-margin-small-right' data-uk-toggle="target: #modal-upload-supply-data-gas"><span data-uk-icon='icon: upload' /> Upload Supply Data</button>    
-                    </div>
+                    {actions}
                 </div>
                 
                 <ReactTable 
@@ -221,6 +224,7 @@ class AccountGasMeterTable extends React.Component<AccountGasMeterTableProps & S
 
 const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, AccountGasMeterTableProps> = (dispatch) => {
     return {
+        openModalDialog: (dialogId: string) => dispatch(openModalDialog(dialogId)),
     };
 };
   

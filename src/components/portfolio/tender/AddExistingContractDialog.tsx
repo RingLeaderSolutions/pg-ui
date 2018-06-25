@@ -5,6 +5,7 @@ import Spinner from '../../common/Spinner';
 
 import { addExistingContract } from '../../../actions/tenderActions';
 import { Tender, TenderContract, TenderSupplier } from "../../../model/Tender";
+import { closeModalDialog } from "../../../actions/viewActions";
 
 interface AddExistingContractDialogProps {
     portfolioId: string;
@@ -20,6 +21,7 @@ interface StateProps {
   
 interface DispatchProps {
     addExistingContract: (portfolioId: string, tenderId: string, contract: TenderContract) => void;
+    closeModalDialog: () => void;
 }
 
 class AddExistingContractDialog extends React.Component<AddExistingContractDialogProps & StateProps & DispatchProps, {}> {
@@ -41,6 +43,7 @@ class AddExistingContractDialog extends React.Component<AddExistingContractDialo
             sheetCount: 0
         };
         this.props.addExistingContract(this.props.portfolioId, this.props.tender.tenderId, contract);
+        this.props.closeModalDialog();
     }
 
     renderSupplierSelect(){
@@ -63,8 +66,7 @@ class AddExistingContractDialog extends React.Component<AddExistingContractDialo
             return (<Spinner />);
         }
         return (
-            <div className="uk-modal-dialog">
-                <button className="uk-modal-close-default" type="button" data-uk-close></button>
+            <div>
                 <div className="uk-modal-header">
                     <h2 className="uk-modal-title">Add existing contract</h2>
                 </div>
@@ -99,8 +101,8 @@ class AddExistingContractDialog extends React.Component<AddExistingContractDialo
                     </form>
                 </div>
                 <div className="uk-modal-footer uk-text-right">
-                    <button className="uk-button uk-button-default uk-margin-right uk-modal-close" type="button">Cancel</button>
-                    <button className="uk-button uk-button-primary uk-modal-close" type="button" onClick={() => this.addExistingContract()}>Add</button>
+                    <button className="uk-button uk-button-default uk-margin-right" type="button"  onClick={() => this.props.closeModalDialog()}>Cancel</button>
+                    <button className="uk-button uk-button-primary" type="button" onClick={() => this.addExistingContract()}>Add</button>
                 </div>
             </div>)
     }
@@ -108,7 +110,8 @@ class AddExistingContractDialog extends React.Component<AddExistingContractDialo
 
 const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, AddExistingContractDialogProps> = (dispatch) => {
     return {
-        addExistingContract: (portfolioId: string, tenderId: string, contract: TenderContract) => dispatch(addExistingContract(portfolioId, tenderId, contract))
+        addExistingContract: (portfolioId: string, tenderId: string, contract: TenderContract) => dispatch(addExistingContract(portfolioId, tenderId, contract)),
+        closeModalDialog: () => dispatch(closeModalDialog()) 
     };
 };
   

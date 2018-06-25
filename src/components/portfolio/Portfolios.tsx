@@ -11,6 +11,8 @@ import Spinner from '../common/Spinner';
 import CreatePortfolioFromAccountDialog from "./creation/CreatePortfolioFromAccountDialog";
 import ReactTable, { Column } from "react-table";
 import { UserCellRenderer, UserSorter } from "../common/TableHelpers";
+import { openModalDialog } from "../../actions/viewActions";
+import ModalDialog from "../common/ModalDialog";
 
 interface PortfoliosProps extends RouteComponentProps<void> {
 }
@@ -25,6 +27,7 @@ interface StateProps {
 interface DispatchProps {
   getPortfolios: () => void;
   deselectPortfolio: () => void;
+  openModalDialog: (dialogId: string) => void;
 }
 
 interface PortfoliosState {
@@ -206,7 +209,7 @@ class Portfolios extends React.Component<PortfoliosProps & StateProps & Dispatch
                                 <input className="uk-search-input" type="search" placeholder="Search..." value={this.state.searchText} onChange={(e) => this.handleSearch(e)}/>
                             </form>
                             <div className="actions-portfolios">
-                                <button className="uk-button uk-button-primary" data-uk-toggle="target: #modal-new-portfolio">
+                                <button className="uk-button uk-button-primary" onClick={() => this.props.openModalDialog('create_portfolio')}>
                                     <span className="uk-margin-small-right" data-uk-icon="plus-circle"></span>
                                     New portfolio
                                 </button>
@@ -218,9 +221,9 @@ class Portfolios extends React.Component<PortfoliosProps & StateProps & Dispatch
                     </div>
                 </div>
 
-                <div id="modal-new-portfolio" data-uk-modal="center: true">
+                <ModalDialog dialogId="create_portfolio">
                     <CreatePortfolioFromAccountDialog />
-                </div>
+                </ModalDialog>
             </div>)
     }
 }
@@ -228,7 +231,8 @@ class Portfolios extends React.Component<PortfoliosProps & StateProps & Dispatch
 const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, PortfoliosProps> = (dispatch) => {
   return {
     getPortfolios: () => dispatch(getAllPortfolios()),
-    deselectPortfolio: () => dispatch(deselectPortfolio())
+    deselectPortfolio: () => dispatch(deselectPortfolio()),
+    openModalDialog: (dialogId: string) => dispatch(openModalDialog(dialogId))
   };
 };
 

@@ -13,7 +13,6 @@ export default class Header extends React.Component<HeaderProps, {}> {
     AuthService.logout();
   }
   render() {
-
     return (
       <div className="header">
         <NotificationContainer />

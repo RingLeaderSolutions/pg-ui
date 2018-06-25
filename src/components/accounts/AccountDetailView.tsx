@@ -6,7 +6,7 @@ import { MapDispatchToPropsFunction, connect, MapStateToProps } from 'react-redu
 import { ApplicationState } from '../../applicationState';
 import { AccountDetail, UtilityType } from '../../model/Models';
 import Spinner from '../common/Spinner';
-import { selectAccountTab } from "../../actions/viewActions";
+import { selectAccountTab, openModalDialog } from "../../actions/viewActions";
 
 import { retrieveAccountDetail, fetchAccountPortfolios } from '../../actions/hierarchyActions';
 import UploadSupplyDataDialog from "../portfolio/mpan/UploadSupplyDataDialog";
@@ -16,6 +16,7 @@ import AccountDocumentsView from "./AccountDocumentsView";
 import AccountUploadsView from "./AccountUploadsView";
 import AccountGasMeterTable from "./AccountGasMeterTable";
 import AccountElectricityMeterTable from "./AccountElectricityMeterTable";
+import ModalDialog from "../common/ModalDialog";
 
 interface AccountDetailViewProps extends RouteComponentProps<void> {
 }
@@ -33,6 +34,7 @@ interface DispatchProps {
     retrieveAccountDetail: (accountId: string) => void;
     fetchAccountPortfolios: (accountId: string) => void;
     selectAccountTab: (index: number) => void;
+    openModalDialog: (dialogId: string) => void;
 }
 
 class AccountDetailView extends React.Component<AccountDetailViewProps & StateProps & DispatchProps, {}> {
@@ -79,7 +81,7 @@ class AccountDetailView extends React.Component<AccountDetailViewProps & StatePr
             <div className="content-inner">
                 <Header title={headerTitle} />
                 <div className="uk-text-right">
-                    <button className="uk-button uk-button-small uk-button-default uk-margin-small-right uk-margin-small-top" data-uk-toggle="target: #modal-update-account">
+                    <button className="uk-button uk-button-small uk-button-default uk-margin-small-right uk-margin-small-top" onClick={() => this.props.openModalDialog('update-account')}>
                         <span className="uk-margin-small-right" data-uk-icon="icon: pencil"></span>
                         Edit account
                     </button>
@@ -95,17 +97,17 @@ class AccountDetailView extends React.Component<AccountDetailViewProps & StatePr
                     {this.renderSelectedTab()}
                 </div>
 
-                <div id="modal-upload-supply-data-elec" data-uk-modal="center: true">
+                <ModalDialog dialogId="upload-supply-data-electricity">
                     <UploadSupplyDataDialog accountId={this.props.account.id} type={UtilityType.Electricity} />
-                </div>
+                </ModalDialog>
 
-                <div id="modal-upload-supply-data-gas" data-uk-modal="center: true">
+                <ModalDialog dialogId="upload-supply-data-gas">
                     <UploadSupplyDataDialog accountId={this.props.account.id} type={UtilityType.Gas} />
-                </div>
+                </ModalDialog>
 
-                <div id="modal-update-account" data-uk-modal="center: true">
+                <ModalDialog dialogId="update-account">
                     <UpdateAccountDialog account={selectedAccount} />
-                </div>
+                </ModalDialog>
             </div>)
     }
 }
@@ -114,7 +116,8 @@ const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, AccountDetai
     return {
         retrieveAccountDetail: (accountId: string) => dispatch(retrieveAccountDetail(accountId)),
         fetchAccountPortfolios: (accountId: string) => dispatch(fetchAccountPortfolios(accountId)),
-        selectAccountTab: (index: number) => dispatch(selectAccountTab(index))
+        selectAccountTab: (index: number) => dispatch(selectAccountTab(index)),
+        openModalDialog: (dialogId: string) => dispatch(openModalDialog(dialogId)),
     };
 };
   

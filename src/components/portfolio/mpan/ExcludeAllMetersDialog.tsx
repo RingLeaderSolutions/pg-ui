@@ -3,6 +3,7 @@ import { MapDispatchToPropsFunction, connect, MapStateToProps } from 'react-redu
 import { PortfolioDetails } from '../../../model/Models';
 
 import { excludeMeters } from '../../../actions/meterActions';
+import { closeModalDialog } from "../../../actions/viewActions";
 
 interface ExcludeAllMetersDialogProps {    
     portfolio: PortfolioDetails;
@@ -14,17 +15,18 @@ interface StateProps {
 
 interface DispatchProps {
     excludeMeters: (portfolioId: string, meters: string[]) => void;
+    closeModalDialog: () => void;
 }
 
 class ExcludeAllMetersDialog extends React.Component<ExcludeAllMetersDialogProps & StateProps & DispatchProps, {}> {
     completeExclusion(){
         this.props.excludeMeters(this.props.portfolio.portfolio.id, this.props.includedMeters);
+        this.props.closeModalDialog();
     }
 
     render() {
         return (
-            <div className="uk-modal-dialog">
-                <button className="uk-modal-close-default" type="button" data-uk-close></button>
+            <div>
                 <div className="uk-modal-header">
                     <h2 className="uk-modal-title">Confirm</h2>
                 </div>
@@ -35,8 +37,8 @@ class ExcludeAllMetersDialog extends React.Component<ExcludeAllMetersDialogProps
                     </div>
                 </div>
                 <div className="uk-modal-footer uk-text-right">
-                    <button className="uk-button uk-button-default uk-margin-right uk-modal-close" type="button">No</button>
-                    <button className="uk-button uk-button-primary uk-modal-close" type="button" onClick={() => this.completeExclusion()}>Yes</button>
+                    <button className="uk-button uk-button-default uk-margin-right" type="button" onClick={() => this.props.closeModalDialog()}>No</button>
+                    <button className="uk-button uk-button-primary" type="button" onClick={() => this.completeExclusion()}>Yes</button>
                 </div>
             </div>)
     }
@@ -44,7 +46,8 @@ class ExcludeAllMetersDialog extends React.Component<ExcludeAllMetersDialogProps
 
 const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, ExcludeAllMetersDialogProps> = (dispatch) => {
     return {
-        excludeMeters: (portfolioId: string, meters: string[]) => dispatch(excludeMeters(portfolioId, meters))        
+        excludeMeters: (portfolioId: string, meters: string[]) => dispatch(excludeMeters(portfolioId, meters)),
+        closeModalDialog: () => dispatch(closeModalDialog())
     };
 };
   

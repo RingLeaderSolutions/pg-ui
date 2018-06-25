@@ -10,6 +10,8 @@ import TenderBackingSheetsDialog from './TenderBackingSheetsDialog';
 import Spinner from "../../common/Spinner";
 import UpdateExistingContractDialog from "./UpdateExistingContractDialog";
 import { format } from 'currency-formatter';
+import ModalDialog from "../../common/ModalDialog";
+import { openModalDialog } from "../../../actions/viewActions";
 
 interface TenderContractViewProps {
     tender: Tender;
@@ -23,20 +25,20 @@ interface StateProps {
 
 interface DispatchProps {
     fetchContractBackingSheets: (tenderId: string, contractId: string) => void;
+    openModalDialog: (dialogId: string) => void;
 }
 
 class TenderContractView extends React.Component<TenderContractViewProps & DispatchProps & StateProps, {}> { 
     renderAddExistingContract(){
-        var addExistingContractDialogName = `modal-add-contract-${this.props.tender.tenderId}`;
-        var addExistingContractTargetClass = `target: #${addExistingContractDialogName}`;
+        var addExistingContractDialogName = `add_contract_${this.props.tender.tenderId}`;
         return (
             <div>
                 <div>
-                    <button className="uk-button uk-button-primary" type="button" data-uk-toggle={addExistingContractTargetClass}>Add existing contract</button>
+                    <button className="uk-button uk-button-primary" type="button" onClick={() => this.props.openModalDialog(addExistingContractDialogName)}>Add existing contract</button>
                 </div>
-                <div id={addExistingContractDialogName} data-uk-modal="center: true">
+                <ModalDialog dialogId={addExistingContractDialogName}>
                     <AddExistingContractDialog tender={this.props.tender} portfolioId={this.props.portfolioId} />
-                </div>
+                </ModalDialog>
             </div>);
     }
 
@@ -44,14 +46,6 @@ class TenderContractView extends React.Component<TenderContractViewProps & Dispa
         var { existingContract } = this.props.tender;
         var existingSupplier = this.props.suppliers.find(s => s.supplierId == existingContract.supplierId);
         var supplierText = existingSupplier == null ? "Unknown" : existingSupplier.name;
-
-        // return (
-        //     <div className="uk-grid uk-child-width-expand@s uk-grid-match" data-uk-grid>
-        //         <p>Ref: <strong>{existingContract.reference}</strong></p>
-        //         <p>Contract Start: <strong>{moment.utc(existingContract.contractStart).format('ll')}</strong></p>
-        //         <p>Contract End: <strong>{moment.utc(existingContract.contractEnd).format('ll')}</strong></p>
-        //         <p>Supplier: <strong>{supplierText}</strong></p>
-        //     </div>);
 
         var appu = `${existingContract.averagePPU.toFixed(4)}p`;
         return (
@@ -80,21 +74,16 @@ class TenderContractView extends React.Component<TenderContractViewProps & Dispa
         )
     }
 
-    fetchBackingSheets(){
+    fetchRatesAndOpenDialog(dialogName: string){
         let contractId = this.props.tender.existingContract.contractId;
         this.props.fetchContractBackingSheets(this.props.tender.tenderId, contractId);
+        this.props.openModalDialog(dialogName);
     }
 
     renderContractActions(){
-
-        var uploadBackingSheetDialogName = `modal-upload-backing-${this.props.tender.tenderId}`;
-        var showUploadBackingSheetClass = `target: #${uploadBackingSheetDialogName}`;
-
-        var viewContractBackingSheetsName = `modal-view-backing-${this.props.tender.tenderId}`;
-        var showViewContractBackingSheetsClass = `target: #${viewContractBackingSheetsName}`;
-
-        var editContractDialogName = `modal-edit-contract-${this.props.tender.tenderId}`;
-        var showEditContractDialogName = `target: #${editContractDialogName}`;
+        var uploadExistingDialogName = `upload_contract_${this.props.tender.tenderId}`;
+        var viewContractDialogName = `view_contract_${this.props.tender.tenderId}`;
+        var editContractDialogName = `edit_contract_${this.props.tender.tenderId}`;
 
         return (
             <div>
@@ -105,17 +94,17 @@ class TenderContractView extends React.Component<TenderContractViewProps & Dispa
                         </button>
                         <div data-uk-dropdown="pos:bottom-justify;mode:click">
                             <ul className="uk-nav uk-dropdown-nav">
-                            <li><a href="#" data-uk-toggle={showUploadBackingSheetClass}>
+                            <li><a href="#" onClick={() => this.props.openModalDialog(uploadExistingDialogName)}>
                                 <span className="uk-margin-small-right" data-uk-icon="icon: cloud-upload" />
                                 Upload Contract Rates
                             </a></li>
                             <li className="uk-nav-divider"></li>
-                            <li><a href="#" data-uk-toggle={showViewContractBackingSheetsClass} onClick={() => this.fetchBackingSheets()}>
+                            <li><a href="#" onClick={() => this.fetchRatesAndOpenDialog(viewContractDialogName)}>
                                 <span className="uk-margin-small-right" data-uk-icon="icon: copy" />
                                 View Contract Rates
                             </a></li>
                             <li className="uk-nav-divider"></li>
-                            <li><a href="#" data-uk-toggle={showEditContractDialogName}>
+                            <li><a href="#" onClick={() => this.props.openModalDialog(editContractDialogName)}>
                                 <span className="uk-margin-small-right" data-uk-icon="icon: pencil" />                                        
                                 Edit contract
                             </a></li>
@@ -124,17 +113,17 @@ class TenderContractView extends React.Component<TenderContractViewProps & Dispa
                     </div>
                 </div>
 
-                <div id={uploadBackingSheetDialogName} data-uk-modal="center: true">
+                <ModalDialog dialogId={uploadExistingDialogName}>
                     <UploadBackingSheetDialog contractId={this.props.tender.existingContract.contractId} utilityType={this.props.tender.utility} />
-                </div>
+                </ModalDialog>
 
-                <div id={viewContractBackingSheetsName} data-uk-modal="center: true">
+                <ModalDialog dialogId={viewContractDialogName} dialogClass="backing-sheet-modal">
                     <TenderBackingSheetsDialog />
-                </div>
+                </ModalDialog>
 
-                <div id={editContractDialogName} data-uk-modal="center: true">
+                <ModalDialog dialogId={editContractDialogName}>
                     <UpdateExistingContractDialog existingContract={this.props.tender.existingContract} portfolioId={this.props.portfolioId} tenderId={this.props.tender.tenderId} />
-                </div>
+                </ModalDialog>
             </div>
         )
     }
@@ -187,7 +176,8 @@ class TenderContractView extends React.Component<TenderContractViewProps & Dispa
 
 const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, TenderContractViewProps> = (dispatch) => {
     return {
-        fetchContractBackingSheets: (tenderId: string, contractId: string) => dispatch(fetchContractBackingSheets(tenderId, contractId))
+        fetchContractBackingSheets: (tenderId: string, contractId: string) => dispatch(fetchContractBackingSheets(tenderId, contractId)),
+        openModalDialog: (dialogId: string) => dispatch(openModalDialog(dialogId))
     };
 };
   

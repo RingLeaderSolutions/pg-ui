@@ -103,10 +103,6 @@ class TenderSummary extends React.Component<TenderSummaryProps & StateProps & Di
             return this.renderContent(finishSetup);
         }
         
-        var gasTenders = this.generateGasTender();
-        var hhTender = this.generateHHTender();
-        var nhhTender = this.generateNHHTender();
-
         var content = (
             <div>
                 <ul className="uk-tab">

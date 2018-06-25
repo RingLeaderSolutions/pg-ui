@@ -13,6 +13,8 @@ import TenderContractView from "./TenderContractView";
 import TenderQuotesView from "./TenderQuotesView";
 import UpdateTenderDialog from "./UpdateTenderDialog";
 import TenderSupplierSelectDialog from "./TenderSupplierSelectDialog";
+import ModalDialog from "../../common/ModalDialog";
+import { openModalDialog } from "../../../actions/viewActions";
 
 interface TenderViewProps {
     tender: Tender;
@@ -28,13 +30,10 @@ interface StateProps {
   
 interface DispatchProps {
     deleteTender: (portfolioId: string, tenderId: string) => void;
+    openModalDialog: (dialogId: string) => void;
 }
 
 class TenderView extends React.Component<TenderViewProps & StateProps & DispatchProps, {}> {
-    constructor() {
-        super();
-    }
-
     deleteTender(){
         this.props.deleteTender(this.props.details.portfolio.id, this.props.tender.tenderId);
     }
@@ -60,11 +59,8 @@ class TenderView extends React.Component<TenderViewProps & StateProps & Dispatch
 
         var utilityDescription = this.props.utility == UtilityType.Gas ? "Gas" : "Electricity";
 
-        var updateTenderDialogName = `modal-update-tender-${this.props.tender.tenderId}`;
-        var showUpdateDialogClass = `target: #${updateTenderDialogName}`;
-
-        var supplierModalId = "modal-select-suppliers-" + this.props.tender.tenderId;
-        var toggleSupplierModalClass = "target: #" + supplierModalId;
+        var updateTenderDialogName = `update_tender_${this.props.tender.tenderId}`;
+        var supplierModalId = `select_suppliers_${this.props.tender.tenderId}`;
 
         let { tenderTitle } = this.props.tender;
 
@@ -77,12 +73,12 @@ class TenderView extends React.Component<TenderViewProps & StateProps & Dispatch
                         {title}
                     </div>
                     <div className="uk-width-expand@s">
-                        <button className="uk-button uk-button-default uk-button-small" type="button" data-uk-toggle={showUpdateDialogClass}>
+                        <button className="uk-button uk-button-default uk-button-small" type="button" onClick={() => this.props.openModalDialog(updateTenderDialogName)}>
                             <span data-uk-icon="icon: pencil" />
                         </button>
                     </div>
                     <div className="uk-width-1-5">
-                        <button className="uk-button uk-button-default uk-button-small uk-align-right" type="button"  data-uk-toggle={toggleSupplierModalClass}>
+                        <button className="uk-button uk-button-default uk-button-small uk-align-right" type="button"  onClick={() => this.props.openModalDialog(supplierModalId)}>
                             <span className="uk-margin-small-right" data-uk-icon="icon: database" />
                             Assign Suppliers
                         </button>
@@ -109,13 +105,13 @@ class TenderView extends React.Component<TenderViewProps & StateProps & Dispatch
                     </button>
                 </div> */}
 
-                <div id={updateTenderDialogName} data-uk-modal="center: true">
+                <ModalDialog dialogId={updateTenderDialogName}>
                     <UpdateTenderDialog tender={this.props.tender} utilityDescription={utilityDescription} utility={this.props.utility}/>
-                </div>
+                </ModalDialog>
 
-                <div id={supplierModalId} data-uk-modal="center: true">
+                <ModalDialog dialogId={supplierModalId}>
                     <TenderSupplierSelectDialog assignedSuppliers={this.props.tender.assignedSuppliers} tenderId={this.props.tender.tenderId} utility={this.props.utility}/>
-                </div>
+                </ModalDialog>
             </div>)
 
             return this.renderCard(content);
@@ -124,7 +120,8 @@ class TenderView extends React.Component<TenderViewProps & StateProps & Dispatch
 
 const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, TenderViewProps> = (dispatch) => {
     return {
-        deleteTender: (portfolioId, tenderId) => dispatch(deleteTender(portfolioId, tenderId))
+        deleteTender: (portfolioId, tenderId) => dispatch(deleteTender(portfolioId, tenderId)),
+        openModalDialog: (dialogId: string) => dispatch(openModalDialog(dialogId))
     };
 };
   

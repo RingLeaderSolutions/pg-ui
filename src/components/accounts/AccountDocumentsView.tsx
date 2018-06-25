@@ -9,6 +9,8 @@ import * as moment from 'moment';
 
 import { fetchAccountDocumentation } from '../../actions/hierarchyActions';
 import UploadAccountDocumentDialog from "./UploadAccountDocumentDialog";
+import { openModalDialog } from "../../actions/viewActions";
+import ModalDialog from "../common/ModalDialog";
 
 interface AccountDocumentsViewProps {
     account: AccountDetail;
@@ -23,10 +25,10 @@ interface StateProps {
 
 interface DispatchProps {
     fetchAccountDocumentation: (accountId: string) => void;
+    openModalDialog: (dialogId: string) => void;
 }
 
 class AccountDocumentsView extends React.Component<AccountDocumentsViewProps & StateProps & DispatchProps, {}> {
-
     componentDidMount(){
         this.props.fetchAccountDocumentation(this.props.account.id);
     }
@@ -65,7 +67,7 @@ class AccountDocumentsView extends React.Component<AccountDocumentsViewProps & S
         return (
             <div>
                 <p className="uk-text-right">
-                    <button className='uk-button uk-button-primary uk-button-small uk-margin-small-right' data-uk-toggle="target: #modal-upload-document"><span data-uk-icon='icon: upload' /> Upload Document</button>
+                    <button className='uk-button uk-button-primary uk-button-small uk-margin-small-right' onClick={() => this.props.openModalDialog('upload_account_document')}><span data-uk-icon='icon: upload' /> Upload Document</button>
                 </p>
                 <table className="uk-table uk-table-divider">
                     <thead>
@@ -81,16 +83,17 @@ class AccountDocumentsView extends React.Component<AccountDocumentsViewProps & S
                     </tbody>
                 </table>
 
-                <div id="modal-upload-document" data-uk-modal="center: true">
+                <ModalDialog dialogId="upload_account_document">
                     <UploadAccountDocumentDialog accountId={this.props.account.id} />
-                </div>
+                </ModalDialog>
             </div>)
     }
 }
 
 const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, AccountDocumentsViewProps> = (dispatch) => {
     return {
-        fetchAccountDocumentation: (accountId: string) => dispatch(fetchAccountDocumentation(accountId))
+        fetchAccountDocumentation: (accountId: string) => dispatch(fetchAccountDocumentation(accountId)),
+        openModalDialog: (dialogId: string) => dispatch(openModalDialog(dialogId))
     };
 };
   

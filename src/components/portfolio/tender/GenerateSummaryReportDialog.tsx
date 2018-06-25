@@ -9,6 +9,7 @@ import { generateSummaryReport } from '../../../actions/tenderActions';
 import { Tender, TenderPack, TenderSupplier, TenderQuote, TenderIssuance } from "../../../model/Tender";
 import { format } from 'currency-formatter';
 import { selectMany } from "../../../helpers/listHelpers";
+import { closeModalDialog } from "../../../actions/viewActions";
 
 interface GenerateSummaryReportDialogProps {
     tender: Tender;
@@ -24,6 +25,7 @@ interface StateProps {
   
 interface DispatchProps {
     generateSummaryReport: (tenderId: string, quoteId: string, marketCommentary: string, selectionCommentary: string) => void;
+    closeModalDialog: () => void;
 }
 
 class GenerateSummaryReportDialog extends React.Component<GenerateSummaryReportDialogProps & StateProps & DispatchProps, {}> {    
@@ -33,6 +35,7 @@ class GenerateSummaryReportDialog extends React.Component<GenerateSummaryReportD
 
     generateReport() {
         this.props.generateSummaryReport(this.props.tender.tenderId, this.quoteSelectElement.value, this.marketCommentaryElement.value, this.selectionCommentaryElement.value);
+        this.props.closeModalDialog();
     }
 
     getFormattedDateTime(dateTime: string){
@@ -86,8 +89,8 @@ class GenerateSummaryReportDialog extends React.Component<GenerateSummaryReportD
                 </div>
             </form>
             <div className="uk-modal-footer uk-text-right">
-                <button className="uk-button uk-button-default uk-margin-right uk-modal-close" type="button">Cancel</button>
-                <button className="uk-button uk-button-primary uk-modal-close" type="button" onClick={() => this.generateReport()}>Generate</button>
+                <button className="uk-button uk-button-default uk-margin-right" type="button" onClick={() => this.props.closeModalDialog()}>Cancel</button>
+                <button className="uk-button uk-button-primary" type="button" onClick={() => this.generateReport()}>Generate</button>
             </div>
             </div>);
     }
@@ -106,8 +109,7 @@ class GenerateSummaryReportDialog extends React.Component<GenerateSummaryReportD
         }
         
         return (
-            <div className="uk-modal-dialog">
-                <button className="uk-modal-close-default" type="button" data-uk-close></button>
+            <div>
                 <div className="uk-modal-header">
                     <h2 className="uk-modal-title">Create Recommendation Report</h2>
                 </div>
@@ -122,7 +124,8 @@ class GenerateSummaryReportDialog extends React.Component<GenerateSummaryReportD
 
 const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, GenerateSummaryReportDialogProps> = (dispatch) => {
     return {
-        generateSummaryReport: (tenderId: string, quoteId: string, marketCommentary: string, selectionCommentary: string) =>  dispatch(generateSummaryReport(tenderId, quoteId, marketCommentary, selectionCommentary))
+        generateSummaryReport: (tenderId: string, quoteId: string, marketCommentary: string, selectionCommentary: string) =>  dispatch(generateSummaryReport(tenderId, quoteId, marketCommentary, selectionCommentary)),
+        closeModalDialog: () => dispatch(closeModalDialog()) 
     };
 };
   

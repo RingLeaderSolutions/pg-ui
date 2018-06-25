@@ -6,6 +6,7 @@ import Spinner from '../../common/Spinner';
 
 import { updateTenderSuppliers, getTenderSuppliers } from '../../../actions/tenderActions';
 import { Tender, TenderSupplier } from "../../../model/Tender";
+import { closeModalDialog } from "../../../actions/viewActions";
 
 interface TenderSupplierSelectDialogProps {
     tenderId: string;
@@ -23,6 +24,7 @@ interface StateProps {
 interface DispatchProps {
     getTenderSuppliers: () => void;        
     updateTenderSuppliers: (tenderId: string, supplierIds: string[]) => void;
+    closeModalDialog: () => void;
 }
 
 interface SupplierSelectState {
@@ -43,6 +45,7 @@ class TenderSupplierSelectDialog extends React.Component<TenderSupplierSelectDia
 
     saveSuppliers(){
         this.props.updateTenderSuppliers(this.props.tenderId, this.state.selected);
+        this.props.closeModalDialog();
     }
 
     toggleSupplierAssignment(ev: any, supplierId: string){
@@ -101,8 +104,7 @@ class TenderSupplierSelectDialog extends React.Component<TenderSupplierSelectDia
     render() {
         var content = this.renderModalContent();
         return (
-            <div className="uk-modal-dialog">
-                <button className="uk-modal-close-default" type="button" data-uk-close></button>
+            <div>
                 <div className="uk-modal-header">
                     <h2 className="uk-modal-title">Select Suppliers</h2>
                 </div>
@@ -110,8 +112,8 @@ class TenderSupplierSelectDialog extends React.Component<TenderSupplierSelectDia
                     {content}
                 </div>
                 <div className="uk-modal-footer uk-text-right">
-                    <button className="uk-button uk-button-default uk-margin-right uk-modal-close" type="button">Done</button>
-                    <button className="uk-button uk-button-primary uk-margin-right uk-modal-close" type="button" onClick={() => this.saveSuppliers()}>Save</button>
+                    <button className="uk-button uk-button-default uk-margin-right" type="button" onClick={() => this.props.closeModalDialog()}>Done</button>
+                    <button className="uk-button uk-button-primary uk-margin-right" type="button" onClick={() => this.saveSuppliers()}>Save</button>
                 </div>
             </div>)
     }
@@ -120,7 +122,8 @@ class TenderSupplierSelectDialog extends React.Component<TenderSupplierSelectDia
 const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, TenderSupplierSelectDialogProps> = (dispatch) => {
     return {
         getTenderSuppliers: () => dispatch(getTenderSuppliers()),                
-        updateTenderSuppliers: (tenderId, supplierIds) => dispatch(updateTenderSuppliers(tenderId, supplierIds))
+        updateTenderSuppliers: (tenderId, supplierIds) => dispatch(updateTenderSuppliers(tenderId, supplierIds)),
+        closeModalDialog: () => dispatch(closeModalDialog())
     };
 };
   

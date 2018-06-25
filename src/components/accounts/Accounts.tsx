@@ -1,8 +1,7 @@
 import * as React from "react";
-import { Link } from "react-router-dom";
 import { RouteComponentProps } from 'react-router';
 import { MapDispatchToPropsFunction, connect, MapStateToProps } from 'react-redux';
-import { retrieveAccounts } from '../../actions/hierarchyActions';
+import { retrieveAccounts, clearAccountCreation } from '../../actions/hierarchyActions';
 import { ApplicationState } from '../../applicationState';
 import Header from "../common/Header";
 import ErrorMessage from "../common/ErrorMessage";
@@ -11,6 +10,8 @@ import Spinner from '../common/Spinner';
 import NewAccountDialog from "./NewAccountDialog";
 import ReactTable, { Column } from "react-table";
 import { BooleanCellRenderer } from "../common/TableHelpers";
+import { openModalDialog } from "../../actions/viewActions";
+import ModalDialog from "../common/ModalDialog";
 
 interface AccountsProps extends RouteComponentProps<void> {
 }
@@ -24,6 +25,8 @@ interface StateProps {
 
 interface DispatchProps {
   retrieveAccounts: () => void;
+  openModalDialog: (dialogId: string) => void;
+  clearAccountCreation: () => void;
 }
 
 interface AccountsState {
@@ -208,7 +211,7 @@ class Accounts extends React.Component<AccountsProps & StateProps & DispatchProp
                                 <input className="uk-search-input" type="search" placeholder="Search..." value={this.state.searchText} onChange={(e) => this.handleSearch(e)}/>
                             </form>
                             <div className="actions-accounts">
-                                <button className="uk-button uk-button-primary" data-uk-toggle="target: #modal-new-account">
+                                <button className="uk-button uk-button-primary" onClick={() => this.props.openModalDialog('new_account')}>
                                     <span className="uk-margin-small-right" data-uk-icon="plus-circle"></span>
                                     New account
                                 </button>
@@ -219,9 +222,9 @@ class Accounts extends React.Component<AccountsProps & StateProps & DispatchProp
                         </div>
                     </div>
                 </div>
-                <div id="modal-new-account" data-uk-modal="center: true">
+                <ModalDialog dialogId="new_account" onClose={() => this.props.clearAccountCreation()}>
                     <NewAccountDialog />
-                </div>
+                </ModalDialog>
             </div>)
     }
 }
@@ -229,6 +232,8 @@ class Accounts extends React.Component<AccountsProps & StateProps & DispatchProp
 const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, AccountsProps> = (dispatch) => {
   return {
     retrieveAccounts: () => dispatch(retrieveAccounts()),
+    openModalDialog: (dialogId: string) => dispatch(openModalDialog(dialogId)),
+    clearAccountCreation: () => dispatch(clearAccountCreation()),
   };
 };
 

@@ -5,6 +5,7 @@ import { ApplicationState } from '../../applicationState';
 import Spinner from './Spinner';
 
 import { UploadReportDetail } from "../../model/Models";
+import { closeModalDialog } from "../../actions/viewActions";
 
 interface UploadReportViewProps {
 }
@@ -17,6 +18,7 @@ interface StateProps {
 }
   
 interface DispatchProps {
+    closeModalDialog: () => void;
 }
 
 class UploadReportView extends React.Component<UploadReportViewProps & StateProps & DispatchProps, {}> {
@@ -63,11 +65,10 @@ class UploadReportView extends React.Component<UploadReportViewProps & StateProp
     }
     render() {
         if(this.props.working || this.props.uploadReport == null || this.props.uploadReport.uploadFiles == null){
-            return (<div className="uk-modal-dialog upload-report-modal uk-modal-body"><Spinner hasMargin={true} /></div>);
+            return (<div className="uk-modal-body"><Spinner hasMargin={true} /></div>);
         }
         return (
-            <div className="uk-modal-dialog upload-report-modal">
-                <button className="uk-modal-close-default" type="button" data-uk-close></button>
+            <div>
                 <div className="uk-modal-header">
                     <h2 className="uk-modal-title">Upload Report: {this.props.uploadReport.uploadType}</h2>
                 </div>
@@ -75,14 +76,16 @@ class UploadReportView extends React.Component<UploadReportViewProps & StateProp
                     {this.renderTable()}
                 </div>
                 <div className="uk-modal-footer uk-text-right">
-                    <button className="uk-button uk-button-default uk-margin-right uk-modal-close" type="button">Close</button>
+                    <button className="uk-button uk-button-default uk-margin-right" type="button" onClick={() => this.props.closeModalDialog()}>Close</button>
                 </div>
             </div>)
     }
 }
 
-const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, UploadReportViewProps> = () => {
-    return {};
+const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, UploadReportViewProps> = (dispatch) => {
+    return {
+        closeModalDialog: () => dispatch(closeModalDialog()) 
+    };
 };
   
 const mapStateToProps: MapStateToProps<StateProps, UploadReportViewProps> = (state: ApplicationState) => {

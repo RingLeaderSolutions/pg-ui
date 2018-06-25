@@ -1,9 +1,9 @@
 import * as React from "react";
 import { MapDispatchToPropsFunction, connect, MapStateToProps } from 'react-redux';
-import { ApplicationState } from '../../applicationState';
 
 import { updateContact } from '../../actions/hierarchyActions';
 import { AccountContact } from "../../model/HierarchyObjects";
+import { closeModalDialog } from "../../actions/viewActions";
 
 interface UpdateContactDialogProps {    
     contact: AccountContact;
@@ -14,6 +14,7 @@ interface StateProps {
 
 interface DispatchProps {
     updateContact: (contact: AccountContact) => void;
+    closeModalDialog: () => void;
 }
 
 
@@ -36,12 +37,12 @@ class UpdateContactDialog extends React.Component<UpdateContactDialogProps & Sta
         }
         
         this.props.updateContact(contact);
+        this.props.closeModalDialog();
     }
 
     render() {
         return (
-            <div className="uk-modal-dialog">
-                <button className="uk-modal-close-default" type="button" data-uk-close></button>
+            <div>
                 <div className="uk-modal-header">
                     <h2 className="uk-modal-title">Update Contact: {this.props.contact.firstName} {this.props.contact.lastName}</h2>
                 </div>
@@ -95,8 +96,8 @@ class UpdateContactDialog extends React.Component<UpdateContactDialogProps & Sta
                     </div>
                 </div>
                 <div className="uk-modal-footer uk-text-right">
-                    <button className="uk-button uk-button-default uk-margin-right uk-modal-close" type="button">Cancel</button>
-                    <button className="uk-button uk-button-primary uk-modal-close" type="button" onClick={() => this.updateContact()}>Update</button>
+                    <button className="uk-button uk-button-default uk-margin-right" type="button" onClick={() => this.props.closeModalDialog()}>Cancel</button>
+                    <button className="uk-button uk-button-primary" type="button" onClick={() => this.updateContact()}>Update</button>
                 </div>
             </div>)
     }
@@ -104,7 +105,8 @@ class UpdateContactDialog extends React.Component<UpdateContactDialogProps & Sta
 
 const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, UpdateContactDialogProps> = (dispatch) => {
     return {
-        updateContact: (contact: AccountContact) =>  dispatch(updateContact(contact))
+        updateContact: (contact: AccountContact) =>  dispatch(updateContact(contact)),
+        closeModalDialog: () => dispatch(closeModalDialog())
     };
 };
   

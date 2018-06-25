@@ -3,6 +3,7 @@ import { MapDispatchToPropsFunction, connect, MapStateToProps } from 'react-redu
 import { ApplicationState } from '../../applicationState';
 
 import { uploadAccountDocument } from '../../actions/hierarchyActions';
+import { closeModalDialog } from "../../actions/viewActions";
 
 interface UploadAccountDocumentDialogProps {
     accountId: string;
@@ -16,6 +17,7 @@ interface StateProps {
 
 interface DispatchProps {
     uploadAccountDocument: (accountId: string, documentType: string, file: Blob) => void;
+    closeModalDialog: () => void;
 }
 
 interface UploadLOAState {
@@ -36,6 +38,7 @@ class UploadAccountDocumentDialog extends React.Component<UploadAccountDocumentD
     
     upload() {
         this.props.uploadAccountDocument(this.props.accountId, this.documentType.value, this.state.file);
+        this.props.closeModalDialog();
     }
 
     onFileChosen(e: any){
@@ -46,8 +49,7 @@ class UploadAccountDocumentDialog extends React.Component<UploadAccountDocumentD
 
     render() {
         return (
-            <div className="uk-modal-dialog">
-                <button className="uk-modal-close-default" type="button" data-uk-close></button>
+            <div>
                 <div className="uk-modal-header">
                     <h2 className="uk-modal-title">Upload Account Document</h2>
                 </div>
@@ -73,8 +75,8 @@ class UploadAccountDocumentDialog extends React.Component<UploadAccountDocumentD
                     </div>
                 </div>
                 <div className="uk-modal-footer uk-text-right">
-                    <button className="uk-button uk-button-default uk-margin-right uk-modal-close" type="button">Cancel</button>
-                    <button className="uk-button uk-button-primary uk-modal-close" type="button" onClick={this.upload}>Upload</button>
+                    <button className="uk-button uk-button-default uk-margin-right" type="button" onClick={() => this.props.closeModalDialog()}>Cancel</button>
+                    <button className="uk-button uk-button-primary" type="button" onClick={this.upload}>Upload</button>
                 </div>
             </div>)
     }
@@ -82,7 +84,8 @@ class UploadAccountDocumentDialog extends React.Component<UploadAccountDocumentD
 
 const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, UploadAccountDocumentDialogProps> = (dispatch) => {
     return {
-        uploadAccountDocument: (accountId: string, documentType: string, file: Blob) => dispatch(uploadAccountDocument(accountId, documentType, file))        
+        uploadAccountDocument: (accountId: string, documentType: string, file: Blob) => dispatch(uploadAccountDocument(accountId, documentType, file)),
+        closeModalDialog: () => dispatch(closeModalDialog()) 
     };
 };
   

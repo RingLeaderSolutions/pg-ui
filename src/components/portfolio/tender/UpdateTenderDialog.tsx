@@ -9,6 +9,7 @@ import DatePicker from 'react-datepicker';
 import { fetchTariffs } from '../../../actions/portfolioActions';
 import { updateTender } from '../../../actions/tenderActions';
 import { Tender, TenderRequirements, Tariff } from "../../../model/Tender";
+import { closeModalDialog } from "../../../actions/viewActions";
 
 
 interface UpdateTenderDialogProps {
@@ -27,6 +28,7 @@ interface StateProps {
 interface DispatchProps {
     updateTender: (tenderId: string, details: Tender) => void;
     fetchTariffs: () => void;    
+    closeModalDialog: () => void;
 }
 
 interface UpdateTenderState {
@@ -99,6 +101,7 @@ class UpdateTenderDialog extends React.Component<UpdateTenderDialogProps & State
             requirements
         }
         this.props.updateTender(tender.tenderId, tender);
+        this.props.closeModalDialog();
     }
 
     renderTariffOptions(){
@@ -282,11 +285,10 @@ class UpdateTenderDialog extends React.Component<UpdateTenderDialogProps & State
     render() {
         if(this.props.working || this.props.tariffs == null){
             var spinner = (<Spinner hasMargin={true}/>);
-            return (<div className="uk-modal-dialog"> <Spinner /> </div>);
+            return (<div> <Spinner /> </div>);
         }
         return (
-            <div className="uk-modal-dialog">
-                <button className="uk-modal-close-default" type="button" data-uk-close></button>
+            <div>
                 <div className="uk-modal-header">
                     <h2 className="uk-modal-title">Update {this.props.utilityDescription} Tender</h2>
                 </div>
@@ -306,8 +308,8 @@ class UpdateTenderDialog extends React.Component<UpdateTenderDialogProps & State
                     </div>
                 </div>
                 <div className="uk-modal-footer uk-text-right">
-                    <button className="uk-button uk-button-default uk-margin-right uk-modal-close" type="button">Cancel</button>
-                    <button className="uk-button uk-button-primary uk-modal-close" type="button" onClick={(e) => this.updateTender(e)}>Save</button>
+                    <button className="uk-button uk-button-default uk-margin-right" type="button" onClick={() => this.props.closeModalDialog()}>Cancel</button>
+                    <button className="uk-button uk-button-primary" type="button" onClick={(e) => this.updateTender(e)}>Save</button>
                 </div>
             </div>)
     }
@@ -316,7 +318,8 @@ class UpdateTenderDialog extends React.Component<UpdateTenderDialogProps & State
 const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, UpdateTenderDialogProps> = (dispatch) => {
     return {
         updateTender: (portfolioId, tender) => dispatch(updateTender(portfolioId, tender)),
-        fetchTariffs: () => dispatch(fetchTariffs())
+        fetchTariffs: () => dispatch(fetchTariffs()),
+        closeModalDialog: () => dispatch(closeModalDialog()) 
     };
 };
   

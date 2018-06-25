@@ -3,6 +3,7 @@ import { MapDispatchToPropsFunction, connect, MapStateToProps } from 'react-redu
 import { ApplicationState } from '../../../applicationState';
 
 import { uploadElectricityBackingSheet, uploadGasBackingSheet } from '../../../actions/tenderActions';
+import { closeModalDialog } from "../../../actions/viewActions";
 
 interface UploadBackingSheetDialogProps {
     contractId: string;
@@ -18,6 +19,7 @@ interface StateProps {
 interface DispatchProps {
     uploadElectricityBackingSheet: (contractId: string, useGeneric: boolean, file: Blob) => void;
     uploadGasBackingSheet: (contractId: string, useGeneric: boolean, file: Blob) => void;
+    closeModalDialog: () => void;
 }
 
 interface UploadBackingSheetState {
@@ -39,9 +41,12 @@ class UploadBackingSheetDialog extends React.Component<UploadBackingSheetDialogP
     upload() {
         if(this.props.utilityType == "GAS"){
             this.props.uploadGasBackingSheet(this.props.contractId, this.useGeneric.checked, this.state.file);
-            return;
         }
-        this.props.uploadElectricityBackingSheet(this.props.contractId, this.useGeneric.checked, this.state.file);
+        else {
+            this.props.uploadElectricityBackingSheet(this.props.contractId, this.useGeneric.checked, this.state.file);
+        }
+
+        this.props.closeModalDialog();
     }
 
     onFileChosen(e: any){
@@ -52,8 +57,7 @@ class UploadBackingSheetDialog extends React.Component<UploadBackingSheetDialogP
 
     render() {
         return (
-            <div className="uk-modal-dialog">
-                <button className="uk-modal-close-default" type="button" data-uk-close></button>
+            <div>
                 <div className="uk-modal-header">
                     <h2 className="uk-modal-title">Upload Contract Rates</h2>
                 </div>
@@ -80,8 +84,8 @@ class UploadBackingSheetDialog extends React.Component<UploadBackingSheetDialogP
                     </div>
                 </div>
                 <div className="uk-modal-footer uk-text-right">
-                    <button className="uk-button uk-button-default uk-margin-right uk-modal-close" type="button">Cancel</button>
-                    <button className="uk-button uk-button-primary uk-modal-close" type="button" onClick={this.upload}>Upload</button>
+                    <button className="uk-button uk-button-default uk-margin-right" type="button" onClick={() => this.props.closeModalDialog()}>Cancel</button>
+                    <button className="uk-button uk-button-primary" type="button" onClick={this.upload}>Upload</button>
                 </div>
             </div>)
     }
@@ -90,7 +94,8 @@ class UploadBackingSheetDialog extends React.Component<UploadBackingSheetDialogP
 const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, UploadBackingSheetDialogProps> = (dispatch) => {
     return {
         uploadElectricityBackingSheet: (contractId: string, useGeneric: boolean, file: Blob) => dispatch(uploadElectricityBackingSheet(contractId, useGeneric, file)),
-        uploadGasBackingSheet: (contractId: string, useGeneric: boolean, file: Blob) => dispatch(uploadGasBackingSheet(contractId, useGeneric, file))        
+        uploadGasBackingSheet: (contractId: string, useGeneric: boolean, file: Blob) => dispatch(uploadGasBackingSheet(contractId, useGeneric, file)),
+        closeModalDialog: () => dispatch(closeModalDialog())    
     };
 };
   

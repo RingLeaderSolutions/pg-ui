@@ -48,6 +48,24 @@ export default function connectSignalR(store: any) {
                         case "tenderpack_issue_failed":
                             showNotification(data.Description, false);
                             break;
+                        case "contract_upload_successful":
+                            showNotification("Successfully uploaded existing contract", true);
+                            break;
+                        case "contract_upload_failed":
+                            showNotification("Failed to upload existing contract.", false);
+                            break;
+                        case "quote_upload_successful":
+                            showNotification(`Successfully uploaded existing contract: ${data.Description}`, true);
+                            break;
+                        case "quote_upload_failed":
+                            showNotification(`Failed to upload quote: ${data.Description}`, false);
+                            break;
+                        case "historical_upload_successful":
+                            showNotification(`Successfully uploaded HH data: ${data.Description}`, true);
+                            break;
+                        case "historical_upload_failed":
+                            showNotification(`Failed to upload HH data: ${data.Description}.`, true);
+                            break;
                     }
                     store.dispatch(getPortfolioTenders(currentPortfolio.id));
                     store.dispatch(fetchPortfolioUploads(currentPortfolio.id));
@@ -59,8 +77,17 @@ export default function connectSignalR(store: any) {
                     store.dispatch(fetchAccountDocumentation(currentAccount.id));
                     store.dispatch(fetchAccountUploads(currentAccount.id));
                 }
-                if(data.Category == "created" || data.Category == "deleted"){
-                    store.dispatch(retrieveAccounts())
+                switch(data.Category){
+                    case "created":
+                    case "deleted":
+                        store.dispatch(retrieveAccounts());
+                        break;
+                    case "supplydata_upload_failed":
+                        showNotification(`Failed to upload ${data.Description} supply data.`, false);
+                        break;
+                    case "supplydata_upload_successful":
+                        showNotification(`Successfully uploaded ${data.Description} supply data`, true);
+                        break;
                 }
                 break;
         }

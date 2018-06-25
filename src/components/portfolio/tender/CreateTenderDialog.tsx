@@ -9,6 +9,7 @@ import DatePicker from 'react-datepicker';
 import { fetchTariffs } from '../../../actions/portfolioActions';
 import { createTender } from '../../../actions/tenderActions';
 import { Tender, TenderRequirements, Tariff } from "../../../model/Tender";
+import { closeModalDialog } from "../../../actions/viewActions";
 
 
 interface CreateTenderDialogProps {
@@ -28,6 +29,7 @@ interface StateProps {
 interface DispatchProps {
     createTender: (portfolioId: string, tender: Tender, utilityTypE: UtilityType, isHalfHourly: boolean) => void;
     fetchTariffs: () => void;    
+    closeModalDialog: () => void;
 }
 
 interface CreateTenderState {
@@ -99,6 +101,7 @@ class CreateTenderDialog extends React.Component<CreateTenderDialogProps & State
         }
 
         this.props.createTender(this.props.portfolioId, tender, this.props.utility, this.props.isHalfHourly);
+        this.props.closeModalDialog();
     }
 
     renderTariffOptions(){
@@ -256,11 +259,10 @@ class CreateTenderDialog extends React.Component<CreateTenderDialogProps & State
     }
     render() {
         if(this.props.working || this.props.tariffs == null){
-            return (<div className="uk-modal-dialog"> <Spinner hasMargin={true}/> </div>);
+            return (<div> <Spinner hasMargin={true}/> </div>);
         }
         return (
-            <div className="uk-modal-dialog">
-                <button className="uk-modal-close-default" type="button" data-uk-close></button>
+            <div>
                 <div className="uk-modal-header">
                     <h2 className="uk-modal-title">Create {this.props.utilityDescription} Tender</h2>
                 </div>
@@ -280,8 +282,8 @@ class CreateTenderDialog extends React.Component<CreateTenderDialogProps & State
                     </div>
                 </div>
                 <div className="uk-modal-footer uk-text-right">
-                    <button className="uk-button uk-button-default uk-margin-right uk-modal-close" type="button">Cancel</button>
-                    <button className="uk-button uk-button-primary uk-modal-close" type="button" onClick={(e) => this.createTender(e)}>Save</button>
+                    <button className="uk-button uk-button-default uk-margin-right" type="button" onClick={() => this.props.closeModalDialog()}>Cancel</button>
+                    <button className="uk-button uk-button-primary" type="button" onClick={(e) => this.createTender(e)}>Save</button>
                 </div>
             </div>)
     }
@@ -290,7 +292,8 @@ class CreateTenderDialog extends React.Component<CreateTenderDialogProps & State
 const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, CreateTenderDialogProps> = (dispatch) => {
     return {
         createTender: (portfolioId, tender, utilityType, isHalfHourly) => dispatch(createTender(portfolioId, tender, utilityType, isHalfHourly)),
-        fetchTariffs: () => dispatch(fetchTariffs())
+        fetchTariffs: () => dispatch(fetchTariffs()),
+        closeModalDialog: () => dispatch(closeModalDialog()) 
     };
 };
   

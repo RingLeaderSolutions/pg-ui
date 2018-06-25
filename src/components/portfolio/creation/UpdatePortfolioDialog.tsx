@@ -6,6 +6,7 @@ import { User, PortfolioDetails } from '../../../model/Models';
 import Spinner from '../../common/Spinner';
 import { fetchUsers, editPortfolio } from '../../../actions/portfolioActions';
 import { PortfolioCreationRequest, Portfolio } from "../../../model/Portfolio";
+import { closeModalDialog } from "../../../actions/viewActions";
 
 interface UpdatePortfolioDialogProps { 
     portfolio: Portfolio;   
@@ -22,6 +23,7 @@ interface StateProps {
 interface DispatchProps {
     editPortfolio: (portfolio: PortfolioCreationRequest) => void;
     fetchUsers: () => void;
+    closeModalDialog: () => void;
 }
 
 class UpdatePortfolioDialog extends React.Component<UpdatePortfolioDialogProps & StateProps & DispatchProps, {}> {
@@ -46,6 +48,7 @@ class UpdatePortfolioDialog extends React.Component<UpdatePortfolioDialogProps &
         }
         
         this.props.editPortfolio(portfolio);
+        this.props.closeModalDialog();
     }
 
     render() {
@@ -61,8 +64,7 @@ class UpdatePortfolioDialog extends React.Component<UpdatePortfolioDialogProps &
         });
 
         return (
-            <div className="uk-modal-dialog">
-                <button className="uk-modal-close-default" type="button" data-uk-close></button>
+            <div>
                 <div className="uk-modal-header">
                     <h2 className="uk-modal-title">Edit Portfolio</h2>
                 </div>
@@ -101,8 +103,8 @@ class UpdatePortfolioDialog extends React.Component<UpdatePortfolioDialogProps &
                     </div>
                 </div>
                 <div className="uk-modal-footer uk-text-right">
-                    <button className="uk-button uk-button-default uk-margin-right uk-modal-close" type="button">Cancel</button>
-                    <button className="uk-button uk-button-primary uk-modal-close" type="button" onClick={() => this.editPortfolio()}>Update</button>
+                    <button className="uk-button uk-button-default uk-margin-right" type="button" onClick={() => this.props.closeModalDialog()}>Cancel</button>
+                    <button className="uk-button uk-button-primary" type="button" onClick={() => this.editPortfolio()}>Update</button>
                 </div>
             </div>)
     }
@@ -112,6 +114,7 @@ const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, UpdatePortfo
     return {
         editPortfolio: (portfolio: PortfolioCreationRequest) => dispatch(editPortfolio(portfolio)),
         fetchUsers: () => dispatch(fetchUsers()),
+        closeModalDialog: () => dispatch(closeModalDialog())
     };
 };
   

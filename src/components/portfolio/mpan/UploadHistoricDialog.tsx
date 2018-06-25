@@ -4,6 +4,7 @@ import { ApplicationState } from '../../../applicationState';
 import { PortfolioDetails } from '../../../model/Models';
 
 import { uploadHistoric } from '../../../actions/portfolioActions';
+import { closeModalDialog } from "../../../actions/viewActions";
 
 interface UploadHistoricDialogProps {
     details: PortfolioDetails;
@@ -17,6 +18,7 @@ interface StateProps {
 
 interface DispatchProps {
     uploadHistoric: (portfolioId: string, files: Blob[], historicalType: string) => void;
+    closeModalDialog: () => void;
 }
 
 interface UploadHistoricState {
@@ -38,6 +40,7 @@ class UploadHistoricDialog extends React.Component<UploadHistoricDialogProps & S
     upload() {
         var portfolioId = this.props.details.portfolio.id;
         this.props.uploadHistoric(portfolioId, this.state.files, this.historicalType.value);
+        this.props.closeModalDialog();
     }
 
     onFileChosen(e: any){
@@ -49,8 +52,7 @@ class UploadHistoricDialog extends React.Component<UploadHistoricDialogProps & S
     render() {
 
         return (
-            <div className="uk-modal-dialog">
-                <button className="uk-modal-close-default" type="button" data-uk-close></button>
+            <div>
                 <div className="uk-modal-header">
                     <h2 className="uk-modal-title">Upload Historical Consumption</h2>
                 </div>
@@ -74,8 +76,8 @@ class UploadHistoricDialog extends React.Component<UploadHistoricDialogProps & S
                     </div>
                 </div>
                 <div className="uk-modal-footer uk-text-right">
-                    <button className="uk-button uk-button-default uk-margin-right uk-modal-close" type="button">Cancel</button>
-                    <button className="uk-button uk-button-primary uk-modal-close" type="button" onClick={this.upload}>Upload</button>
+                    <button className="uk-button uk-button-default uk-margin-right" type="button" onClick={() => this.props.closeModalDialog()}>Cancel</button>
+                    <button className="uk-button uk-button-primary" type="button" onClick={this.upload}>Upload</button>
                 </div>
             </div>)
     }
@@ -83,7 +85,8 @@ class UploadHistoricDialog extends React.Component<UploadHistoricDialogProps & S
 
 const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, UploadHistoricDialogProps> = (dispatch) => {
     return {
-        uploadHistoric: (portfolioId: string, files: Blob[], historicalType: string) => dispatch(uploadHistoric(portfolioId, files, historicalType))        
+        uploadHistoric: (portfolioId: string, files: Blob[], historicalType: string) => dispatch(uploadHistoric(portfolioId, files, historicalType)),
+        closeModalDialog: () => dispatch(closeModalDialog())
     };
 };
   

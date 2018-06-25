@@ -4,6 +4,7 @@ import { ApplicationState } from '../../../applicationState';
 import { UtilityType } from '../../../model/Models';
 
 import { uploadSupplyMeterData } from '../../../actions/portfolioActions';
+import { closeModalDialog } from "../../../actions/viewActions";
 
 interface UploadSupplyDataDialogProps {
     accountId: string;
@@ -18,6 +19,7 @@ interface StateProps {
 
 interface DispatchProps {
     uploadSupplyData: (accountId: string, file: Blob, type: UtilityType) => void;
+    closeModalDialog: () => void;
 }
 
 interface UploadHistoricState {
@@ -37,6 +39,7 @@ class UploadSupplyDataDialog extends React.Component<UploadSupplyDataDialogProps
     
     upload() {
         this.props.uploadSupplyData(this.props.accountId, this.state.file, this.props.type);
+        this.props.closeModalDialog();
     }
 
     onFileChosen(e: any){
@@ -47,8 +50,7 @@ class UploadSupplyDataDialog extends React.Component<UploadSupplyDataDialogProps
 
     render() {
         return (
-            <div className="uk-modal-dialog">
-                <button className="uk-modal-close-default" type="button" data-uk-close></button>
+            <div>
                 <div className="uk-modal-header">
                     <h2 className="uk-modal-title">Upload Supply Data</h2>
                 </div>
@@ -65,8 +67,8 @@ class UploadSupplyDataDialog extends React.Component<UploadSupplyDataDialogProps
                     </div>
                 </div>
                 <div className="uk-modal-footer uk-text-right">
-                    <button className="uk-button uk-button-default uk-margin-right uk-modal-close" type="button">Cancel</button>
-                    <button className="uk-button uk-button-primary uk-modal-close" type="button" onClick={this.upload}>Upload</button>
+                    <button className="uk-button uk-button-default uk-margin-right" type="button" onClick={() => this.props.closeModalDialog()}>Cancel</button>
+                    <button className="uk-button uk-button-primary" type="button" onClick={this.upload}>Upload</button>
                 </div>
             </div>)
     }
@@ -74,7 +76,8 @@ class UploadSupplyDataDialog extends React.Component<UploadSupplyDataDialogProps
 
 const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, UploadSupplyDataDialogProps> = (dispatch) => {
     return {
-        uploadSupplyData: (accountId: string, file: Blob, type: UtilityType) => dispatch(uploadSupplyMeterData(accountId, file, type))        
+        uploadSupplyData: (accountId: string, file: Blob, type: UtilityType) => dispatch(uploadSupplyMeterData(accountId, file, type)),
+        closeModalDialog: () => dispatch(closeModalDialog()) 
     };
 };
   

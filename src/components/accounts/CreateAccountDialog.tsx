@@ -5,7 +5,8 @@ import { Account, CompanyInfo } from '../../model/Models';
 import * as moment from 'moment';
 import DatePicker from 'react-datepicker';
 
-import { createAccount } from '../../actions/hierarchyActions';
+import { createAccount, clearAccountCreation } from '../../actions/hierarchyActions';
+import { closeModalDialog } from "../../actions/viewActions";
 
 interface CreateAccountDialogProps {    
 }
@@ -16,6 +17,8 @@ interface StateProps {
 
 interface DispatchProps {
     createAccount: (account: Account) => void;
+    closeModalDialog: () => void;
+    clearAccountCreation: () => void;
 }
 
 interface CreateAccountDialogState {
@@ -74,6 +77,11 @@ class CreateAccountDialog extends React.Component<CreateAccountDialogProps & Sta
         });
 
         event.preventDefault();
+    }
+
+    close(){
+        this.props.clearAccountCreation();
+        this.props.closeModalDialog();
     }
 
     render() {
@@ -203,7 +211,7 @@ class CreateAccountDialog extends React.Component<CreateAccountDialogProps & Sta
                     </div>
                 </div>
                 <div className="uk-modal-footer uk-text-right">
-                    <button className="uk-button uk-button-default uk-margin-right uk-modal-close" type="button">Cancel</button>
+                    <button className="uk-button uk-button-default uk-margin-right" type="button" onClick={() => this.close()}>Cancel</button>
                     <button className="uk-button uk-button-primary" type="button" onClick={this.createAccount}>Create</button>
                 </div>
             </div>)
@@ -212,7 +220,9 @@ class CreateAccountDialog extends React.Component<CreateAccountDialogProps & Sta
 
 const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, CreateAccountDialogProps> = (dispatch) => {
     return {
-        createAccount: (account: Account) =>  dispatch(createAccount(account))
+        createAccount: (account: Account) =>  dispatch(createAccount(account)),
+        closeModalDialog: () => dispatch(closeModalDialog()),
+        clearAccountCreation: () => dispatch(clearAccountCreation())
     };
 };
   

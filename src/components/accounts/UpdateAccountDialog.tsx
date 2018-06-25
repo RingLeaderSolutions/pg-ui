@@ -6,6 +6,7 @@ import * as moment from 'moment';
 import DatePicker from 'react-datepicker';
 
 import { updateAccount } from '../../actions/hierarchyActions';
+import { closeModalDialog } from "../../actions/viewActions";
 
 interface UpdateAccountDialogProps {    
     account: Account;
@@ -19,6 +20,7 @@ interface StateProps {
 
 interface DispatchProps {
     updateAccount: (account: Account) => void;
+    closeModalDialog: () => void;
 }
 
 interface UpdateAccountDialogState {
@@ -67,6 +69,7 @@ class UpdateAccountDialog extends React.Component<UpdateAccountDialogProps & Sta
         }
         
         this.props.updateAccount(account);
+        this.props.closeModalDialog();
     }
 
     handleIncorporationDateChange(date: moment.Moment, event: React.SyntheticEvent<any>){
@@ -80,8 +83,7 @@ class UpdateAccountDialog extends React.Component<UpdateAccountDialogProps & Sta
     render() {
         var { account } = this.props;
         return (
-            <div className="uk-modal-dialog">
-                <button className="uk-modal-close-default" type="button" data-uk-close></button>
+            <div>
                 <div className="uk-modal-header">
                     <h2 className="uk-modal-title">Update Account: {account.companyName}</h2>
                 </div>
@@ -205,8 +207,8 @@ class UpdateAccountDialog extends React.Component<UpdateAccountDialogProps & Sta
                     </div>
                 </div>
                 <div className="uk-modal-footer uk-text-right">
-                    <button className="uk-button uk-button-default uk-margin-right uk-modal-close" type="button">Cancel</button>
-                    <button className="uk-button uk-button-primary uk-modal-close" type="button" onClick={() => this.updateAccount()}>Save</button>
+                    <button className="uk-button uk-button-default uk-margin-right" type="button" onClick={() => this.props.closeModalDialog()}>Cancel</button>
+                    <button className="uk-button uk-button-primary" type="button" onClick={() => this.updateAccount()}>Save</button>
                 </div>
             </div>)
     }
@@ -214,7 +216,8 @@ class UpdateAccountDialog extends React.Component<UpdateAccountDialogProps & Sta
 
 const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, UpdateAccountDialogProps> = (dispatch) => {
     return {
-        updateAccount: (account: Account) =>  dispatch(updateAccount(account))
+        updateAccount: (account: Account) =>  dispatch(updateAccount(account)),
+        closeModalDialog: () => dispatch(closeModalDialog())
     };
 };
   

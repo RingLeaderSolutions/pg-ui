@@ -145,10 +145,12 @@ const hierarchyReducer: Reducer<HierarchyState> = combineReducers<HierarchyState
 import { ViewState } from './view/ViewState';
 import { portfolioViewReducer } from './view/portfolioViewReducer';
 import { accountViewReducer } from './view/accountViewReducer';
+import { modalDialogReducer } from './view/modalDialogReducer';
 
 const viewReducer: Reducer<ViewState> = combineReducers<ViewState>({
     portfolio: portfolioViewReducer,
-    account: accountViewReducer
+    account: accountViewReducer,
+    modal: modalDialogReducer
 });
 
 import selectedUploadReportReducer from './selectedUploadReportReducer';

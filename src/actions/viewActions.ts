@@ -25,3 +25,15 @@ export function selectPortfolioTenderTab(index: number){
         dispatch( { type: types.SELECT_PORTFOLIO_TENDER_TAB, data: index });
     };
 }
+
+export function openModalDialog(modalId: string){
+    return (dispatch: Dispatch<any>) => {
+        dispatch( { type: types.OPEN_MODAL_DIALOG, data: modalId });
+    };
+}
+
+export function closeModalDialog(){
+    return (dispatch: Dispatch<any>) => {
+        dispatch( { type: types.CLOSE_MODAL_DIALOG, data: null });
+    };
+}

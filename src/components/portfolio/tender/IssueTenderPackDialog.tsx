@@ -7,6 +7,7 @@ import * as moment from 'moment';
 
 import { issueTenderPack, fetchTenderIssuanceEmail } from '../../../actions/tenderActions';
 import { Tender, TenderSupplier, TenderIssuanceEmail } from "../../../model/Tender";
+import { closeModalDialog } from "../../../actions/viewActions";
 
 interface IssueTenderPackDialogProps {
     tender: Tender;
@@ -24,6 +25,7 @@ interface StateProps {
 interface DispatchProps {
     fetchIssuanceEmail: (tenderId: string) => void;
     issueTenderPack: (tenderId: string, subject: string, body: string) => void;
+    closeModalDialog: () => void;
 }
 
 class IssueTenderPackDialog extends React.Component<IssueTenderPackDialogProps & StateProps & DispatchProps, {}> {    
@@ -38,6 +40,7 @@ class IssueTenderPackDialog extends React.Component<IssueTenderPackDialogProps &
 
     issueTender() {
         this.props.issueTenderPack(this.props.tender.tenderId, this.subjectElement.value, this.bodyElement.value);
+        this.props.closeModalDialog();
     }
 
     renderPackDialogContent(){
@@ -55,7 +58,7 @@ class IssueTenderPackDialog extends React.Component<IssueTenderPackDialogProps &
                         <p>If you wish to issue a new requirements pack, please update the deadline by editing the tender.</p>
                     </div>
                     <div className="uk-modal-footer uk-text-right">
-                        <button className="uk-button uk-button-default uk-margin-right uk-modal-close" type="button">OK</button>
+                        <button className="uk-button uk-button-default uk-margin-right" type="button" onClick={() => this.props.closeModalDialog()}>OK</button>
                     </div>
                 </div>
             )
@@ -88,8 +91,8 @@ class IssueTenderPackDialog extends React.Component<IssueTenderPackDialogProps &
                     </form>
                 </div>
                 <div className="uk-modal-footer uk-text-right">
-                    <button className="uk-button uk-button-default uk-margin-right uk-modal-close" type="button">Cancel</button>
-                    <button className="uk-button uk-button-primary uk-modal-close" type="button" onClick={() => this.issueTender()}>Issue</button>
+                    <button className="uk-button uk-button-default uk-margin-right" type="button" onClick={() => this.props.closeModalDialog()}>Cancel</button>
+                    <button className="uk-button uk-button-primary" type="button" onClick={() => this.issueTender()}>Issue</button>
                 </div>
             </div>);
     }
@@ -107,8 +110,7 @@ class IssueTenderPackDialog extends React.Component<IssueTenderPackDialogProps &
         }
         
         return (
-            <div className="uk-modal-dialog">
-                <button className="uk-modal-close-default" type="button" data-uk-close></button>
+            <div>
                 <div className="uk-modal-header">
                     <h2 className="uk-modal-title">Issue Tender Requirements</h2>
                 </div>
@@ -122,7 +124,8 @@ class IssueTenderPackDialog extends React.Component<IssueTenderPackDialogProps &
 const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, IssueTenderPackDialogProps> = (dispatch) => {
     return {
         fetchIssuanceEmail: (tenderId: string) => dispatch(fetchTenderIssuanceEmail(tenderId)),
-        issueTenderPack: (tenderId: string, subject: string, body: string) => dispatch(issueTenderPack(tenderId, subject, body))
+        issueTenderPack: (tenderId: string, subject: string, body: string) => dispatch(issueTenderPack(tenderId, subject, body)),
+        closeModalDialog: () => dispatch(closeModalDialog()) 
     };
 };
   

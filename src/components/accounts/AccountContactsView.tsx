@@ -10,6 +10,8 @@ import Spinner from '../common/Spinner';
 import { deleteContact } from '../../actions/hierarchyActions';
 import CreateContactDialog from "./CreateContactDialog";
 import UpdateContactDialog from "./UpdateContactDialog";
+import { openModalDialog } from "../../actions/viewActions";
+import ModalDialog from "../common/ModalDialog";
 
 interface AccountContactsViewProps {
 }
@@ -23,6 +25,7 @@ interface StateProps {
 
 interface DispatchProps {
     deleteContact: (contactId: string) => void;
+    openModalDialog: (dialogId: string) => void;
 }
 
 class AccountContactsView extends React.Component<AccountContactsViewProps & StateProps & DispatchProps, {}> {
@@ -43,8 +46,7 @@ class AccountContactsView extends React.Component<AccountContactsViewProps & Sta
                 return 0;
             })
         .map(c => {
-            var updateContactDialogName = `modal-update-contact-${c.id}`;
-            var viewUpdateContactDialogClass = `target: #${updateContactDialogName}`;
+            var updateContactDialogName = `update_contact_${c.id}`;
 
             return (
                 <tr key={c.id}>
@@ -61,7 +63,7 @@ class AccountContactsView extends React.Component<AccountContactsViewProps & Sta
                                 </button>
                                 <div data-uk-dropdown="pos:bottom-justify;mode:click">
                                     <ul className="uk-nav uk-dropdown-nav">
-                                    <li><a href="#" data-uk-toggle={viewUpdateContactDialogClass}>
+                                    <li><a href="#" onClick={() => this.props.openModalDialog(updateContactDialogName)}>
                                         <span className="uk-margin-small-right" data-uk-icon="icon: pencil" />
                                         Edit
                                     </a></li>
@@ -73,9 +75,9 @@ class AccountContactsView extends React.Component<AccountContactsViewProps & Sta
                                     </ul>
                                 </div>
                             </div>
-                            <div id={updateContactDialogName} data-uk-modal="center: true">
+                            <ModalDialog dialogId={updateContactDialogName}>
                                 <UpdateContactDialog contact={c} />
-                            </div>
+                            </ModalDialog>
                         </div>
                     </td>
                 </tr>
@@ -94,7 +96,7 @@ class AccountContactsView extends React.Component<AccountContactsViewProps & Sta
         return (
             <div>
                 <p className="uk-text-right">
-                    <button className='uk-button uk-button-primary uk-button-small uk-margin-small-right' data-uk-toggle="target: #modal-add-contact"><span data-uk-icon='icon: plus' /> Add Contact</button>
+                    <button className='uk-button uk-button-primary uk-button-small uk-margin-small-right' onClick={() => this.props.openModalDialog('create-contact')}><span data-uk-icon='icon: plus' /> Add Contact</button>
                 </p>
                 <table className="uk-table uk-table-divider">
                     <thead>
@@ -111,16 +113,17 @@ class AccountContactsView extends React.Component<AccountContactsViewProps & Sta
                         {this.renderAccountContactRows()}
                     </tbody>
                 </table>
-                <div id="modal-add-contact" data-uk-modal="center: true">
+                <ModalDialog dialogId="create-contact">
                     <CreateContactDialog accountId={this.props.account.id} />
-                </div>
+                </ModalDialog>
             </div>)
     }
 }
 
 const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, AccountContactsViewProps> = (dispatch) => {
     return {
-        deleteContact: (contactId: string) => dispatch(deleteContact(contactId))
+        deleteContact: (contactId: string) => dispatch(deleteContact(contactId)),
+        openModalDialog: (dialogId: string) => dispatch(openModalDialog(dialogId))
     };
 };
   

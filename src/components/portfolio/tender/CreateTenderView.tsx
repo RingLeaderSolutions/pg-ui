@@ -5,6 +5,8 @@ import { ApplicationState } from '../../../applicationState';
 import Spinner from '../../common/Spinner';
 import { UtilityType } from "../../../model/Models";
 import CreateTenderDialog from "./CreateTenderDialog";
+import { openModalDialog } from "../../../actions/viewActions";
+import ModalDialog from "../../common/ModalDialog";
 
 interface CreateTenderProps {
     portfolioId: string;
@@ -19,6 +21,7 @@ interface StateProps {
 }
 
 interface DispatchProps {
+    openModalDialog: (dialogId: string) => void;
 }
 
 class CreateTenderView extends React.Component<CreateTenderProps & StateProps & DispatchProps, {}> {    
@@ -53,20 +56,19 @@ class CreateTenderView extends React.Component<CreateTenderProps & StateProps & 
             utilityDescription  = "Gas";
         }
 
-        var modalName = `modal-create-tender-${utilityDescription}-${this.props.isHalfHourly}`;
-        var modalToggle = `target: #${modalName}`;
+        var modalName = `create_tender_${utilityDescription}_${this.props.isHalfHourly}`;
 
         var content = (
             <div>
                 <div className="uk-grid uk-flex-center" data-uk-grid>
-                    <button className="uk-button uk-button-primary" type="button" data-uk-toggle={modalToggle}>
+                    <button className="uk-button uk-button-primary" type="button" onClick={() => this.props.openModalDialog(modalName)}>
                         <span className="uk-margin-small-right" data-uk-icon={buttonIcon} />
                         {buttonContent}
                     </button>
                 </div>
-                <div id={modalName} data-uk-modal="center: true">
+                <ModalDialog dialogId={modalName}>
                     <CreateTenderDialog portfolioId={this.props.portfolioId} utility={this.props.utilityType} utilityDescription={utilityDescription} isHalfHourly={this.props.isHalfHourly} />
-                </div>
+                </ModalDialog>
             </div>)
         return this.renderCard(content);
     }
@@ -74,6 +76,7 @@ class CreateTenderView extends React.Component<CreateTenderProps & StateProps & 
 
 const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, CreateTenderProps> = (dispatch) => {
     return {
+        openModalDialog: (dialogId: string) => dispatch(openModalDialog(dialogId))
     };
 };
   
