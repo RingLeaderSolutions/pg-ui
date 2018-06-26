@@ -25,26 +25,46 @@ interface DispatchProps {
     closeModalDialog: () => void;
 }
 
-class UpdateExistingContractDialog extends React.Component<UpdateExistingContractDialogProps & StateProps & DispatchProps, {}> {
+interface UpdateExistingContractDialogState {
+    contractRef: string;
+    supplier: string;
+    product: string;
+}
 
+class UpdateExistingContractDialog extends React.Component<UpdateExistingContractDialogProps & StateProps & DispatchProps, UpdateExistingContractDialogState> {
+    constructor(props: UpdateExistingContractDialogProps & StateProps & DispatchProps) {
+        super();
+        this.state = {
+            contractRef: props.existingContract.reference,
+            supplier: props.existingContract.supplierId,
+            product: props.existingContract.product
+        }
+    }
 
-    contractRef: HTMLInputElement;
-    supplier: HTMLSelectElement;
-    product: HTMLSelectElement;
+    componentWillReceiveProps(nextProps: UpdateExistingContractDialogProps & StateProps & DispatchProps){
+        if(nextProps.existingContract != null) {
+            this.setState({
+                contractRef: nextProps.existingContract.reference,
+                supplier: nextProps.existingContract.supplierId,
+                product: nextProps.existingContract.product
+            });
+        }
+    }
 
     addExistingContract(){
         var contract: TenderContract = {
             contractId: this.props.existingContract.contractId,
-            supplierId: this.supplier.value,
+            supplierId: this.state.supplier,
             accountId: this.props.existingContract.accountId,
-            product: this.product.value,
-            reference: this.contractRef.value,
+            product: this.state.product,
+            reference: this.state.contractRef,
             utility: this.props.existingContract.utility,
             incumbent: this.props.existingContract.incumbent,
             uploaded: this.props.existingContract.uploaded,
             status: this.props.existingContract.status,
             sheetCount: this.props.existingContract.sheetCount
         };
+
         this.props.updateExistingContract(this.props.portfolioId, this.props.tenderId, contract);
         this.props.closeModalDialog();
     }
@@ -56,12 +76,21 @@ class UpdateExistingContractDialog extends React.Component<UpdateExistingContrac
 
         return (
             <select className='uk-select' 
-                defaultValue={this.props.existingContract.supplierId}
-                ref={ref => this.supplier = ref}>
+                value={this.state.supplier}
+                onChange={(e) => this.handleFormChange("supplier", e)}>
                 <option value="" disabled>Select</option>
                 {options}
             </select>
         );
+    }
+
+    handleFormChange(attribute: string, event: React.ChangeEvent<any>){
+        var value = event.target.value;
+
+        this.setState({
+            ...this.state,
+            [attribute]: value
+        })
     }
 
     render() {
@@ -81,14 +110,14 @@ class UpdateExistingContractDialog extends React.Component<UpdateExistingContrac
                                     <div className='uk-margin'>
                                         <label className='uk-form-label'>Contract Ref</label>
                                         <input className='uk-input' 
-                                            defaultValue={this.props.existingContract.reference}
-                                            ref={ref => this.contractRef = ref}/>
+                                            value={this.state.contractRef}
+                                            onChange={(e) => this.handleFormChange("contractRef", e)}/>
                                     </div>
                                     <div className='uk-margin'>
                                         <label className='uk-form-label'>Product</label>
                                         <select className='uk-select' 
-                                            defaultValue={this.props.existingContract.product}
-                                            ref={ref => this.product = ref}>
+                                            value={this.state.product}
+                                            onChange={(e) => this.handleFormChange("product", e)}>
                                             <option value="" disabled>Select</option>
                                             <option>Fixed</option>
                                             <option>Flexi</option>

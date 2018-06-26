@@ -31,8 +31,16 @@ interface DispatchProps {
 
 class TenderSummary extends React.Component<TenderSummaryProps & StateProps & DispatchProps, {}> {
     componentDidMount(){
+        console.log('mounted for ' + this.props.portfolio.id);
         let portfolioId = this.props.portfolio.id;     
         this.props.getPortfolioTenders(portfolioId);
+    }
+
+    componentWillReceiveProps(nextProps: TenderSummaryProps & StateProps & DispatchProps){
+        console.log('received props for ' + nextProps.portfolio.id);
+        if(nextProps.portfolio.id != this.props.portfolio.id){
+            this.props.getPortfolioTenders(nextProps.portfolio.id);
+        }
     }
 
     generateGasTender(){

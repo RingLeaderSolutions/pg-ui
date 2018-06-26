@@ -26,4 +26,4 @@ const showCloseDialogReducer = (state: ModalDialogState, action: any): ModalDial
     }
 }
 
-export const modalDialogReducer =  reduceReducers((state = initialDialogState) => state, showCloseDialogReducer);
+export const modalDialogReducer = reduceReducers((state = initialDialogState) => state, showCloseDialogReducer);

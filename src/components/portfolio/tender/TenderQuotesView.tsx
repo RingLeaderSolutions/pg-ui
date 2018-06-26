@@ -38,7 +38,6 @@ interface DispatchProps {
 }
 
 class TenderQuotesView extends React.Component<TenderQuotesViewProps & StateProps & DispatchProps, {}> {
-
     fetchAndDisplayRates(quoteId: string, ratesDialogName: string){
         this.props.fetchQuoteBackingSheets(this.props.tender.tenderId, quoteId);
         this.props.openModalDialog(ratesDialogName);

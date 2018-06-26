@@ -52,7 +52,7 @@ export default function connectSignalR(store: any) {
                             showNotification("Successfully uploaded existing contract", true);
                             break;
                         case "contract_upload_failed":
-                            showNotification("Failed to upload existing contract.", false);
+                            showNotification("Failed to upload existing contract", false);
                             break;
                         case "quote_upload_successful":
                             showNotification(`Successfully uploaded existing contract: ${data.Description}`, true);
@@ -64,7 +64,7 @@ export default function connectSignalR(store: any) {
                             showNotification(`Successfully uploaded HH data: ${data.Description}`, true);
                             break;
                         case "historical_upload_failed":
-                            showNotification(`Failed to upload HH data: ${data.Description}.`, true);
+                            showNotification(`Failed to upload HH data: ${data.Description}`, false);
                             break;
                     }
                     store.dispatch(getPortfolioTenders(currentPortfolio.id));

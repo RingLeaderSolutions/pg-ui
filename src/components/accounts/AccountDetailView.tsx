@@ -4,9 +4,9 @@ import ErrorMessage from "../common/ErrorMessage";
 import { RouteComponentProps } from 'react-router';
 import { MapDispatchToPropsFunction, connect, MapStateToProps } from 'react-redux';
 import { ApplicationState } from '../../applicationState';
-import { AccountDetail, UtilityType } from '../../model/Models';
+import { AccountDetail, UtilityType, ApplicationTab } from '../../model/Models';
 import Spinner from '../common/Spinner';
-import { selectAccountTab, openModalDialog } from "../../actions/viewActions";
+import { selectAccountTab, openModalDialog, selectApplicationTab } from "../../actions/viewActions";
 
 import { retrieveAccountDetail, fetchAccountPortfolios } from '../../actions/hierarchyActions';
 import UploadSupplyDataDialog from "../portfolio/mpan/UploadSupplyDataDialog";
@@ -35,10 +35,12 @@ interface DispatchProps {
     fetchAccountPortfolios: (accountId: string) => void;
     selectAccountTab: (index: number) => void;
     openModalDialog: (dialogId: string) => void;
+    selectApplicationTab: (tab: ApplicationTab) => void;
 }
 
 class AccountDetailView extends React.Component<AccountDetailViewProps & StateProps & DispatchProps, {}> {
     componentDidMount(){
+        this.props.selectApplicationTab(ApplicationTab.Accounts);
         var accountId = this.props.location.pathname.split('/')[2];        
         this.props.retrieveAccountDetail(accountId);
         this.props.fetchAccountPortfolios(accountId);
@@ -118,6 +120,7 @@ const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, AccountDetai
         fetchAccountPortfolios: (accountId: string) => dispatch(fetchAccountPortfolios(accountId)),
         selectAccountTab: (index: number) => dispatch(selectAccountTab(index)),
         openModalDialog: (dialogId: string) => dispatch(openModalDialog(dialogId)),
+        selectApplicationTab: (tab: ApplicationTab) => dispatch(selectApplicationTab(tab))
     };
 };
   

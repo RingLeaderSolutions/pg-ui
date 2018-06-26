@@ -13,7 +13,7 @@ import {
     Route,
     Link
 } from 'react-router-dom';
-import { InstanceDetail } from "../model/Models";
+import { InstanceDetail, ApplicationTab } from "../model/Models";
 import Spinner from "./common/Spinner";
 
 
@@ -21,6 +21,7 @@ interface StateProps {
     backendVersion: string;
     instance_detail: InstanceDetail;
     working: boolean;
+    selectedTab: ApplicationTab;
 }
   
 interface DispatchProps {
@@ -34,15 +35,8 @@ class Home extends React.Component<StateProps & DispatchProps, {}> {
         this.props.fetchInstanceDetails();
     }
 
-    renderDashboardTriangle(){
-        if(window.location.pathname == "/"){
-            return (<span className="uk-margin-small-right" data-uk-icon="icon: triangle-right"></span>)
-        }
-        
-        return null;
-    }
-    renderSelectedTriangle(pathIdentifier: string){
-        if(window.location.href.includes(pathIdentifier)){
+    renderSelectedTriangle(tab: ApplicationTab){
+        if(this.props.selectedTab == tab){
             return (<span className="uk-margin-small-right" data-uk-icon="icon: triangle-right"></span>)
         }
         
@@ -71,15 +65,15 @@ class Home extends React.Component<StateProps & DispatchProps, {}> {
                     <ul className="uk-nav-default uk-nav-parent-icon" data-uk-nav>
                         <li className="uk-nav-header">Navigation</li>
                         <li>
-                            <Link to="/">{this.renderDashboardTriangle()}<span className="uk-margin-small-right" data-uk-icon="icon: thumbnails"></span>Dashboard</Link>
+                            <Link to="/">{this.renderSelectedTriangle(ApplicationTab.Dashboard)}<span className="uk-margin-small-right" data-uk-icon="icon: thumbnails"></span>Dashboard</Link>
                         </li>
                         <li className="uk-nav-divider"></li>                    
                         <li>
-                            <Link to="/portfolios">{this.renderSelectedTriangle("portfolio")}<span className="uk-margin-small-right" data-uk-icon="icon: table"></span>Portfolios</Link>
+                            <Link to="/portfolios">{this.renderSelectedTriangle(ApplicationTab.Portfolios)}<span className="uk-margin-small-right" data-uk-icon="icon: table"></span>Portfolios</Link>
                         </li>
                         <li className="uk-nav-divider"></li>
                         <li>
-                            <Link to="/accounts">{this.renderSelectedTriangle("account")}<span className="uk-margin-small-right" data-uk-icon="icon: social"></span>Accounts</Link>
+                            <Link to="/accounts">{this.renderSelectedTriangle(ApplicationTab.Accounts)}<span className="uk-margin-small-right" data-uk-icon="icon: social"></span>Accounts</Link>
                         </li>
                     </ul>
                 </div>
@@ -106,7 +100,8 @@ const mapStateToProps: MapStateToProps<StateProps, {}> = (state: ApplicationStat
     return {
         backendVersion: state.backend_version.value,
         instance_detail: state.instance_detail.value,
-        working: state.backend_version.working || state.instance_detail.working
+        working: state.backend_version.working || state.instance_detail.working,
+        selectedTab: state.view.app.selectedTab
     };
 };
   

@@ -28,9 +28,31 @@ interface DispatchProps {
     closeModalDialog: () => void;
 }
 
-class IssueTenderPackDialog extends React.Component<IssueTenderPackDialogProps & StateProps & DispatchProps, {}> {    
-    subjectElement: HTMLInputElement;
-    bodyElement: HTMLTextAreaElement;
+interface IssueTenderPackDialogState {
+    subject: string;
+    body: string;
+}
+
+class IssueTenderPackDialog extends React.Component<IssueTenderPackDialogProps & StateProps & DispatchProps, IssueTenderPackDialogState> {
+    constructor(props: IssueTenderPackDialogProps & StateProps & DispatchProps) {
+        super();
+        this.state = {
+            subject: props.email == null ? "" : props.email.subject,
+            body: props.email == null ? "" : props.email.body
+        }
+    }
+
+    componentWillReceiveProps(nextProps: IssueTenderPackDialogProps & StateProps & DispatchProps){
+        if(nextProps.email != null) {
+            this.setState({
+                subject: nextProps.email.subject,
+                body: nextProps.email.body
+            });
+        }
+        if(this.props.tender == null || nextProps.tender.tenderId != this.props.tender.tenderId){
+            this.props.fetchIssuanceEmail(nextProps.tender.tenderId);
+        }
+    }
 
     componentDidMount(){
         if(this.props.tender.unissuedPacks.length > 0){
@@ -39,8 +61,17 @@ class IssueTenderPackDialog extends React.Component<IssueTenderPackDialogProps &
     }
 
     issueTender() {
-        this.props.issueTenderPack(this.props.tender.tenderId, this.subjectElement.value, this.bodyElement.value);
+        this.props.issueTenderPack(this.props.tender.tenderId, this.state.subject, this.state.body);
         this.props.closeModalDialog();
+    }
+
+    handleFormChange(attribute: string, event: React.ChangeEvent<any>){
+        var value = event.target.value;
+
+        this.setState({
+            ...this.state,
+            [attribute]: value
+        })
     }
 
     renderPackDialogContent(){
@@ -74,16 +105,16 @@ class IssueTenderPackDialog extends React.Component<IssueTenderPackDialogProps &
                                     <div className='uk-margin'>
                                         <label className='uk-form-label'>Subject</label>
                                         <input className='uk-input' 
-                                            defaultValue={this.props.email.subject}
-                                            ref={ref => this.subjectElement = ref}/>
+                                            value={this.state.subject}
+                                            onChange={(e) => this.handleFormChange("subject", e)}/>
                                     </div>
 
                                     <div className='uk-margin'>
                                         <label className='uk-form-label'>Body</label>
                                         <textarea className='uk-textarea' 
                                             rows={4}
-                                            defaultValue={this.props.email.body}
-                                            ref={ref => this.bodyElement = ref}/>
+                                            value={this.state.body}
+                                            onChange={(e) => this.handleFormChange("body", e)}/>
                                     </div>
                                 </fieldset>
                             </div>

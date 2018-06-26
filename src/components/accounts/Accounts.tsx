@@ -5,12 +5,12 @@ import { retrieveAccounts, clearAccountCreation } from '../../actions/hierarchyA
 import { ApplicationState } from '../../applicationState';
 import Header from "../common/Header";
 import ErrorMessage from "../common/ErrorMessage";
-import { Account } from '../../model/Models';
+import { Account, ApplicationTab } from '../../model/Models';
 import Spinner from '../common/Spinner';
 import NewAccountDialog from "./NewAccountDialog";
 import ReactTable, { Column } from "react-table";
 import { BooleanCellRenderer } from "../common/TableHelpers";
-import { openModalDialog } from "../../actions/viewActions";
+import { openModalDialog, selectApplicationTab } from "../../actions/viewActions";
 import ModalDialog from "../common/ModalDialog";
 
 interface AccountsProps extends RouteComponentProps<void> {
@@ -27,6 +27,7 @@ interface DispatchProps {
   retrieveAccounts: () => void;
   openModalDialog: (dialogId: string) => void;
   clearAccountCreation: () => void;
+  selectApplicationTab: (tab: ApplicationTab) => void;
 }
 
 interface AccountsState {
@@ -100,6 +101,7 @@ class Accounts extends React.Component<AccountsProps & StateProps & DispatchProp
     }
 
     componentDidMount() {
+        this.props.selectApplicationTab(ApplicationTab.Accounts);
         this.props.retrieveAccounts();
     }
 
@@ -234,6 +236,7 @@ const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, AccountsProp
     retrieveAccounts: () => dispatch(retrieveAccounts()),
     openModalDialog: (dialogId: string) => dispatch(openModalDialog(dialogId)),
     clearAccountCreation: () => dispatch(clearAccountCreation()),
+    selectApplicationTab: (tab: ApplicationTab) => dispatch(selectApplicationTab(tab))
   };
 };
 

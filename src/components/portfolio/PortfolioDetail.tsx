@@ -4,7 +4,7 @@ import ErrorMessage from "../common/ErrorMessage";
 import { RouteComponentProps } from 'react-router';
 import { MapDispatchToPropsFunction, connect, MapStateToProps } from 'react-redux';
 import { ApplicationState } from '../../applicationState';
-import { Portfolio, PortfolioDetails } from '../../model/Models';
+import { Portfolio, PortfolioDetails, ApplicationTab } from '../../model/Models';
 import Spinner from '../common/Spinner';
 
 import PortfolioSummary from "./summary/PortfolioSummary";
@@ -15,6 +15,7 @@ import { getSinglePortfolio, getPortfolioDetails } from '../../actions/portfolio
 import TenderSummary from "./tender/TenderSummary";
 import { Link } from "react-router-dom";
 import { selectPortfolioTab } from "../../actions/viewActions";
+import { selectApplicationTab } from "../../actions/viewActions";
 
 interface PortfolioDetailProps extends RouteComponentProps<void> {
 }
@@ -32,14 +33,12 @@ interface DispatchProps {
     getPortfolio: (portfolioId: string) => void;
     getPortfolioDetails: (portfolioId: string) => void;
     selectPortfolioTab: (index: number) => void;
+    selectApplicationTab: (tab: ApplicationTab) => void;
 }
 
 class PortfolioDetail extends React.Component<PortfolioDetailProps & StateProps & DispatchProps, {}> {
-    constructor() {
-        super();
-    }
-
     componentDidMount(){
+        this.props.selectApplicationTab(ApplicationTab.Portfolios);
         var portfolioId = this.props.location.pathname.split('/')[2];        
         this.props.getPortfolio(portfolioId);
         this.props.getPortfolioDetails(portfolioId);
@@ -69,12 +68,14 @@ class PortfolioDetail extends React.Component<PortfolioDetailProps & StateProps 
     }
 
     render() {
+        
         if(this.props.error){
             return (<ErrorMessage content={this.props.errorMessage} />);
         }
         if(this.props.working || this.props.portfolio == null){
             return (<Spinner />);
         }
+        console.log('portfoliodetail rendered for ' + this.props.portfolio.id);
         var { portfolio, detail } = this.props;
         var headerTitle = `Portfolio: ${portfolio.title}`;
         var accountLink = `/account/${detail.portfolio.accountId}`;
@@ -107,7 +108,8 @@ const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, PortfolioDet
     return {
         getPortfolio: (portfolioId: string) => dispatch(getSinglePortfolio(portfolioId)),   
         getPortfolioDetails: (portfolioId: string) => dispatch(getPortfolioDetails(portfolioId)),
-        selectPortfolioTab: (index: number) => dispatch(selectPortfolioTab(index))
+        selectPortfolioTab: (index: number) => dispatch(selectPortfolioTab(index)),
+        selectApplicationTab: (tab: ApplicationTab) => dispatch(selectApplicationTab(tab))
     };
 };
   

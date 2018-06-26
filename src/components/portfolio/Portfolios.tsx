@@ -2,16 +2,16 @@ import * as React from "react";
 import { withRouter } from "react-router-dom";
 import { RouteComponentProps } from 'react-router';
 import { MapDispatchToPropsFunction, connect, MapStateToProps } from 'react-redux';
-import { getAllPortfolios, deselectPortfolio } from '../../actions/portfolioActions';
+import { getAllPortfolios } from '../../actions/portfolioActions';
 import { ApplicationState } from '../../applicationState';
 import Header from "../common/Header";
 import ErrorMessage from "../common/ErrorMessage";
-import { Portfolio, User } from '../../model/Models';
+import { Portfolio, User, ApplicationTab } from '../../model/Models';
 import Spinner from '../common/Spinner';
 import CreatePortfolioFromAccountDialog from "./creation/CreatePortfolioFromAccountDialog";
 import ReactTable, { Column } from "react-table";
 import { UserCellRenderer, UserSorter } from "../common/TableHelpers";
-import { openModalDialog } from "../../actions/viewActions";
+import { openModalDialog, selectApplicationTab } from "../../actions/viewActions";
 import ModalDialog from "../common/ModalDialog";
 
 interface PortfoliosProps extends RouteComponentProps<void> {
@@ -26,8 +26,8 @@ interface StateProps {
 
 interface DispatchProps {
   getPortfolios: () => void;
-  deselectPortfolio: () => void;
   openModalDialog: (dialogId: string) => void;
+  selectApplicationTab: (tab: ApplicationTab) => void;
 }
 
 interface PortfoliosState {
@@ -84,8 +84,8 @@ class Portfolios extends React.Component<PortfoliosProps & StateProps & Dispatch
     }
 
     componentDidMount() {
+        this.props.selectApplicationTab(ApplicationTab.Portfolios)
         this.props.getPortfolios();
-        this.props.deselectPortfolio();
     }
 
     componentWillReceiveProps(nextProps: PortfoliosProps & StateProps & DispatchProps){
@@ -231,8 +231,8 @@ class Portfolios extends React.Component<PortfoliosProps & StateProps & Dispatch
 const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, PortfoliosProps> = (dispatch) => {
   return {
     getPortfolios: () => dispatch(getAllPortfolios()),
-    deselectPortfolio: () => dispatch(deselectPortfolio()),
-    openModalDialog: (dialogId: string) => dispatch(openModalDialog(dialogId))
+    openModalDialog: (dialogId: string) => dispatch(openModalDialog(dialogId)),
+    selectApplicationTab: (tab: ApplicationTab) => dispatch(selectApplicationTab(tab))
   };
 };
 

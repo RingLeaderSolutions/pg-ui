@@ -70,3 +70,9 @@ export interface InstanceDetail {
     sumamryElectricityTemplate: string;
     summaryGasTemplate: string;
 }
+
+export enum ApplicationTab {
+    Dashboard,
+    Portfolios,
+    Accounts
+}

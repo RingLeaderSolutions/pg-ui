@@ -33,43 +33,80 @@ interface DispatchProps {
 
 interface UpdateTenderState {
     deadline: moment.Moment;
+    title: string;
+    commission: string;
+    billingMethod: string;
+    deadlineNotes: string;
+    ebInclusive: boolean;
+    paymentTerms: string;
+    product: string;
+    contractLength: string;
+    tariff: string;
+    greenPercentage: string;
 }
 
 class UpdateTenderDialog extends React.Component<UpdateTenderDialogProps & StateProps & DispatchProps, UpdateTenderState> {
     constructor(props: UpdateTenderDialogProps & StateProps & DispatchProps){
         super();
         this.state = {
-            deadline: props.tender.deadline ? moment(props.tender.deadline) : moment()
+            deadline: props.tender.deadline ? moment(props.tender.deadline) : moment(),
+            title: props.tender.tenderTitle,
+            commission: String(props.tender.commission),
+            billingMethod: props.tender.billingMethod,
+            deadlineNotes: props.tender.deadlineNotes,
+            ebInclusive: props.tender.allInclusive,
+            paymentTerms: String(props.tender.requirements.paymentTerms),
+            product: props.tender.requirements.product,
+            tariff: props.tender.requirements.tariffId,
+            contractLength: String(props.tender.requirements.durationMonths),
+            greenPercentage: String(props.tender.requirements.greenPercentage)
         };
-
-        this.handleDeadlineChange = this.handleDeadlineChange.bind(this);
-        this.updateTender = this.updateTender.bind(this);
     }
-    // Standard
-    titleElement: HTMLInputElement;
-    commissionElement: HTMLInputElement;
-    billingMethodElement: HTMLSelectElement;
-    deadlineNotesElement: HTMLTextAreaElement;
-    isHalfHourlyElement: HTMLInputElement;
-    ebInclusiveElement: HTMLInputElement;
 
-    // Requirements
-    paymentTerms: HTMLSelectElement;
-    product: HTMLSelectElement;
-    contractLength: HTMLSelectElement;
-    tariff: HTMLSelectElement;
-    greenPercentage: HTMLInputElement;
+    componentWillReceiveProps(nextProps: UpdateTenderDialogProps & StateProps & DispatchProps){
+        if(nextProps.tender != null){
+            this.setState({
+                deadline: nextProps.tender.deadline ? moment(nextProps.tender.deadline) : moment(),
+                title: nextProps.tender.tenderTitle,
+                commission: String(nextProps.tender.commission),
+                billingMethod: nextProps.tender.billingMethod,
+                deadlineNotes: nextProps.tender.deadlineNotes,
+                ebInclusive: nextProps.tender.allInclusive,
+                paymentTerms: String(nextProps.tender.requirements.paymentTerms),
+                product: nextProps.tender.requirements.product,
+                tariff: nextProps.tender.requirements.tariffId,
+                contractLength: String(nextProps.tender.requirements.durationMonths),
+                greenPercentage: String(nextProps.tender.requirements.greenPercentage)
+            })
+        }
+    }
 
     componentDidMount(){
         this.props.fetchTariffs();
     }
 
+    handleFormChange(attribute: string, event: React.ChangeEvent<any>){
+        var value = event.target.value;
+
+        this.setState({
+            ...this.state,
+            [attribute]: value
+        })
+    }
+
     handleDeadlineChange(date: moment.Moment, event: React.SyntheticEvent<any>){
         this.setState({
+            ...this.state,
             deadline: date
         });
+    }
 
-        event.preventDefault();
+    handleInclusiveChange(flip: boolean, e: React.ChangeEvent<HTMLInputElement>){
+        var value = flip ? !e.target.checked : e.target.checked;
+        this.setState({
+            ...this.state,
+            ebInclusive: value
+        });
     }
 
     updateTender(e: any){
@@ -80,26 +117,26 @@ class UpdateTenderDialog extends React.Component<UpdateTenderDialogProps & State
             portfolioId: tender.portfolioId,
             tenderId: tender.tenderId,
 
-            paymentTerms: Number(this.paymentTerms.value),
-            durationMonths: Number(this.contractLength.value),
-            greenPercentage: Number(this.greenPercentage.value),
+            paymentTerms: Number(this.state.paymentTerms),
+            durationMonths: Number(this.state.contractLength),
+            greenPercentage: Number(this.state.greenPercentage),
 
-            product: this.product.value,
-            tariffId: this.tariff ? this.tariff.value : null
+            product: this.state.product,
+            tariffId: this.state.tariff ? this.state.tariff : null
         };
 
-        var halfHourly = this.isHalfHourlyElement == null ? false : this.isHalfHourlyElement.checked
         var tender: Tender = {
             ...tender,
-            tenderTitle: this.titleElement.value,
-            billingMethod: this.billingMethodElement.value,
+            tenderTitle: this.state.title,
+            billingMethod: this.state.billingMethod,
             deadline: this.state.deadline.format("YYYY-MM-DDTHH:mm:ss"),
-            deadlineNotes: this.deadlineNotesElement.value,
-            commission: Number(this.commissionElement.value),
-            halfHourly: halfHourly,
-            allInclusive: this.ebInclusiveElement ? this.ebInclusiveElement.checked : false,
+            deadlineNotes: this.state.deadlineNotes,
+            commission: Number(this.state.commission),
+            halfHourly: this.props.tender.halfHourly,
+            allInclusive: this.state.ebInclusive,
             requirements
         }
+
         this.props.updateTender(tender.tenderId, tender);
         this.props.closeModalDialog();
     }
@@ -112,22 +149,8 @@ class UpdateTenderDialog extends React.Component<UpdateTenderDialogProps & State
 
     renderRequirementsEditForm(){
         var { tender } = this.props;
-        var { requirements } = tender;
-
         var isGasTender = tender.utility == "GAS";
         var isHalfhourly = tender.halfHourly;
-        if(requirements == null){
-            requirements = {
-                id: "",
-                tenderId: tender.tenderId,
-                portfolioId: tender.portfolioId,
-                durationMonths: 0,
-                product: "",
-                tariffId: "",
-                paymentTerms: 0,
-                greenPercentage: 0
-            }
-        }
 
         return (
             <form>
@@ -139,8 +162,9 @@ class UpdateTenderDialog extends React.Component<UpdateTenderDialogProps & State
                                     <div className="uk-margin">
                                         <label className="uk-form-label" data-for="payment-terms-select">Payment Terms</label>
                                         <div className="uk-form-controls">
-                                            <select className="uk-select" id="payment-terms-select" ref={ref => this.paymentTerms = ref} 
-                                                    defaultValue={requirements.paymentTerms.toString()}>
+                                            <select className="uk-select" id="payment-terms-select" 
+                                                value={this.state.paymentTerms}
+                                                onChange={(e) => this.handleFormChange("paymentTerms", e)}>
                                                 <option value="0" disabled>Select terms</option>
                                                 <option value={7}>7 days</option>
                                                 <option value={14}>14 days</option>
@@ -153,8 +177,9 @@ class UpdateTenderDialog extends React.Component<UpdateTenderDialogProps & State
                                     <div className="uk-margin">
                                         <label className="uk-form-label" data-for="product-select">Product</label>
                                         <div className="uk-form-controls">
-                                            <select className="uk-select" id="product-select" ref={ref => this.product = ref}
-                                                    defaultValue={requirements.product.toString()}>
+                                            <select className="uk-select" id="product-select" 
+                                                value={this.state.product}
+                                                onChange={(e) => this.handleFormChange("product", e)}>
                                                 <option value="" disabled>Select product</option>
                                                 <option>Fixed</option>
                                                 <option>Semi Flex</option>
@@ -168,15 +193,18 @@ class UpdateTenderDialog extends React.Component<UpdateTenderDialogProps & State
                                     <div className="uk-margin">
                                         <label className="uk-form-label" data-for="green-perc-input">Green %</label>
                                         <div className="uk-form-controls">
-                                            <input className="uk-input" id="green-perc-input" type="text" placeholder="20" ref={ref => this.greenPercentage = ref} defaultValue={requirements.greenPercentage.toString()}/>
+                                            <input className="uk-input" id="green-perc-input" type="text" placeholder="20" 
+                                                value={this.state.greenPercentage}
+                                                onChange={(e) => this.handleFormChange("greenPercentage", e)}/>
                                         </div>
                                     </div>
 
                                     <div className="uk-margin">
                                         <label className="uk-form-label" data-for="contract-length-select">Contract Length</label>
                                         <div className="uk-form-controls">
-                                            <select className="uk-select" id="contract-length-select" ref={ref => this.contractLength = ref} 
-                                                    defaultValue={requirements.durationMonths.toString()}>
+                                            <select className="uk-select" id="contract-length-select"
+                                                value={this.state.contractLength}
+                                                onChange={(e) => this.handleFormChange("contractLength", e)}>
                                                 <option value="0" disabled>Select length</option>                                            
                                                 <option value={6}>6 months</option>
                                                 <option value={12}>12 months</option>
@@ -192,8 +220,9 @@ class UpdateTenderDialog extends React.Component<UpdateTenderDialogProps & State
                                     <div className="uk-margin">
                                         <label className="uk-form-label" data-for="tariff-select">Tariff</label>
                                         <div className="uk-form-controls">
-                                            <select className="uk-select" id="tariff-select" ref={ref => this.tariff = ref} 
-                                                    defaultValue={requirements.tariffId.toString()}>
+                                            <select className="uk-select" id="tariff-select"
+                                                value={this.state.tariff}
+                                                onChange={(e) => this.handleFormChange("tariff", e)}>
                                                 <option value="" disabled>Select tariff</option>                                            
                                                 {this.renderTariffOptions()}
                                             </select>
@@ -220,8 +249,8 @@ class UpdateTenderDialog extends React.Component<UpdateTenderDialogProps & State
                             <div className='uk-margin'>
                                 <label className='uk-form-label'>Title</label>
                                 <input className='uk-input' 
-                                    defaultValue={tender.tenderTitle}
-                                    ref={ref => this.titleElement = ref}/>
+                                    value={this.state.title}
+                                    onChange={(e) => this.handleFormChange("title", e)}/>
                             </div>
 
                             <div className='uk-margin'>
@@ -229,8 +258,8 @@ class UpdateTenderDialog extends React.Component<UpdateTenderDialogProps & State
                                 <div className="uk-grid" data-uk-grid>
                                     <div className="uk-width-expand@s">
                                         <input className='uk-input' 
-                                            defaultValue={String(tender.commission)}
-                                            ref={ref => this.commissionElement = ref}/>
+                                            value={this.state.commission}
+                                            onChange={(e) => this.handleFormChange("commission", e)}/>
                                     </div>
                                     <div className="uk-width-auto@s">
                                         <p className="uk-margin-small-top">p/kWh</p>
@@ -240,9 +269,9 @@ class UpdateTenderDialog extends React.Component<UpdateTenderDialogProps & State
 
                             <div className='uk-margin'>
                                 <label className='uk-form-label'>Billing Method</label>
-                                <select className='uk-select' 
-                                    defaultValue={tender.billingMethod}
-                                    ref={ref => this.billingMethodElement = ref}>
+                                <select className='uk-select'
+                                    value={this.state.billingMethod}
+                                    onChange={(e) => this.handleFormChange("billingMethod", e)}>
                                     <option value="" disabled>Select</option>
                                     <option>Paper</option>
                                     <option>Electronic</option>
@@ -253,8 +282,8 @@ class UpdateTenderDialog extends React.Component<UpdateTenderDialogProps & State
                                 <div className='uk-margin'>
                                     <label className='uk-form-label'>Embedded Benefits</label>
                                     <div className="uk-margin-small">
-                                        <label><input className="uk-radio" type="radio" name="ebChoice" ref={ref => this.ebInclusiveElement = ref} defaultChecked={tender.allInclusive} /> Inclusive</label>
-                                        <label><input className="uk-radio uk-margin-large-left" type="radio" name="ebChoice" defaultChecked={!tender.allInclusive} /> Pass-Through</label>
+                                        <label><input className="uk-radio" type="radio" name="ebChoice" checked={this.state.ebInclusive} onChange={(e) => this.handleInclusiveChange(false, e)}/> Inclusive</label>
+                                        <label><input className="uk-radio uk-margin-large-left" type="radio" name="ebChoice" checked={!this.state.ebInclusive} onChange={(e) => this.handleInclusiveChange(true, e)} /> Pass-Through</label>
                                     </div>
                                 </div>)
                             : null}
@@ -265,7 +294,7 @@ class UpdateTenderDialog extends React.Component<UpdateTenderDialogProps & State
                                     <DatePicker id="deadline-input"
                                                 className="uk-input"
                                                 selected={this.state.deadline}
-                                                onChange={this.handleDeadlineChange}/>
+                                                onChange={(date, ev) => this.handleDeadlineChange(date, ev)}/>
                                 </div>
                             </div>
 
@@ -273,8 +302,8 @@ class UpdateTenderDialog extends React.Component<UpdateTenderDialogProps & State
                                 <label className='uk-form-label'>Deadline notes</label>
                                 <textarea className='uk-textarea' 
                                     rows={4}
-                                    ref={ref => this.deadlineNotesElement = ref}
-                                    defaultValue={tender.deadlineNotes}/>
+                                    value={this.state.deadlineNotes}
+                                    onChange={(e) => this.handleFormChange("deadlineNotes", e)}/>
                             </div>
                         </fieldset>        
                     </div>

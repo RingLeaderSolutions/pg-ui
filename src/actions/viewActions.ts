@@ -1,6 +1,13 @@
 import * as types from "./actionTypes";
 
 import { Dispatch } from 'redux';
+import { ApplicationTab } from "../model/Models";
+
+export function selectApplicationTab(tab: ApplicationTab){
+    return (dispatch: Dispatch<any>) => {
+        dispatch( { type: types.SELECT_APPLICATION_TAB, data: tab });
+    };
+}
 
 export function selectAccountTab(index: number){
     return (dispatch: Dispatch<any>) => {

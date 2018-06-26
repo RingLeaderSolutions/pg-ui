@@ -66,10 +66,8 @@ import portfolioAccountReducer from './portfolio/portfolioAccountReducer';
 import portfolioDetailsReducer from './portfolio/portfolioDetailsReducer';
 import selectedPortfolioReducer from './portfolio/selectedPortfolioReducer';
 import portfolioHistoryReducer from './portfolio/portfolioHistoryReducer';
-
-import updateRequirementsReducer from './portfolio/updateRequirementsReducer';
-import createContactReducer from './portfolio/createContactReducer';
 import portfolioUploadsReducer from './portfolio/portfolioUploadsReducer';
+import { clearPortfolioOnTabSwitchReducer } from './portfolio/clearPortfolioOnTabSwitchReducer';
 
 const portfolioReducer: Reducer<PortfolioState> = combineReducers<PortfolioState>({
     account: portfolioAccountReducer,
@@ -77,10 +75,10 @@ const portfolioReducer: Reducer<PortfolioState> = combineReducers<PortfolioState
     selected: selectedPortfolioReducer,
     history: portfolioHistoryReducer,
     tender: tenderReducer,
-    update_requirements: updateRequirementsReducer,
-    create_contact: createContactReducer,
     uploads: portfolioUploadsReducer
 });
+
+var portfolioReducer2 = reduceReducers(portfolioReducer, clearPortfolioOnTabSwitchReducer)
 
 import notificationMessageReducer from './notifications/notificationMessageReducer';
 
@@ -146,11 +144,13 @@ import { ViewState } from './view/ViewState';
 import { portfolioViewReducer } from './view/portfolioViewReducer';
 import { accountViewReducer } from './view/accountViewReducer';
 import { modalDialogReducer } from './view/modalDialogReducer';
+import { appViewReducer } from './view/appViewReducer';
 
 const viewReducer: Reducer<ViewState> = combineReducers<ViewState>({
     portfolio: portfolioViewReducer,
     account: accountViewReducer,
-    modal: modalDialogReducer
+    modal: modalDialogReducer,
+    app: appViewReducer
 });
 
 import selectedUploadReportReducer from './selectedUploadReportReducer';
@@ -159,7 +159,7 @@ import fetchInstanceDetailReducer from './fetchInstanceDetailReducer';
 
 // Combine all reducers to form the master ApplicationState
 const rootReducer: Reducer<ApplicationState> = combineReducers<ApplicationState>({
-    portfolio: portfolioReducer,
+    portfolio: portfolioReducer2,
     dashboard: dashboardReducer,
     portfolios: portfoliosReducer,
     notifications: notificationMessageReducer,    

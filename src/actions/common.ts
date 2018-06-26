@@ -19,12 +19,9 @@ export function makeApiRequest<T>(
       }
     })
     .catch(function (error) {
-      if (error.data) {
-        dispatch(failureAction(error.data));
-      }
-      else {
-        dispatch(failureAction(error.message));
-      }
+      // if the server provides some data in the response, then display it
+      var message = error.response.data == null || error.response.data == '' ? error.message : `${error.message}: ${error.response.data}`;
+      dispatch(failureAction(message));
       return undefined;
     });
 }
