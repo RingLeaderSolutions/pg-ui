@@ -220,12 +220,12 @@ class TenderQuotesView extends React.Component<TenderQuotesViewProps & StateProp
                                 </button>
                                 <div data-uk-dropdown="pos:bottom-justify;mode:click">
                                     <ul className="uk-nav uk-dropdown-nav">
-                                    <li><a href="#" onClick={() => this.props.openModalDialog(createRecommendationDialogName)}>
+                                    <li><a href="#" onClick={() => this.props.openModalDialog(viewRecommendationsDialogName)}>
                                         <span className="uk-margin-small-right" data-uk-icon="icon: table" />
                                         View Existing
                                     </a></li>
                                     <li className="uk-nav-divider"></li>
-                                    <li><a href="#" onClick={() => this.props.openModalDialog(viewRecommendationsDialogName)}>
+                                    <li><a href="#" onClick={() => this.props.openModalDialog(createRecommendationDialogName)}>
                                         <span className="uk-margin-small-right" data-uk-icon="icon: plus" />
                                         Create New
                                     </a></li>
