@@ -155,6 +155,7 @@ class CreateAccountDialog extends React.Component<CreateAccountDialogProps & Sta
                                             <input 
                                                 className='uk-input' 
                                                 type='text' 
+                                                defaultValue={company ? company.companyStatus : null}
                                                 ref={ref => this.status = ref} />
                                         </div>
                                         <div className='uk-margin'>
