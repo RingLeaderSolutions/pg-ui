@@ -69,7 +69,7 @@ import portfolioHistoryReducer from './portfolio/portfolioHistoryReducer';
 import portfolioUploadsReducer from './portfolio/portfolioUploadsReducer';
 import { clearPortfolioOnTabSwitchReducer } from './portfolio/clearPortfolioOnTabSwitchReducer';
 
-const portfolioReducer: Reducer<PortfolioState> = combineReducers<PortfolioState>({
+const portfolioStateReducer: Reducer<PortfolioState> = combineReducers<PortfolioState>({
     account: portfolioAccountReducer,
     details: portfolioDetailsReducer,
     selected: selectedPortfolioReducer,
@@ -78,7 +78,7 @@ const portfolioReducer: Reducer<PortfolioState> = combineReducers<PortfolioState
     uploads: portfolioUploadsReducer
 });
 
-var portfolioReducer2 = reduceReducers(portfolioReducer, clearPortfolioOnTabSwitchReducer)
+var portfolioReducer = reduceReducers(portfolioStateReducer, clearPortfolioOnTabSwitchReducer)
 
 import notificationMessageReducer from './notifications/notificationMessageReducer';
 
@@ -159,7 +159,7 @@ import fetchInstanceDetailReducer from './fetchInstanceDetailReducer';
 
 // Combine all reducers to form the master ApplicationState
 const rootReducer: Reducer<ApplicationState> = combineReducers<ApplicationState>({
-    portfolio: portfolioReducer2,
+    portfolio: portfolioReducer,
     dashboard: dashboardReducer,
     portfolios: portfoliosReducer,
     notifications: notificationMessageReducer,    
