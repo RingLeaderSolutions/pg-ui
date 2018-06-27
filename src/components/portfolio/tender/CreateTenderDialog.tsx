@@ -34,32 +34,44 @@ interface DispatchProps {
 
 interface CreateTenderState {
     deadline: moment.Moment;   
+    title: string;
+    commission: string;
+    billingMethod: string;
+    deadlineNotes: string;
+    ebInclusive: boolean;
+    paymentTerms: string;
+    product: string;
+    contractLength: string;
+    tariff: string;
+    greenPercentage: string;
 }
 
 class CreateTenderDialog extends React.Component<CreateTenderDialogProps & StateProps & DispatchProps, CreateTenderState> {
     constructor(props: CreateTenderDialogProps & StateProps & DispatchProps){
         super();
         this.state = {
-            deadline: moment()        
+            deadline: moment(),
+            title: '',
+            commission:'',
+            billingMethod: '',
+            deadlineNotes: '',
+            ebInclusive: true,
+            paymentTerms: '',
+            product: '',
+            tariff: '',
+            contractLength: '',
+            greenPercentage: ''
         };
-
-        this.handleDeadlineChange = this.handleDeadlineChange.bind(this);
-        this.createTender = this.createTender.bind(this);
     }
-    // Standard
-    titleElement: HTMLInputElement;
-    commissionElement: HTMLInputElement;
-    billingMethodElement: HTMLSelectElement;
-    deadlineNotesElement: HTMLTextAreaElement;
-    isHalfHourlyElement: HTMLInputElement;
-    ebInclusiveElement: HTMLInputElement;
 
-    // Requirements
-    paymentTerms: HTMLSelectElement;
-    product: HTMLSelectElement;
-    contractLength: HTMLSelectElement;
-    tariff: HTMLSelectElement;
-    greenPercentage: HTMLInputElement;
+    handleFormChange(attribute: string, event: React.ChangeEvent<any>){
+        var value = event.target.value;
+
+        this.setState({
+            ...this.state,
+            [attribute]: value
+        })
+    }
 
     componentDidMount(){
         this.props.fetchTariffs();
@@ -73,30 +85,39 @@ class CreateTenderDialog extends React.Component<CreateTenderDialogProps & State
         event.preventDefault();
     }
 
-    createTender(e: any){
+    handleInclusiveChange(flip: boolean, e: React.ChangeEvent<HTMLInputElement>){
+        var value = flip ? !e.target.checked : e.target.checked;
+        this.setState({
+            ...this.state,
+            ebInclusive: value
+        });
+    }
+
+    createTender(){
         let requirements: TenderRequirements = {
             id: "",
             portfolioId: this.props.portfolioId,
             tenderId: "",
 
-            paymentTerms: Number(this.paymentTerms.value),
-            durationMonths: Number(this.contractLength.value),
-            greenPercentage: Number(this.greenPercentage.value),
+            paymentTerms: Number(this.state.paymentTerms),
+            durationMonths: Number(this.state.contractLength),
+            greenPercentage: Number(this.state.greenPercentage),
 
-            product: this.product.value,
-            tariffId: this.tariff ? this.tariff.value : null
+            product: this.state.product,
+            tariffId: this.state.tariff ? this.state.tariff : null
         };
 
         var tender: Tender = {
             portfolioId: this.props.portfolioId,
             utility: this.props.utility == UtilityType.Electricity ? "ELECTRICITY" : "GAS",
-            tenderTitle: this.titleElement.value,
-            billingMethod: this.billingMethodElement.value,
+
+            tenderTitle: this.state.title,
+            billingMethod: this.state.billingMethod,
             deadline: this.state.deadline.format("YYYY-MM-DDTHH:mm:ss"),
-            deadlineNotes: this.deadlineNotesElement.value,
-            commission: Number(this.commissionElement.value),
+            deadlineNotes: this.state.deadlineNotes,
+            commission: Number(this.state.commission),
             halfHourly: this.props.isHalfHourly,
-            allInclusive: this.ebInclusiveElement ? this.ebInclusiveElement.checked : false,
+            allInclusive: this.state.ebInclusive,
             requirements
         }
 
@@ -123,7 +144,9 @@ class CreateTenderDialog extends React.Component<CreateTenderDialogProps & State
                                     <div className="uk-margin">
                                         <label className="uk-form-label" data-for="payment-terms-select">Payment Terms</label>
                                         <div className="uk-form-controls">
-                                            <select className="uk-select" id="payment-terms-select" ref={ref => this.paymentTerms = ref}>
+                                            <select className="uk-select" id="payment-terms-select" 
+                                                value={this.state.paymentTerms}
+                                                onChange={(e) => this.handleFormChange("paymentTerms", e)}>
                                                 <option value="0" disabled>Select terms</option>
                                                 <option value={7}>7 days</option>
                                                 <option value={14}>14 days</option>
@@ -136,7 +159,9 @@ class CreateTenderDialog extends React.Component<CreateTenderDialogProps & State
                                     <div className="uk-margin">
                                         <label className="uk-form-label" data-for="product-select">Product</label>
                                         <div className="uk-form-controls">
-                                            <select className="uk-select" id="product-select" ref={ref => this.product = ref}>
+                                            <select className="uk-select" id="product-select" 
+                                                value={this.state.product}
+                                                onChange={(e) => this.handleFormChange("product", e)}>
                                                 <option value="" disabled>Select product</option>
                                                 <option>Fixed</option>
                                                 <option>Semi Flex</option>
@@ -150,14 +175,18 @@ class CreateTenderDialog extends React.Component<CreateTenderDialogProps & State
                                     <div className="uk-margin">
                                         <label className="uk-form-label" data-for="green-perc-input">Green %</label>
                                         <div className="uk-form-controls">
-                                            <input className="uk-input" id="green-perc-input" type="text" placeholder="20" ref={ref => this.greenPercentage = ref} defaultValue="0"/>
+                                            <input className="uk-input" id="green-perc-input" type="text" placeholder="20" 
+                                                value={this.state.greenPercentage}
+                                                onChange={(e) => this.handleFormChange("greenPercentage", e)}/>
                                         </div>
                                     </div>
 
                                     <div className="uk-margin">
                                         <label className="uk-form-label" data-for="contract-length-select">Contract Length</label>
                                         <div className="uk-form-controls">
-                                            <select className="uk-select" id="contract-length-select" ref={ref => this.contractLength = ref}>
+                                            <select className="uk-select" id="contract-length-select"
+                                                value={this.state.contractLength}
+                                                onChange={(e) => this.handleFormChange("contractLength", e)}>
                                                 <option value="0" disabled>Select length</option>                                            
                                                 <option value={6}>6 months</option>
                                                 <option value={12}>12 months</option>
@@ -173,7 +202,9 @@ class CreateTenderDialog extends React.Component<CreateTenderDialogProps & State
                                     <div className="uk-margin">
                                         <label className="uk-form-label" data-for="tariff-select">Tariff</label>
                                         <div className="uk-form-controls">
-                                            <select className="uk-select" id="tariff-select" ref={ref => this.tariff = ref} >
+                                            <select className="uk-select" id="tariff-select"
+                                                value={this.state.tariff}
+                                                onChange={(e) => this.handleFormChange("tariff", e)}>
                                                 <option value="" disabled>Select tariff</option>                                            
                                                 {this.renderTariffOptions()}
                                             </select>
@@ -182,7 +213,6 @@ class CreateTenderDialog extends React.Component<CreateTenderDialogProps & State
                                 </div>
                             </div>
                         </fieldset>
-                        
                     </div>
                 </div>
             </form>
@@ -199,7 +229,8 @@ class CreateTenderDialog extends React.Component<CreateTenderDialogProps & State
                             <div className='uk-margin'>
                                 <label className='uk-form-label'>Title</label>
                                 <input className='uk-input' 
-                                    ref={ref => this.titleElement = ref}/>
+                                    value={this.state.title}
+                                    onChange={(e) => this.handleFormChange("title", e)}/>
                             </div>
 
                             <div className='uk-margin'>
@@ -207,7 +238,8 @@ class CreateTenderDialog extends React.Component<CreateTenderDialogProps & State
                                 <div className="uk-grid" data-uk-grid>
                                     <div className="uk-width-expand@s">
                                         <input className='uk-input' 
-                                            ref={ref => this.commissionElement = ref}/>
+                                            value={this.state.commission}
+                                            onChange={(e) => this.handleFormChange("commission", e)}/>
                                     </div>
                                     <div className="uk-width-auto@s">
                                         <p className="uk-margin-small-top">p/kWh</p>
@@ -217,8 +249,9 @@ class CreateTenderDialog extends React.Component<CreateTenderDialogProps & State
 
                             <div className='uk-margin'>
                                 <label className='uk-form-label'>Billing Method</label>
-                                <select className='uk-select' 
-                                    ref={ref => this.billingMethodElement = ref}>
+                                <select className='uk-select'
+                                    value={this.state.billingMethod}
+                                    onChange={(e) => this.handleFormChange("billingMethod", e)}>
                                     <option value="" disabled>Select</option>
                                     <option>Paper</option>
                                     <option>Electronic</option>
@@ -229,8 +262,8 @@ class CreateTenderDialog extends React.Component<CreateTenderDialogProps & State
                                 <div className='uk-margin'>
                                     <label className='uk-form-label'>Embedded Benefits</label>
                                     <div className="uk-margin-small">
-                                        <label><input className="uk-radio" type="radio" name="ebChoice" ref={ref => this.ebInclusiveElement = ref} defaultChecked={true} /> Inclusive</label>
-                                        <label><input className="uk-radio uk-margin-large-left" type="radio" name="ebChoice"  /> Pass-Through</label>
+                                        <label><input className="uk-radio" type="radio" name="ebChoice" checked={this.state.ebInclusive} onChange={(e) => this.handleInclusiveChange(false, e)}/> Inclusive</label>
+                                        <label><input className="uk-radio uk-margin-large-left" type="radio" name="ebChoice" checked={!this.state.ebInclusive} onChange={(e) => this.handleInclusiveChange(true, e)} /> Pass-Through</label>
                                     </div>
                                 </div>)
                             : null}
@@ -241,7 +274,7 @@ class CreateTenderDialog extends React.Component<CreateTenderDialogProps & State
                                     <DatePicker id="deadline-input"
                                                 className="uk-input"
                                                 selected={this.state.deadline}
-                                                onChange={this.handleDeadlineChange}/>
+                                                onChange={(date, ev) => this.handleDeadlineChange(date, ev)}/>
                                 </div>
                             </div>
 
@@ -249,7 +282,8 @@ class CreateTenderDialog extends React.Component<CreateTenderDialogProps & State
                                 <label className='uk-form-label'>Deadline notes</label>
                                 <textarea className='uk-textarea' 
                                     rows={4}
-                                    ref={ref => this.deadlineNotesElement = ref}/>
+                                    value={this.state.deadlineNotes}
+                                    onChange={(e) => this.handleFormChange("deadlineNotes", e)}/>
                             </div>
                         </fieldset>        
                     </div>
@@ -283,7 +317,7 @@ class CreateTenderDialog extends React.Component<CreateTenderDialogProps & State
                 </div>
                 <div className="uk-modal-footer uk-text-right">
                     <button className="uk-button uk-button-default uk-margin-right" type="button" onClick={() => this.props.closeModalDialog()}>Cancel</button>
-                    <button className="uk-button uk-button-primary" type="button" onClick={(e) => this.createTender(e)}>Save</button>
+                    <button className="uk-button uk-button-primary" type="button" onClick={() => this.createTender()}>Save</button>
                 </div>
             </div>)
     }
