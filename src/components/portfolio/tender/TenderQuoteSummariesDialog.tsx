@@ -38,6 +38,7 @@ class TenderQuoteSummariesDialog extends React.Component<TenderQuoteSummariesDia
     
     issueReport(summaryId: string){
         this.props.issueSummaryReport(this.props.tender.tenderId, summaryId);
+        this.props.closeModalDialog();
     }
 
     renderSummaryTableContent(enableIssuance: boolean){
