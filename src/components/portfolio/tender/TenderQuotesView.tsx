@@ -81,7 +81,7 @@ class TenderQuotesView extends React.Component<TenderQuotesViewProps & StateProp
             .map((quote) => {
                 var supplier = this.props.suppliers.find(su => su.supplierId == quote.supplierId);
 
-                var viewQuoteModalName = `view_quote_bs_${this.props.tender.tenderId}`;
+                var viewQuoteModalName = `view_quote_rates_${this.props.tender.tenderId}`;
 
                 var collateralDialogName = `view_collateral_${quote.quoteId}`;
 
@@ -361,7 +361,7 @@ class TenderQuotesView extends React.Component<TenderQuotesViewProps & StateProp
                     <TenderPackDialog tender={this.props.tender} portfolioId={this.props.tender.portfolioId}/>
                 </ModalDialog>
 
-                <ModalDialog dialogId={viewQuoteRatesDialogName}>
+                <ModalDialog dialogId={viewQuoteRatesDialogName} dialogClass="backing-sheet-modal">
                     <TenderBackingSheetsDialog />
                 </ModalDialog>
 
