@@ -184,7 +184,7 @@ class IncludeMetersDialog extends React.Component<IncludeMetersDialogProps & Sta
 
     renderFullMetersDisplay(meters: any[]){
         if(meters.length == 0){
-            return (<p className="uk-margin">All of the meters from this portfolio's account have already been included.</p>)
+            return (<p className="uk-margin">There are no meters to include.</p>)
         }
         
         return (

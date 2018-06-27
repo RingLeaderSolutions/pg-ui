@@ -342,7 +342,7 @@ class TenderQuotesView extends React.Component<TenderQuotesViewProps & StateProp
                                 <li className="uk-nav-divider"></li>
                                 <li><a href="#" onClick={() => this.props.openModalDialog(unissuedDialogName)}>
                                     <span className="uk-margin-small-right" data-uk-icon="icon: album" />
-                                    View Unissued
+                                    View Unissued ({this.props.tender.unissuedPacks.length})
                                 </a></li>
                                 <li className="uk-nav-divider"></li>
                                 { canIssue ? (<li><a href="#" onClick={() => this.props.openModalDialog(issuePackDialogName)}>

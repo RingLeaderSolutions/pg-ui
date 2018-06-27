@@ -88,6 +88,7 @@ class PortfolioMeters extends React.Component<PortfolioMetersProps & StateProps 
         var includeDialogId = `include_meters_${decodedUtilityType}`;
         var excludeDialogId = `exclude_meters_${decodedUtilityType}`;
 
+        var hasData = data != null && data.length > 0;
         return (
             <div>
                 <div>
@@ -95,7 +96,7 @@ class PortfolioMeters extends React.Component<PortfolioMetersProps & StateProps 
                         <div className="uk-width-expand@s">
                         </div>
                         <div className="uk-width-auto@s">
-                        { utilityType == UtilityType.Electricity ? (<button className='uk-button uk-button-primary uk-margin-small-left uk-margin-small-right' onClick={() => this.props.openModalDialog('upload_consumption')}><span data-uk-icon='icon: upload' /> Upload Historic Consumption</button>) : null}
+                        { utilityType == UtilityType.Electricity ? (<button className='uk-button uk-button-primary uk-margin-small-left uk-margin-small-right' onClick={() => this.props.openModalDialog('upload_consumption')} disabled={!hasData}><span data-uk-icon='icon: upload' /> Upload Historic Consumption</button>) : null}
                         </div>
                         <div className="uk-width-auto@s">
                             <div className="uk-inline">

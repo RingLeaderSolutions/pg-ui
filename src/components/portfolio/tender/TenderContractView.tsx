@@ -80,7 +80,7 @@ class TenderContractView extends React.Component<TenderContractViewProps & Dispa
         this.props.openModalDialog(dialogName);
     }
 
-    renderContractActions(){
+    renderContractActions(hasContractRates: boolean){
         var uploadExistingDialogName = `upload_contract_${this.props.tender.tenderId}`;
         var viewContractDialogName = `view_contract_${this.props.tender.tenderId}`;
         var editContractDialogName = `edit_contract_${this.props.tender.tenderId}`;
@@ -99,10 +99,10 @@ class TenderContractView extends React.Component<TenderContractViewProps & Dispa
                                 Upload Contract Rates
                             </a></li>
                             <li className="uk-nav-divider"></li>
-                            <li><a href="#" onClick={() => this.fetchRatesAndOpenDialog(viewContractDialogName)}>
+                            { hasContractRates ? (<li><a href="#" onClick={() => this.fetchRatesAndOpenDialog(viewContractDialogName)}>
                                 <span className="uk-margin-small-right" data-uk-icon="icon: copy" />
                                 View Contract Rates
-                            </a></li>
+                            </a></li>) : null }
                             <li className="uk-nav-divider"></li>
                             <li><a href="#" onClick={() => this.props.openModalDialog(editContractDialogName)}>
                                 <span className="uk-margin-small-right" data-uk-icon="icon: pencil" />                                        
@@ -147,17 +147,17 @@ class TenderContractView extends React.Component<TenderContractViewProps & Dispa
             )
         }
 
-        var contractInfo = this.renderContractInfo();
-        var actions = this.renderContractActions();
-
-        var hasDocuments = this.props.tender.existingContract.sheetCount > 0;
+        var hasContractRates = this.props.tender.existingContract.sheetCount > 0;
         var warningMessage = null;
-        if(!hasDocuments){
+        if(!hasContractRates){
             warningMessage = (
                 <div className="uk-alert-warning uk-margin-small-top uk-margin-small-bottom" data-uk-alert>
                     <p>Comparison is not yet possible - please upload contract rate(s).</p>
                 </div>);
         }
+
+        var contractInfo = this.renderContractInfo();
+        var actions = this.renderContractActions(hasContractRates);
         return (
             <div className="uk-card uk-card-small uk-card-default uk-card-body">
                 <div className="uk-grid">

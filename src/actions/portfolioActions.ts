@@ -15,7 +15,7 @@ import { makeApiRequest } from "./Common";
 
 import { Dispatch } from 'redux';
 import { PortfolioRequirements } from "../model/PortfolioDetails";
-import { AccountCompanyStatusFlags } from "../model/HierarchyObjects";
+import { AccountCompanyStatusFlags, AccountDetail } from "../model/HierarchyObjects";
 import { Tariff } from "../model/Tender";
 import { PortfolioCreationRequest } from "../model/Portfolio";
 
@@ -99,14 +99,14 @@ export function getPortfolioHistory(portfolioId: string){
 
 export function retrieveAccount(accountId: string){
     return (dispatch: Dispatch<any>) => {
-        let updatePromise = ApiService.retrieveAccount(accountId);
+        let updatePromise = ApiService.retrieveAccountDetail(accountId);
         dispatch( { type: types.RETRIEVE_ACCOUNT_WORKING });
 
         makeApiRequest(dispatch,
             updatePromise,
             200, 
             data => {
-                return { type: types.RETRIEVE_ACCOUNT_SUCCESSFUL, data: data as Account };
+                return { type: types.RETRIEVE_ACCOUNT_SUCCESSFUL, data: data as AccountDetail };
                 
             }, 
             error => {
