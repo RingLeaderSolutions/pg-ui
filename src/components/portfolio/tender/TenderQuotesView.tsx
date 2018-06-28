@@ -261,7 +261,12 @@ class TenderQuotesView extends React.Component<TenderQuotesViewProps & StateProp
         }
 
         if(this.props.tender.assignedSuppliers.length <= 0){
-            UIkit.modal.alert("Sorry, this tender does not have any assigned suppliers. Please assign at least one supplier before generating a new requirements pack..")
+            UIkit.modal.alert("Sorry, this tender does not have any assigned suppliers. Please assign at least one supplier before generating a new requirements pack.")
+            return;
+        }
+
+        if(this.props.tender.offerTypes == null || this.props.tender.offerTypes.length == 0){
+            UIkit.modal.alert("Sorry, this tender does not have any requested contract durations. Please rectify this by editing the tender and selecting at least one duration.")
             return;
         }
 

@@ -161,9 +161,7 @@ class UpdateTenderDialog extends React.Component<UpdateTenderDialogProps & State
 
             paymentTerms: Number(this.state.paymentTerms),
             greenPercentage: Number(this.state.greenPercentage),
-
-            product: '',
-            durationMonths: -1,
+            
             tariffId: this.state.tariff ? this.state.tariff : null
         };
 

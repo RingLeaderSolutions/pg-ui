@@ -56,7 +56,7 @@ class Home extends React.Component<StateProps & DispatchProps, {}> {
                         <img src={this.props.instance_detail.logoUri} alt={this.props.instance_detail.name} /> 
                         {/* <img src={require('../images/tpi-flow-logo.png')} alt={this.props.instance_detail.name} />  */}
                         <div className="environment">
-                            <span className="uk-label">{appConfig.environment_name} v0.1.33</span>
+                            <span className="uk-label">{appConfig.environment_name} v0.1.34</span>
                         </div>
                         <div className="environment">
                             <span className="uk-label">Backend v{this.props.backendVersion}</span>

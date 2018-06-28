@@ -35,10 +35,8 @@ export interface TenderRequirements {
     id: string;
     portfolioId: string;
     tenderId?: string;
-    durationMonths: number;
     greenPercentage: number;
     paymentTerms: number;
-    product: string;
     tariffId: string;
 }
 

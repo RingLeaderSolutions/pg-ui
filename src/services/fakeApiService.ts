@@ -556,12 +556,10 @@ export class FakeApiService implements IApiService {
                     sheetCount: 1
                 },
                 requirements: {
-                    durationMonths: 18,
                     greenPercentage: 0,
                     id: "68bc8e6b-2552-4dfd-8c65-235c20cf83ce",
                     paymentTerms: 21,
                     portfolioId: "4d584e81-91c2-47b4-85f9-411db125af51",
-                    product: "fixed",
                     tariffId: "2",
                     tenderId: "5122951b-b942-4f25-8ee0-5f2e255a5f50"
                 },

@@ -137,7 +137,7 @@ class CreateTenderDialog extends React.Component<CreateTenderDialogProps & State
             )
         })
     }
-    
+
     createTender(){
         let requirements: TenderRequirements = {
             id: "",
@@ -146,9 +146,6 @@ class CreateTenderDialog extends React.Component<CreateTenderDialogProps & State
 
             paymentTerms: Number(this.state.paymentTerms),
             greenPercentage: Number(this.state.greenPercentage),
-
-            product: '',
-            durationMonths: -1,
 
             tariffId: this.state.tariff ? this.state.tariff : null
         };
