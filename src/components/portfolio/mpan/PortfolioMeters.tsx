@@ -12,6 +12,7 @@ import ExcludeAllMetersDialog from "./ExcludeAllMetersDialog";
 import ReactTable, { Column } from "react-table";
 import { selectPortfolioMeterTab, openModalDialog } from "../../../actions/viewActions";
 import ModalDialog from "../../common/ModalDialog";
+const UIkit = require('uikit'); 
 
 interface PortfolioMetersProps {
     portfolio: Portfolio;
@@ -52,8 +53,12 @@ class PortfolioMeters extends React.Component<PortfolioMetersProps & StateProps 
 
     excludeMeter(event: any, mpanCore: string){
         event.stopPropagation();
-        var meters: string[] = [mpanCore]
-        this.props.excludeMeters(this.props.portfolio.id,  meters);
+
+        UIkit.modal.confirm(`Are you sure you want to exclude the "${mpanCore}" meter from this portfolio?`).then(
+            () => {
+                this.props.excludeMeters(this.props.portfolio.id,  [mpanCore]); 
+            }
+        );
     }
 
     renderDynamicTable(columns: string[], values: string[][], utilityType: UtilityType){
