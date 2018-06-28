@@ -39,6 +39,14 @@ class TenderSupplierSelectDialog extends React.Component<TenderSupplierSelectDia
             selected 
         }
     }
+
+    componentWillReceiveProps(nextProps: TenderSupplierSelectDialogProps & StateProps & DispatchProps){
+        var selected = nextProps.assignedSuppliers.map(s => s.supplierId);
+        this.setState({
+            selected
+        })
+    }
+
     componentDidMount() {
         this.props.getTenderSuppliers();
     }
@@ -61,6 +69,23 @@ class TenderSupplierSelectDialog extends React.Component<TenderSupplierSelectDia
         }
     }
 
+    selectAllSuppliers(){
+        var suppliers = this.getValidSuppliers();
+        
+        this.setState({
+            ...this.state,
+            selected: suppliers.map(s => s.supplierId)
+        });
+    }
+
+    selectNoSuppliers(){
+        this.setState({
+            ...this.state,
+            selected: []
+        });
+    }
+
+
     getValidSuppliers() : TenderSupplier[]{
         if(this.props.utility == UtilityType.Gas){
             return this.props.suppliers.filter(s => s.gasSupplier);
@@ -75,30 +100,35 @@ class TenderSupplierSelectDialog extends React.Component<TenderSupplierSelectDia
             return (<Spinner hasMargin={true} />);
         }
         
+        var suppliers = this.getValidSuppliers().map(s => {
+            var isSelected = this.state.selected.find(sid => sid == s.supplierId) != null;
+            return (
+                <tr key={s.supplierId}>
+                    <td><img src={s.logoUri} style={{ width: "70px"}}/></td>
+                    <td>{s.name}</td>
+                    <td>{s.paymentTerms} days</td>
+                    <td><input className="uk-checkbox" type="checkbox" checked={isSelected} onChange={(e) => this.toggleSupplierAssignment(e, s.supplierId)}/></td>
+                </tr>
+            )
+        });
+
         return (
-            <div className="uk-panel-scrollable uk-margin uk-height-large">
-                    {this.getValidSuppliers().map(s => {
-                        var isAssigned = this.props.assignedSuppliers.find(as => as.supplierId == s.supplierId) != null;
-                        return (
-                            <div key={s.supplierId} className="supplier">
-                                <div className="uk-margin uk-grid uk-flex-center" data-uk-grid>
-                                    <img className="supplier-image" src={s.logoUri} alt={s.name} style={{width:"auto", height: "80px"}}/>
-                                </div>
-                                <div className="uk-margin uk-grid-small" data-uk-grid>
-                                    <div className="uk-width-expand@m">
-                                        <label>
-                                            <input className="uk-checkbox" type="checkbox" defaultChecked={isAssigned} onChange={(e) => this.toggleSupplierAssignment(e, s.supplierId)}/> Included
-                                        </label>
-                                    </div>
-                                    <div className="uk-grid-1-3">
-                                        <p className="uk-text-right">Payment terms: <strong>{s.paymentTerms} days</strong></p>
-                                    </div>
-                                </div>
-                                <hr />
-                            </div>
-                        )
-                    })}
-                </div>);
+            <div className="uk-panel-scrollable uk-height-large">
+                <table className="uk-table uk-table-divider">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>Supplier</th>
+                            <th>Payment Terms</th>
+                            <th>Included</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {suppliers}
+                    </tbody>
+                </table>
+            </div>
+        )
     }
 
     render() {
@@ -110,6 +140,13 @@ class TenderSupplierSelectDialog extends React.Component<TenderSupplierSelectDia
                 </div>
                 <div className="uk-modal-body">
                     {content}
+                    <hr />
+                    <button className="uk-button uk-button-small uk-button-default uk-margin-right" onClick={() => this.selectAllSuppliers()} type="button">
+                    <span className="uk-margin-small-right" data-uk-icon="icon: check" /> Select All
+                    </button>
+                    <button className="uk-button uk-button-small uk-button-default uk-margin-right" onClick={() => this.selectNoSuppliers()} type="button">
+                        <span className="uk-margin-small-right" data-uk-icon="icon: close" /> Select None
+                    </button>
                 </div>
                 <div className="uk-modal-footer uk-text-right">
                     <button className="uk-button uk-button-default uk-margin-right" type="button" onClick={() => this.props.closeModalDialog()}>Done</button>

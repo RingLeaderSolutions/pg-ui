@@ -115,6 +115,29 @@ class CreateTenderDialog extends React.Component<CreateTenderDialogProps & State
         return this.state.durations.findIndex(d => d == duration) != -1;
     }
 
+    renderTariffOptions(){
+        return this.props.tariffs.map(t => {
+            return (<option key={t.id} value={t.id}>{t.name}</option>)
+        });
+    }
+
+    renderDurationOptions(...durations: number[]){
+        return durations.map(d => {
+            return (
+                <div className="uk-width-1-2 uk-margin-small" key={d}>
+                    <label>
+                        <input 
+                            className='uk-checkbox'
+                            type='checkbox' 
+                            checked={this.stateHasDuration(d)}
+                            onChange={(e) => this.handleOfferTypeChange(d, e)}
+                            /> {d} months
+                    </label>
+                </div>
+            )
+        })
+    }
+    
     createTender(){
         let requirements: TenderRequirements = {
             id: "",
@@ -157,29 +180,6 @@ class CreateTenderDialog extends React.Component<CreateTenderDialogProps & State
 
         this.props.createTender(this.props.portfolioId, tender, this.props.utility, this.props.isHalfHourly);
         this.props.closeModalDialog();
-    }
-
-    renderTariffOptions(){
-        return this.props.tariffs.map(t => {
-            return (<option key={t.id} value={t.id}>{t.name}</option>)
-        });
-    }
-
-    renderDurationOptions(...durations: number[]){
-        return durations.map(d => {
-            return (
-                <div className="uk-width-1-2 uk-margin-small" key={d}>
-                    <label>
-                        <input 
-                            className='uk-checkbox'
-                            type='checkbox' 
-                            checked={this.stateHasDuration(d)}
-                            onChange={(e) => this.handleOfferTypeChange(d, e)}
-                            /> {d} months
-                    </label>
-                </div>
-            )
-        })
     }
 
     renderRequirementsEditForm(){
