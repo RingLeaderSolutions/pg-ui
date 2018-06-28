@@ -21,6 +21,14 @@ export interface Tender {
     requirements: TenderRequirements;
     packStatusMessage?: string;
     meterCount?: number;
+    offerTypes: TenderOfferType[]
+}
+
+export interface TenderOfferType {
+    id: string;
+    tenderId: string;
+    product: string;
+    duration: number;
 }
 
 export interface TenderRequirements {

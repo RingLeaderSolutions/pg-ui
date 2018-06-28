@@ -8,7 +8,7 @@ import DatePicker from 'react-datepicker';
 
 import { fetchTariffs } from '../../../actions/portfolioActions';
 import { createTender } from '../../../actions/tenderActions';
-import { Tender, TenderRequirements, Tariff } from "../../../model/Tender";
+import { Tender, TenderRequirements, Tariff, TenderOfferType } from "../../../model/Tender";
 import { closeModalDialog } from "../../../actions/viewActions";
 
 
@@ -40,10 +40,9 @@ interface CreateTenderState {
     deadlineNotes: string;
     ebInclusive: boolean;
     paymentTerms: string;
-    product: string;
-    contractLength: string;
     tariff: string;
     greenPercentage: string;
+    durations: number[];
 }
 
 class CreateTenderDialog extends React.Component<CreateTenderDialogProps & StateProps & DispatchProps, CreateTenderState> {
@@ -56,12 +55,13 @@ class CreateTenderDialog extends React.Component<CreateTenderDialogProps & State
             billingMethod: '',
             deadlineNotes: '',
             ebInclusive: true,
-            paymentTerms: '',
-            product: '',
+            paymentTerms: "0",
             tariff: '',
-            contractLength: '',
-            greenPercentage: ''
+            greenPercentage: '',
+            durations: [ 12 ]
         };
+
+        this.stateHasDuration = this.stateHasDuration.bind(this);
     }
 
     handleFormChange(attribute: string, event: React.ChangeEvent<any>){
@@ -93,6 +93,28 @@ class CreateTenderDialog extends React.Component<CreateTenderDialogProps & State
         });
     }
 
+    handleOfferTypeChange(duration: number, e: React.ChangeEvent<HTMLInputElement>){
+        var value = e.target.checked;
+        var durations = this.state.durations.slice();
+        
+        var existingPos = durations.indexOf(duration);
+        if(value && existingPos == -1){
+            durations.push(duration);
+        }
+        else if (existingPos != -1) {
+            durations.splice(existingPos, 1);
+        }
+        
+        this.setState({
+            ...this.state,
+            durations
+        });
+    }
+
+    stateHasDuration(duration: number): boolean{
+        return this.state.durations.findIndex(d => d == duration) != -1;
+    }
+
     createTender(){
         let requirements: TenderRequirements = {
             id: "",
@@ -100,12 +122,23 @@ class CreateTenderDialog extends React.Component<CreateTenderDialogProps & State
             tenderId: "",
 
             paymentTerms: Number(this.state.paymentTerms),
-            durationMonths: Number(this.state.contractLength),
             greenPercentage: Number(this.state.greenPercentage),
 
-            product: this.state.product,
+            product: '',
+            durationMonths: -1,
+
             tariffId: this.state.tariff ? this.state.tariff : null
         };
+
+        var offerTypes : TenderOfferType[] = this.state.durations.map(d => {
+            return {
+                id: null,
+                tenderId: null,
+
+                product: this.state.ebInclusive ? "inclusive" : "pass-thru",
+                duration: d
+            }
+        });
 
         var tender: Tender = {
             portfolioId: this.props.portfolioId,
@@ -118,6 +151,7 @@ class CreateTenderDialog extends React.Component<CreateTenderDialogProps & State
             commission: Number(this.state.commission),
             halfHourly: this.props.isHalfHourly,
             allInclusive: this.state.ebInclusive,
+            offerTypes,
             requirements
         }
 
@@ -131,89 +165,103 @@ class CreateTenderDialog extends React.Component<CreateTenderDialogProps & State
         });
     }
 
+    renderDurationOptions(...durations: number[]){
+        return durations.map(d => {
+            return (
+                <div className="uk-width-1-2 uk-margin-small" key={d}>
+                    <label>
+                        <input 
+                            className='uk-checkbox'
+                            type='checkbox' 
+                            checked={this.stateHasDuration(d)}
+                            onChange={(e) => this.handleOfferTypeChange(d, e)}
+                            /> {d} months
+                    </label>
+                </div>
+            )
+        })
+    }
+
     renderRequirementsEditForm(){
         var isGasTender = this.props.utility == UtilityType.Gas;
         var isHalfhourly = this.props.isHalfHourly;
         return (
             <form>
-                <div className='uk-flex'>
-                    <div className='uk-card uk-card-default uk-card-small uk-card-body uk-flex-1'>
-                        <fieldset className='uk-fieldset'>
-                            <div className="uk-grid uk-child-width-expand" data-uk-grid>
-                                <div>
-                                    <div className="uk-margin">
-                                        <label className="uk-form-label" data-for="payment-terms-select">Payment Terms</label>
-                                        <div className="uk-form-controls">
-                                            <select className="uk-select" id="payment-terms-select" 
-                                                value={this.state.paymentTerms}
-                                                onChange={(e) => this.handleFormChange("paymentTerms", e)}>
-                                                <option value="0" disabled>Select terms</option>
-                                                <option value={7}>7 days</option>
-                                                <option value={14}>14 days</option>
-                                                <option value={21}>21 days</option>
-                                                <option value={28}>28 days</option>
-                                            </select>
-                                        </div>
-                                    </div>
-
-                                    <div className="uk-margin">
-                                        <label className="uk-form-label" data-for="product-select">Product</label>
-                                        <div className="uk-form-controls">
-                                            <select className="uk-select" id="product-select" 
-                                                value={this.state.product}
-                                                onChange={(e) => this.handleFormChange("product", e)}>
-                                                <option value="" disabled>Select product</option>
-                                                <option>Fixed</option>
-                                                <option>Semi Flex</option>
-                                                <option>Flex</option>
-                                            </select>
-                                        </div>
+                <div className='uk-card uk-card-default uk-card-small uk-card-body'>
+                    <fieldset className='uk-fieldset'>
+                        <div className="uk-grid" data-uk-grid>
+                            <div className="uk-width-1-2">
+                                <div className="uk-margin">
+                                    <label className="uk-form-label" data-for="payment-terms-select">Payment Terms</label>
+                                    <div className="uk-form-controls">
+                                        <select className="uk-select" id="payment-terms-select" 
+                                            value={this.state.paymentTerms}
+                                            onChange={(e) => this.handleFormChange("paymentTerms", e)}>
+                                            <option value="0" disabled>Select terms</option>
+                                            <option value={7}>7 days</option>
+                                            <option value={14}>14 days</option>
+                                            <option value={21}>21 days</option>
+                                            <option value={28}>28 days</option>
+                                        </select>
                                     </div>
                                 </div>
 
-                                <div>
-                                    <div className="uk-margin">
-                                        <label className="uk-form-label" data-for="green-perc-input">Green %</label>
-                                        <div className="uk-form-controls">
-                                            <input className="uk-input" id="green-perc-input" type="text" placeholder="20" 
-                                                value={this.state.greenPercentage}
-                                                onChange={(e) => this.handleFormChange("greenPercentage", e)}/>
-                                        </div>
+                                { !isGasTender && isHalfhourly ? (
+                                <div className="uk-margin">
+                                    <label className="uk-form-label" data-for="tariff-select">Tariff</label>
+                                    <div className="uk-form-controls">
+                                        <select className="uk-select" id="tariff-select"
+                                            value={this.state.tariff}
+                                            onChange={(e) => this.handleFormChange("tariff", e)}>
+                                            <option value="" disabled>Select tariff</option>                                            
+                                            {this.renderTariffOptions()}
+                                        </select>
                                     </div>
+                                </div>) : null}
+                            </div>
 
-                                    <div className="uk-margin">
-                                        <label className="uk-form-label" data-for="contract-length-select">Contract Length</label>
-                                        <div className="uk-form-controls">
-                                            <select className="uk-select" id="contract-length-select"
-                                                value={this.state.contractLength}
-                                                onChange={(e) => this.handleFormChange("contractLength", e)}>
-                                                <option value="0" disabled>Select length</option>                                            
-                                                <option value={6}>6 months</option>
-                                                <option value={12}>12 months</option>
-                                                <option value={18}>18 months</option>
-                                                <option value={24}>24 months</option>
-                                                <option value={30}>30 months</option>
-                                                <option value={36}>36 months</option>
-                                            </select>
-                                        </div>
+                            <div className="uk-width-1-2">
+                                <div className="uk-margin">
+                                    <label className="uk-form-label" data-for="green-perc-input">Green %</label>
+                                    <div className="uk-form-controls">
+                                        <input className="uk-input" id="green-perc-input" type="text" placeholder="e.g. 20" 
+                                            value={this.state.greenPercentage}
+                                            onChange={(e) => this.handleFormChange("greenPercentage", e)}/>
                                     </div>
-
-                                    { !isGasTender && isHalfhourly ? (
-                                    <div className="uk-margin">
-                                        <label className="uk-form-label" data-for="tariff-select">Tariff</label>
-                                        <div className="uk-form-controls">
-                                            <select className="uk-select" id="tariff-select"
-                                                value={this.state.tariff}
-                                                onChange={(e) => this.handleFormChange("tariff", e)}>
-                                                <option value="" disabled>Select tariff</option>                                            
-                                                {this.renderTariffOptions()}
-                                            </select>
-                                        </div>
-                                    </div>) : null}
                                 </div>
                             </div>
-                        </fieldset>
-                    </div>
+                        </div>
+                        <hr />
+                        <div>
+                            { !isGasTender ? (
+                                <div>
+                                    <div className='uk-margin'>
+                                        <label className='uk-form-label'>Embedded Benefits</label>
+                                        <div className="uk-margin-small">
+                                            <label><input className="uk-radio" type="radio" name="ebChoice" checked={this.state.ebInclusive} onChange={(e) => this.handleInclusiveChange(false, e)}/> Inclusive</label>
+                                            <label><input className="uk-radio uk-margin-large-left" type="radio" name="ebChoice" checked={!this.state.ebInclusive} onChange={(e) => this.handleInclusiveChange(true, e)} /> Pass-Through</label>
+                                        </div>
+                                    </div>
+                                    <hr />
+                                </div>)
+                            : null}
+                            <label className="uk-form-label">Requested Offer Durations</label>
+                            <div className="uk-grid uk-margin" data-uk-grid>
+                                <div className='uk-width-1-2 uk-margin-small uk-margin-small-top'>
+                                    <label>
+                                        <input 
+                                            className='uk-checkbox'
+                                            type='checkbox' 
+                                            checked={this.stateHasDuration(0)}
+                                            onChange={(e) => this.handleOfferTypeChange(0, e)}
+                                            /> 0 (Flexi)
+                                    </label>
+                                </div>
+                                {this.renderDurationOptions(6, 12, 18, 24, 36)}
+                            </div>
+
+                        </div>
+                    </fieldset>
                 </div>
             </form>
         );
@@ -238,6 +286,7 @@ class CreateTenderDialog extends React.Component<CreateTenderDialogProps & State
                                 <div className="uk-grid" data-uk-grid>
                                     <div className="uk-width-expand@s">
                                         <input className='uk-input' 
+                                            placeholder="e.g. 0.1"
                                             value={this.state.commission}
                                             onChange={(e) => this.handleFormChange("commission", e)}/>
                                     </div>
@@ -257,16 +306,6 @@ class CreateTenderDialog extends React.Component<CreateTenderDialogProps & State
                                     <option>Electronic</option>
                                 </select>
                             </div>
-
-                            { !isGas ? (
-                                <div className='uk-margin'>
-                                    <label className='uk-form-label'>Embedded Benefits</label>
-                                    <div className="uk-margin-small">
-                                        <label><input className="uk-radio" type="radio" name="ebChoice" checked={this.state.ebInclusive} onChange={(e) => this.handleInclusiveChange(false, e)}/> Inclusive</label>
-                                        <label><input className="uk-radio uk-margin-large-left" type="radio" name="ebChoice" checked={!this.state.ebInclusive} onChange={(e) => this.handleInclusiveChange(true, e)} /> Pass-Through</label>
-                                    </div>
-                                </div>)
-                            : null}
 
                             <div className="uk-margin">
                                 <label className="uk-form-label" data-for="deadline-input">Deadline</label>

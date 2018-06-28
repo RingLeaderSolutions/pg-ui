@@ -457,6 +457,7 @@ export class FakeApiService implements IApiService {
                 deadlineNotes: null,
                 commission: 1,
                 status: "CREATED",
+                offerTypes: [],
                 issuances: [{
                     issuanceId: "4f2ca438-d5dd-4fe4-9932-f31c8812a5de",
                     tenderId: "9f8cac73-73f4-40b3-a811-c0afc02a9edd",
