@@ -67,6 +67,12 @@ export default function connectSignalR(store: any) {
                         case "historical_upload_failed":
                             showNotification(`Failed to upload HH data: ${data.Description}`, false);
                             break;
+                        case "recommendation_generate_successful":
+                            showNotification(`Successfully generated recommendations`, true);
+                            break;
+                        case "recommendation_generate_failed":
+                            showNotification(`Failed to generate recommendations`, false);
+                            break;
                     }
                     store.dispatch(getPortfolioTenders(currentPortfolio.id));
                     store.dispatch(fetchPortfolioUploads(currentPortfolio.id));
