@@ -55,7 +55,7 @@ class UpdateTenderDialog extends React.Component<UpdateTenderDialogProps & State
             deadlineNotes: props.tender.deadlineNotes,
             ebInclusive: props.tender.allInclusive,
             paymentTerms: String(props.tender.requirements.paymentTerms),
-            tariff: props.tender.requirements.tariffId,
+            tariff: props.tender.requirements.tariffId || '',
             greenPercentage: String(props.tender.requirements.greenPercentage),
             durations: props.tender.offerTypes.map(ot => ot.duration)
         };
@@ -71,7 +71,7 @@ class UpdateTenderDialog extends React.Component<UpdateTenderDialogProps & State
                 deadlineNotes: nextProps.tender.deadlineNotes,
                 ebInclusive: nextProps.tender.allInclusive,
                 paymentTerms: String(nextProps.tender.requirements.paymentTerms),
-                tariff: nextProps.tender.requirements.tariffId,
+                tariff: nextProps.tender.requirements.tariffId || '',
                 greenPercentage: String(nextProps.tender.requirements.greenPercentage),
                 durations: nextProps.tender.offerTypes.map(ot => ot.duration)
             })
