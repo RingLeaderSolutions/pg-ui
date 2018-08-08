@@ -6,6 +6,16 @@ export interface PortfolioViewState {
     selectedIndex: number;
     tender: TenderViewState;
     meter: MeterViewState;
+    offers: OffersViewState;
+    recommendations: RecommendationsViewState;
+}
+
+export interface RecommendationsViewState {
+    selectedIndex: number;
+}
+
+export interface OffersViewState {
+    selectedIndex: number;
 }
 
 export interface TenderViewState {
@@ -20,6 +30,8 @@ const initialPortfolioViewState : PortfolioViewState = {
     ...initialSelectedTabState,
     tender: initialSelectedTabState,
     meter: initialSelectedTabState,
+    offers: initialSelectedTabState,
+    recommendations: initialSelectedTabState
 }
 
 const selectPortfolioTabReducer = (state: PortfolioViewState, action: any): PortfolioViewState => {
@@ -40,6 +52,20 @@ const selectPortfolioTabReducer = (state: PortfolioViewState, action: any): Port
             return {
                 ...state,
                 tender: {
+                    selectedIndex: action.data
+                }
+            };
+        case types.SELECT_TENDER_OFFERS_TAB:
+            return {
+                ...state,
+                offers: {
+                    selectedIndex: action.data
+                }
+            };
+        case types.SELECT_TENDER_RECOMMENDATIONS_TAB:
+            return {
+                ...state,
+                recommendations: {
                     selectedIndex: action.data
                 }
             };

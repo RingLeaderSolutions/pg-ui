@@ -45,7 +45,7 @@ class TenderContractView extends React.Component<TenderContractViewProps & Dispa
     renderContractInfo(){
         var { existingContract } = this.props.tender;
         var existingSupplier = this.props.suppliers.find(s => s.supplierId == existingContract.supplierId);
-        var supplierText = existingSupplier == null ? "Unknown" : existingSupplier.name;
+        var supplierLogo = existingSupplier == null ? "Unknown" : (<img src={existingSupplier.logoUri} style={{ width: "70px"}}/>);
 
         var appu = `${existingContract.averagePPU.toFixed(4)}p`;
         return (
@@ -55,7 +55,7 @@ class TenderContractView extends React.Component<TenderContractViewProps & Dispa
                     <p className="uk-text-meta uk-margin-small">Reference</p>
                 </div>
                 <div className="uk-card uk-card-default uk-card-small uk-card-body uk-width-1-5 uk-text-center">
-                    <p className="uk-text-bold uk-margin-small">{supplierText}</p>
+                    <p className="uk-text-bold uk-margin-small">{supplierLogo}</p>
                     <p className="uk-text-meta uk-margin-small">Supplier</p>
                 </div>
                 <div className="uk-card uk-card-default uk-card-small uk-card-body uk-width-1-5 uk-text-center">
@@ -140,7 +140,7 @@ class TenderContractView extends React.Component<TenderContractViewProps & Dispa
                     <div className="uk-grid">
                         <h3 className="uk-width-expand@s">Existing Contract</h3>
                     </div>
-                    <div>
+                    <div className="uk-margin">
                         {content}
                     </div>
                 </div>

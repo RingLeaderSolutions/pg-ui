@@ -10,7 +10,6 @@ import { deleteTender } from '../../../actions/tenderActions';
 import { Tender } from "../../../model/Tender";
 import TenderStatus from "./TenderStatus";
 import TenderContractView from "./TenderContractView";
-import TenderQuotesView from "./TenderQuotesView";
 import UpdateTenderDialog from "./UpdateTenderDialog";
 import TenderSupplierSelectDialog from "./TenderSupplierSelectDialog";
 import ModalDialog from "../../common/ModalDialog";
@@ -85,19 +84,14 @@ class TenderView extends React.Component<TenderViewProps & StateProps & Dispatch
                     </div>
                 </div>
 
-                <div className="uk-margin-small">
+                <div className="uk-margin">
                     <TenderStatus tender={this.props.tender} utility={this.props.utility} details={this.props.details} />
                 </div>
 
-                <div className="uk-margin-small">
+                <div className="uk-margin">
                     <TenderContractView tender={this.props.tender} portfolioId={this.props.details.portfolio.id}/>
                 </div>
-                
-                <div className="uk-margin-small">
-                    <TenderQuotesView tender={this.props.tender} />
-                </div>
 
-                
                 {/* <div>
                     <button className="uk-button uk-button-danger uk-button-small" type="button" onClick={() => this.deleteTender()}>
                         <span className="uk-margin-small-right" data-uk-icon="icon: close" />

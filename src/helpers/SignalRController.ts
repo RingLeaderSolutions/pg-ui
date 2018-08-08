@@ -2,7 +2,7 @@ import * as types from "../actions/actionTypes";
 import { HubConnection } from "@aspnet/signalr-client";
 import { NotificationMessage } from '../model/NotificationMessage';
 import { getPortfolioDetails, fetchPortfolioUploads, getAllPortfolios, getSinglePortfolio } from '../actions/portfolioActions';
-import { getPortfolioTenders } from '../actions/tenderActions';
+import { getPortfolioTenders, fetchTenderOffers, fetchTenderRecommendations } from '../actions/tenderActions';
 import { retrieveAccountDetail, fetchAccountDocumentation, fetchAccountUploads, retrieveAccounts } from '../actions/hierarchyActions';
 import { fetchMeterConsumption } from '../actions/meterActions';
 import { ApplicationState } from "../applicationState";
@@ -68,13 +68,15 @@ export default function connectSignalR(store: any) {
                             showNotification(`Failed to upload HH data: ${data.Description}`, false);
                             break;
                         case "recommendation_generate_successful":
-                            showNotification(`Successfully generated recommendations`, true);
+                            showNotification(`Successfully generated recommendation`, true);
                             break;
                         case "recommendation_generate_failed":
-                            showNotification(`Failed to generate recommendations`, false);
+                            showNotification(`Failed to generate recommendation`, false);
                             break;
                     }
                     store.dispatch(getPortfolioTenders(currentPortfolio.id));
+                    store.dispatch(fetchTenderOffers(currentPortfolio.id));
+                    store.dispatch(fetchTenderRecommendations(currentPortfolio.id));
                     store.dispatch(fetchPortfolioUploads(currentPortfolio.id));
                 }
                 break;

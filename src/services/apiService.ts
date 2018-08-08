@@ -87,6 +87,12 @@ export interface IApiService {
   exportContractRates(tenderId: string, quoteId: string): Promise<AxiosResponse>;
   deleteQuote(tenderId: string, quoteId: string): Promise<AxiosResponse>;
 
+  fetchTenderOffers(portfolioId: string): Promise<AxiosResponse>;
+  fetchTenderRecommendations(portfolioId: string): Promise<AxiosResponse>;
+
+  fetchRecommendationSuppliers(tenderId: string, summaryId: string): Promise<AxiosResponse>;
+  fetchRecommendationSites(tenderId: string, summaryId: string, siteStart: number, siteEnd: number): Promise<AxiosResponse>;
+
   reportLogin(): Promise<AxiosResponse>;
   getActiveUsers(): Promise<AxiosResponse>;
   assignPortfolioUsers(portfolioId: string, users: User[]): Promise<AxiosResponse>;
@@ -339,7 +345,7 @@ export class ApiService implements IApiService {
     }
 
     getPortfolioTenders(portfolioId: string){
-        return axios.get(`${this.baseApiUri}/portman-web/tender/portfolio/${portfolioId}`, this.getRequestConfig());        
+        return axios.get(`${this.baseApiUri}/portman-web/tender/portfolio/${portfolioId}/basic`, this.getRequestConfig());        
     }
 
     getTenderSuppliers(){
@@ -547,8 +553,29 @@ export class ApiService implements IApiService {
         return axios.get(`${this.baseApiUri}/portman-web/export/consumption/portfolio/${portfolioId}`, this.getRequestConfig());        
     }
 
+    fetchTenderOffers(portfolioId: string){
+        return axios.get(`${this.baseApiUri}/portman-web/tender/portfolio/${portfolioId}/offers`, this.getRequestConfig());        
+    }
+
+    fetchTenderRecommendations(portfolioId: string){
+        return axios.get(`${this.baseApiUri}/portman-web/tender/portfolio/${portfolioId}/recommendations`, this.getRequestConfig());        
+    }
+
+    fetchRecommendationSummary(tenderId: string, summaryId: string){
+        return axios.get(`${this.baseApiUri}/portman-web/recommendation/recommendation/tender/${tenderId}?summaryId=${summaryId}`, this.getRequestConfig());                
+    }
+
+    fetchRecommendationSuppliers(tenderId: string, summaryId: string){
+        return axios.get(`${this.baseApiUri}/portman-web/recommendation/suppliers/tender/${tenderId}?summaryId=${summaryId}`, this.getRequestConfig());                
+    }
+
+    fetchRecommendationSites(tenderId: string, summaryId: string, siteStart: number, siteEnd: number){
+        return axios.get(`${this.baseApiUri}/portman-web/recommendation/sites/tender/${tenderId}?summaryId=${summaryId}&start=${siteStart}&end=${siteEnd}`, this.getRequestConfig());                      
+    }
+
     reportLogin(){
-        return axios.post(`${this.baseApiUri}/portman-web/admin/logon`, null, this.getRequestConfig());
+        return new FakeApiService().reportLogin();
+        //return axios.post(`${this.baseApiUri}/portman-web/admin/logon`, null, this.getRequestConfig());
     }
 
     createContact(contact: AccountContact){

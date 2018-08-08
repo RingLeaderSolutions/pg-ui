@@ -40,9 +40,19 @@ import generateSummaryReportReducer from './tender/generateSummaryReportReducer'
 import fetchBackingSheetsReducer from './tender/fetchBackingSheetsReducer';
 import fetchTenderIssuanceEmailReducer from './tender/fetchTenderIssuanceEmailReducer';
 import fetchTariffsReducer from './tender/fetchTariffsReducer';
+import fetchTenderOffersReducer from './tender/fetchTenderOffersReducer';
+import fetchTenderRecommendationsReducer from './tender/fetchTenderRecommendationsReducer';
+import fetchRecommendationSuppliersReducer from './tender/fetchRecommendationSuppliersReducer';
+import fetchRecommendationSitesReducer from './tender/fetchRecommendationSitesReducer';
+import fetchRecommendationSummaryReducer from './tender/fetchRecommendationSummaryReducer';
 
 const tenderReducer: Reducer<TenderState> = combineReducers<TenderState>({
     tenders: tendersReducer,
+    offers: fetchTenderOffersReducer,
+    recommendations: fetchTenderRecommendationsReducer,
+    selected_recommendation_summary: fetchRecommendationSummaryReducer,
+    selected_recommendation_suppliers: fetchRecommendationSuppliersReducer,
+    selected_recommendation_sites: fetchRecommendationSitesReducer,
     suppliers: tenderSuppliersReducer,
     addExistingContract: addExistingContractReducer,
     delete_tender: deleteTenderReducer,

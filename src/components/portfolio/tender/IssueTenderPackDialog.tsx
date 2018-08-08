@@ -91,8 +91,7 @@ class IssueTenderPackDialog extends React.Component<IssueTenderPackDialogProps &
                     <div className="uk-modal-footer uk-text-right">
                         <button className="uk-button uk-button-default uk-margin-right" type="button" onClick={() => this.props.closeModalDialog()}>OK</button>
                     </div>
-                </div>
-            )
+                </div>)
         }
 
         return (

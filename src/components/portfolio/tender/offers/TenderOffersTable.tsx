@@ -1,26 +1,24 @@
 import * as React from "react";
 import { MapDispatchToPropsFunction, connect, MapStateToProps } from 'react-redux';
-import { ApplicationState } from '../../../applicationState';
+import { ApplicationState } from '../../../../applicationState';
 
-import Spinner from '../../common/Spinner';
+import Spinner from '../../../common/Spinner';
 import * as moment from 'moment';
 
-import TenderBackingSheetsDialog from './TenderBackingSheetsDialog';
-import TenderQuoteSummariesDialog from './TenderQuoteSummariesDialog';
+import TenderBackingSheetsDialog from '../TenderBackingSheetsDialog';
 import QuoteCollateralDialog from './QuoteCollateralDialog';
 
-import { fetchQuoteBackingSheets, exportContractRates, deleteQuote, generateTenderPack } from '../../../actions/tenderActions';
-import { Tender, TenderSupplier, TenderQuote, TenderIssuance, TenderPack } from "../../../model/Tender";
+import { fetchQuoteBackingSheets, exportContractRates, deleteQuote, generateTenderPack } from '../../../../actions/tenderActions';
+import { Tender, TenderSupplier, TenderQuote, TenderIssuance, TenderPack } from "../../../../model/Tender";
 import { format } from 'currency-formatter';
-import GenerateSummaryReportDialog from "./GenerateSummaryReportDialog";
 import UploadOfferDialog from "./UploadOfferDialog";
-import IssueTenderPackDialog from "./IssueTenderPackDialog";
+import IssueTenderPackDialog from "../IssueTenderPackDialog";
 import TenderPackDialog from "./TenderPackDialog";
-import { openModalDialog } from "../../../actions/viewActions";
-import ModalDialog from "../../common/ModalDialog";
+import { openModalDialog } from "../../../../actions/viewActions";
+import ModalDialog from "../../../common/ModalDialog";
 const UIkit = require('uikit'); 
 
-interface TenderQuotesViewProps {
+interface TenderOffersTableProps {
     tender: Tender;
 }
 
@@ -37,7 +35,7 @@ interface DispatchProps {
     openModalDialog: (dialogId: string) => void;
 }
 
-class TenderQuotesView extends React.Component<TenderQuotesViewProps & StateProps & DispatchProps, {}> {
+class TenderOffersTable extends React.Component<TenderOffersTableProps & StateProps & DispatchProps, {}> {
     fetchAndDisplayRates(quoteId: string, ratesDialogName: string){
         this.props.fetchQuoteBackingSheets(this.props.tender.tenderId, quoteId);
         this.props.openModalDialog(ratesDialogName);
@@ -71,8 +69,16 @@ class TenderQuotesView extends React.Component<TenderQuotesViewProps & StateProp
     }
 
     renderOffersTable(packs: TenderPack[]){
-        var quotes = packs.map((p) => {
+        var quotes = packs
+        // Order the tender packs in such a way that those that have received quotes (i.e. not all PENDING), appear first in the list
+        .sort((p1: TenderPack, p2: TenderPack) => {        
+            if (p1.quotes.some(q => q.status != "PENDING") && p2.quotes.every(q => q.status == "PENDING")) return -1;
+            if (p1.quotes.every(q => q.status == "PENDING") && p2.quotes.some(q => q.status != "PENDING")) return 1;
+            return 0;
+        })
+        .map((p) => {
             return p.quotes
+            // Order the quotes of the pack so that the latest version appears first in the list
             .sort((q1: TenderQuote, q2: TenderQuote) => {        
                 if (q1.version < q2.version) return 1;
                 if (q1.version > q2.version) return -1;
@@ -169,8 +175,6 @@ class TenderQuotesView extends React.Component<TenderQuotesViewProps & StateProp
         var created = this.getFormattedDateTime(issuance.created);
         var expiry = this.getFormattedDateTime(issuance.expiry);
 
-        var createRecommendationDialogName = `create_recommendation_${issuance.issuanceId}`;
-        var viewRecommendationsDialogName = `view_recommendations_${this.props.tender.tenderId}`;
         var uploadOfferName = `upload_offer_${this.props.tender.tenderId}`;
 
         var hasReceivedQuotes = issuance.packs.some(
@@ -211,27 +215,6 @@ class TenderQuotesView extends React.Component<TenderQuotesViewProps & StateProp
                         <h3>Offers</h3>
                     </div>
                     <div className="uk-width-1-2">
-                        <div>
-                            <div className="uk-inline">
-                                <button className="uk-button uk-button-default uk-button-small uk-align-right" type="button" disabled={!hasReceivedQuotes || !hasValidQuotes}>
-                                    <span className="uk-margin-small-right" data-uk-icon="icon: file-edit" />                        
-                                    Recommendations
-                                </button>
-                                <div data-uk-dropdown="pos:bottom-justify;mode:click">
-                                    <ul className="uk-nav uk-dropdown-nav">
-                                    <li><a href="#" onClick={() => this.props.openModalDialog(viewRecommendationsDialogName)}>
-                                        <span className="uk-margin-small-right" data-uk-icon="icon: table" />
-                                        View Existing
-                                    </a></li>
-                                    <li className="uk-nav-divider"></li>
-                                    <li><a href="#" onClick={() => this.props.openModalDialog(createRecommendationDialogName)}>
-                                        <span className="uk-margin-small-right" data-uk-icon="icon: plus" />
-                                        Create New
-                                    </a></li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
                         <button className="uk-button uk-button-primary uk-button-small uk-align-right" type="button"onClick={() => this.props.openModalDialog(uploadOfferName)}>
                             <span className="uk-margin-small-right" data-uk-icon="icon: cloud-upload" />
                             Upload Offer
@@ -240,12 +223,6 @@ class TenderQuotesView extends React.Component<TenderQuotesViewProps & StateProp
                 </div>
                     {offersTable}
                 </div>
-                <ModalDialog dialogId={createRecommendationDialogName}>
-                    <GenerateSummaryReportDialog tender={this.props.tender} issuance={issuance} />
-                </ModalDialog>
-                <ModalDialog dialogId={viewRecommendationsDialogName} dialogClass="summary-report-dialog">
-                    <TenderQuoteSummariesDialog tender={this.props.tender} />
-                </ModalDialog>
                 <ModalDialog dialogId={uploadOfferName}>
                     <UploadOfferDialog tenderId={this.props.tender.tenderId} assignedSuppliers={this.props.tender.assignedSuppliers} utilityType={this.props.tender.utility} />
                 </ModalDialog>
@@ -304,10 +281,10 @@ class TenderQuotesView extends React.Component<TenderQuotesViewProps & StateProp
 
         return (
             <div className="uk-margin-top">
-                <ul data-uk-tab>
+                <ul data-uk-tab="connect: #offerTabSwitcher">
                     {tabs}
                 </ul>
-                <ul className="uk-switcher">
+                <ul id="offerTabSwitcher" className="uk-switcher">
                     {tabContent}
                 </ul>
             </div>
@@ -377,7 +354,7 @@ class TenderQuotesView extends React.Component<TenderQuotesViewProps & StateProp
     }
 }
 
-const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, TenderQuotesViewProps> = (dispatch) => {
+const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, TenderOffersTableProps> = (dispatch) => {
     return {
         fetchQuoteBackingSheets: (tenderId: string, quoteId: string) => dispatch(fetchQuoteBackingSheets(tenderId, quoteId)),
         exportContractRates: (tenderId: string, quoteId: string) => dispatch(exportContractRates(tenderId, quoteId)),
@@ -387,11 +364,11 @@ const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, TenderQuotes
     };
 };
   
-const mapStateToProps: MapStateToProps<StateProps, TenderQuotesViewProps> = (state: ApplicationState) => {
+const mapStateToProps: MapStateToProps<StateProps, TenderOffersTableProps> = (state: ApplicationState) => {
     return {
         suppliers: state.portfolio.tender.suppliers.value,
         working: state.portfolio.tender.suppliers.working
     };
 };
   
-export default connect(mapStateToProps, mapDispatchToProps)(TenderQuotesView);
+export default connect(mapStateToProps, mapDispatchToProps)(TenderOffersTable);

@@ -12,10 +12,14 @@ import PortfolioUploads from "./upload/PortfolioUploads";
 import PortfolioMeters from "./mpan/PortfolioMeters";
 
 import { getSinglePortfolio, getPortfolioDetails } from '../../actions/portfolioActions';
+import { getTenderSuppliers } from '../../actions/tenderActions';
+
 import TenderSummary from "./tender/TenderSummary";
 import { Link } from "react-router-dom";
 import { selectPortfolioTab } from "../../actions/viewActions";
 import { selectApplicationTab } from "../../actions/viewActions";
+import TenderOffersView from "./tender/offers/TenderOffersView";
+import TenderRecommendationsView from "./tender/recommendations/TenderRecommendationsView";
 
 interface PortfolioDetailProps extends RouteComponentProps<void> {
 }
@@ -32,12 +36,14 @@ interface StateProps {
 interface DispatchProps {
     getPortfolio: (portfolioId: string) => void;
     getPortfolioDetails: (portfolioId: string) => void;
+    getTenderSuppliers: () => void;        
     selectPortfolioTab: (index: number) => void;
     selectApplicationTab: (tab: ApplicationTab) => void;
 }
 
 class PortfolioDetail extends React.Component<PortfolioDetailProps & StateProps & DispatchProps, {}> {
     componentDidMount(){
+        this.props.getTenderSuppliers();
         this.props.selectApplicationTab(ApplicationTab.Portfolios);
         var portfolioId = this.props.location.pathname.split('/')[2];        
         this.props.getPortfolio(portfolioId);
@@ -59,7 +65,9 @@ class PortfolioDetail extends React.Component<PortfolioDetailProps & StateProps 
             case 2:
                 return (<TenderSummary portfolio={portfolio}/>);
             case 3:
-                return (<PortfolioUploads portfolio={portfolio} />);
+                return (<TenderOffersView portfolio={portfolio}/>)
+            case 4:
+                return (<TenderRecommendationsView portfolio={portfolio}/>)
         }
     }
 
@@ -75,7 +83,6 @@ class PortfolioDetail extends React.Component<PortfolioDetailProps & StateProps 
         if(this.props.working || this.props.portfolio == null){
             return (<Spinner />);
         }
-        console.log('portfoliodetail rendered for ' + this.props.portfolio.id);
         var { portfolio, detail } = this.props;
         var headerTitle = `Portfolio: ${portfolio.title}`;
         var accountLink = `/account/${detail.portfolio.accountId}`;
@@ -88,18 +95,13 @@ class PortfolioDetail extends React.Component<PortfolioDetailProps & StateProps 
                     <li className={this.renderActiveTabStyle(0)} onClick={() => this.selectTab(0)}><a href="#">Summary</a></li>
                     <li className={this.renderActiveTabStyle(1)} onClick={() => this.selectTab(1)}><a href="#">Meters</a></li>
                     <li className={this.renderActiveTabStyle(2)} onClick={() => this.selectTab(2)}><a href="#">Tenders</a></li>
-                    <li className={this.renderActiveTabStyle(3)} onClick={() => this.selectTab(3)}><a href="#">Uploads</a></li>
+                    <li className={this.renderActiveTabStyle(3)} onClick={() => this.selectTab(3)}><a href="#">Offers</a></li>
+                    <li className={this.renderActiveTabStyle(4)} onClick={() => this.selectTab(4)}><a href="#">Recommendations</a></li>
                 </ul>
             
                 <div className="restrict-height-hack">
                     {this.renderContent()}
                 </div>
-                {/* <ul className="uk-switcher restrict-height-hack">
-                    <li><PortfolioSummary portfolio={portfolio} detail={detail}/></li>
-                    <li className="restrict-height-hack"><PortfolioMeters portfolio={portfolio}/></li>
-                    <li><TenderSummary portfolio={portfolio}/></li>
-                    <li><PortfolioUploads portfolio={portfolio} /></li>
-                </ul> */}
             </div>)
     }
 }
@@ -108,6 +110,7 @@ const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, PortfolioDet
     return {
         getPortfolio: (portfolioId: string) => dispatch(getSinglePortfolio(portfolioId)),   
         getPortfolioDetails: (portfolioId: string) => dispatch(getPortfolioDetails(portfolioId)),
+        getTenderSuppliers: () => dispatch(getTenderSuppliers()),   
         selectPortfolioTab: (index: number) => dispatch(selectPortfolioTab(index)),
         selectApplicationTab: (tab: ApplicationTab) => dispatch(selectApplicationTab(tab))
     };

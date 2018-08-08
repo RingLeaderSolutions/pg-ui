@@ -1080,6 +1080,26 @@ export class FakeApiService implements IApiService {
     fetchInstanceDetails(){
         return OK();
     }
+
+    fetchTenderOffers(portfolioId: string){
+        return OK();       
+    }
+
+    fetchTenderRecommendations(portfolioId: string){
+        return OK(); 
+    }
+
+    fetchRecommendationSuppliers(tenderId: string, summaryId: string){
+        return OK();             
+    }
+
+    fetchRecommendationSites(tenderId: string, summaryId: string, siteStart: number, siteEnd: number){
+        return OK();
+    }
+
+    fetchRecommendationSummary(tenderId: string, summaryId: string){
+        return OK();
+    }
 }
 
 export default new FakeApiService();

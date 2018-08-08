@@ -1,6 +1,6 @@
 import ApiService from "../services/apiService";
 
-import { Tender, TenderContract, TenderSupplier, BackingSheet, TenderIssuanceEmail, TenderRequirements, ContractRatesResponse } from "../Model/Tender";
+import { Tender, TenderContract, TenderSupplier, BackingSheet, TenderIssuanceEmail, TenderRequirements, ContractRatesResponse, RecommendationSite, RecommendationSupplier, RecommendationSummary } from "../Model/Tender";
 import { UploadResponse, UtilityType, ExportResponse } from "../model/Models";
 
 import * as types from "./actionTypes";
@@ -22,6 +22,91 @@ export function getPortfolioTenders(portfolioId: string){
             }, 
             error => {
                 return { type: types.FETCH_PORTFOLIO_TENDERS_FAILED, errorMessage: error };
+            });
+    }
+};
+
+export function fetchTenderOffers(portfolioId: string){    
+    return (dispatch: Dispatch<any>) => {
+        let fetchPromise = ApiService.fetchTenderOffers(portfolioId);
+        dispatch( { type: types.FETCH_TENDER_OFFERS_WORKING });
+
+        makeApiRequest(dispatch,
+            fetchPromise,
+            200, 
+            data => {
+                return { type: types.FETCH_TENDER_OFFERS_SUCCESSFUL, data: data as Tender[] };
+            }, 
+            error => {
+                return { type: types.FETCH_TENDER_OFFERS_FAILED, errorMessage: error };
+            });
+    }
+};
+
+export function fetchTenderRecommendations(portfolioId: string){    
+    return (dispatch: Dispatch<any>) => {
+        let fetchPromise = ApiService.fetchTenderRecommendations(portfolioId);
+        dispatch( { type: types.FETCH_TENDER_RECOMMENDATIONS_WORKING });
+
+        makeApiRequest(dispatch,
+            fetchPromise,
+            200, 
+            data => {
+                return { type: types.FETCH_TENDER_RECOMMENDATIONS_SUCCESSFUL, data: data as Tender[] };
+            }, 
+            error => {
+                return { type: types.FETCH_TENDER_RECOMMENDATIONS_FAILED, errorMessage: error };
+            });
+    }
+};
+
+export function fetchRecommendationsSuppliers(tenderId: string, summaryId: string){    
+    return (dispatch: Dispatch<any>) => {
+        let fetchPromise = ApiService.fetchRecommendationSuppliers(tenderId, summaryId);
+        dispatch( { type: types.FETCH_RECOMMENDATIONS_SUPPLIERS_WORKING });
+
+        makeApiRequest(dispatch,
+            fetchPromise,
+            200, 
+            data => {
+                return { type: types.FETCH_RECOMMENDATIONS_SUPPLIERS_SUCCESSFUL, data: data as RecommendationSupplier[] };
+            }, 
+            error => {
+                return { type: types.FETCH_RECOMMENDATIONS_SUPPLIERS_FAILED, errorMessage: error };
+            });
+    }
+};
+
+export function fetchRecommendationsSites(tenderId: string, summaryId: string, siteStart: number, siteEnd: number){    
+    return (dispatch: Dispatch<any>) => {
+        let fetchPromise = ApiService.fetchRecommendationSites(tenderId, summaryId, siteStart, siteEnd);
+        dispatch( { type: types.FETCH_RECOMMENDATIONS_SITES_WORKING });
+
+        makeApiRequest(dispatch,
+            fetchPromise,
+            200, 
+            data => {
+                return { type: types.FETCH_RECOMMENDATIONS_SITES_SUCCESSFUL, data: data as RecommendationSite[] };
+            }, 
+            error => {
+                return { type: types.FETCH_RECOMMENDATIONS_SITES_FAILED, errorMessage: error };
+            });
+    }
+};
+
+export function fetchRecommendationSummary(tenderId: string, summaryId: string){    
+    return (dispatch: Dispatch<any>) => {
+        let fetchPromise = ApiService.fetchRecommendationSummary(tenderId, summaryId);
+        dispatch( { type: types.FETCH_RECOMMENDATIONS_SUMMARY_WORKING });
+
+        makeApiRequest(dispatch,
+            fetchPromise,
+            200, 
+            data => {
+                return { type: types.FETCH_RECOMMENDATIONS_SUMMARY_SUCCESSFUL, data: data as RecommendationSummary };
+            }, 
+            error => {
+                return { type: types.FETCH_RECOMMENDATIONS_SUMMARY_FAILED, errorMessage: error };
             });
     }
 };

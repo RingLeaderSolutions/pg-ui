@@ -99,17 +99,10 @@ class PortfolioUploads extends React.Component<PortfolioUploadProps & StateProps
         return (
             <div className="content-inner-portfolio">
                 <div className="table-uploads">
-                    <div className="search-uploads">
-                        <form className="uk-search uk-search-default">
-                            <span data-uk-search-icon="search"></span>
-                            <input className="uk-search-input" type="search" placeholder="Search..." />
-                        </form>
-                    </div>
                     <div>
                         <ul data-uk-tab>
                             <li><a href="#">Imports ({this.props.reports.imports.length})</a></li>
                             <li><a href="#">Uploads ({this.props.reports.uploads.length})</a></li>
-                            
                         </ul>
                         <ul className="uk-switcher restrict-height-hack">
                             <li>{this.renderUploadsTable(this.props.reports.imports, true)}</li>

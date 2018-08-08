@@ -8,7 +8,7 @@ export interface Tender {
     deadlineNotes: string;
     status?: string;
     assignedSuppliers?: TenderSupplier[];
-    summaries?: TenderQuoteSummary[];
+    summaries?: TenderRecommendation[];
     unissuedPacks?: TenderPack[];
     issuances?: TenderIssuance[];
     existingContract?: TenderContract;
@@ -123,7 +123,7 @@ export interface TenderContract {
     totalIncCCL?: number;
 }
 
-export interface TenderQuoteSummary {
+export interface TenderRecommendation {
     summaryId: string;
     accepted: string;
     communicated: string;
@@ -134,6 +134,100 @@ export interface TenderQuoteSummary {
     supplierCount: number;
     supplierId: string;
     tenderId: string;
+}
+
+export interface RecommendationSummary {
+    tenderTitle: string;
+    tenderId: string;
+    clientName: string;
+    attentionOf: string;
+    summaryId: string;
+    reportDate: string;
+    existingSupplier: string;
+    existingtotalIncCCL: number;
+    existingAPPU: number;
+    offerSummaries: RecommendationOfferSummary[];
+}
+
+export interface RecommendationOfferSummary {
+    supplierName: string;
+    duration: number;
+    version: number;
+    totalIncCCL: number;
+    cclCost: number;
+    previousAmountDifference: number;
+    previousPercentageDifference: number;
+    adriftAmount: number;
+    adriftPercentage: number;
+    ranking: number;
+    appu: number;
+    winner: boolean;
+}
+
+export interface RecommendationSupplier {
+    supplierName: string;
+    duration: number;
+    version: number;
+    winner: boolean;
+    incumbentContract: boolean;
+    backingsheetTitles: string[];
+    backingsheets: string[][];
+}
+
+export interface RecommendationSite {
+    siteCode: string;
+    siteName: string;
+    supplierAddress: string;
+    billingAddress: string;
+    currentContract: RecommendationContract;
+    recommendedSiteOffer: RecommendationOfferWinner;
+    siteOffersList: RecommendationSiteOffer[];
+    recommendedBillingRates: RecommendationBillingRateSummary;
+}
+
+export interface RecommendationBillingRateSummary {
+    monthlyRates: RecommendationBillingRate[];
+    yearlyRates: RecommendationBillingRate[];
+}
+
+export interface RecommendationBillingRate {
+    title: string;
+    amount: number;
+    formattedAmount: string;
+    total: boolean;
+    uom: string;
+}
+
+export interface RecommendationContract {
+    supplierName: string;
+    totalIncCCL: number;
+    appu: number;
+    ccl: number;
+}
+
+export interface RecommendationOfferWinner {
+    supplierName: string;
+    totalIncCCL: number;
+    startDate: string;
+    endDate: string;
+    percentageChange: number;
+    fuelType: string;
+    paymentTerms: number;
+}
+
+export interface RecommendationSiteOffer {
+    supplierName: string;
+    duration: number;
+    version: number;
+    totalIncCCL: number;
+    cclCost: number;
+    previousAmountDifference: number;
+    previousPercentageDifference: number;
+    adriftAmount: number;
+    adriftPercentage: number;
+    ranking: number;
+    winner: boolean;
+    appu: number;
 }
 
 export interface ContractRatesResponse {

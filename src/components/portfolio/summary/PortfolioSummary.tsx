@@ -9,6 +9,7 @@ import UpdatePortfolioDialog from "../creation/UpdatePortfolioDialog";
 import DeletePortfolioDialog from "../creation/DeletePortfolioDialog";
 import ModalDialog from "../../common/ModalDialog";
 import { openModalDialog } from "../../../actions/viewActions";
+import PortfolioUploads from "../upload/PortfolioUploads";
 
 interface PortfolioSummaryProps {
     portfolio: Portfolio;
@@ -55,7 +56,15 @@ class PortfolioSummary extends React.Component<PortfolioSummaryProps & DispatchP
                 </div>
                 <div className="uk-child-width-expand@s uk-grid-match uk-text-center" data-uk-grid>
                     <PortfolioMeterStatus portfolio={portfolio} />
-                    <PortfolioHistory portfolio={portfolio} />
+                    <div>
+                        <div className="uk-card uk-card-default uk-card-body">
+                            <h4><span className="uk-margin-small-right" data-uk-icon="icon: cloud-upload"></span>Uploads</h4>
+                            <div className="portfolio-history">
+                                <PortfolioUploads portfolio={portfolio}/>
+                            </div>
+                        </div>
+                    </div>
+                    {/* <PortfolioHistory portfolio={portfolio} /> */}
                 </div>
                 <ModalDialog dialogId="update_portfolio">
                     <UpdatePortfolioDialog portfolio={portfolio} detail={detail}/>

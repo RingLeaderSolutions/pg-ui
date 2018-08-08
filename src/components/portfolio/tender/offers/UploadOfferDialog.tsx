@@ -1,10 +1,10 @@
 import * as React from "react";
 import { MapDispatchToPropsFunction, connect, MapStateToProps } from 'react-redux';
-import { ApplicationState } from '../../../applicationState';
-import { TenderSupplier } from "../../../model/Tender";
+import { ApplicationState } from '../../../../applicationState';
+import { TenderSupplier } from "../../../../model/Tender";
 
-import { uploadElectricityOffer, uploadGasOffer } from '../../../actions/tenderActions';
-import { closeModalDialog } from "../../../actions/viewActions";
+import { uploadElectricityOffer, uploadGasOffer } from '../../../../actions/tenderActions';
+import { closeModalDialog } from "../../../../actions/viewActions";
 
 interface UploadOfferDialogProps {
     tenderId: string;

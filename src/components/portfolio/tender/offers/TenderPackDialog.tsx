@@ -1,12 +1,12 @@
 import * as React from "react";
 import { MapDispatchToPropsFunction, connect, MapStateToProps } from 'react-redux';
-import { ApplicationState } from '../../../applicationState';
-import Spinner from '../../common/Spinner';
-import ErrorMessage from "../../common/ErrorMessage";
+import { ApplicationState } from '../../../../applicationState';
+import Spinner from '../../../common/Spinner';
+import ErrorMessage from "../../../common/ErrorMessage";
 import * as moment from 'moment';
 
-import { Tender, TenderSupplier } from "../../../model/Tender";
-import { closeModalDialog } from "../../../actions/viewActions";
+import { Tender, TenderSupplier } from "../../../../model/Tender";
+import { closeModalDialog } from "../../../../actions/viewActions";
 
 interface TenderPackDialogProps {
     tender: Tender;
@@ -38,7 +38,7 @@ class TenderPackDialog extends React.Component<TenderPackDialogProps & StateProp
                     <td>{supplierText}</td>
                     <td>
                         <a className="uk-button uk-button-default uk-button-small" href={p.zipFileName}>
-                            <span className="uk-margin-small-right" data-uk-icon="icon: cloud-download" />
+                            <span data-uk-icon="icon: cloud-download" />
                         </a> 
                     </td>
                 </tr>
@@ -58,7 +58,7 @@ class TenderPackDialog extends React.Component<TenderPackDialogProps & StateProp
                     <tr>
                         <th>Pack ID</th>
                         <th>Created</th>
-                        <th>Meter count</th>
+                        <th>Meter #</th>
                         <th>Supplier</th>
                     </tr>
                 </thead>

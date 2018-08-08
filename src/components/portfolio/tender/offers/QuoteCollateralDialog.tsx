@@ -1,8 +1,8 @@
 import * as React from "react";
 import { MapDispatchToPropsFunction, connect, MapStateToProps } from 'react-redux';
 
-import { TenderQuoteCollateral } from "../../../model/Tender";
-import { closeModalDialog } from "../../../actions/viewActions";
+import { TenderQuoteCollateral } from "../../../../model/Tender";
+import { closeModalDialog } from "../../../../actions/viewActions";
 
 interface QuoteCollateralDialogProps {
     collateral: TenderQuoteCollateral[];

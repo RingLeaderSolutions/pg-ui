@@ -1,9 +1,19 @@
 import { RequestState } from '../RequestState';
 import { TendersState } from './tendersReducer';
 import { TenderSuppliersState } from './tenderSuppliersReducer';
+import { TenderOffersState } from './fetchTenderOffersReducer';
+import { TenderRecommendationsState } from './fetchTenderRecommendationsReducer';
+import { RecommendationSuppliersState } from './fetchRecommendationSuppliersReducer';
+import { RecommendationSitesState } from './fetchRecommendationSitesReducer';
+import { RecommendationSummaryState } from './fetchRecommendationSummaryReducer';
 
 export interface TenderState {
     tenders: TendersState;
+    offers: TenderOffersState,
+    recommendations: TenderRecommendationsState,
+    selected_recommendation_summary: RecommendationSummaryState,
+    selected_recommendation_suppliers: RecommendationSuppliersState,
+    selected_recommendation_sites: RecommendationSitesState,
     suppliers: TenderSuppliersState;
     addExistingContract: RequestState;
     delete_tender: RequestState;

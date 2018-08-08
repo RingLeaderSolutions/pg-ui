@@ -30,7 +30,7 @@ export default class CounterCard extends React.Component<CounterCardProps, {}> {
     }
     else if(this.props.small){
       content = (
-        <div className="uk-card uk-card-default uk-card-body">
+        <div className="uk-card uk-card-default uk-card-body uk-card-small">
           <h4><strong>{this.props.title}</strong></h4>
           <p className="uk-text-meta">{this.props.label}</p>
         </div>

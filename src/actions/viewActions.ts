@@ -33,6 +33,18 @@ export function selectPortfolioTenderTab(index: number){
     };
 }
 
+export function selectTenderOffersTab(index: number){
+    return (dispatch: Dispatch<any>) => {
+        dispatch( { type: types.SELECT_TENDER_OFFERS_TAB, data: index });
+    };
+}
+
+export function selectTenderRecommendationsTab(index: number){
+    return (dispatch: Dispatch<any>) => {
+        dispatch( { type: types.SELECT_TENDER_RECOMMENDATIONS_TAB, data: index });
+    };
+}
+
 export function openModalDialog(modalId: string){
     return (dispatch: Dispatch<any>) => {
         dispatch( { type: types.OPEN_MODAL_DIALOG, data: modalId });
