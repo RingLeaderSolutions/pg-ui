@@ -19,8 +19,14 @@ export function makeApiRequest<T>(
       }
     })
     .catch(function (error) {
-      // if the server provides some data in the response, then display it
-      var message = error.response.data == null || error.response.data == '' ? error.message : `${error.message}: ${error.response.data}`;
+      console.error(error);
+      
+      var message = error.message;
+      // if this is an api error, and data is provided, then display it
+      if(error.response != null && error.response.data != null && error.response.data != ''){
+        message = `${error.message}: ${error.response.data}`
+      }
+      
       dispatch(failureAction(message));
       return undefined;
     });

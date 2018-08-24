@@ -4,12 +4,13 @@ import { MapDispatchToPropsFunction, connect, MapStateToProps } from 'react-redu
 import { ApplicationState } from '../../../applicationState';
 import { Portfolio, PortfolioDetails, UtilityType } from '../../../model/Models';
 import Spinner from '../../common/Spinner';
-import CreateTenderView from "./CreateTenderView";
 
 import { getPortfolioTenders } from '../../../actions/tenderActions';
 import { Tender } from "../../../model/Tender";
 import TenderView from "./TenderView";
-import { selectPortfolioTenderTab } from "../../../actions/viewActions";
+import { selectPortfolioTenderTab, openModalDialog } from "../../../actions/viewActions";
+import ModalDialog from "../../common/ModalDialog";
+import CreateTenderDialog from "./CreateTenderDialog";
 
 interface TenderSummaryProps {
     portfolio: Portfolio;
@@ -24,12 +25,23 @@ interface StateProps {
   selectedTab: number;
 }
 
+interface TenderSummaryState {
+    tenderMap: Map<number, Tender>;
+}
+
 interface DispatchProps {
     getPortfolioTenders: (portfolioId: string) => void;
     selectPortfolioTenderTab: (index: number) => void;
+    openModalDialog: (dialogId: string) => void;
 }
 
-class TenderSummary extends React.Component<TenderSummaryProps & StateProps & DispatchProps, {}> {
+class TenderSummary extends React.Component<TenderSummaryProps & StateProps & DispatchProps, TenderSummaryState> {
+    constructor(){
+        super();
+        this.state = {
+            tenderMap: new Map<number, Tender>()
+        }
+    }
     componentDidMount(){
         let portfolioId = this.props.portfolio.id;     
         this.props.getPortfolioTenders(portfolioId);
@@ -38,40 +50,49 @@ class TenderSummary extends React.Component<TenderSummaryProps & StateProps & Di
     componentWillReceiveProps(nextProps: TenderSummaryProps & StateProps & DispatchProps){
         if(nextProps.portfolio.id != this.props.portfolio.id){
             this.props.getPortfolioTenders(nextProps.portfolio.id);
-        }
-    }
-
-    generateGasTender(){
-        let tender = this.props.tenders.find(t => t.utility == "GAS");
-        if(tender != null){
-            return (<TenderView tender={tender} details={this.props.details} utility={UtilityType.Gas} />);
+            return;
         }
 
-        return (<CreateTenderView portfolioId={this.props.portfolio.id} utilityType={UtilityType.Gas} isHalfHourly={false} />);
-    }
+        console.log("building tender map");
+        var hh = nextProps.tenders.find(o => o.halfHourly && o.utility == "ELECTRICITY");
+        var nhh = nextProps.tenders.find(o => !o.halfHourly && o.utility == "ELECTRICITY");
+        var gas = nextProps.tenders.find(o => o.utility == "GAS");
 
-    generateHHTender(){
-        let tender = this.props.tenders.find(t => t.utility == "ELECTRICITY" && t.halfHourly);
+        var tenderMap = new Map<number, Tender>();
+        tenderMap.set(0, hh);
+        tenderMap.set(1, nhh);
+        tenderMap.set(2, gas);
 
-        if(tender != null){
-            return (<TenderView tender={tender} details={this.props.details} utility={UtilityType.Electricity} />);
+        this.setState({
+            tenderMap
+        });
+
+        var intendedTender = tenderMap.get(this.props.selectedTab);
+        if(intendedTender == null){
+            for (var [key, value] of tenderMap.entries()){
+                if(value){
+                    // reset the tab to the first one we find
+                    this.props.selectPortfolioTenderTab(key);
+                    break;
+                }
+            }
         }
-        return (<CreateTenderView portfolioId={this.props.portfolio.id} utilityType={UtilityType.Electricity} isHalfHourly={true} />);
-    }
-
-    generateNHHTender(){
-        let tender = this.props.tenders.find(t => t.utility == "ELECTRICITY" && !t.halfHourly);
-
-        if(tender != null){
-            return (<TenderView tender={tender} details={this.props.details} utility={UtilityType.Electricity} />);
-        }
-        return (<CreateTenderView portfolioId={this.props.portfolio.id} utilityType={UtilityType.Electricity} isHalfHourly={false} />);
     }
 
     renderContent(content: any){
         return (
             <div className="content-tenders">
+                {this.renderTabStrip()}
                 {content}
+                <ModalDialog dialogId="create_hh_tender">
+                    <CreateTenderDialog portfolioId={this.props.details.portfolio.id} utility={UtilityType.Electricity} utilityDescription="HH Electricity" isHalfHourly={true} />
+                </ModalDialog>
+                <ModalDialog dialogId="create_nhh_tender">
+                    <CreateTenderDialog portfolioId={this.props.details.portfolio.id} utility={UtilityType.Electricity} utilityDescription="NHH Electricity" isHalfHourly={false} />
+                </ModalDialog>
+                <ModalDialog dialogId="create_gas_tender">
+                    <CreateTenderDialog portfolioId={this.props.details.portfolio.id} utility={UtilityType.Gas} utilityDescription="Gas" isHalfHourly={false}/>
+                </ModalDialog>
             </div>
         )
     }
@@ -85,14 +106,91 @@ class TenderSummary extends React.Component<TenderSummaryProps & StateProps & Di
     }
 
     renderSelectedTender(){
-        switch(this.props.selectedTab){
-            case 0:
-                return this.generateHHTender();
-            case 1:
-                return this.generateNHHTender();
-            case 2:
-                return this.generateGasTender();
+        var intendedTender = this.state.tenderMap.get(this.props.selectedTab);
+        if(intendedTender == null){
+            return (<ErrorMessage content="Error rendering this component" />)
         }
+
+        var utility = intendedTender.utility == "ELECTRICITY" ? UtilityType.Electricity : UtilityType.Gas;
+
+        return (<TenderView tender={intendedTender} details={this.props.details} utility={utility} />);
+    }
+    
+    getTenderTabTitle(tender: Tender){
+        switch(tender.utility){
+            case "ELECTRICITY":
+                return tender.halfHourly ? "Electricity (HH)" : "Electricity (NHH)";
+            case "GAS":
+                return "Gas";
+        }
+    }
+
+    getTenderCreationContent(tenderTypeIndex: number){
+        switch(tenderTypeIndex){
+            case 0:
+                return (
+                    <a href="#" onClick={() => this.props.openModalDialog("create_hh_tender")}>
+                        <span className="uk-margin-small-right" data-uk-icon="icon: bolt" />
+                        <span className="uk-margin-small-right" data-uk-icon="icon: clock" />
+                        Create HH Tender
+                    </a>);
+            case 1:
+                return (
+                    <a href="#" onClick={() => this.props.openModalDialog("create_nhh_tender")}>
+                        <span className="uk-margin-small-right" data-uk-icon="icon: bolt" />
+                        Create NHH Tender
+                    </a>);
+            case 2:
+                return (
+                    <a href="#" onClick={() => this.props.openModalDialog("create_gas_tender")}>
+                        <span className="uk-margin-small-right" data-uk-icon="icon: world" />
+                        Create Gas Tender
+                    </a>);
+        }
+    }
+
+    renderTabStrip(){
+        var tabs = []
+        var creationOptions = [];
+        for(var i = 0; i < 3; i++){
+            var tender = this.state.tenderMap.get(i);
+
+            if(tender == null) {
+                if(creationOptions.length > 0){
+                    creationOptions.push(<li key={creationOptions.length} className="uk-nav-divider"></li>);
+                }
+                
+                var creationContent = this.getTenderCreationContent(i);
+                creationOptions.push(<li key={creationOptions.length}>{creationContent}</li>)
+                continue;
+            }
+
+            var tab = (<li key={i} className={this.renderActiveTabStyle(i)} onClick={() => this.selectTab(i)}><a href='#'>{this.getTenderTabTitle(tender)}</a></li>);
+            tabs.push(tab);
+        }
+
+        var canCreate = creationOptions.length > 0;
+        return (
+            <div data-uk-grid>
+                <div className="uk-width-expand">
+                    <ul className="uk-tab" data-uk-tab="connect: #tender-tab-switcher">
+                        {tabs}
+                    </ul>
+                </div>
+                {canCreate ? (<div className="uk-grid-1-10 uk-margin-right">
+                    <div className="uk-inline">
+                        <button className="uk-button uk-button-primary uk-button-small" type="button">
+                            <span className="uk-margin-small-right" data-uk-icon="icon: plus" />
+                            Create Tender
+                        </button>
+                        <div data-uk-dropdown="mode:click">
+                            <ul className="uk-nav uk-dropdown-nav">
+                                {creationOptions}
+                            </ul>
+                        </div>
+                    </div>
+                </div>) : null}
+            </div>);
     }
 
     render() {
@@ -100,7 +198,7 @@ class TenderSummary extends React.Component<TenderSummaryProps & StateProps & Di
             var error = (<ErrorMessage content={this.props.errorMessage} />);
             return this.renderContent(error);
         }
-        if(this.props.working || this.props.tenders == null || this.props.details == null){
+        if(this.props.working || this.props.details == null){
             var spinner = (<Spinner />);
             return this.renderContent(spinner);
         }
@@ -108,14 +206,13 @@ class TenderSummary extends React.Component<TenderSummaryProps & StateProps & Di
             var finishSetup = (<p>This portfolio isn't ready to tender yet. Please upload data for applicable meters and ensure portfolio setup is complete.</p>);
             return this.renderContent(finishSetup);
         }
-        
+        if(this.props.tenders == null || this.props.tenders.length == 0){
+            var noTendersMessage = (<p>Click on the "Create Tender" button above to create your first tender.</p>);
+            return this.renderContent(noTendersMessage);
+        }
+
         var content = (
             <div>
-                <ul className="uk-tab">
-                    <li className={this.renderActiveTabStyle(0)} onClick={() => this.selectTab(0)}><a href='#'>Electricity (HH)</a></li>
-                    <li className={this.renderActiveTabStyle(1)} onClick={() => this.selectTab(1)}><a href='#'>Electricity (NHH)</a></li>
-                    <li className={this.renderActiveTabStyle(2)} onClick={() => this.selectTab(2)}><a href='#'>Gas</a></li>
-                </ul>
                 <div>
                     {this.renderSelectedTender()}
                 </div>
@@ -128,7 +225,8 @@ class TenderSummary extends React.Component<TenderSummaryProps & StateProps & Di
 const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, TenderSummaryProps> = (dispatch) => {
     return {
         getPortfolioTenders: (portfolioId: string) => dispatch(getPortfolioTenders(portfolioId)),
-        selectPortfolioTenderTab: (index: number) => dispatch(selectPortfolioTenderTab(index))
+        selectPortfolioTenderTab: (index: number) => dispatch(selectPortfolioTenderTab(index)),
+        openModalDialog: (dialogId: string) => dispatch(openModalDialog(dialogId))
     };
 };
   

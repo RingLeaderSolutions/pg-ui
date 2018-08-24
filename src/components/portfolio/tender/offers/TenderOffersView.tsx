@@ -23,12 +23,23 @@ interface StateProps {
   selectedTab: number;
 }
 
+interface TenderOffersViewState {
+    tenderMap: Map<number, Tender>;
+}
+
 interface DispatchProps {
     getTenderOffers: (portfolioId: string) => void;
     selectTenderOffersTab: (index: number) => void;
 }
 
-class TenderOffersView extends React.Component<TenderOffersViewProps & StateProps & DispatchProps, {}> {
+class TenderOffersView extends React.Component<TenderOffersViewProps & StateProps & DispatchProps, TenderOffersViewState> {
+    constructor(){
+        super();
+        this.state = {
+            tenderMap: new Map<number, Tender>()
+        }
+    }
+
     componentDidMount(){
         let portfolioId = this.props.portfolio.id;     
         this.props.getTenderOffers(portfolioId);
@@ -43,17 +54,21 @@ class TenderOffersView extends React.Component<TenderOffersViewProps & StateProp
         var nhh = nextProps.offers.find(o => !o.halfHourly && o.utility == "ELECTRICITY");
         var gas = nextProps.offers.find(o => o.utility == "GAS");
 
-        var map = new Map<number, Tender>();
-        map.set(0, hh);
-        map.set(1, nhh);
-        map.set(2, gas);
+        var tenderMap = new Map<number, Tender>();
+        tenderMap.set(0, hh);
+        tenderMap.set(1, nhh);
+        tenderMap.set(2, gas);
 
-        var intendedTender = map.get(this.props.selectedTab);
+        this.setState({
+            tenderMap
+        });
+
+        var intendedTender = tenderMap.get(this.props.selectedTab);
         if(intendedTender == null){
-            for (var [key, value] of map.entries()){
+            for (var [key, value] of tenderMap.entries()){
                 if(value){
-                    console.log('resetting tab to ' + key)
                     this.props.selectTenderOffersTab(key);
+                    break;
                 }
             }
         }
@@ -76,16 +91,7 @@ class TenderOffersView extends React.Component<TenderOffersViewProps & StateProp
     }
 
     renderSelectedTender(){
-        var hh = this.props.offers.find(o => o.halfHourly && o.utility == "ELECTRICITY");
-        var nhh = this.props.offers.find(o => !o.halfHourly && o.utility == "ELECTRICITY");
-        var gas = this.props.offers.find(o => o.utility == "GAS");
-
-        var map = new Map<number, Tender>();
-        map.set(0, hh);
-        map.set(1, nhh);
-        map.set(2, gas);
-
-        var intendedTender = map.get(this.props.selectedTab);
+        var intendedTender = this.state.tenderMap.get(this.props.selectedTab);
         if(intendedTender == null){
             return (<ErrorMessage content="Error rendering this component" />)
         }
@@ -93,16 +99,30 @@ class TenderOffersView extends React.Component<TenderOffersViewProps & StateProp
         return (<TenderOffersTable tender={intendedTender} />);
     }
 
+    getTenderTabTitle(tender: Tender){
+        switch(tender.utility){
+            case "ELECTRICITY":
+                return tender.halfHourly ? "Electricity (HH)" : "Electricity (NHH)";
+            case "GAS":
+                return "Gas";
+        }
+    }
+
     renderTabs(){
-        var hasHH = this.props.offers.find(o => o.halfHourly && o.utility == "ELECTRICITY") != null;
-        var hasNHH = this.props.offers.find(o => !o.halfHourly && o.utility == "ELECTRICITY") != null;
-        var hasGas = this.props.offers.find(o => o.utility == "GAS") != null;
+        var tabs = []
+        for(var i = 0; i < 3; i++){
+            var tender = this.state.tenderMap.get(i);
+
+            if(tender != null) {
+                var tab = (<li key={i} className={this.renderActiveTabStyle(i)} onClick={() => this.selectTab(i)}><a href='#'>{this.getTenderTabTitle(tender)}</a></li>);
+                tabs.push(tab);
+            }
+        }
+        
         return (
             <div className="content-tenders">
                 <ul className="uk-tab">
-                    {hasHH ? <li className={this.renderActiveTabStyle(0)} onClick={() => this.selectTab(0)}><a href='#'>Electricity (HH)</a></li> : null}
-                    {hasNHH ? <li className={this.renderActiveTabStyle(1)} onClick={() => this.selectTab(1)}><a href='#'>Electricity (NHH)</a></li> : null}
-                    {hasGas ? <li className={this.renderActiveTabStyle(2)} onClick={() => this.selectTab(2)}><a href='#'>Gas</a></li> : null}
+                    {tabs}
                 </ul>
                 <div>
                     {this.renderSelectedTender()}

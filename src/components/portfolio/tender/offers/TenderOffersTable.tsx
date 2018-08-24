@@ -250,7 +250,7 @@ class TenderOffersTable extends React.Component<TenderOffersTableProps & StatePr
         this.props.generateTenderPack(this.props.tender.portfolioId, this.props.tender.tenderId);
     }
 
-    renderSectionContent(){
+    renderOffersContent(){
         if(this.props.tender.issuances == null || this.props.tender.issuances.length == 0)
         {
             var unissuedCount = this.props.tender.unissuedPacks.length == 0 ? null : ` (${this.props.tender.unissuedPacks.length} packs awaiting issuance)`;
@@ -290,10 +290,22 @@ class TenderOffersTable extends React.Component<TenderOffersTableProps & StatePr
             </div>
         )
     }
+    
+    renderCardContent(content: any){
+        return (
+            <div className="uk-card uk-card-default uk-card-body">
+                {content}
+            </div>)
+    }
 
     render(){
         if(this.props.working){
-            return (<Spinner hasMargin={true} />)
+            var content = (<Spinner hasMargin={true} />);
+            return this.renderCardContent(content);
+        }
+        if(this.props.tender.existingContract == null || this.props.tender.existingContract.sheetCount == 0){
+            var content = (<div className="uk-alert-warning" data-uk-alert><p>Tender setup appears to be incomplete. Please ensure an existing contract has been created and its rates have been uploaded.</p></div>);
+            return this.renderCardContent(content);
         }
         
         var unissuedDialogName = `view_unissued_${this.props.tender.tenderId}`;
@@ -302,9 +314,9 @@ class TenderOffersTable extends React.Component<TenderOffersTableProps & StatePr
 
         var canIssue = this.props.tender.unissuedPacks != null && this.props.tender.unissuedPacks.length != 0;
         
-        var content = this.renderSectionContent();
-        return (
-            <div className="uk-card uk-card-default uk-card-body">
+        var offersContent = this.renderOffersContent();
+        var content = (
+            <div>
                 <div className="uk-grid" data-uk-grid>
                     <div className="uk-width-expand@s">
                         <h3>Issued Requirements</h3>
@@ -337,7 +349,7 @@ class TenderOffersTable extends React.Component<TenderOffersTableProps & StatePr
                     </div>
                 </div>
                 <div>
-                    {content}
+                    {offersContent}
                 </div>
                 <ModalDialog dialogId={unissuedDialogName}>
                     <TenderPackDialog tender={this.props.tender} portfolioId={this.props.tender.portfolioId}/>
@@ -351,6 +363,8 @@ class TenderOffersTable extends React.Component<TenderOffersTableProps & StatePr
                     <IssueTenderPackDialog tender={this.props.tender} portfolioId={this.props.tender.portfolioId} />
                 </ModalDialog>
         </div>);
+
+        return this.renderCardContent(content);
     }
 }
 

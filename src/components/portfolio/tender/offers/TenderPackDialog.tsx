@@ -95,9 +95,12 @@ class TenderPackDialog extends React.Component<TenderPackDialogProps & StateProp
                     <h2 className="uk-modal-title">Tender Requirements</h2>
                 </div>
                 <div className="uk-modal-body">
-                    <div className="uk-margin">
+                    <div className="uk-margin" style={{height: "400px", overflow: "auto"}}>
                         {content}
                     </div>
+                </div>
+                <div className="uk-modal-footer uk-text-right">
+                    <button className="uk-button uk-button-default uk-margin-right" type="button" onClick={() => this.props.closeModalDialog()}>Close</button>
                 </div>
             </div>)
     }
