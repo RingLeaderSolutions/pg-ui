@@ -1,6 +1,6 @@
 import ApiService from "../services/apiService";
 
-import { Tender, TenderContract, TenderSupplier, BackingSheet, TenderIssuanceEmail, TenderRequirements, ContractRatesResponse, RecommendationSite, RecommendationSupplier, RecommendationSummary } from "../Model/Tender";
+import { Tender, TenderContract, TenderSupplier, BackingSheet, TenderIssuanceEmail, TenderRequirements, ContractRatesResponse, RecommendationSite, RecommendationSupplier, RecommendationSummary, TenderRecommendation } from "../Model/Tender";
 import { UploadResponse, UtilityType, ExportResponse } from "../model/Models";
 
 import * as types from "./actionTypes";
@@ -40,6 +40,12 @@ export function fetchTenderOffers(portfolioId: string){
             error => {
                 return { type: types.FETCH_TENDER_OFFERS_FAILED, errorMessage: error };
             });
+    }
+};
+
+export function selectRecommendationReport(recommendation: TenderRecommendation){    
+    return (dispatch: Dispatch<any>) => {
+        dispatch({ type: types.SELECT_RECOMMENDATION_REPORT, data: recommendation});
     }
 };
 

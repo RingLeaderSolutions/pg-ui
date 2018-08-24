@@ -5,8 +5,9 @@ import { ApplicationState } from '../../../../applicationState';
 import Spinner from '../../../common/Spinner';
 import { format } from 'currency-formatter';
 import * as moment from 'moment';
+import { fetchRecommendationsSites } from '../../../../actions/tenderActions';
 
-import { Tender, RecommendationSite, RecommendationSupplier, RecommendationSummary } from "../../../../model/Tender";
+import { Tender, RecommendationSite, RecommendationSupplier, RecommendationSummary, TenderRecommendation } from "../../../../model/Tender";
 import { closeModalDialog } from "../../../../actions/viewActions";
 import CounterCard from "../../../common/CounterCard";
 
@@ -15,20 +16,88 @@ interface RecommendationDetailDialogProps {
 }
 
 interface StateProps {
+    selected_recommendation: TenderRecommendation;
     recommendation_summary: RecommendationSummary;
     recommendation_sites: RecommendationSite[];
     recommendation_suppliers: RecommendationSupplier[];
     working: boolean;
+    sites_working: boolean;
     error: boolean;
     errorMessage: string;
 }
 
 interface DispatchProps {
     closeModalDialog: () => void;
+    getRecommendationSites: (tenderId: string, summaryId: string, siteStart: number, siteEnd: number) => void;
 }
 
-class RecommendationDetailDialog extends React.Component<RecommendationDetailDialogProps & StateProps & DispatchProps, {}> {
-    
+interface RecommendationDetailDialogState {
+    currentSiteStart: number;
+    currentSiteEnd: number;
+}
+
+class RecommendationDetailDialog extends React.Component<RecommendationDetailDialogProps & StateProps & DispatchProps, RecommendationDetailDialogState> {
+    constructor(props: RecommendationDetailDialogProps & StateProps & DispatchProps){
+        super(props);
+        this.state = {
+            currentSiteStart: 0,
+            currentSiteEnd: 4
+        }
+    }
+
+    canGetNextSites() : boolean{
+        var maxSitePosition = this.props.selected_recommendation.meterCount - 1;
+        // If we're already at the end, we can't go any further forward
+        if(this.state.currentSiteEnd == maxSitePosition){
+            return false;
+        }
+        return true;
+    }
+
+    canGetPreviousSites(): boolean {
+        // If we're at the beginning, we can't go any further back
+        if(this.state.currentSiteStart == 0){
+            return false;
+        }
+        return true;
+    }
+
+    getPreviousSites(){
+        var siteStart = this.state.currentSiteStart - 4;
+        var siteEnd = this.state.currentSiteStart;
+
+        if(siteStart < 0){
+            siteStart = 0;
+        }
+
+        this.props.getRecommendationSites(this.props.tender.tenderId, this.props.recommendation_summary.summaryId, siteStart, siteEnd);
+        
+        this.setState({
+            currentSiteStart: siteStart,
+            currentSiteEnd: siteEnd,
+        });
+    }
+
+    getNextSites(){
+        var siteStart = this.state.currentSiteEnd;
+        var siteEnd = this.state.currentSiteEnd + 4;
+
+        var maxSitePosition = this.props.selected_recommendation.meterCount - 1;
+        if(siteStart > maxSitePosition){
+            siteStart = this.state.currentSiteEnd + 1;
+        }
+        if(siteEnd > maxSitePosition){
+            siteEnd = maxSitePosition;
+        }
+
+        this.props.getRecommendationSites(this.props.tender.tenderId, this.props.recommendation_summary.summaryId, siteStart, siteEnd);
+        
+        this.setState({
+            currentSiteStart: siteStart,
+            currentSiteEnd: siteEnd,
+        });
+    }
+
     renderContent(content: any){
         return (<div>
             <div className="uk-modal-header">
@@ -161,6 +230,9 @@ class RecommendationDetailDialog extends React.Component<RecommendationDetailDia
     }
 
     renderSiteTabs(){
+        if(this.props.sites_working || this.props.recommendation_sites == null){
+            return (<div className="uk-margin-top"><Spinner hasMargin={true}/></div>);
+        }
         var tabs: any = [];
         var tabContent: any = [];
         
@@ -179,19 +251,35 @@ class RecommendationDetailDialog extends React.Component<RecommendationDetailDia
                     tabContent[index] = content;
             });
 
+        var previousIsDisabled = !this.canGetPreviousSites();
+        var nextIsDisabled = !this.canGetNextSites();
         return (
             <div className="uk-margin-top">
-                <ul data-uk-tab>
-                    {tabs}
-                </ul>
-                <ul className="uk-switcher">
+                <div className="uk-text-center uk-margin-top uk-margin-bottom">
+                    <p className="uk-text-meta">Viewing sites {this.state.currentSiteStart + 1}-{this.state.currentSiteEnd + 1} of {this.props.selected_recommendation.meterCount}</p>
+                </div>
+                <div data-uk-grid>
+                    <div className="uk-grid-width-1-10">
+                        <button className="uk-button uk-button-small uk-button-default" type="button" onClick={() => this.getPreviousSites()} disabled={previousIsDisabled}><span className={previousIsDisabled ? "icon-standard-cursor" : null} data-uk-icon="icon: chevron-left" /></button>
+                    </div>
+                    <div className="uk-width-expand">
+                        <ul data-uk-tab="connect: #sites-tab-switcher">
+                            {tabs}
+                        </ul>
+                    </div>
+                    <div className="uk-grid-width-1-10">
+                        <button className="uk-button uk-button-small uk-button-default" type="button" onClick={() => this.getNextSites()}  disabled={nextIsDisabled}><span className={nextIsDisabled ? "icon-standard-cursor" : null} data-uk-icon="icon: chevron-right"/></button>
+                    </div>
+                </div>
+                <hr />
+                <ul id="sites-tab-switcher" className="uk-switcher uk-margin-top">
                     {tabContent}
                 </ul>
             </div>
         )
     }
 
-    renderSupplierTabContent(supplier: RecommendationSupplier){
+    renderSupplierTabContent(index: number, supplier: RecommendationSupplier){
         var backingSheetsContent = supplier.backingsheets.map((bs, index) => {
             var bsFields = bs.map((f,findex) => (<td key={findex}>{f}</td>));
             return (<tr key={index}>{bsFields}</tr>)
@@ -203,7 +291,7 @@ class RecommendationDetailDialog extends React.Component<RecommendationDetailDia
 
         var isIncumbent = supplier.incumbentContract;
         return (
-            <div>
+            <div key={index}>
                 <div>
                     {!isIncumbent ? (<div className="uk-child-width-expand@s uk-grid-match uk-text-center" data-uk-grid>
                         <CounterCard title={supplier.supplierName} label="Supplier" small/>
@@ -246,7 +334,7 @@ class RecommendationDetailDialog extends React.Component<RecommendationDetailDia
                 var tab = (<li key={index}><a href="#">{tabTitle}</a></li>);
                 tabs[index] = tab;
 
-                var content = this.renderSupplierTabContent(rs);
+                var content = this.renderSupplierTabContent(index, rs);
                 tabContent[index] = content;
             });
 
@@ -339,8 +427,8 @@ class RecommendationDetailDialog extends React.Component<RecommendationDetailDia
             <div>
                 <ul data-uk-tab>
                     <li><a href="#">Summary</a></li>
-                    <li><a href="#">Offers ({this.props.recommendation_suppliers.length})</a></li>
-                    <li><a href="#">Sites ({this.props.recommendation_sites.length})</a></li>
+                    <li><a href="#">Offers ({this.props.recommendation_suppliers.length - 1})</a></li>
+                    <li><a href="#">Sites ({this.props.selected_recommendation.meterCount})</a></li>
                 </ul>
                 <ul className="uk-switcher">
                     {this.renderSummaryTab()}
@@ -356,7 +444,7 @@ class RecommendationDetailDialog extends React.Component<RecommendationDetailDia
             var error = (<ErrorMessage content={this.props.errorMessage} />);
             return this.renderContent(error);
         }
-        if(this.props.working || this.props.recommendation_sites == null || this.props.recommendation_suppliers == null || this.props.recommendation_summary == null){
+        if(this.props.working || this.props.recommendation_suppliers == null || this.props.recommendation_summary == null || this.props.selected_recommendation == null){
             var spinner = (<Spinner />);
             return this.renderContent(spinner);
         }
@@ -369,15 +457,18 @@ class RecommendationDetailDialog extends React.Component<RecommendationDetailDia
 const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, RecommendationDetailDialogProps> = (dispatch) => {
     return {
         closeModalDialog: () => dispatch(closeModalDialog()),
+        getRecommendationSites: (tenderId: string, summaryId: string, siteStart: number, siteEnd: number) => dispatch(fetchRecommendationsSites(tenderId, summaryId, siteStart, siteEnd))
     };
 };
   
 const mapStateToProps: MapStateToProps<StateProps, RecommendationDetailDialogProps> = (state: ApplicationState) => {
     return {
+        selected_recommendation: state.portfolio.tender.selected_recommendation,
         recommendation_summary: state.portfolio.tender.selected_recommendation_summary.value,
         recommendation_suppliers: state.portfolio.tender.selected_recommendation_suppliers.value,
         recommendation_sites: state.portfolio.tender.selected_recommendation_sites.value,
-        working: state.portfolio.tender.selected_recommendation_summary.working || state.portfolio.tender.selected_recommendation_suppliers.working || state.portfolio.tender.selected_recommendation_sites.working,
+        sites_working: state.portfolio.tender.selected_recommendation_sites.working,
+        working: state.portfolio.tender.selected_recommendation_summary.working || state.portfolio.tender.selected_recommendation_suppliers.working,
         error: state.portfolio.tender.selected_recommendation_summary.error || state.portfolio.tender.selected_recommendation_suppliers.error || state.portfolio.tender.selected_recommendation_sites.error,
         errorMessage: state.portfolio.tender.selected_recommendation_summary.errorMessage || state.portfolio.tender.selected_recommendation_suppliers.errorMessage || state.portfolio.tender.selected_recommendation_sites.errorMessage
     };

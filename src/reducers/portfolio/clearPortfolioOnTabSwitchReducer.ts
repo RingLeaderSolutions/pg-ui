@@ -14,6 +14,7 @@ export const clearPortfolioOnTabSwitchReducer = (state: PortfolioState, action: 
                     tenders: initialRequestState,
                     offers: initialRequestState,
                     recommendations: initialRequestState,
+                    selected_recommendation: null,
                     selected_recommendation_summary: initialRequestState,
                     selected_recommendation_sites: initialRequestState,
                     selected_recommendation_suppliers: initialRequestState,

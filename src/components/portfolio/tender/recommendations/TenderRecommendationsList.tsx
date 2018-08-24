@@ -6,7 +6,7 @@ import Spinner from '../../../common/Spinner';
 import ErrorMessage from "../../../common/ErrorMessage";
 import * as moment from 'moment';
 
-import { issueSummaryReport, fetchRecommendationsSuppliers, fetchRecommendationsSites, fetchRecommendationSummary } from '../../../../actions/tenderActions';
+import { issueSummaryReport, fetchRecommendationsSuppliers, fetchRecommendationsSites, fetchRecommendationSummary, selectRecommendationReport } from '../../../../actions/tenderActions';
 import { Tender, TenderSupplier, TenderRecommendation, TenderIssuance } from "../../../../model/Tender";
 import { AccountDetail, PortfolioDetails } from "../../../../model/Models";
 import { retrieveAccount } from "../../../../actions/portfolioActions";
@@ -35,6 +35,7 @@ interface DispatchProps {
     getRecommendationSummary: (tenderId: string, summaryId: string) => void;
     getRecommendationSuppliers: (tenderId: string, summaryId: string) => void;
     getRecommendationSites: (tenderId: string, summaryId: string, siteStart: number, siteEnd: number) => void;
+    selectRecommendationReport: (recommendation: TenderRecommendation) => void;
 }
 
 class TenderRecommendationsList extends React.Component<TenderRecommendationsListProps & StateProps & DispatchProps, {}> {
@@ -49,7 +50,15 @@ class TenderRecommendationsList extends React.Component<TenderRecommendationsLis
     viewRecommendationReport(recommendation: TenderRecommendation){
         this.props.getRecommendationSummary(this.props.tender.tenderId, recommendation.summaryId);
         this.props.getRecommendationSuppliers(this.props.tender.tenderId, recommendation.summaryId);
-        this.props.getRecommendationSites(this.props.tender.tenderId, recommendation.summaryId, 0, recommendation.meterCount);
+
+        var siteEnd = 4;
+        if(recommendation.meterCount - 1 < siteEnd){
+            siteEnd = recommendation.meterCount;
+        }
+
+        this.props.getRecommendationSites(this.props.tender.tenderId, recommendation.summaryId, 0, siteEnd);
+
+        this.props.selectRecommendationReport(recommendation);
         this.props.openModalDialog("view_recommendation");
     }
 
@@ -194,7 +203,8 @@ const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, TenderRecomm
         openModalDialog: (dialogId: string) => dispatch(openModalDialog(dialogId)),
         getRecommendationSummary:  (tenderId: string, summaryId: string)  => dispatch(fetchRecommendationSummary(tenderId, summaryId)),
         getRecommendationSuppliers:  (tenderId: string, summaryId: string)  => dispatch(fetchRecommendationsSuppliers(tenderId, summaryId)),
-        getRecommendationSites: (tenderId: string, summaryId: string, siteStart: number, siteEnd: number) => dispatch(fetchRecommendationsSites(tenderId, summaryId, siteStart, siteEnd))
+        getRecommendationSites: (tenderId: string, summaryId: string, siteStart: number, siteEnd: number) => dispatch(fetchRecommendationsSites(tenderId, summaryId, siteStart, siteEnd)),
+        selectRecommendationReport: (recommendation: TenderRecommendation) => dispatch(selectRecommendationReport(recommendation))
     };
 };
   
