@@ -51,13 +51,6 @@ class TenderRecommendationsList extends React.Component<TenderRecommendationsLis
         this.props.getRecommendationSummary(this.props.tender.tenderId, recommendation.summaryId);
         this.props.getRecommendationSuppliers(this.props.tender.tenderId, recommendation.summaryId);
 
-        var siteEnd = 4;
-        if(recommendation.meterCount - 1 < siteEnd){
-            siteEnd = recommendation.meterCount;
-        }
-
-        this.props.getRecommendationSites(this.props.tender.tenderId, recommendation.summaryId, 0, siteEnd);
-
         this.props.selectRecommendationReport(recommendation);
         this.props.openModalDialog("view_recommendation");
     }
@@ -71,7 +64,7 @@ class TenderRecommendationsList extends React.Component<TenderRecommendationsLis
         })
         .map(s => {
             var supplier = this.props.suppliers.find(su => su.supplierId == s.supplierId);
-            var supplierText = supplier == null ? "Unknown" : supplier.name;
+            var supplierText = supplier == null ? "Unknown" : (<img src={supplier.logoUri} style={{ width: "70px"}}/>);
 
             var created = moment.utc(s.created).local().fromNow();   
             return (
@@ -81,12 +74,6 @@ class TenderRecommendationsList extends React.Component<TenderRecommendationsLis
                     <td>{s.meterCount}</td>
                     <td>{s.supplierCount}</td>
                     <td>{supplierText}</td>
-                    <td>
-                        <a className="uk-button uk-button-default uk-button-small" href={s.summaryFileName}>
-                            <span className="uk-margin-small-right" data-uk-icon="icon: cloud-download" />
-                            Download
-                        </a> 
-                    </td>
                     <td>
                         <button className="uk-button uk-button-default uk-button-small" type="button" onClick={() => this.viewRecommendationReport(s)}>
                             <span className="uk-margin-small-right" data-uk-icon="icon: info" />

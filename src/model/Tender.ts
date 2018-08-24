@@ -143,7 +143,8 @@ export interface RecommendationSummary {
     attentionOf: string;
     summaryId: string;
     reportDate: string;
-    existingSupplier: string;
+    existingSupplierName: string;
+    existingSupplierId: string;
     existingtotalIncCCL: number;
     existingAPPU: number;
     offerSummaries: RecommendationOfferSummary[];
@@ -151,6 +152,7 @@ export interface RecommendationSummary {
 
 export interface RecommendationOfferSummary {
     supplierName: string;
+    supplierId: string;
     duration: number;
     version: number;
     totalIncCCL: number;
@@ -166,6 +168,7 @@ export interface RecommendationOfferSummary {
 
 export interface RecommendationSupplier {
     supplierName: string;
+    supplierId: string;
     duration: number;
     version: number;
     winner: boolean;
@@ -200,6 +203,7 @@ export interface RecommendationBillingRate {
 
 export interface RecommendationContract {
     supplierName: string;
+    supplierId: string;
     totalIncCCL: number;
     appu: number;
     ccl: number;
@@ -207,6 +211,7 @@ export interface RecommendationContract {
 
 export interface RecommendationOfferWinner {
     supplierName: string;
+    supplierId: string;
     totalIncCCL: number;
     startDate: string;
     endDate: string;
@@ -217,6 +222,7 @@ export interface RecommendationOfferWinner {
 
 export interface RecommendationSiteOffer {
     supplierName: string;
+    supplierId: string;
     duration: number;
     version: number;
     totalIncCCL: number;

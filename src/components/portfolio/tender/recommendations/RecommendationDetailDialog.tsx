@@ -7,7 +7,7 @@ import { format } from 'currency-formatter';
 import * as moment from 'moment';
 import { fetchRecommendationsSites } from '../../../../actions/tenderActions';
 
-import { Tender, RecommendationSite, RecommendationSupplier, RecommendationSummary, TenderRecommendation } from "../../../../model/Tender";
+import { Tender, RecommendationSite, RecommendationSupplier, RecommendationSummary, TenderRecommendation, TenderSupplier } from "../../../../model/Tender";
 import { closeModalDialog } from "../../../../actions/viewActions";
 import CounterCard from "../../../common/CounterCard";
 
@@ -24,6 +24,7 @@ interface StateProps {
     sites_working: boolean;
     error: boolean;
     errorMessage: string;
+    suppliers: TenderSupplier[];
 }
 
 interface DispatchProps {
@@ -45,6 +46,32 @@ class RecommendationDetailDialog extends React.Component<RecommendationDetailDia
         }
     }
 
+    componentWillReceiveProps(nextProps: RecommendationDetailDialogProps & StateProps & DispatchProps){
+        var currentRecommendation = this.props.selected_recommendation;
+        var newRecommendation = nextProps.selected_recommendation;
+
+        if(newRecommendation == null){
+            this.setState({
+                currentSiteStart: 0,
+                currentSiteEnd: 4
+            });
+            return;
+        }
+
+        if(currentRecommendation == null || currentRecommendation.summaryId != newRecommendation.summaryId){
+            var siteEnd = 4;
+            if(newRecommendation.meterCount - 1 < siteEnd){
+                siteEnd = newRecommendation.meterCount;
+            }
+
+            this.setState({
+                currentSiteStart: 0,
+                currentSiteEnd: siteEnd
+            });
+            this.props.getRecommendationSites(nextProps.tender.tenderId, newRecommendation.summaryId, 0, siteEnd);
+        }
+    }
+
     canGetNextSites() : boolean{
         var maxSitePosition = this.props.selected_recommendation.meterCount - 1;
         // If we're already at the end, we can't go any further forward
@@ -63,8 +90,8 @@ class RecommendationDetailDialog extends React.Component<RecommendationDetailDia
     }
 
     getPreviousSites(){
-        var siteStart = this.state.currentSiteStart - 4;
-        var siteEnd = this.state.currentSiteStart;
+        var siteStart = this.state.currentSiteStart - 5;
+        var siteEnd = this.state.currentSiteStart - 1;
 
         if(siteStart < 0){
             siteStart = 0;
@@ -79,8 +106,8 @@ class RecommendationDetailDialog extends React.Component<RecommendationDetailDia
     }
 
     getNextSites(){
-        var siteStart = this.state.currentSiteEnd;
-        var siteEnd = this.state.currentSiteEnd + 4;
+        var siteStart = this.state.currentSiteEnd + 1;
+        var siteEnd = this.state.currentSiteEnd + 5;
 
         var maxSitePosition = this.props.selected_recommendation.meterCount - 1;
         if(siteStart > maxSitePosition){
@@ -114,13 +141,16 @@ class RecommendationDetailDialog extends React.Component<RecommendationDetailDia
 
     renderSiteTabContent(recommendationSite: RecommendationSite){
         var receivedOfferRows = recommendationSite.siteOffersList.map(ru => {
+            var supplier = this.props.suppliers.find(su => su.supplierId == ru.supplierId);
+            var supplierText = supplier == null ? "Unknown" : (<img src={supplier.logoUri} style={{ width: "70px"}}/>);
+
             var previousDiffPercentage = ru.previousPercentageDifference * 100;
             var adriftPercentage = ru.adriftPercentage * 100;
             var isWinningOffer = ru.winner;
             return (
                 <tr key={ru.ranking}>
                     <td>{`#${ru.ranking + 1}`}</td>
-                    <td>{isWinningOffer ?  (<div><span className="uk-margin-small-right" data-uk-icon="icon: star" style={{color: 'goldenrod'}} /> {ru.supplierName}</div>) : ru.supplierName}</td>
+                    <td>{isWinningOffer ?  (<div><span className="uk-margin-small-right" data-uk-icon="icon: star" style={{color: 'goldenrod'}} /> {supplierText}</div>) : supplierText}</td>
                     <td>{`${ru.duration} months`}</td>
                     <td>{format(ru.totalIncCCL, { locale: 'en-GB'})}</td>
                     <td>{format(ru.cclCost, { locale: 'en-GB'})}</td>
@@ -141,8 +171,8 @@ class RecommendationDetailDialog extends React.Component<RecommendationDetailDia
                         <td />
                         <td />
                         <td><strong>Total</strong></td>
-                        <td><strong>{yearlyRate.formattedAmount}</strong></td>
-                        <td><strong>{yearlyRate.uom}</strong></td>
+                        <td><strong>{yearlyRate.uom}{yearlyRate.formattedAmount}</strong></td>
+                        <td></td>
                     </tr>
                 )
             }
@@ -160,8 +190,14 @@ class RecommendationDetailDialog extends React.Component<RecommendationDetailDia
         })
 
         var percentageChange = recommendationSite.recommendedSiteOffer.percentageChange * 10;
+        var currentSupplier = this.props.suppliers.find(su => su.supplierId == recommendationSite.currentContract.supplierId);
+        var currentSupplierText = currentSupplier == null ? (<h4><strong>Unknown</strong></h4>) : (<img src={currentSupplier.logoUri} style={{ width: "70px"}}/>);
+
+        var newSupplier = this.props.suppliers.find(su => su.supplierId == recommendationSite.recommendedSiteOffer.supplierId);
+        var newSupplierText = newSupplier == null ? (<h4><strong>Unknown</strong></h4>) : (<img src={newSupplier.logoUri} style={{ width: "70px"}}/>);
+
         return (
-            <div>
+            <div key={recommendationSite.siteCode}>
                 <div className="uk-child-width-expand@s uk-grid-match uk-text-center" data-uk-grid>
                     <CounterCard title={recommendationSite.siteCode} label="Site Code" small/>
                     <CounterCard title={recommendationSite.siteName} label="Site Name" small/>
@@ -170,14 +206,14 @@ class RecommendationDetailDialog extends React.Component<RecommendationDetailDia
                 </div>
                 <h3>Existing Contract</h3>
                 <div className="uk-child-width-expand@s uk-grid-match uk-text-center" data-uk-grid>
-                    <CounterCard title={recommendationSite.currentContract.supplierName} label="Current Supplier" small/>
+                    <CounterCard content={currentSupplierText} label="Current Supplier" small/>
                     <CounterCard title={format(recommendationSite.currentContract.totalIncCCL, { locale: 'en-GB'})} label="Comparative total cost inc CCL" small/>
                     <CounterCard title={format(recommendationSite.currentContract.ccl, { locale: 'en-GB'})} label="CCL" small/>
                     <CounterCard title={`${recommendationSite.currentContract.appu.toFixed(4)}p`} label="Avg Pence Per Unit" small />
                 </div>
                 <h3><span className="uk-margin-small-right" data-uk-icon="icon: star" style={{color: 'goldenrod'}}/>Recommended Supplier Offer</h3>
                 <div className="uk-child-width-expand@s uk-grid-match uk-text-center" data-uk-grid>
-                    <CounterCard title={recommendationSite.recommendedSiteOffer.supplierName} label="New Supplier" small/>
+                    <CounterCard content={newSupplierText} label="New Supplier" small/>
                     <CounterCard title={format(recommendationSite.recommendedSiteOffer.totalIncCCL, { locale: 'en-GB'})} label="Annual cost inc CCL" small/>
                     <CounterCard title={`${percentageChange.toFixed(2)}%`} label="Percentage change" small />
                     <CounterCard title={recommendationSite.recommendedSiteOffer.startDate} label="Start Date" small/>
@@ -194,8 +230,8 @@ class RecommendationDetailDialog extends React.Component<RecommendationDetailDia
                                 <th>Monthly / Quarterly Charges</th>
                                 <th></th>
                                 <th></th>
-                                <th>Annual Charges</th>
                                 <th></th>
+                                <th>Annual Charges</th>
                                 <th></th>
                             </tr>
                         </thead>
@@ -244,7 +280,8 @@ class RecommendationDetailDialog extends React.Component<RecommendationDetailDia
                     return 0;
                 })
             .map((rs, index) => {
-                var tab = (<li key={index}><a href="#">{rs.siteCode}</a></li>);
+                    var tooltip = `title: ${rs.siteName}`;
+                    var tab = (<li key={index} data-uk-tooltip={tooltip}><a href="#">{rs.siteCode}</a></li>);
                     tabs[index] = tab;
 
                     var content = this.renderSiteTabContent(rs);
@@ -279,25 +316,29 @@ class RecommendationDetailDialog extends React.Component<RecommendationDetailDia
         )
     }
 
-    renderSupplierTabContent(index: number, supplier: RecommendationSupplier){
-        var backingSheetsContent = supplier.backingsheets.map((bs, index) => {
+    renderSupplierTabContent(index: number, recommendationSupplier: RecommendationSupplier){
+        var backingSheetsContent = recommendationSupplier.backingsheets.map((bs, index) => {
             var bsFields = bs.map((f,findex) => (<td key={findex}>{f}</td>));
             return (<tr key={index}>{bsFields}</tr>)
         });
 
-        var backingSheetsHeaders = supplier.backingsheetTitles.map((bst, index) => {
+        var backingSheetsHeaders = recommendationSupplier.backingsheetTitles.map((bst, index) => {
             return (<th key={index}>{bst}</th>)
         });
 
-        var isIncumbent = supplier.incumbentContract;
+        var isIncumbent = recommendationSupplier.incumbentContract;
+
+        var supplier = this.props.suppliers.find(su => su.supplierId == recommendationSupplier.supplierId);
+        var supplierText = supplier == null ? (<h4><strong>Unknown</strong></h4>) : (<img src={supplier.logoUri} style={{ width: "70px"}}/>);
+
         return (
             <div key={index}>
                 <div>
                     {!isIncumbent ? (<div className="uk-child-width-expand@s uk-grid-match uk-text-center" data-uk-grid>
-                        <CounterCard title={supplier.supplierName} label="Supplier" small/>
-                        <CounterCard title={`${supplier.duration} months`} label="Duration" small/>
-                        <CounterCard title={String(supplier.version)} label="Version" small/>
-                        <CounterCard title={supplier.winner ? "Yes" : "No"} label="Winning Offer" small/>
+                        <CounterCard content={supplierText} label="Supplier" small/>
+                        <CounterCard title={`${recommendationSupplier.duration} months`} label="Duration" small/>
+                        <CounterCard title={String(recommendationSupplier.version)} label="Version" small/>
+                        <CounterCard title={recommendationSupplier.winner ? "Yes" : "No"} label="Winning Offer" small/>
                     </div>) : null}
                 </div>
                 <h3>Contract Rates</h3>
@@ -368,10 +409,14 @@ class RecommendationDetailDialog extends React.Component<RecommendationDetailDia
             var percentageDifference = (os.previousPercentageDifference * 100);
             var adriftPercentage = (os.adriftPercentage * 100);
 
+            var supplier = this.props.suppliers.find(su => su.supplierId == os.supplierId);
+            var supplierText = supplier == null ? "Unknown" : (<img src={supplier.logoUri} style={{ width: "70px"}}/>);
+
             return (
                 <tr key={os.ranking}>
                     <td>{`#${os.ranking + 1}`}</td>
-                    <td>{os.winner ?  (<div><span className="uk-margin-small-right" data-uk-icon="icon: star" style={{color: 'goldenrod'}}/> {os.supplierName}</div>) : os.supplierName}</td>
+                    <td>{os.winner ?  (<div><span className="uk-margin-small-right" data-uk-icon="icon: star" style={{color: 'goldenrod'}}/> {supplierText}</div>) : supplierText}</td>
+                    <td>{os.duration} months</td>
                     <td>{os.version}</td>
                     <td>{format(os.totalIncCCL, { locale: 'en-GB'})}</td>
                     <td>{format(os.cclCost, { locale: 'en-GB'})}</td>
@@ -382,6 +427,10 @@ class RecommendationDetailDialog extends React.Component<RecommendationDetailDia
                     {os.winner ? (<td>-</td>) : this.renderCostCell(adriftPercentage, `${adriftPercentage.toFixed(2)}%`)}
                 </tr>)
         })
+
+        var existingSupplier = this.props.suppliers.find(su => su.supplierId == summary.existingSupplierId);
+        var existingSupplierText = existingSupplier == null ? (<h4><strong>Unknown</strong></h4>) : (<img src={existingSupplier.logoUri} style={{ width: "70px"}}/>);
+        
         return (
             <div>
                 <div className="uk-child-width-expand@s uk-grid-match uk-text-center" data-uk-grid>
@@ -395,7 +444,7 @@ class RecommendationDetailDialog extends React.Component<RecommendationDetailDia
                 </div>
                 <h3>Existing Contract</h3>
                 <div className="uk-child-width-expand@s uk-grid-match uk-text-center" data-uk-grid>
-                    <CounterCard title={summary.existingSupplier} label="Incumbent Supplier" small/>
+                    <CounterCard content={existingSupplierText} label="Incumbent Supplier" small/>
                     <CounterCard title={format(summary.existingtotalIncCCL, { locale: 'en-GB'})} label="Total Inc CCL" small/>
                     <CounterCard title={`${summary.existingAPPU.toFixed(4)}p`} label="Average Pence Per Unit" small/>
                 </div>
@@ -405,6 +454,7 @@ class RecommendationDetailDialog extends React.Component<RecommendationDetailDia
                         <tr>
                             <th>Ranking</th>
                             <th>Supplier</th>
+                            <th>Duration</th>
                             <th>Version</th>
                             <th>Total Inc CCL</th>
                             <th>CCL</th>
@@ -425,12 +475,23 @@ class RecommendationDetailDialog extends React.Component<RecommendationDetailDia
     renderDialogBody(){
         return (
             <div>
-                <ul data-uk-tab>
-                    <li><a href="#">Summary</a></li>
-                    <li><a href="#">Offers ({this.props.recommendation_suppliers.length - 1})</a></li>
-                    <li><a href="#">Sites ({this.props.selected_recommendation.meterCount})</a></li>
-                </ul>
-                <ul className="uk-switcher">
+                <div data-uk-grid>
+                    <div className="uk-width-expand">
+                        <ul data-uk-tab="connect: #reco-tabs-switcher">
+                            <li><a href="#">Summary</a></li>
+                            <li><a href="#">Offers ({this.props.recommendation_suppliers.length - 1})</a></li>
+                            <li><a href="#">Sites ({this.props.selected_recommendation.meterCount})</a></li>
+                        </ul>
+                    </div>
+                    <div className="uk-grid-width-1-10">
+                        <a className="uk-button uk-button-default uk-button-small" href={this.props.selected_recommendation.summaryFileName} data-uk-tooltip="title: Download this report as .XLS">
+                            <span className="uk-margin-small-right" data-uk-icon="icon: cloud-download" />
+                            Download
+                        </a> 
+                    </div>
+                </div>
+                
+                <ul id="reco-tabs-switcher" className="uk-switcher uk-margin-top">
                     {this.renderSummaryTab()}
                     {this.renderSupplierTab()}
                     {this.renderSiteTabs()}
@@ -470,7 +531,8 @@ const mapStateToProps: MapStateToProps<StateProps, RecommendationDetailDialogPro
         sites_working: state.portfolio.tender.selected_recommendation_sites.working,
         working: state.portfolio.tender.selected_recommendation_summary.working || state.portfolio.tender.selected_recommendation_suppliers.working,
         error: state.portfolio.tender.selected_recommendation_summary.error || state.portfolio.tender.selected_recommendation_suppliers.error || state.portfolio.tender.selected_recommendation_sites.error,
-        errorMessage: state.portfolio.tender.selected_recommendation_summary.errorMessage || state.portfolio.tender.selected_recommendation_suppliers.errorMessage || state.portfolio.tender.selected_recommendation_sites.errorMessage
+        errorMessage: state.portfolio.tender.selected_recommendation_summary.errorMessage || state.portfolio.tender.selected_recommendation_suppliers.errorMessage || state.portfolio.tender.selected_recommendation_sites.errorMessage,
+        suppliers: state.portfolio.tender.suppliers.value
     };
 };
   
