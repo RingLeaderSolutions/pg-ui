@@ -131,19 +131,19 @@ class TenderSummary extends React.Component<TenderSummaryProps & StateProps & Di
                     <a href="#" onClick={() => this.props.openModalDialog("create_hh_tender")}>
                         <span className="uk-margin-small-right" data-uk-icon="icon: bolt" />
                         <span className="uk-margin-small-right" data-uk-icon="icon: clock" />
-                        Create HH Tender
+                        Add HH Tender
                     </a>);
             case 1:
                 return (
                     <a href="#" onClick={() => this.props.openModalDialog("create_nhh_tender")}>
                         <span className="uk-margin-small-right" data-uk-icon="icon: bolt" />
-                        Create NHH Tender
+                        Add NHH Tender
                     </a>);
             case 2:
                 return (
                     <a href="#" onClick={() => this.props.openModalDialog("create_gas_tender")}>
                         <span className="uk-margin-small-right" data-uk-icon="icon: world" />
-                        Create Gas Tender
+                        Add Gas Tender
                     </a>);
         }
     }
