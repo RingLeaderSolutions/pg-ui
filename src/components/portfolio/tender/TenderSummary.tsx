@@ -53,7 +53,6 @@ class TenderSummary extends React.Component<TenderSummaryProps & StateProps & Di
             return;
         }
 
-        console.log("building tender map");
         var hh = nextProps.tenders.find(o => o.halfHourly && o.utility == "ELECTRICITY");
         var nhh = nextProps.tenders.find(o => !o.halfHourly && o.utility == "ELECTRICITY");
         var gas = nextProps.tenders.find(o => o.utility == "GAS");
@@ -181,7 +180,7 @@ class TenderSummary extends React.Component<TenderSummaryProps & StateProps & Di
                     <div className="uk-inline">
                         <button className="uk-button uk-button-primary uk-button-small" type="button">
                             <span className="uk-margin-small-right" data-uk-icon="icon: plus" />
-                            Create Tender
+                            Add Tender
                         </button>
                         <div data-uk-dropdown="mode:click">
                             <ul className="uk-nav uk-dropdown-nav">
@@ -207,7 +206,7 @@ class TenderSummary extends React.Component<TenderSummaryProps & StateProps & Di
             return this.renderContent(finishSetup);
         }
         if(this.props.tenders == null || this.props.tenders.length == 0){
-            var noTendersMessage = (<p>Click on the "Create Tender" button above to create your first tender.</p>);
+            var noTendersMessage = (<p>Click on the "Add Tender" button above to add your first tender.</p>);
             return this.renderContent(noTendersMessage);
         }
 

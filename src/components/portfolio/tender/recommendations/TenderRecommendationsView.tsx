@@ -119,7 +119,7 @@ class TenderRecommendationsView extends React.Component<TenderRecommendationsVie
                 tabs.push(tab);
             }
         }
-        
+
         return (
             <div className="content-tenders">
                 <ul className="uk-tab">
@@ -142,7 +142,7 @@ class TenderRecommendationsView extends React.Component<TenderRecommendationsVie
             return this.renderContent(spinner);
         }
         if(this.props.recommendations.length == 0){
-            var noTendersMessage = (<p>No tenders have been created for this portfolio yet. Visit the Tender tab to start the tendering process.</p>);
+            var noTendersMessage = (<p>No tenders have been added for this portfolio yet. Visit the Tender tab to start the tendering process.</p>);
             return this.renderContent(noTendersMessage);
         }
         
