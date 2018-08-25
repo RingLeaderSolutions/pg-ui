@@ -125,10 +125,10 @@ class RecommendationDetailDialog extends React.Component<RecommendationDetailDia
         });
     }
 
-    renderContent(content: any){
+    renderContent(content: any, title: any){
         return (<div>
             <div className="uk-modal-header">
-                <h2 className="uk-modal-title">View Recommendation</h2>
+                <h2 className="uk-modal-title">{title}</h2>
             </div>
             <div className="uk-modal-body">
                 {content}
@@ -434,13 +434,11 @@ class RecommendationDetailDialog extends React.Component<RecommendationDetailDia
         return (
             <div>
                 <div className="uk-child-width-expand@s uk-grid-match uk-text-center" data-uk-grid>
+                <CounterCard title={summary.tenderId.substr(0, 6)} label="Tender Reference" small/>
                     <CounterCard title={summary.tenderTitle} label="Tender Title" small/>
-                    <CounterCard title={summary.tenderId.substr(0, 6)} label="Tender Reference" small/>
                     <CounterCard title={summary.clientName} label="Client" small/>
                     <CounterCard title={summary.attentionOf} label="Client Contact" small/>
-                    <div data-uk-tooltip={`title: ${summary.reportDate}`}>
-                        <CounterCard title={created} label="Report Created" small/>
-                    </div>
+                    <CounterCard data-uk-tooltip={`title: ${summary.reportDate}`} title={created} label="Report Created" small/>
                 </div>
                 <h3>Existing Contract</h3>
                 <div className="uk-child-width-expand@s uk-grid-match uk-text-center" data-uk-grid>
@@ -503,15 +501,16 @@ class RecommendationDetailDialog extends React.Component<RecommendationDetailDia
     render() {
         if(this.props.error){
             var error = (<ErrorMessage content={this.props.errorMessage} />);
-            return this.renderContent(error);
+            return this.renderContent(error, "Recommendation Report");
         }
         if(this.props.working || this.props.recommendation_suppliers == null || this.props.recommendation_summary == null || this.props.selected_recommendation == null){
             var spinner = (<Spinner />);
-            return this.renderContent(spinner);
+            return this.renderContent(spinner, "Loading Recommendation Report...");
         }
         
         var body = this.renderDialogBody();
-        return this.renderContent(body);
+        var title = `Recommendation Report: ${this.props.recommendation_summary.clientName}`;
+        return this.renderContent(body, title);
     }
 }
 
