@@ -62,7 +62,7 @@ class PortfolioUploads extends React.Component<PortfolioUploadProps & StateProps
                             <p>{r.requestor.firstName} {r.requestor.lastName}</p>
                         </div></td>
                         <td>
-                            <button className='uk-button uk-button-default uk-button-small' onClick={() => this.fetchAndDisplayReport(r.resultDocId, isImport)}><span data-uk-icon='icon: menu' data-uk-tooltip="title: Open" /></button>
+                            <button className='uk-button uk-button-default uk-button-small' onClick={() => this.fetchAndDisplayReport(r.resultDocId, isImport)}><span data-uk-icon='icon: info' data-uk-tooltip="title: Open" /></button>
                         </td>
                     </tr>
                 )
@@ -96,19 +96,35 @@ class PortfolioUploads extends React.Component<PortfolioUploadProps & StateProps
         if(this.props.working || this.props.reports == null){
             return (<Spinner />);
         }
+
+        var hasTenderDataUploads = this.props.reports.imports.length > 0;
+        var hasAccountDataUploads = this.props.reports.uploads.length > 0;
+        var hasAnyUploads = hasTenderDataUploads || hasAccountDataUploads;
+
+        var content = (<p>No uploads have been completed against this portfolio yet.</p>);
+        if(hasTenderDataUploads && hasAccountDataUploads){
+            content = (
+                <div>
+                    <ul data-uk-tab>
+                        <li><a href="#">Tender Data ({this.props.reports.imports.length})</a></li>
+                        <li><a href="#">Account Data ({this.props.reports.uploads.length})</a></li>
+                    </ul>
+                    <ul className="uk-switcher restrict-height-hack">
+                        <li>{this.renderUploadsTable(this.props.reports.imports, true)}</li>
+                        <li>{this.renderUploadsTable(this.props.reports.uploads, false)}</li>
+                    </ul>
+                </div>);
+        }
+        else if(hasAnyUploads) {
+            content = hasTenderDataUploads ? 
+                this.renderUploadsTable(this.props.reports.imports, true) : 
+                this.renderUploadsTable(this.props.reports.uploads, false);
+        }
+
         return (
             <div className="content-inner-portfolio">
                 <div className="table-uploads">
-                    <div>
-                        <ul data-uk-tab>
-                            <li><a href="#">Imports ({this.props.reports.imports.length})</a></li>
-                            <li><a href="#">Uploads ({this.props.reports.uploads.length})</a></li>
-                        </ul>
-                        <ul className="uk-switcher restrict-height-hack">
-                            <li>{this.renderUploadsTable(this.props.reports.imports, true)}</li>
-                            <li>{this.renderUploadsTable(this.props.reports.uploads, false)}</li>
-                        </ul>
-                    </div>
+                    {content}
 
                     <ModalDialog dialogId="view_portfolio_upload" dialogClass="upload-report-modal">
                         <UploadReportView />

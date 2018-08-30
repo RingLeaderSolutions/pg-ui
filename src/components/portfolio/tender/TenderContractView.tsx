@@ -45,7 +45,7 @@ class TenderContractView extends React.Component<TenderContractViewProps & Dispa
     renderContractInfo(){
         var { existingContract } = this.props.tender;
         var existingSupplier = this.props.suppliers.find(s => s.supplierId == existingContract.supplierId);
-        var supplierLogo = existingSupplier == null ? "Unknown" : (<img src={existingSupplier.logoUri} style={{ width: "70px"}}/>);
+        var supplierLogo = existingSupplier == null ? "Unknown" : (<img src={existingSupplier.logoUri} style={{ maxWidth: "70px", maxHeight: "40px"}}/>);
 
         var appu = `${existingContract.averagePPU.toFixed(4)}p`;
         return (
@@ -94,20 +94,15 @@ class TenderContractView extends React.Component<TenderContractViewProps & Dispa
                         </button>
                         <div data-uk-dropdown="pos:bottom-justify;mode:click">
                             <ul className="uk-nav uk-dropdown-nav">
-                            <li><a href="#" onClick={() => this.props.openModalDialog(uploadExistingDialogName)}>
-                                <span className="uk-margin-small-right" data-uk-icon="icon: cloud-upload" />
-                                Upload Contract Rates
-                            </a></li>
-                            <li className="uk-nav-divider"></li>
-                            { hasContractRates ? (<li><a href="#" onClick={() => this.fetchRatesAndOpenDialog(viewContractDialogName)}>
-                                <span className="uk-margin-small-right" data-uk-icon="icon: copy" />
-                                View Contract Rates
-                            </a></li>) : null }
-                            <li className="uk-nav-divider"></li>
-                            <li><a href="#" onClick={() => this.props.openModalDialog(editContractDialogName)}>
-                                <span className="uk-margin-small-right" data-uk-icon="icon: pencil" />                                        
-                                Edit contract
-                            </a></li>
+                                <li><a href="#" onClick={() => this.props.openModalDialog(uploadExistingDialogName)}>
+                                    <span className="uk-margin-small-right" data-uk-icon="icon: cloud-upload" />
+                                    Upload Contract Rates
+                                </a></li>
+                                <li className="uk-nav-divider"></li>
+                                { hasContractRates ? (<li><a href="#" onClick={() => this.fetchRatesAndOpenDialog(viewContractDialogName)}>
+                                    <span className="uk-margin-small-right" data-uk-icon="icon: copy" />
+                                    View Contract Rates
+                                </a></li>) : null }
                             </ul>
                         </div>
                     </div>
@@ -158,11 +153,21 @@ class TenderContractView extends React.Component<TenderContractViewProps & Dispa
 
         var contractInfo = this.renderContractInfo();
         var actions = this.renderContractActions(hasContractRates);
+
+        var editContractDialogName = `edit_contract_${this.props.tender.tenderId}`;
+
         return (
             <div className="uk-card uk-card-small uk-card-default uk-card-body">
                 <div className="uk-grid">
-                    <h3 className="uk-width-expand@s">Existing Contract</h3>
-                    <div>
+                    <div className="uk-width-auto">
+                        <h3>Existing Contract</h3>
+                    </div>
+                    <div className="uk-width-expand">
+                        <button className="uk-button uk-button-default uk-button-small" type="button" onClick={() => this.props.openModalDialog(editContractDialogName)}>
+                            <span data-uk-icon="icon: pencil" />
+                        </button>
+                    </div>
+                    <div className="uk-width-auto">
                         {actions}
                     </div>
                 </div>

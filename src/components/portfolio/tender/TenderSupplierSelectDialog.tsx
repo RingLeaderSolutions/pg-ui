@@ -104,7 +104,7 @@ class TenderSupplierSelectDialog extends React.Component<TenderSupplierSelectDia
             var isSelected = this.state.selected.find(sid => sid == s.supplierId) != null;
             return (
                 <tr key={s.supplierId}>
-                    <td><img src={s.logoUri} style={{ width: "70px"}}/></td>
+                    <td><img src={s.logoUri} style={{ maxWidth: "70px", maxHeight: "40px"}}/></td>
                     <td>{s.name}</td>
                     <td>{s.paymentTerms} days</td>
                     <td><input className="uk-checkbox" type="checkbox" checked={isSelected} onChange={(e) => this.toggleSupplierAssignment(e, s.supplierId)}/></td>

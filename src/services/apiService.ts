@@ -92,6 +92,7 @@ export interface IApiService {
 
   fetchRecommendationSuppliers(tenderId: string, summaryId: string): Promise<AxiosResponse>;
   fetchRecommendationSites(tenderId: string, summaryId: string, siteStart: number, siteEnd: number): Promise<AxiosResponse>;
+  deleteRecommendation(tenderId: string, recommendationId: string): Promise<AxiosResponse>;
 
   reportLogin(): Promise<AxiosResponse>;
   getActiveUsers(): Promise<AxiosResponse>;
@@ -571,6 +572,10 @@ export class ApiService implements IApiService {
 
     fetchRecommendationSites(tenderId: string, summaryId: string, siteStart: number, siteEnd: number){
         return axios.get(`${this.baseApiUri}/portman-web/recommendation/sites/tender/${tenderId}?summaryId=${summaryId}&start=${siteStart}&end=${siteEnd}`, this.getRequestConfig());                      
+    }
+
+    deleteRecommendation(tenderId: string, recommendationId: string){
+        return axios.delete(`${this.baseApiUri}/portman-web/recommendation/tender/${tenderId}?summaryId=${recommendationId}`, this.getRequestConfig());                
     }
 
     reportLogin(){

@@ -117,6 +117,23 @@ export function fetchRecommendationSummary(tenderId: string, summaryId: string){
     }
 };
 
+export function deleteRecommendation(tenderId: string, recommendationId: string){    
+    return (dispatch: Dispatch<any>) => {
+        let promise = ApiService.deleteRecommendation(tenderId, recommendationId);
+        dispatch( { type: types.DELETE_RECOMMENDATION_WORKING });
+
+        makeApiRequest(dispatch,
+            promise,
+            200, 
+            data => {
+                return { type: types.DELETE_RECOMMENDATION_SUCCESSFUL };
+            }, 
+            error => {
+                return { type: types.DELETE_RECOMMENDATION_FAILED };
+            });
+    }
+};
+
 export function getTenderSuppliers(){    
     return (dispatch: Dispatch<any>) => {
         let fetchPromise = ApiService.getTenderSuppliers();

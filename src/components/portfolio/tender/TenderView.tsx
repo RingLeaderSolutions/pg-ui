@@ -59,7 +59,6 @@ class TenderView extends React.Component<TenderViewProps & StateProps & Dispatch
         var utilityDescription = this.props.utility == UtilityType.Gas ? "Gas" : "Electricity";
 
         var updateTenderDialogName = `update_tender_${this.props.tender.tenderId}`;
-        var supplierModalId = `select_suppliers_${this.props.tender.tenderId}`;
 
         let { tenderTitle } = this.props.tender;
 
@@ -74,12 +73,6 @@ class TenderView extends React.Component<TenderViewProps & StateProps & Dispatch
                     <div className="uk-width-expand@s">
                         <button className="uk-button uk-button-default uk-button-small" type="button" onClick={() => this.props.openModalDialog(updateTenderDialogName)}>
                             <span data-uk-icon="icon: pencil" />
-                        </button>
-                    </div>
-                    <div className="uk-width-1-5">
-                        <button className="uk-button uk-button-default uk-button-small uk-align-right" type="button"  onClick={() => this.props.openModalDialog(supplierModalId)}>
-                            <span className="uk-margin-small-right" data-uk-icon="icon: database" />
-                            Assign Suppliers
                         </button>
                     </div>
                 </div>
@@ -103,7 +96,7 @@ class TenderView extends React.Component<TenderViewProps & StateProps & Dispatch
                     <UpdateTenderDialog tender={this.props.tender} utilityDescription={utilityDescription} utility={this.props.utility}/>
                 </ModalDialog>
 
-                <ModalDialog dialogId={supplierModalId}>
+                <ModalDialog dialogId="select_tender_suppliers">
                     <TenderSupplierSelectDialog assignedSuppliers={this.props.tender.assignedSuppliers} tenderId={this.props.tender.tenderId} utility={this.props.utility}/>
                 </ModalDialog>
             </div>)

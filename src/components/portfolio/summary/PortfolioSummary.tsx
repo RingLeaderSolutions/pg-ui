@@ -2,7 +2,7 @@ import * as React from "react";
 import { MapDispatchToPropsFunction, connect, MapStateToProps } from 'react-redux';
 
 import CounterCard from "../../common/CounterCard";
-import { Portfolio, PortfolioDetails } from '../../../model/Models';
+import { Portfolio, PortfolioDetails, User } from '../../../model/Models';
 import PortfolioMeterStatus from "./PortfolioMeterStatus";
 import PortfolioHistory from "./PortfolioHistory";
 import UpdatePortfolioDialog from "../creation/UpdatePortfolioDialog";
@@ -31,11 +31,35 @@ class PortfolioSummary extends React.Component<PortfolioSummaryProps & DispatchP
         return value;
     }
 
+    renderUser(user: User){
+        if(user == null){
+            return (<h4><strong>-</strong></h4>)
+        }
+
+        return (
+            <div className="uk-grid-small" data-uk-grid>
+                <div className="uk-width-1-4" />
+                <div className="uk-width-expand">
+                    <div className="uk-grid-small" data-uk-grid>
+                        <div className="uk-width-auto">
+                            <img className="avatar avatar-xlarge" src={user.avatarUrl} />
+                    
+                        </div>
+                        <div className="uk-width-expand">
+                            <h4 className="uk-margin-small-top"><strong>{user.firstName} {user.lastName}</strong></h4>
+                        </div>
+                    </div>
+                </div>
+                <div className="uk-width-1-4" />
+            </div>
+        )
+    }
+
     render() {
         var { portfolio, detail } = this.props;
 
-        var salesLead = portfolio.salesLead == null ? this.missingFieldText : `${portfolio.salesLead.firstName} ${portfolio.salesLead.lastName}`;        
-        var supportExec = portfolio.supportExec == null ? this.missingFieldText : `${portfolio.supportExec.firstName} ${portfolio.supportExec.lastName}`;
+        var salesLead = this.renderUser(portfolio.salesLead);
+        var supportExec = this.renderUser(portfolio.supportExec);
 
         return (
             <div className="content-inner-portfolio">
@@ -49,10 +73,9 @@ class PortfolioSummary extends React.Component<PortfolioSummaryProps & DispatchP
                     </div>
                 </div>
                 <div className="uk-child-width-expand@s uk-grid-match uk-text-center" data-uk-grid>
-                    <CounterCard title={salesLead} label="Account Manager" small/>
-                    <CounterCard title={supportExec} label="Tender Analyst" small/>
-                    <CounterCard title={this.formatForDisplay(portfolio.creditRating)} label="Credit Score" small/>
-                    <CounterCard title={String(portfolio.mpans)} label="Meters" small />
+                    <CounterCard content={salesLead} label="Account Manager" small/>
+                    <CounterCard content={supportExec} label="Tender Analyst" small/>
+                    <CounterCard title={String(portfolio.mpans)} label="Included Meters" small />
                 </div>
                 <div className="uk-child-width-expand@s uk-grid-match uk-text-center" data-uk-grid>
                     <PortfolioMeterStatus portfolio={portfolio} />

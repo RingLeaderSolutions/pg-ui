@@ -6,6 +6,10 @@ import { Link } from "react-router-dom";
 import ReactTable, { Column } from "react-table";
 import { BooleanCellRenderer } from "../common/TableHelpers";
 import { openModalDialog } from "../../actions/viewActions";
+import { Tariff } from "../../model/Tender";
+import { fetchTariffs } from "../../actions/portfolioActions";
+import Spinner from "../common/Spinner";
+import ErrorMessage from "../common/ErrorMessage";
 
 interface AccountElectricityMeterTableProps {
     sites: SiteDetail[];
@@ -13,10 +17,15 @@ interface AccountElectricityMeterTableProps {
 }
 
 interface StateProps {
+    working: boolean;
+    error: boolean;
+    errorMessage: string;
+    tariffs: Tariff[];
 }
 
 interface DispatchProps {
     openModalDialog: (dialogId: string) => void;
+    fetchTariffs: () => void;
 }
 
 interface AccountElectricityMeterTableState {
@@ -54,6 +63,9 @@ class AccountElectricityMeterTable extends React.Component<AccountElectricityMet
     },{
         Header: 'Type',
         accessor: 'type'
+    },{
+        Header: 'Tariff',
+        accessor: "tariff",
     },{
         Header: 'Topline',
         accessor: "topline",
@@ -96,28 +108,28 @@ class AccountElectricityMeterTable extends React.Component<AccountElectricityMet
         accessor: 'newConnection',
         Cell: BooleanCellRenderer
     }];
-    stringProperties: string[] = ["siteId", "site", "meter", "type", "topline", "serialNumber", "da", "dc", "mo", "voltage", "connection", "postcode" ];
+    stringProperties: string[] = ["siteId", "site", "meter", "type", "topline", "tariff", "serialNumber", "da", "dc", "mo", "voltage", "connection", "postcode" ];
     numberProperties: string[] = ["rec", "eac", "capacity"];
     
-    constructor(props: AccountElectricityMeterTableProps & StateProps & DispatchProps) {
+    constructor() {
         super();
-        var tableData: AccountElectricityMeterTableEntry[]  = [];
-        if(props.sites != null){
-            tableData = this.filterElectricityMeters(props.sites, '');
-        }
 
         this.state = {
             searchText: '',
-            tableData: tableData
+            tableData: []
         };
     }
 
+    componentDidMount(){
+        this.props.fetchTariffs();
+    }
+
     componentWillReceiveProps(nextProps: AccountElectricityMeterTableProps & StateProps & DispatchProps){
-        if(nextProps.sites == null){
+        if(nextProps.sites == null || nextProps.tariffs == null){
             return;
         }
 
-        var tableData: AccountElectricityMeterTableEntry[] = this.filterElectricityMeters(nextProps.sites, this.state.searchText);
+        var tableData: AccountElectricityMeterTableEntry[] = this.filterElectricityMeters(nextProps.sites, nextProps.tariffs, this.state.searchText);
         this.setState({
             ...this.state,
             tableData
@@ -130,7 +142,7 @@ class AccountElectricityMeterTable extends React.Component<AccountElectricityMet
             return;
         }
 
-        var tableData: AccountElectricityMeterTableEntry[] = this.filterElectricityMeters(this.props.sites, raw);
+        var tableData: AccountElectricityMeterTableEntry[] = this.filterElectricityMeters(this.props.sites, this.props.tariffs, raw);
 
         this.setState({
             ...this.state,
@@ -139,8 +151,8 @@ class AccountElectricityMeterTable extends React.Component<AccountElectricityMet
         });
     }
 
-    filterElectricityMeters(sites: SiteDetail[], searchText: string): AccountElectricityMeterTableEntry[] {
-        var tableData : AccountElectricityMeterTableEntry[] = this.createTableData(sites);
+    filterElectricityMeters(sites: SiteDetail[], tariffs: Tariff[], searchText: string): AccountElectricityMeterTableEntry[] {
+        var tableData : AccountElectricityMeterTableEntry[] = this.createTableData(sites, tariffs);
         if(searchText == null || searchText == ""){
             return tableData;
         }
@@ -167,7 +179,7 @@ class AccountElectricityMeterTable extends React.Component<AccountElectricityMet
         return filtered;
     }
 
-    createTableData(sites: SiteDetail[]): AccountElectricityMeterTableEntry[]{
+    createTableData(sites: SiteDetail[], tariffs: Tariff[]): AccountElectricityMeterTableEntry[]{
         var metersBySites = sites
             .sort(
                 (site1: SiteDetail, site2: SiteDetail) => {
@@ -182,11 +194,13 @@ class AccountElectricityMeterTable extends React.Component<AccountElectricityMet
                     var siteId = site.id;
                     var siteCode = site.siteCode;
                     return site.mpans.map(electricityMeter => {
+                        var tariff = tariffs.find(t => t.id == electricityMeter.tariffId);
                         return {
                             siteId,
                             site: siteCode,
                             meter: electricityMeter.mpanCore,
                             type: electricityMeter.meterType,
+                            tariff: tariff == null ? "Unknown" : tariff.name,
                             topline: `${electricityMeter.profileClass} ${electricityMeter.meterTimeSwitchCode} ${electricityMeter.llf}`,
                             serialNumber: electricityMeter.serialNumber,
                             da: electricityMeter.daAgent,
@@ -215,13 +229,26 @@ class AccountElectricityMeterTable extends React.Component<AccountElectricityMet
     }
 
     render() {
+        if(this.props.working){
+            return (<Spinner hasMargin={true} />);
+        }
+        if(this.props.error){
+            return (<ErrorMessage content={this.props.errorMessage}/>);
+        }
+        
         var actions = (
             <div className="actions-accounts">
                 <button className='uk-button uk-button-primary uk-margin-small-right' onClick={() => this.props.openModalDialog('upload-supply-data-electricity')}><span data-uk-icon='icon: upload' /> Upload Supply Data</button>    
             </div>
         );
 
-        if(this.props.sites.length === 0){
+        var hasData = this.state.tableData.length > 0;
+        if(!hasData && this.state.searchText == ""){
+            var missingDataMessage = "No electricity meters have been uploaded to this account yet.";
+            if(this.props.sites.length == 0){
+                missingDataMessage = "No site or meter data has been uploaded to this account yet."
+            }
+
             return (
                 <div>
                     <div className="search-accounts">
@@ -231,9 +258,9 @@ class AccountElectricityMeterTable extends React.Component<AccountElectricityMet
                         </form>
                         {actions}
                     </div>
-                    <div>No meter data has been uploaded yet.</div>
+                    <p className="uk-text-meta uk-text-center">{missingDataMessage} Try uploading meter supply data with the button above.</p>
                 </div>);
-        }
+        }        
 
         var portfolioButtons = this.renderPortfolioButtons();
         return (
@@ -249,11 +276,12 @@ class AccountElectricityMeterTable extends React.Component<AccountElectricityMet
                     {actions}
                 </div>
                 
-                <ReactTable 
+                {!hasData ? (<p className="uk-text-meta uk-text-center">No results for search term: <i>{this.state.searchText}</i></p>)
+                : (<ReactTable 
                     showPagination={false}
                     columns={this.columns}
                     data={this.state.tableData}
-                    minRows={0}/>
+                    minRows={0}/>)}
             </div>)
     }
 }
@@ -261,11 +289,16 @@ class AccountElectricityMeterTable extends React.Component<AccountElectricityMet
 const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, AccountElectricityMeterTableProps> = (dispatch) => {
     return {
         openModalDialog: (dialogId: string) => dispatch(openModalDialog(dialogId)),
+        fetchTariffs: () => dispatch(fetchTariffs())
     };
 };
   
 const mapStateToProps: MapStateToProps<StateProps, AccountElectricityMeterTableProps> = (state: ApplicationState) => {
     return {
+        working: state.portfolio.tender.tariffs.working,
+        error:  state.portfolio.tender.tariffs.error,
+        errorMessage: state.portfolio.tender.tariffs.errorMessage,
+        tariffs: state.portfolio.tender.tariffs.value        
     };
 };
   

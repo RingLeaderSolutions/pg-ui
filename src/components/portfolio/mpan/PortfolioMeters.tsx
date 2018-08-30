@@ -108,7 +108,7 @@ class PortfolioMeters extends React.Component<PortfolioMetersProps & StateProps 
                                 <button className="uk-button uk-button-default uk-margin-small-right" type="button">
                                     <span data-uk-icon="icon: more" />
                                 </button>
-                                <div data-uk-dropdown="pos:bottom-justify;mode:hover">
+                                <div data-uk-dropdown="pos:bottom-justify;mode:click">
                                     <ul className="uk-nav uk-dropdown-nav">
                                         <li><a href="#" onClick={() => this.props.openModalDialog(includeDialogId)}>
                                             <span className="uk-margin-small-right" data-uk-icon="icon: plus" />
@@ -131,11 +131,15 @@ class PortfolioMeters extends React.Component<PortfolioMetersProps & StateProps 
                     </div>
                 </div>
 
-                <ReactTable 
+                {hasData ? (
+                    <ReactTable 
                     showPagination={false}
                     columns={tableColumns}
                     data={data}
                     minRows={0}/>
+                ) : 
+                <p className="uk-text-meta uk-text-center">No meters of this type have been included in this portfolio yet. Click on the menu above to include some.</p>}
+                
             </div>);
     }
     

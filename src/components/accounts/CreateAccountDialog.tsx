@@ -40,8 +40,8 @@ class CreateAccountDialog extends React.Component<CreateAccountDialogProps & Sta
     companyReg: HTMLInputElement;
     address: HTMLInputElement;
     postcode: HTMLInputElement;
-    country: HTMLInputElement;
-    status: HTMLInputElement;
+    country: HTMLSelectElement;
+    status: HTMLSelectElement;
     creditRating: HTMLInputElement;
     vatEligible: HTMLInputElement;
     registeredCharity: HTMLInputElement;
@@ -133,11 +133,13 @@ class CreateAccountDialog extends React.Component<CreateAccountDialogProps & Sta
                                         </div>
                                         <div className='uk-margin'>
                                             <label className='uk-form-label'>Country</label>
-                                            <input 
-                                                className='uk-input' 
-                                                type='text' 
+                                            <select className='uk-select' 
                                                 defaultValue={company ? company.countryOfOrigin : null}
-                                                ref={ref => this.country = ref} />
+                                                ref={ref => this.country = ref}>
+                                                <option value="" disabled>Select</option>
+                                                <option value="United Kingdom">United Kingdom</option>
+                                                <option value="Ireland">Ireland</option>
+                                            </select>
                                         </div>
                                     </div>
                                     <div className="uk-width-1-2">
@@ -152,11 +154,14 @@ class CreateAccountDialog extends React.Component<CreateAccountDialogProps & Sta
                                         </div>
                                         <div className='uk-margin'>
                                             <label className='uk-form-label'>Status</label>
-                                            <input 
-                                                className='uk-input' 
-                                                type='text' 
+                                            <select className='uk-select' 
                                                 defaultValue={company ? company.companyStatus : null}
-                                                ref={ref => this.status = ref} />
+                                                ref={ref => this.status = ref}>
+                                                <option value="" disabled>Select</option>
+                                                <option value="Active">Active</option>
+                                                <option value="On-boarding">On-boarding</option>
+                                                <option value="Suspended">Suspended</option>
+                                            </select>
                                         </div>
                                         <div className='uk-margin'>
                                             <label className='uk-form-label'>Credit Rating</label>

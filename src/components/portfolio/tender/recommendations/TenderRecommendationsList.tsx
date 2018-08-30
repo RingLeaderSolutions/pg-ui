@@ -14,6 +14,7 @@ import { openModalDialog } from "../../../../actions/viewActions";
 import ModalDialog from "../../../common/ModalDialog";
 import GenerateRecommendationDialog from "./GenerateRecommendationDialog";
 import RecommendationDetailDialog from "./RecommendationDetailDialog";
+import SendRecommendationDialog from "./SendRecommendationDialog";
 
 interface TenderRecommendationsListProps {
     tender: Tender;
@@ -42,10 +43,6 @@ class TenderRecommendationsList extends React.Component<TenderRecommendationsLis
     componentDidMount(){
         this.props.retrieveAccount(this.props.portfolio.portfolio.accountId);
     }
-    
-    issueReport(summaryId: string){
-        this.props.issueSummaryReport(this.props.tender.tenderId, summaryId);
-    }
 
     viewRecommendationReport(recommendation: TenderRecommendation){
         this.props.getRecommendationSummary(this.props.tender.tenderId, recommendation.summaryId);
@@ -55,7 +52,7 @@ class TenderRecommendationsList extends React.Component<TenderRecommendationsLis
         this.props.openModalDialog("view_recommendation");
     }
 
-    renderSummaryTableContent(enableIssuance: boolean){
+    renderSummaryTableContent(enableSend: boolean){
         return this.props.tender.summaries
         .sort((q1: TenderRecommendation, q2: TenderRecommendation) => {        
             if (q1.created < q2.created) return 1;
@@ -64,27 +61,33 @@ class TenderRecommendationsList extends React.Component<TenderRecommendationsLis
         })
         .map(s => {
             var supplier = this.props.suppliers.find(su => su.supplierId == s.supplierId);
-            var supplierText = supplier == null ? "Unknown" : (<img src={supplier.logoUri} style={{ width: "70px"}}/>);
+            var supplierText = supplier == null ? "Unknown" : (<img src={supplier.logoUri} style={{ maxWidth: "70px", maxHeight: "40px"}}/>);
 
-            var created = moment.utc(s.created).local().fromNow();   
+            var created = moment.utc(s.created).local().fromNow();  
+            var communicated = s.communicated != null ? moment.utc(s.communicated).local().fromNow() : "Never";
             return (
                 <tr key={s.summaryId}>
-                    <td><span className="uk-label uk-label-success">{s.summaryId.substring(0, 8)}</span></td>
-                    <td>{created}</td>
+                    <td>
+                        <button className="uk-button uk-button-default uk-button-small" type="button" onClick={() => this.viewRecommendationReport(s)}>
+                            <span data-uk-icon="icon: info" />
+                        </button>   
+                    </td>
+                    <td data-uk-tooltip={`title:${moment(s.created).format("DD-MM-YYYY HH:mm:ss")}`}>{created}</td>
                     <td>{s.meterCount}</td>
                     <td>{s.supplierCount}</td>
                     <td>{supplierText}</td>
+                    <td>{s.winningDuration == 0 ? "Flexi" : `${s.winningDuration} months`}</td>
+                    <td data-uk-tooltip={s.communicated ? `title:${moment(s.communicated).format("DD-MM-YYYY HH:mm:ss")}` : "title:This recommendation report has not yet been sent."}>{communicated}</td>
                     <td>
-                        <button className="uk-button uk-button-default uk-button-small" type="button" onClick={() => this.viewRecommendationReport(s)}>
-                            <span className="uk-margin-small-right" data-uk-icon="icon: info" />
-                            View
-                        </button>   
-                    </td>
-                    <td>
-                        <button className="uk-button uk-button-primary uk-button-small" type="button" onClick={() => this.issueReport(s.summaryId)} disabled={!enableIssuance}>
-                            <span className="uk-margin-small-right" data-uk-icon="icon: mail" />
-                            Issue
-                        </button>   
+                        <div>
+                            <button className="uk-button uk-button-primary uk-button-small" type="button" onClick={() => this.props.openModalDialog(`send_recommendation_${s.summaryId}`)} disabled={!enableSend}>
+                                <span className="uk-margin-small-right" data-uk-icon="icon: mail" />
+                                Send
+                            </button>   
+                            <ModalDialog dialogId={`send_recommendation_${s.summaryId}`}>
+                                <SendRecommendationDialog tender={this.props.tender} recommendation={s} />
+                            </ModalDialog>
+                        </div>
                     </td>
                 </tr>
             )
@@ -108,12 +111,13 @@ class TenderRecommendationsList extends React.Component<TenderRecommendationsLis
                 <table className="uk-table uk-table-divider">
                     <thead>
                         <tr>
-                            <th>Summary ID</th>
+                            <th></th>
                             <th>Created</th>
                             <th>Meter Count</th>
                             <th>Supplier Count</th>
-                            <th>Chosen Supplier</th>
+                            <th>Winner</th>
                             <th></th>
+                            <th>Last Sent</th>
                             <th></th>
                         </tr>
                     </thead>

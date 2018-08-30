@@ -5,7 +5,7 @@ import { ApplicationState } from '../../../../applicationState';
 import Spinner from '../../../common/Spinner';
 import { format } from 'currency-formatter';
 import * as moment from 'moment';
-import { fetchRecommendationsSites } from '../../../../actions/tenderActions';
+import { fetchRecommendationsSites, deleteRecommendation } from '../../../../actions/tenderActions';
 
 import { Tender, RecommendationSite, RecommendationSupplier, RecommendationSummary, TenderRecommendation, TenderSupplier } from "../../../../model/Tender";
 import { closeModalDialog } from "../../../../actions/viewActions";
@@ -30,6 +30,7 @@ interface StateProps {
 interface DispatchProps {
     closeModalDialog: () => void;
     getRecommendationSites: (tenderId: string, summaryId: string, siteStart: number, siteEnd: number) => void;
+    deleteRecommendation: (tenderId: string, recommendationId: string) => void;
 }
 
 interface RecommendationDetailDialogState {
@@ -70,6 +71,11 @@ class RecommendationDetailDialog extends React.Component<RecommendationDetailDia
             });
             this.props.getRecommendationSites(nextProps.tender.tenderId, newRecommendation.summaryId, 0, siteEnd);
         }
+    }
+
+    deleteRecommendation(){
+        this.props.deleteRecommendation(this.props.tender.tenderId, this.props.selected_recommendation.summaryId);
+        this.props.closeModalDialog();
     }
 
     canGetNextSites() : boolean{
@@ -142,7 +148,7 @@ class RecommendationDetailDialog extends React.Component<RecommendationDetailDia
     renderSiteTabContent(recommendationSite: RecommendationSite){
         var receivedOfferRows = recommendationSite.siteOffersList.map(ru => {
             var supplier = this.props.suppliers.find(su => su.supplierId == ru.supplierId);
-            var supplierText = supplier == null ? "Unknown" : (<img src={supplier.logoUri} style={{ width: "70px"}}/>);
+            var supplierText = supplier == null ? "Unknown" : (<img src={supplier.logoUri} style={{ maxWidth: "70px", maxHeight: "40px"}}/>);
 
             var previousDiffPercentage = ru.previousPercentageDifference * 100;
             var adriftPercentage = ru.adriftPercentage * 100;
@@ -189,13 +195,15 @@ class RecommendationDetailDialog extends React.Component<RecommendationDetailDia
             )
         })
 
-        var percentageChange = recommendationSite.recommendedSiteOffer.percentageChange * 10;
+        var percentageChangeContent = this.renderPercentageChangeCard(recommendationSite.recommendedSiteOffer.percentageChange);
         var currentSupplier = this.props.suppliers.find(su => su.supplierId == recommendationSite.currentContract.supplierId);
-        var currentSupplierText = currentSupplier == null ? (<h4><strong>Unknown</strong></h4>) : (<img src={currentSupplier.logoUri} style={{ width: "70px"}}/>);
+        var currentSupplierText = currentSupplier == null ? (<h4><strong>Unknown</strong></h4>) : (<img src={currentSupplier.logoUri} style={{ maxWidth: "70px", maxHeight: "40px"}}/>);
 
         var newSupplier = this.props.suppliers.find(su => su.supplierId == recommendationSite.recommendedSiteOffer.supplierId);
-        var newSupplierText = newSupplier == null ? (<h4><strong>Unknown</strong></h4>) : (<img src={newSupplier.logoUri} style={{ width: "70px"}}/>);
+        var newSupplierText = newSupplier == null ? (<h4><strong>Unknown</strong></h4>) : (<img src={newSupplier.logoUri} style={{ maxWidth: "70px", maxHeight: "40px"}}/>);
 
+        var startDate = moment.utc(recommendationSite.recommendedSiteOffer.startDate).local().format("DD/MM/YYYY");
+        var endDate = moment.utc(recommendationSite.recommendedSiteOffer.endDate).local().format("DD/MM/YYYY");
         return (
             <div key={recommendationSite.siteCode}>
                 <div className="uk-child-width-expand@s uk-grid-match uk-text-center" data-uk-grid>
@@ -215,9 +223,9 @@ class RecommendationDetailDialog extends React.Component<RecommendationDetailDia
                 <div className="uk-child-width-expand@s uk-grid-match uk-text-center" data-uk-grid>
                     <CounterCard content={newSupplierText} label="New Supplier" small/>
                     <CounterCard title={format(recommendationSite.recommendedSiteOffer.totalIncCCL, { locale: 'en-GB'})} label="Annual cost inc CCL" small/>
-                    <CounterCard title={`${percentageChange.toFixed(2)}%`} label="Percentage change" small />
-                    <CounterCard title={recommendationSite.recommendedSiteOffer.startDate} label="Start Date" small/>
-                    <CounterCard title={recommendationSite.recommendedSiteOffer.endDate} label="End Date" small/>
+                    <CounterCard content={percentageChangeContent} label="Percentage change" small />
+                    <CounterCard title={startDate} label="Start Date" small/>
+                    <CounterCard title={endDate} label="End Date" small/>
                     <CounterCard title={`${recommendationSite.recommendedSiteOffer.paymentTerms} days`} label="Payment Terms" small/>
                     <CounterCard title={recommendationSite.recommendedSiteOffer.fuelType} label="Fuel Type" small/>
                 </div>
@@ -329,7 +337,7 @@ class RecommendationDetailDialog extends React.Component<RecommendationDetailDia
         var isIncumbent = recommendationSupplier.incumbentContract;
 
         var supplier = this.props.suppliers.find(su => su.supplierId == recommendationSupplier.supplierId);
-        var supplierText = supplier == null ? (<h4><strong>Unknown</strong></h4>) : (<img src={supplier.logoUri} style={{ width: "70px"}}/>);
+        var supplierText = supplier == null ? (<h4><strong>Unknown</strong></h4>) : (<img src={supplier.logoUri} style={{ maxWidth: "70px", maxHeight: "40px"}}/>);
 
         return (
             <div key={index}>
@@ -390,6 +398,16 @@ class RecommendationDetailDialog extends React.Component<RecommendationDetailDia
             </div>
         )
     }
+    renderPercentageChangeCard(value: number){
+        var formattedValue = `${(value * 10).toFixed(2)}%`;
+        if(value == 0){
+            return (<h4><strong>{formattedValue}</strong></h4>)
+        }
+        if(value < 0){
+            return <h4 style={{color: "darkgreen"}}>{formattedValue} <span data-uk-icon="icon: triangle-down" style={{color: 'green'}}/></h4>
+        }
+        return <h4 style={{color: "darkred"}}>{formattedValue} <span data-uk-icon="icon: triangle-up" style={{color: 'red'}}/></h4>
+    }
 
     renderCostCell(value: number, formattedValue: string){
         if(value == 0){
@@ -402,15 +420,17 @@ class RecommendationDetailDialog extends React.Component<RecommendationDetailDia
     }
 
     renderSummaryTab(){
+        var selectedRecommendation = this.props.selected_recommendation;
         var summary = this.props.recommendation_summary;
         var created = moment.utc(summary.reportDate).local().fromNow();   
+        var communicated = selectedRecommendation.communicated == null ? "Never" : moment.utc(selectedRecommendation.communicated).local().fromNow();   
 
         var offerSummaries = summary.offerSummaries.map(os => {
             var percentageDifference = (os.previousPercentageDifference * 100);
             var adriftPercentage = (os.adriftPercentage * 100);
 
             var supplier = this.props.suppliers.find(su => su.supplierId == os.supplierId);
-            var supplierText = supplier == null ? "Unknown" : (<img src={supplier.logoUri} style={{ width: "70px"}}/>);
+            var supplierText = supplier == null ? "Unknown" : (<img src={supplier.logoUri} style={{ maxWidth: "70px", maxHeight: "40px"}}/>);
 
             return (
                 <tr key={os.ranking}>
@@ -429,7 +449,7 @@ class RecommendationDetailDialog extends React.Component<RecommendationDetailDia
         })
 
         var existingSupplier = this.props.suppliers.find(su => su.supplierId == summary.existingSupplierId);
-        var existingSupplierText = existingSupplier == null ? (<h4><strong>Unknown</strong></h4>) : (<img src={existingSupplier.logoUri} style={{ width: "70px"}}/>);
+        var existingSupplierText = existingSupplier == null ? (<h4><strong>Unknown</strong></h4>) : (<img src={existingSupplier.logoUri} style={{ maxWidth: "70px", maxHeight: "40px"}}/>);
         
         return (
             <div>
@@ -439,6 +459,7 @@ class RecommendationDetailDialog extends React.Component<RecommendationDetailDia
                     <CounterCard title={summary.clientName} label="Client" small/>
                     <CounterCard title={summary.attentionOf} label="Client Contact" small/>
                     <CounterCard data-uk-tooltip={`title: ${summary.reportDate}`} title={created} label="Report Created" small/>
+                    <CounterCard data-uk-tooltip={selectedRecommendation.communicated == null ? null : `title: ${selectedRecommendation.communicated}`} title={communicated} label="Last sent" small/>
                 </div>
                 <h3>Existing Contract</h3>
                 <div className="uk-child-width-expand@s uk-grid-match uk-text-center" data-uk-grid>
@@ -486,6 +507,10 @@ class RecommendationDetailDialog extends React.Component<RecommendationDetailDia
                             <span className="uk-margin-small-right" data-uk-icon="icon: cloud-download" />
                             Download
                         </a> 
+                        <button className="uk-button uk-button-danger uk-button-small uk-margin-xlarge-left" type="button" onClick={() => this.deleteRecommendation()}>
+                            <span className="uk-margin-small-right" data-uk-icon="icon: close" />
+                            Delete
+                        </button>   
                     </div>
                 </div>
                 
@@ -517,6 +542,7 @@ class RecommendationDetailDialog extends React.Component<RecommendationDetailDia
 const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, RecommendationDetailDialogProps> = (dispatch) => {
     return {
         closeModalDialog: () => dispatch(closeModalDialog()),
+        deleteRecommendation: (tenderId: string, recommendationId: string) => dispatch(deleteRecommendation(tenderId, recommendationId)),
         getRecommendationSites: (tenderId: string, summaryId: string, siteStart: number, siteEnd: number) => dispatch(fetchRecommendationsSites(tenderId, summaryId, siteStart, siteEnd))
     };
 };

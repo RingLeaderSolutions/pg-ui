@@ -34,7 +34,7 @@ html, body, .root, .app-container {
 
 // UIKit Table hover override (yellow->grey)
 .uk-table-hover > tr:hover, .uk-table-hover tbody tr:hover {
-    background: $grey-border !important;
+    background: #eeeeee !important;
 }
 
 h3 > .uk-icon, h4 > .uk-icon, .icon-standard-cursor {

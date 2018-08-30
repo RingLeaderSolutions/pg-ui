@@ -9,11 +9,10 @@ import TenderBackingSheetsDialog from '../TenderBackingSheetsDialog';
 import QuoteCollateralDialog from './QuoteCollateralDialog';
 
 import { fetchQuoteBackingSheets, exportContractRates, deleteQuote, generateTenderPack } from '../../../../actions/tenderActions';
-import { Tender, TenderSupplier, TenderQuote, TenderIssuance, TenderPack } from "../../../../model/Tender";
+import { Tender, TenderSupplier, TenderQuote, TenderIssuance, TenderPack, QuoteIndicator, QuoteBestCategoryEntry } from "../../../../model/Tender";
 import { format } from 'currency-formatter';
 import UploadOfferDialog from "./UploadOfferDialog";
 import IssueTenderPackDialog from "../IssueTenderPackDialog";
-import TenderPackDialog from "./TenderPackDialog";
 import { openModalDialog } from "../../../../actions/viewActions";
 import ModalDialog from "../../../common/ModalDialog";
 const UIkit = require('uikit'); 
@@ -49,33 +48,76 @@ class TenderOffersTable extends React.Component<TenderOffersTableProps & StatePr
         this.props.deleteQuote(this.props.tender.tenderId, quoteId);
     }
     
-    mapStatusToLabel(status: string){
-        var labelType = "success"
-        switch(status)
-        {
-            case "PENDING":
-                labelType = "warning";
-                break;
-            case "SUBMITTED":
-                labelType = "success";
-                break;
-            case "meterErrors":
-                labelType = "danger"
-                break;
-        }
-        
-        var labelClass = `uk-label uk-label-${labelType}`;
-        return (<span className={labelClass}>{status}</span>);
+    mapIndicatorsToIcons(indicators: QuoteIndicator[]){
+        var errorIconColor = "#ff0000";
+        var warningIconColor = "#ffa500";
+
+        var indicatorIcons = indicators.map((i, index) => {
+            var className = index == 0 ? "icon-standard-cursor" : "uk-margin-small-left icon-standard-cursor";
+
+            switch(i.type){
+                case "EMAIL":
+                    return (<span key={index} className={className} data-uk-icon="icon: mail" data-uk-tooltip="title:This offer was uploaded via email."/>);
+                case "UPLOAD":
+                    return (<span key={index} className={className} data-uk-icon="icon: cloud-upload" data-uk-tooltip="title:This offer was uploaded manually."/>);
+                case "METER_ERROR":
+                    return (<span key={index} style={{color: errorIconColor}} className={className} data-uk-icon="icon: mail" data-uk-tooltip="title:This offer has missing meters or are in an error state."/>);
+                case "DATE_ERROR":
+                    return (<span key={index} style={{color: errorIconColor}} className={className} data-uk-icon="icon: calendar" data-uk-tooltip="title:This offer has incorrect dates on its meters."/>);
+                case "CONSUMPTION_VARIATION":
+                    return (<span key={index} style={{color: warningIconColor}} className={className} data-uk-icon="icon: warning" data-uk-tooltip="title:This offer's consumption varies by more than 10%."/>);
+                case "TARIFF_VARIATION":
+                    return (<span key={index} style={{color: errorIconColor}} className={className} data-uk-icon="icon: error" data-uk-tooltip="title:This offer has meters with tariffs that do not match the previously accepted periods."/>);
+            }
+        });
+        return (<div>{indicatorIcons}</div>)
     }
 
-    renderOffersTable(packs: TenderPack[]){
-        var quotes = packs
-        // Order the tender packs in such a way that those that have received quotes (i.e. not all PENDING), appear first in the list
+    renderBestCategories(bestCategories: QuoteBestCategoryEntry[]){
+        return bestCategories.map((bc, index) => {
+            var className = index == 0 ? "" : "uk-margin-small-left";
+
+            var title = bc.title;
+            var tooltipTitle = bc.title;
+            if(bc.title == "totalCCL"){
+                title = "Total";
+                tooltipTitle = "Total inc. CCL"
+            }
+
+            var tooltip = `This offer scores as the lowest price in <strong>${tooltipTitle}</strong> for <strong>${bc.score} meter(s).</strong>`;
+            return (<span key={index} className={`uk-label uk-label-success ${className}`} data-uk-tooltip={`title:${tooltip}`}>{title}: {bc.score}</span>)
+        })
+    }
+
+    renderPendingSuppliers(packs: TenderPack[]){
+        var pendingSupplierCards = packs
         .sort((p1: TenderPack, p2: TenderPack) => {        
-            if (p1.quotes.some(q => q.status != "PENDING") && p2.quotes.every(q => q.status == "PENDING")) return -1;
-            if (p1.quotes.every(q => q.status == "PENDING") && p2.quotes.some(q => q.status != "PENDING")) return 1;
+            if (p1.supplierId < p2.supplierId) return 1;
+            if (p1.supplierId > p2.supplierId) return -1;
             return 0;
         })
+        .map(p => {
+            var supplier = this.props.suppliers.find(su => su.supplierId == p.supplierId);
+            var supplierImage = supplier == null ? "Unknown" : (<img data-uk-tooltip={`title:${supplier.name}`} src={supplier.logoUri} style={{ maxWidth: "105px", maxHeight: "60px" }}/>);
+
+            return (
+                <div>
+                    <div key={p.supplierId} className="uk-card uk-card-small uk-card-default uk-card-body">
+                        <div className="uk-text-center uk-text-middle">
+                            {supplierImage}
+                        </div>
+                    </div>
+                </div>);
+        })
+        return (
+            <div className="uk-child-width-1-5 uk-grid-match uk-grid-height-match" data-uk-grid>
+                {pendingSupplierCards}
+            </div>
+        )
+    }
+
+    renderReceivedOffers(packs: TenderPack[]){
+        var quotes = packs
         .map((p) => {
             return p.quotes
             // Order the quotes of the pack so that the latest version appears first in the list
@@ -86,58 +128,54 @@ class TenderOffersTable extends React.Component<TenderOffersTableProps & StatePr
             })
             .map((quote) => {
                 var supplier = this.props.suppliers.find(su => su.supplierId == quote.supplierId);
+                var supplierImage = supplier == null ? "Unknown" : (<img src={supplier.logoUri} style={{ maxWidth: "70px", maxHeight: "40px"}}/>);
 
                 var viewQuoteModalName = `view_quote_rates_${this.props.tender.tenderId}`;
-
                 var collateralDialogName = `view_collateral_${quote.quoteId}`;
-
-                var isPending = quote.status == "PENDING";
 
                 return (
                     <tr key={quote.quoteId}>
-                        <td><img src={supplier.logoUri} style={{ width: "70px"}}/></td>
-                        <td>{this.mapStatusToLabel(quote.status)}</td>  
-                        <td>{!isPending ? quote.version: (<p>N/A</p>)}</td>
-                        <td>{!isPending ? `${quote.contractLength} months` : (<p>-</p>)}</td>
-                        <td>{!isPending ? (quote.sheetCount) : (<p>-</p>)}</td>
-                        <td>{!isPending ? format(quote.totalIncCCL, { locale: 'en-GB'}) : (<p>-</p>)}</td>
-                        <td>{!isPending ? `${quote.appu.toFixed(4)}p` : (<p>-</p>)}</td>
+                        <td>{supplierImage}</td>
+                        <td>{`${quote.contractLength} months`}</td>
+                        <td>{this.mapIndicatorsToIcons(quote.indicators)}</td>  
+                        <td>{quote.version}</td>
+                        <td>{format(quote.totalIncCCL, { locale: 'en-GB'})}</td>
+                        <td>{`${quote.appu.toFixed(4)}p`}</td>
+                        <td>{this.renderBestCategories(quote.bestCategories)}</td>
                         <td>
-                            {!isPending ? (
-                                <div>
-                                    <div className="uk-inline">
-                                        <button className="uk-button uk-button-default" type="button">
-                                            <span data-uk-icon="icon: more" />
-                                        </button>
-                                        <div data-uk-dropdown="pos:bottom-justify;mode:click">
-                                            <ul className="uk-nav uk-dropdown-nav">
-                                            <li><a href="#" onClick={() => this.exportQuote(quote.quoteId)}>
-                                                <span className="uk-margin-small-right" data-uk-icon="icon: cloud-download" />
-                                                Download
-                                            </a></li>
-                                            <li className="uk-nav-divider"></li>
-                                            <li><a href="#" onClick={() => this.fetchAndDisplayRates(quote.quoteId, viewQuoteModalName)}>
-                                                <span className="uk-margin-small-right" data-uk-icon="icon: album" />
-                                                View Contract Rates
-                                            </a></li>
-                                            <li className="uk-nav-divider"></li>
-                                            <li><a href="#" onClick={() => this.props.openModalDialog(collateralDialogName)}>
-                                                <span className="uk-margin-small-right" data-uk-icon="icon: folder" />                                        
-                                                View Collateral
-                                            </a></li>
-                                            <li className="uk-nav-divider"></li>
-                                            <li><a href="#" onClick={() => this.deleteQuote(quote.quoteId)}>
-                                                <span className="uk-margin-small-right" data-uk-icon="icon: trash" />                                        
-                                                Delete
-                                            </a></li>
-                                            </ul>
-                                        </div>
+                            <div>
+                                <div className="uk-inline">
+                                    <button className="uk-button uk-button-default" type="button">
+                                        <span data-uk-icon="icon: more" />
+                                    </button>
+                                    <div data-uk-dropdown="pos:bottom-justify;mode:click">
+                                        <ul className="uk-nav uk-dropdown-nav">
+                                        <li><a href="#" onClick={() => this.exportQuote(quote.quoteId)}>
+                                            <span className="uk-margin-small-right" data-uk-icon="icon: cloud-download" />
+                                            Download
+                                        </a></li>
+                                        <li className="uk-nav-divider"></li>
+                                        <li><a href="#" onClick={() => this.fetchAndDisplayRates(quote.quoteId, viewQuoteModalName)}>
+                                            <span className="uk-margin-small-right" data-uk-icon="icon: album" />
+                                            View Contract Rates
+                                        </a></li>
+                                        <li className="uk-nav-divider"></li>
+                                        <li><a href="#" onClick={() => this.props.openModalDialog(collateralDialogName)}>
+                                            <span className="uk-margin-small-right" data-uk-icon="icon: folder" />                                        
+                                            View Collateral
+                                        </a></li>
+                                        <li className="uk-nav-divider"></li>
+                                        <li><a href="#" onClick={() => this.deleteQuote(quote.quoteId)}>
+                                            <span className="uk-margin-small-right" data-uk-icon="icon: trash" />                                        
+                                            Delete
+                                        </a></li>
+                                        </ul>
                                     </div>
-                                    <ModalDialog dialogId={collateralDialogName}>
-                                        <QuoteCollateralDialog collateral={quote.collateralList} />
-                                    </ModalDialog>
-                                </div>) 
-                            : null}
+                                </div>
+                                <ModalDialog dialogId={collateralDialogName}>
+                                    <QuoteCollateralDialog collateral={quote.collateralList} />
+                                </ModalDialog>
+                            </div>
                         </td>
                     </tr>
                 );
@@ -150,12 +188,13 @@ class TenderOffersTable extends React.Component<TenderOffersTableProps & StatePr
                     <thead>
                         <tr>
                             <th>Supplier</th>
+                            <th>Contract Length</th>
                             <th>Status</th>
                             <th>Version</th>
-                            <th>Contract Length</th>
-                            <th>Meter count</th>
                             <th>Contract Value</th>
-                            <th>Avg pence per unit</th>
+                            <th>APPU</th>
+                            <th></th>
+                            <th></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -165,6 +204,7 @@ class TenderOffersTable extends React.Component<TenderOffersTableProps & StatePr
             </div>
         )
     }
+
     getFormattedDateTime(dateTime: string){
         return moment.utc(dateTime).local().format("MMMM Do, HH:mm");
     }
@@ -188,7 +228,16 @@ class TenderOffersTable extends React.Component<TenderOffersTableProps & StatePr
                     (q:TenderQuote) => q.status == "SUBMITTED") });
 
 
-        var offersTable = this.renderOffersTable(issuance.packs);
+        var pendingQuotes = issuance.packs.filter((p: TenderPack) => {
+            return p.quotes.some((q:TenderQuote) => q.status == "PENDING")
+        });
+        
+        var receivedQuotes = issuance.packs.filter((p: TenderPack) => {
+            return p.quotes.every((q:TenderQuote) => q.status != "PENDING")
+        });
+
+        var hasReceivedQuotes = receivedQuotes.length != 0;
+
         return (
             <div key={issuance.issuanceId}>
                 <div className="uk-grid uk-margin-small-left uk-margin-small-right uk-grid-match" data-uk-grid>
@@ -209,19 +258,30 @@ class TenderOffersTable extends React.Component<TenderOffersTableProps & StatePr
                         <p className="uk-text-meta uk-margin-small">Expiry</p>
                     </div>
                 </div>
-                <div className="uk-margin">
-                <div className="uk-grid" data-uk-grid>
-                    <div className="uk-width-expand@s">
-                        <h3>Offers</h3>
+                <div className="uk-margin-medium-top">
+                    <div className="uk-grid" data-uk-grid>
+                        <div className="uk-width-expand@s">
+                            {hasReceivedQuotes ? (<h3>Offers</h3>) : (<h3>Pending Supplier Responses</h3>)}
+                        </div>
+                        <div className="uk-width-1-2">
+                            <button className="uk-button uk-button-primary uk-button-small uk-align-right" type="button"onClick={() => this.props.openModalDialog(uploadOfferName)}>
+                                <span className="uk-margin-small-right" data-uk-icon="icon: cloud-upload" />
+                                Upload Offer
+                            </button>
+                        </div>
                     </div>
-                    <div className="uk-width-1-2">
-                        <button className="uk-button uk-button-primary uk-button-small uk-align-right" type="button"onClick={() => this.props.openModalDialog(uploadOfferName)}>
-                            <span className="uk-margin-small-right" data-uk-icon="icon: cloud-upload" />
-                            Upload Offer
-                        </button>
-                    </div>
-                </div>
-                    {offersTable}
+
+                    {hasReceivedQuotes ? (
+                        <div className="uk-margin-small-top">
+                            <ul data-uk-tab className="uk-tab">
+                                <li><a href="#">Received</a></li>
+                                <li><a href="#">Pending Responses ({pendingQuotes.length})</a></li>
+                            </ul>
+                            <ul className='uk-switcher'>
+                                <li>{this.renderReceivedOffers(receivedQuotes)}</li>
+                                <li>{this.renderPendingSuppliers(pendingQuotes)}</li>
+                            </ul>
+                        </div>) : this.renderPendingSuppliers(pendingQuotes)}
                 </div>
                 <ModalDialog dialogId={uploadOfferName}>
                     <UploadOfferDialog tenderId={this.props.tender.tenderId} assignedSuppliers={this.props.tender.assignedSuppliers} utilityType={this.props.tender.utility} />
@@ -250,11 +310,71 @@ class TenderOffersTable extends React.Component<TenderOffersTableProps & StatePr
         this.props.generateTenderPack(this.props.tender.portfolioId, this.props.tender.tenderId);
     }
 
+    renderUnissued(){
+        if(this.props.tender.unissuedPacks == null || this.props.tender.unissuedPacks.length == 0){
+            return (<p>There are no unissued requirements packs for this tender.</p>);
+        }
+
+        var tableContent = this.props.tender.unissuedPacks.map(p => {
+            var supplier = this.props.suppliers.find(s => s.supplierId == p.supplierId);
+            var supplierImage = supplier == null ? "Unknown" : (<img src={supplier.logoUri} style={{ maxWidth: "70px", maxHeight: "40px"}}/>);
+
+            return (
+                <tr key={p.packId}>
+                    <td>{<span className="uk-label uk-label-success">{p.packId.substring(0, 8)}</span>}</td>
+                    <td>{moment.utc(p.created).local().format("MMMM Do, HH:mm")}</td>
+                    <td>{p.meterCount}</td>
+                    <td>{supplierImage}</td>
+                    <td>
+                        <a className="uk-button uk-button-default uk-button-small" href={p.zipFileName} data-uk-tooltip="title:Download">
+                            <span data-uk-icon="icon: cloud-download" />
+                        </a> 
+                    </td>
+                </tr>
+            )
+        });
+
+        return (
+            <div key="unissued-content">
+                <div className="uk-grid-small" data-uk-grid>
+                    <div className="uk-width-expand" />
+                    <div className="uk-width-auto">
+                        <button className="uk-button uk-button-primary uk-button-small" type="button" onClick={() => this.props.openModalDialog("issue_requirements_pack")}>
+                            <span className="uk-margin-small-right" data-uk-icon="icon: mail" />
+                            Issue
+                        </button>
+                    </div>
+                </div>
+                <div className="uk-alert-info uk-margin-small-top uk-margin-small-bottom" data-uk-alert>
+                    <p><span className="uk-margin-small-right" data-uk-icon="icon: info" />These requirements packs have not yet been issued.</p>
+                </div>
+                <table className="uk-table uk-table-divider">
+                    <thead>
+                        <tr>
+                            <th>Pack ID</th>
+                            <th>Created</th>
+                            <th>Meter #</th>
+                            <th>Supplier</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {tableContent}
+                    </tbody>
+                </table>
+                <ModalDialog dialogId="issue_requirements_pack">
+                    <IssueTenderPackDialog tender={this.props.tender} portfolioId={this.props.tender.portfolioId} />
+                </ModalDialog>
+            </div>)
+    }
+
     renderOffersContent(){
         if(this.props.tender.issuances == null || this.props.tender.issuances.length == 0)
         {
-            var unissuedCount = this.props.tender.unissuedPacks.length == 0 ? null : ` (${this.props.tender.unissuedPacks.length} packs awaiting issuance)`;
-            return (<p className="uk-margin-small">No packs have been issued for this tender yet<i><strong>{unissuedCount}</strong></i>.</p>);
+            if(this.props.tender.unissuedPacks != null && this.props.tender.unissuedPacks.length == 0){
+                return this.renderUnissued();
+            }
+
+            return (<p className="uk-margin-small">No requirements packs have been generated or issued for this tender yet<i> Generate some using the menu above.</i>.</p>);
         }
         
         var tabs: any = [];
@@ -271,13 +391,16 @@ class TenderOffersTable extends React.Component<TenderOffersTableProps & StatePr
                     return 0;
                 })
             .map((issuance, index) => {
-                var tabName = index == 0 ? "Latest" : index + 1;
+                var tabName = `Issue #${index + 1}`;
                 var tab = (<li key={index}><a href="#">{tabName}</a></li>);
                 tabs[index] = tab;
 
                 var content = this.renderIssuanceContent(issuance);
                 tabContent[index] = content;
             });
+
+        tabs.push((<li key="unissued"><a href="#">Unissued</a></li>));
+        tabContent.push(this.renderUnissued());
 
         return (
             <div className="uk-margin-top">
@@ -308,59 +431,27 @@ class TenderOffersTable extends React.Component<TenderOffersTableProps & StatePr
             return this.renderCardContent(content);
         }
         
-        var unissuedDialogName = `view_unissued_${this.props.tender.tenderId}`;
-        var issuePackDialogName = `issue_pack_${this.props.tender.tenderId}`;
         var viewQuoteRatesDialogName = `view_quote_rates_${this.props.tender.tenderId}`;
 
-        var canIssue = this.props.tender.unissuedPacks != null && this.props.tender.unissuedPacks.length != 0;
-        
         var offersContent = this.renderOffersContent();
         var content = (
             <div>
                 <div className="uk-grid" data-uk-grid>
                     <div className="uk-width-expand@s">
-                        <h3>Issued Requirements</h3>
+                        <h3>Requirements Packs</h3>
                     </div>
                     <div className="uk-width-1-2">
-                        <div className="uk-inline">
-                            <button className="uk-button uk-button-default uk-button-small uk-align-right" type="button">
-                                <span className="uk-margin-small-right" data-uk-icon="icon: table" />                        
-                                Packs
-                            </button>
-                            <div data-uk-dropdown="pos:bottom-justify;mode:click">
-                                <ul className="uk-nav uk-dropdown-nav">
-                                <li><a href="#" onClick={() => this.generateNewPack()}>
-                                    <span className="uk-margin-small-right" data-uk-icon="icon: plus" />
-                                    Generate New
-                                </a></li>
-                                <li className="uk-nav-divider"></li>
-                                <li><a href="#" onClick={() => this.props.openModalDialog(unissuedDialogName)}>
-                                    <span className="uk-margin-small-right" data-uk-icon="icon: album" />
-                                    View Unissued ({this.props.tender.unissuedPacks.length})
-                                </a></li>
-                                <li className="uk-nav-divider"></li>
-                                { canIssue ? (<li><a href="#" onClick={() => this.props.openModalDialog(issuePackDialogName)}>
-                                    <span className="uk-margin-small-right" data-uk-icon="icon: push" />
-                                    Issue
-                                </a></li>) : null }
-                                </ul>
-                            </div>
-                        </div>
+                        <button className="uk-button uk-button-primary uk-button-small uk-align-right" type="button" onClick={() => this.generateNewPack()}>
+                            <span className="uk-margin-small-right" data-uk-icon="icon: plus" />
+                            Generate New
+                        </button>
                     </div>
                 </div>
                 <div>
                     {offersContent}
                 </div>
-                <ModalDialog dialogId={unissuedDialogName}>
-                    <TenderPackDialog tender={this.props.tender} portfolioId={this.props.tender.portfolioId}/>
-                </ModalDialog>
-
                 <ModalDialog dialogId={viewQuoteRatesDialogName} dialogClass="backing-sheet-modal">
                     <TenderBackingSheetsDialog />
-                </ModalDialog>
-
-                <ModalDialog dialogId={issuePackDialogName}>
-                    <IssueTenderPackDialog tender={this.props.tender} portfolioId={this.props.tender.portfolioId} />
                 </ModalDialog>
         </div>);
 

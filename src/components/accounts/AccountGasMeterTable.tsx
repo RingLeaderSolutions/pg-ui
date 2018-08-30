@@ -6,6 +6,10 @@ import { Link } from "react-router-dom";
 import ReactTable, { Column } from "react-table";
 import { BooleanCellRenderer } from "../common/TableHelpers";
 import { openModalDialog } from "../../actions/viewActions";
+import { fetchTariffs } from "../../actions/portfolioActions";
+import { Tariff } from "../../model/Tender";
+import ErrorMessage from "../common/ErrorMessage";
+import Spinner from "../common/Spinner";
 
 interface AccountGasMeterTableProps {
     sites: SiteDetail[];
@@ -13,10 +17,15 @@ interface AccountGasMeterTableProps {
 }
 
 interface StateProps {
+    working: boolean;
+    error: boolean;
+    errorMessage: string;
+    tariffs: Tariff[];
 }
 
 interface DispatchProps {
     openModalDialog: (dialogId: string) => void;
+    fetchTariffs: () => void;
 }
 
 interface AccountGasMeterTableState {
@@ -45,6 +54,9 @@ class AccountGasMeterTable extends React.Component<AccountGasMeterTableProps & S
         Header: 'Meter',
         accessor: 'meter'
     },{
+        Header: 'Tariff',
+        accessor: 'tariff'
+    },{
         Header: 'Serial Number',
         accessor: 'serialNumber'
     },{
@@ -68,28 +80,27 @@ class AccountGasMeterTable extends React.Component<AccountGasMeterTableProps & S
         accessor: 'isImperial',
         Cell: BooleanCellRenderer
     }];
-    stringProperties: string[] = ["siteId", "site", "meter", "serialNumber", "make", "model"];
+    stringProperties: string[] = ["siteId", "site", "meter", "serialNumber", "tariff", "make", "model"];
     numberProperties: string[] = ["size", "aq"];
     
-    constructor(props: AccountGasMeterTableProps & StateProps & DispatchProps) {
+    constructor() {
         super();
-        var tableData: AccountGasMeterTableEntry[]  = [];
-        if(props.sites != null){
-            tableData = this.filterGasMeters(props.sites, '');
-        }
-
         this.state = {
             searchText: '',
-            tableData: tableData
+            tableData: []
         };
     }
 
+    componentDidMount(){
+        this.props.fetchTariffs();
+    }
+
     componentWillReceiveProps(nextProps: AccountGasMeterTableProps & StateProps & DispatchProps){
-        if(nextProps.sites == null){
+        if(nextProps.sites == null || nextProps.tariffs == null){
             return;
         }
 
-        var tableData: AccountGasMeterTableEntry[] = this.filterGasMeters(nextProps.sites, this.state.searchText);
+        var tableData: AccountGasMeterTableEntry[] = this.filterGasMeters(nextProps.sites, nextProps.tariffs, this.state.searchText);
         this.setState({
             ...this.state,
             tableData
@@ -102,7 +113,7 @@ class AccountGasMeterTable extends React.Component<AccountGasMeterTableProps & S
             return;
         }
 
-        var tableData: AccountGasMeterTableEntry[] = this.filterGasMeters(this.props.sites, raw);
+        var tableData: AccountGasMeterTableEntry[] = this.filterGasMeters(this.props.sites, this.props.tariffs, raw);
 
         this.setState({
             ...this.state,
@@ -111,8 +122,8 @@ class AccountGasMeterTable extends React.Component<AccountGasMeterTableProps & S
         });
     }
 
-    filterGasMeters(sites: SiteDetail[], searchText: string): AccountGasMeterTableEntry[] {
-        var tableData : AccountGasMeterTableEntry[] = this.createTableData(sites);
+    filterGasMeters(sites: SiteDetail[], tariffs: Tariff[], searchText: string): AccountGasMeterTableEntry[] {
+        var tableData : AccountGasMeterTableEntry[] = this.createTableData(sites, tariffs);
         if(searchText == null || searchText == ""){
             return tableData;
         }
@@ -139,7 +150,7 @@ class AccountGasMeterTable extends React.Component<AccountGasMeterTableProps & S
         return filtered;
     }
 
-    createTableData(sites: SiteDetail[]): AccountGasMeterTableEntry[]{
+    createTableData(sites: SiteDetail[], tariffs: Tariff[]): AccountGasMeterTableEntry[]{
         var metersBySites = sites
             .sort(
                 (site1: SiteDetail, site2: SiteDetail) => {
@@ -154,10 +165,12 @@ class AccountGasMeterTable extends React.Component<AccountGasMeterTableProps & S
                     var siteId = site.id;
                     var siteCode = site.siteCode;
                     return site.mprns.map(gasMeter => {
+                        var tariff = tariffs.find(t => t.id == gasMeter.tariffId);
                         return {
                             siteId,
                             site: siteCode,
                             meter: gasMeter.mprnCore,
+                            tariff: tariff == null ? "Unknown" : tariff.name,
                             serialNumber: gasMeter.serialNumber,
                             make: gasMeter.make,
                             model: gasMeter.model,
@@ -180,12 +193,26 @@ class AccountGasMeterTable extends React.Component<AccountGasMeterTableProps & S
     }
 
     render() {
+        if(this.props.working){
+            return (<Spinner hasMargin={true} />);
+        }
+        if(this.props.error){
+            return (<ErrorMessage content={this.props.errorMessage}/>);
+        }
+
         var actions = (
             <div className="actions-accounts">
                 <button className='uk-button uk-button-primary uk-margin-small-right' onClick={() => this.props.openModalDialog('upload-supply-data-gas')}><span data-uk-icon='icon: upload' /> Upload Supply Data</button>    
             </div>
         );
-        if(this.props.sites.length === 0){
+
+        var hasData = this.state.tableData.length > 0;
+        if(!hasData && this.state.searchText == ""){
+            var missingDataMessage = "No gas meters have been uploaded to this account yet.";
+            if(this.props.sites.length == 0){
+                missingDataMessage = "No site or meter data has been uploaded to this account yet."
+            }
+
             return (
                 <div>
                     <div className="search-accounts">
@@ -195,9 +222,9 @@ class AccountGasMeterTable extends React.Component<AccountGasMeterTableProps & S
                         </form>
                         {actions}
                     </div>
-                    <div>No meter data has been uploaded yet.</div>
+                    <p className="uk-text-meta uk-text-center">{missingDataMessage} Try uploading meter supply data with the button above.</p>
                 </div>);
-        }
+        }        
 
         var portfolioButtons = this.renderPortfolioButtons();
         return (
@@ -213,11 +240,12 @@ class AccountGasMeterTable extends React.Component<AccountGasMeterTableProps & S
                     {actions}
                 </div>
                 
-                <ReactTable 
+                {!hasData ? (<p className="uk-text-meta uk-text-center">No results for search term: <i>{this.state.searchText}</i></p>)
+                : (<ReactTable 
                     showPagination={false}
                     columns={this.columns}
                     data={this.state.tableData}
-                    minRows={0}/>
+                    minRows={0}/>)}
             </div>)
     }
 }
@@ -225,11 +253,16 @@ class AccountGasMeterTable extends React.Component<AccountGasMeterTableProps & S
 const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, AccountGasMeterTableProps> = (dispatch) => {
     return {
         openModalDialog: (dialogId: string) => dispatch(openModalDialog(dialogId)),
+        fetchTariffs: () => dispatch(fetchTariffs())
     };
 };
   
 const mapStateToProps: MapStateToProps<StateProps, AccountGasMeterTableProps> = (state: ApplicationState) => {
     return {
+        working: state.portfolio.tender.tariffs.working,
+        error:  state.portfolio.tender.tariffs.error,
+        errorMessage: state.portfolio.tender.tariffs.errorMessage,
+        tariffs: state.portfolio.tender.tariffs.value        
     };
 };
   

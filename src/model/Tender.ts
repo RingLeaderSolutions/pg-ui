@@ -71,6 +71,19 @@ export interface TenderQuote {
     collateralList: TenderQuoteCollateral[];
     version: number;
     contractLength: number;
+    bestCategories: QuoteBestCategoryEntry[];
+    indicators: QuoteIndicator[];
+}
+
+export interface QuoteBestCategoryEntry {
+    title: string;
+    score: number;
+    value: string;
+}
+
+export interface QuoteIndicator {
+    type: string;
+    detail: string;
 }
 
 export interface TenderQuoteCollateral {
@@ -134,6 +147,7 @@ export interface TenderRecommendation {
     supplierCount: number;
     supplierId: string;
     tenderId: string;
+    winningDuration: number;
 }
 
 export interface RecommendationSummary {

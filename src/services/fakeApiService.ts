@@ -494,6 +494,19 @@ export class FakeApiService implements IApiService {
                                     created: "2017-12-19T00:12:07.167",
                                     documentBlobId: "https://test.com/test.pdf"
                                 }],
+                                indicators: [
+                                    {
+                                        type: "UPLOAD",
+                                        detail: "TBC"
+                                    }
+                                ],
+                                bestCategories: [
+                                    {
+                                        title: "totalCCL",
+                                        score: 4,
+                                        value: ""
+                                    }
+                                ],
                                 version: 1,
                             }
                         ],
@@ -574,7 +587,8 @@ export class FakeApiService implements IApiService {
                         summaryId : "1081e2f3-057e-4472-bbb5-37b01b0ca3e8",
                         supplierCount : 0,
                         supplierId : "4",
-                        tenderId : "c2edf658-4f75-401a-b2d0-3b330ab4e833"
+                        tenderId : "c2edf658-4f75-401a-b2d0-3b330ab4e833",
+                        winningDuration: 6
                     }
                 ],
                 halfHourly: false,
@@ -1098,6 +1112,10 @@ export class FakeApiService implements IApiService {
     }
 
     fetchRecommendationSummary(tenderId: string, summaryId: string){
+        return OK();
+    }
+
+    deleteRecommendation(tenderId: string, recommendationId: string){
         return OK();
     }
 }

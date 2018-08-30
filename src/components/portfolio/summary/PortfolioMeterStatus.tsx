@@ -23,9 +23,8 @@ class PortfolioMeterStatus extends React.Component<PortfolioMeterStatusProps & S
                 <tr key={mg.groupName}>
                     <td>{mg.groupName}</td>
                     <td>{mg.consumption.toLocaleString()} kWh</td>
-                    <td>{mg.meterCount}</td>
-                    <td>{mg.supplyDataCount}</td>
-                    <td>{mg.historicalCount}</td>
+                    <td>{mg.supplyDataCount}/{mg.meterCount}</td>
+                    <td>{mg.groupName == "HH" ? `${mg.historicalCount}/${mg.meterCount}` : "N/A"}</td>
                 </tr>
             )
         })
@@ -35,7 +34,6 @@ class PortfolioMeterStatus extends React.Component<PortfolioMeterStatusProps & S
                 <tr>
                     <th>Meter Type</th>
                     <th>Consumption</th>
-                    <th>Count</th>
                     <th>Supply Data Provided</th>
                     <th>Historical Provided</th>
                 </tr>
@@ -59,7 +57,7 @@ class PortfolioMeterStatus extends React.Component<PortfolioMeterStatusProps & S
         return (
             <div>
                 <div className="uk-card uk-card-default uk-card-body">
-                    <h4><span className="uk-margin-small-right" data-uk-icon="icon: list"></span>Meter Status</h4>
+                    <h4><span className="uk-margin-small-right" data-uk-icon="icon: future"></span>Meter Status</h4>
                     {content}
                 </div>
             </div>
