@@ -97,10 +97,10 @@ class SendRecommendationDialog extends React.Component<SendRecommendationDialogP
             var sentDate = sent.format("dddd Do MMMM YYYY");
             var sentTime = sent.format("HH:mm");
             warning = 
-                (<div className="uk-alert-info uk-margin-small-bottom" data-uk-alert>
+                (<div className="uk-alert-warning uk-margin-small-bottom" data-uk-alert>
                     <div className="uk-grid-small" data-uk-grid>
                         <div className="uk-width-auto">
-                            <span className="uk-margin-small-right" data-uk-icon="icon: info" />
+                            <span className="uk-margin-small-right" data-uk-icon="icon: warning" />
                         </div>
                         <div className="uk-width-expand">
                             <p className="uk-text-break">This recommendation report was already sent on <strong>{sentDate}</strong> at <strong>{sentTime}</strong>.</p>    

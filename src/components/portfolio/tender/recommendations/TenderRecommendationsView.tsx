@@ -111,11 +111,11 @@ class TenderRecommendationsView extends React.Component<TenderRecommendationsVie
 
     renderTabs(){
         var tabs = []
-        for(var i = 0; i < 3; i++){
-            var tender = this.state.tenderMap.get(i);
+        for(let i = 0; i < 3; i++){
+            let tender = this.state.tenderMap.get(i);
 
             if(tender != null) {
-                var tab = (<li key={i} className={this.renderActiveTabStyle(i)} onClick={() => this.selectTab(i)}><a href='#'>{this.getTenderTabTitle(tender)}</a></li>);
+                let tab = (<li key={i} className={this.renderActiveTabStyle(i)} onClick={() => this.selectTab(i)}><a href='#'>{this.getTenderTabTitle(tender)}</a></li>);
                 tabs.push(tab);
             }
         }

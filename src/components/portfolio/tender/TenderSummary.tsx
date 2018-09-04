@@ -151,8 +151,8 @@ class TenderSummary extends React.Component<TenderSummaryProps & StateProps & Di
     renderTabStrip(){
         var tabs = []
         var creationOptions = [];
-        for(var i = 0; i < 3; i++){
-            var tender = this.state.tenderMap.get(i);
+        for(let i = 0; i < 3; i++){
+            let tender = this.state.tenderMap.get(i);
 
             if(tender == null) {
                 if(creationOptions.length > 0){
@@ -164,7 +164,7 @@ class TenderSummary extends React.Component<TenderSummaryProps & StateProps & Di
                 continue;
             }
 
-            var tab = (<li key={i} className={this.renderActiveTabStyle(i)} onClick={() => this.selectTab(i)}><a href='#'>{this.getTenderTabTitle(tender)}</a></li>);
+            let tab = (<li key={i} className={this.renderActiveTabStyle(i)} onClick={() => this.selectTab(i)}><a href='#'>{this.getTenderTabTitle(tender)}</a></li>);
             tabs.push(tab);
         }
 

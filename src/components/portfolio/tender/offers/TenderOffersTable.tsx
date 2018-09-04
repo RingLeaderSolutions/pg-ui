@@ -370,7 +370,7 @@ class TenderOffersTable extends React.Component<TenderOffersTableProps & StatePr
     renderOffersContent(){
         if(this.props.tender.issuances == null || this.props.tender.issuances.length == 0)
         {
-            if(this.props.tender.unissuedPacks != null && this.props.tender.unissuedPacks.length == 0){
+            if(this.props.tender.unissuedPacks != null && this.props.tender.unissuedPacks.length > 0){
                 return this.renderUnissued();
             }
 
@@ -391,7 +391,7 @@ class TenderOffersTable extends React.Component<TenderOffersTableProps & StatePr
                     return 0;
                 })
             .map((issuance, index) => {
-                var tabName = `Issue #${index + 1}`;
+                var tabName = moment.utc(issuance.created).local().format("MMMM Do YYYY");
                 var tab = (<li key={index}><a href="#">{tabName}</a></li>);
                 tabs[index] = tab;
 
@@ -416,25 +416,38 @@ class TenderOffersTable extends React.Component<TenderOffersTableProps & StatePr
     
     renderCardContent(content: any){
         return (
-            <div className="uk-card uk-card-default uk-card-body">
-                {content}
+            <div className="uk-card uk-card-default">
+                <div className="uk-card-body">
+                    {content}
+                </div>
             </div>)
     }
 
     render(){
         if(this.props.working){
-            var content = (<Spinner hasMargin={true} />);
+            let content = (<Spinner hasMargin={true} />);
             return this.renderCardContent(content);
         }
         if(this.props.tender.existingContract == null || this.props.tender.existingContract.sheetCount == 0){
-            var content = (<div className="uk-alert-warning" data-uk-alert><p>Tender setup appears to be incomplete. Please ensure an existing contract has been created and its rates have been uploaded.</p></div>);
+            let content = (
+                    <div className="uk-alert-warning uk-margin-small-bottom uk-alert" data-uk-alert>
+                        <div className="uk-grid uk-grid-small" data-uk-grid>
+                            <div className="uk-width-auto">
+                                <span className="uk-margin-small-right" data-uk-icon="icon: warning" />
+                            </div>
+                            <div className="uk-width-expand">
+                                <p>Tender setup appears to be incomplete. Please ensure an existing contract has been created and its rates have been uploaded.</p>    
+                            </div>
+                        </div>
+                    </div>)
+
             return this.renderCardContent(content);
         }
         
         var viewQuoteRatesDialogName = `view_quote_rates_${this.props.tender.tenderId}`;
 
         var offersContent = this.renderOffersContent();
-        var content = (
+        let content = (
             <div>
                 <div className="uk-grid" data-uk-grid>
                     <div className="uk-width-expand@s">

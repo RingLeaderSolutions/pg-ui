@@ -76,7 +76,7 @@ class TenderOffersView extends React.Component<TenderOffersViewProps & StateProp
 
     renderContent(content: any){
         return (
-            <div className="content-tenders">
+            <div className="content-offers">
                 {content}
             </div>
         )
@@ -110,17 +110,17 @@ class TenderOffersView extends React.Component<TenderOffersViewProps & StateProp
 
     renderTabs(){
         var tabs = []
-        for(var i = 0; i < 3; i++){
-            var tender = this.state.tenderMap.get(i);
+        for(let i = 0; i < 3; i++){
+            let tender = this.state.tenderMap.get(i);
 
             if(tender != null) {
-                var tab = (<li key={i} className={this.renderActiveTabStyle(i)} onClick={() => this.selectTab(i)}><a href='#'>{this.getTenderTabTitle(tender)}</a></li>);
+                let tab = (<li key={i} className={this.renderActiveTabStyle(i)} onClick={() => this.selectTab(i)}><a href='#'>{this.getTenderTabTitle(tender)}</a></li>);
                 tabs.push(tab);
             }
         }
         
         return (
-            <div className="content-tenders">
+            <div className="content-offers">
                 <ul className="uk-tab">
                     {tabs}
                 </ul>
