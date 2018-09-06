@@ -793,7 +793,7 @@ export class FakeApiService implements IApiService {
         return OK();        
     }
 
-    issueSummaryReport(tenderId: string, reportId: string){
+    issueSummaryReport(tenderId: string, reportId: string, emails: string[]){
         return OK();
     }
     

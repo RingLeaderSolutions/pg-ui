@@ -132,7 +132,7 @@ class TenderStatus extends React.Component<TenderStatusProps & StateProps & Disp
                 </div>
                 <div className="uk-card uk-card-default uk-card-small uk-card-body uk-width-1-4 uk-text-center">
                     <p className="uk-text-bold uk-margin-small">{durationsString}</p>
-                    <p className="uk-text-meta uk-margin-small">Requested Durations</p>
+                    <p className="uk-text-meta uk-margin-small">Requested Duration{tender.offerTypes.length > 1 ? "s" : null}</p>
                 </div>
             </div>
         </div>

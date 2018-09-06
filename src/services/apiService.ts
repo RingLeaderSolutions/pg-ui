@@ -82,7 +82,7 @@ export interface IApiService {
   generateTenderPack(tenderId: string, portfolioId: string): Promise<AxiosResponse>;
   issueTenderPack(tenderId: string, subject: string, body: string): Promise<AxiosResponse>;
   generateSummaryReport(tenderId: string, quoteId: string, marketCommentary: string, selectionCommentary: string): Promise<AxiosResponse>;
-  issueSummaryReport(tenderId: string, reportId: string): Promise<AxiosResponse>;
+  issueSummaryReport(tenderId: string, reportId: string, emails: string[]): Promise<AxiosResponse>;
   fetchTenderIssuanceEmail(tenderId: string): Promise<AxiosResponse>;
   exportContractRates(tenderId: string, quoteId: string): Promise<AxiosResponse>;
   deleteQuote(tenderId: string, quoteId: string): Promise<AxiosResponse>;
@@ -417,7 +417,7 @@ export class ApiService implements IApiService {
             marketCommentary,
             selectionCommentary
         };
-        return axios.post(`${this.baseApiUri}/portman-web/tender/${tenderId}/testSummaryReport`, requestBody, this.getRequestConfig());                        
+        return axios.post(`${this.baseApiUri}/portman-web/tender/${tenderId}/generateSummaryReport`, requestBody, this.getRequestConfig());                        
     }
   
     getActiveUsers(){
@@ -428,8 +428,8 @@ export class ApiService implements IApiService {
         return axios.post(`${this.baseApiUri}/portman-web/admin/staff/assignment/portfolio/${portfolioId}`, users, this.getRequestConfig());
     }
 
-    issueSummaryReport(tenderId: string, reportId: string){
-        return axios.put(`${this.baseApiUri}/portman-web/tender/${tenderId}/issueSummaryReport/${reportId}`, {}, this.getRequestConfig());
+    issueSummaryReport(tenderId: string, reportId: string, emails: string[]){
+        return axios.put(`${this.baseApiUri}/portman-web/tender/${tenderId}/issueSummaryReport/${reportId}`, emails, this.getRequestConfig());
     }
 
     fetchBackendVersion(){

@@ -29,12 +29,14 @@ export const requestResponseReducer = (
           };
 
         case failureActionType:
-          return {
+          var errorState : RequestState = {
             ...state,
+            value: null,
             working: false,
             error: true,
             errorMessage: action.errorMessage
           };
+          return errorState;
 
         case successActionType:
           return successCallback(state, action);

@@ -209,7 +209,7 @@ export function searchCompany(registrationNumber: string){
             searchPromise,
             200, 
             data => {
-                return { type: types.COMPANY_SEARCH_SUCCESSFUL, data: data as CompanyInfo};
+                return { type: types.COMPANY_SEARCH_SUCCESSFUL, search: registrationNumber, data: data as CompanyInfo};
                 
             }, 
             error => {

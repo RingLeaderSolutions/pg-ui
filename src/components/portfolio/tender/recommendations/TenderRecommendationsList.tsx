@@ -6,7 +6,7 @@ import Spinner from '../../../common/Spinner';
 import ErrorMessage from "../../../common/ErrorMessage";
 import * as moment from 'moment';
 
-import { issueSummaryReport, fetchRecommendationsSuppliers, fetchRecommendationsSites, fetchRecommendationSummary, selectRecommendationReport } from '../../../../actions/tenderActions';
+import { fetchRecommendationsSuppliers, fetchRecommendationsSites, fetchRecommendationSummary, selectRecommendationReport } from '../../../../actions/tenderActions';
 import { Tender, TenderSupplier, TenderRecommendation, TenderIssuance } from "../../../../model/Tender";
 import { AccountDetail, PortfolioDetails } from "../../../../model/Models";
 import { retrieveAccount } from "../../../../actions/portfolioActions";
@@ -30,7 +30,6 @@ interface StateProps {
 }
   
 interface DispatchProps {
-    issueSummaryReport: (tenderId: string, summaryReportId: string) => void;
     retrieveAccount: (accountId: string) => void;
     openModalDialog: (dialogId: string) => void;
     getRecommendationSummary: (tenderId: string, summaryId: string) => void;
@@ -190,7 +189,6 @@ class TenderRecommendationsList extends React.Component<TenderRecommendationsLis
 const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, TenderRecommendationsListProps> = (dispatch) => {
     return {
         retrieveAccount: (accountId: string) => dispatch(retrieveAccount(accountId)),
-        issueSummaryReport: (tenderId: string, summaryReportId: string) => dispatch(issueSummaryReport(tenderId, summaryReportId)),
         openModalDialog: (dialogId: string) => dispatch(openModalDialog(dialogId)),
         getRecommendationSummary:  (tenderId: string, summaryId: string)  => dispatch(fetchRecommendationSummary(tenderId, summaryId)),
         getRecommendationSuppliers:  (tenderId: string, summaryId: string)  => dispatch(fetchRecommendationsSuppliers(tenderId, summaryId)),

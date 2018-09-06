@@ -12,6 +12,16 @@ const searchCompanyReducer = requestResponseReducer(
     types.COMPANY_SEARCH_SUCCESSFUL,
     types.COMPANY_SEARCH_FAILED,
     (state, action) => {
+        if(action.data == "" || action.data == null){
+            return {
+                ...state,
+                value: null,
+                working: false,
+                error: true,
+                errorMessage: `No matches were found for "${action.search}"`
+            }
+        }
+
         return {
             ...state,
             working: false,     

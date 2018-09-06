@@ -384,9 +384,9 @@ export function generateSummaryReport(tenderId: string, quoteId: string, marketC
     }
 };
 
-export function issueSummaryReport(tenderId: string, reportId: string){    
+export function issueSummaryReport(tenderId: string, reportId: string, emails: string[]){    
     return (dispatch: Dispatch<any>) => {
-        let fetchPromise = ApiService.issueSummaryReport(tenderId, reportId);
+        let fetchPromise = ApiService.issueSummaryReport(tenderId, reportId, emails);
         dispatch( { type: types.ISSUE_SUMMARY_REPORT_WORKING });
 
         makeApiRequest(dispatch,

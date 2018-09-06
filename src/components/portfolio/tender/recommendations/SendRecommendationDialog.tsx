@@ -28,13 +28,16 @@ interface StateProps {
   
 interface DispatchProps {
     retrieveAccountDetail: (accountId: string) => void;
-    issueSummaryReport: (tenderId: string, summaryId: string) => void;
+    issueSummaryReport: (tenderId: string, summaryId: string, emails: string[]) => void;
     closeModalDialog: () => void;
 }
 
 class SendRecommendationDialog extends React.Component<SendRecommendationDialogProps & StateProps & DispatchProps, {}> {
     sendRecommendation() {
-        this.props.issueSummaryReport(this.props.tender.tenderId, this.props.recommendation.summaryId);
+        var emails = this.props.account.contacts.filter(ac => ac.email != null && ac.email != "")
+            .map(ac => ac.email);
+
+        this.props.issueSummaryReport(this.props.tender.tenderId, this.props.recommendation.summaryId, emails);
         this.props.closeModalDialog();
     }
 
@@ -159,7 +162,7 @@ class SendRecommendationDialog extends React.Component<SendRecommendationDialogP
 const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, SendRecommendationDialogProps> = (dispatch) => {
     return {
         retrieveAccountDetail: (accountId: string) => dispatch(retrieveAccountDetail(accountId)),
-        issueSummaryReport: (tenderId: string, reportId: string) => dispatch(issueSummaryReport(tenderId, reportId)),
+        issueSummaryReport: (tenderId: string, reportId: string, emails: string[]) => dispatch(issueSummaryReport(tenderId, reportId, emails)),
         closeModalDialog: () => dispatch(closeModalDialog()) 
     };
 };

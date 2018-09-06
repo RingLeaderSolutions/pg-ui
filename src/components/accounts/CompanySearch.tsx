@@ -72,7 +72,7 @@ class CompanySearch extends React.Component<DispatchProps & StateProps, CompanyS
         let searchInProgress = this.props.working;
 
         if(searchInProgress){
-            frameContent = (<div><Spinner hasMargin={true} /></div>);
+            frameContent = (<div><Spinner /></div>);
         }
 
         if(!searchInProgress && this.props.error){
