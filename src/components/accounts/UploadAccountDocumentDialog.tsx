@@ -4,6 +4,7 @@ import { ApplicationState } from '../../applicationState';
 
 import { uploadAccountDocument } from '../../actions/hierarchyActions';
 import { closeModalDialog } from "../../actions/viewActions";
+import { UploadPanel } from "../common/UploadPanel";
 
 interface UploadAccountDocumentDialogProps {
     accountId: string;
@@ -20,38 +21,38 @@ interface DispatchProps {
     closeModalDialog: () => void;
 }
 
-interface UploadLOAState {
-    file: Blob;
+interface UploadAccountDocumentDialogState {
+    file: File;
 }
 
-class UploadAccountDocumentDialog extends React.Component<UploadAccountDocumentDialogProps & StateProps & DispatchProps, UploadLOAState> {
+class UploadAccountDocumentDialog extends React.Component<UploadAccountDocumentDialogProps & StateProps & DispatchProps, UploadAccountDocumentDialogState> {
     constructor(){
         super();
         this.state = {
             file: null
         };
-
-        this.upload = this.upload.bind(this);
-        this.onFileChosen = this.onFileChosen.bind(this);
     }
     documentType: HTMLSelectElement;
     
     upload() {
         this.props.uploadAccountDocument(this.props.accountId, this.documentType.value, this.state.file);
+        this.onFileCleared();
         this.props.closeModalDialog();
     }
 
-    onFileChosen(e: any){
-        this.setState({
-            file: e.target.files[0]
-        });
+    onFileSelected(file: File){
+        this.setState({...this.state, file});
+    }
+
+    onFileCleared(){
+        this.setState({...this.state, file: null});
     }
 
     render() {
         return (
             <div>
                 <div className="uk-modal-header">
-                    <h2 className="uk-modal-title">Upload Account Document</h2>
+                    <h2 className="uk-modal-title"><i className="fa fa-file-upload uk-margin-right"></i>Upload Account Document</h2>
                 </div>
                 <div className="uk-modal-body">
                     <div className="uk-margin">
@@ -67,16 +68,18 @@ class UploadAccountDocumentDialog extends React.Component<UploadAccountDocumentD
                                         <option value="Other">Other</option>
                                     </select>
                                 </div>
-                                <div className="uk-margin">
-                                    <div className="uk-form-file"><input type="file" onChange={this.onFileChosen}/></div>
-                                </div>
                             </fieldset>
+                            <hr />
+                            <UploadPanel 
+                                file={this.state.file}
+                                onFileSelected={(file: File) => this.onFileSelected(file)}
+                                onFileCleared={() => this.onFileCleared()} />
                         </form>
                     </div>
                 </div>
                 <div className="uk-modal-footer uk-text-right">
-                    <button className="uk-button uk-button-default uk-margin-right" type="button" onClick={() => this.props.closeModalDialog()}>Cancel</button>
-                    <button className="uk-button uk-button-primary" type="button" onClick={this.upload}>Upload</button>
+                    <button className="uk-button uk-button-default uk-margin-right" type="button" onClick={() => this.props.closeModalDialog()}><i className="fa fa-times uk-margin-small-right"></i>Cancel</button>
+                    <button className="uk-button uk-button-primary" type="button" onClick={() => this.upload} disabled={this.state.file == null}><i className="fa fa-arrow-circle-up uk-margin-small-right"></i>Upload</button>
                 </div>
             </div>)
     }

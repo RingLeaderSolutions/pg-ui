@@ -85,7 +85,7 @@ class CompanySearch extends React.Component<DispatchProps & StateProps, CompanyS
         if(!searchInProgress && foundCompany){
             frameContent = (
                 <div>
-                    <div className="uk-grid uk-child-width-1-2@s" data-uk-grid>
+                    <div className="uk-grid uk-grid-small uk-child-width-1-2@s" data-uk-grid>
                         <div>Company Name</div>
                         <div>{foundCompany.companyName}</div>
                         <div>Registration Number</div>
@@ -121,7 +121,7 @@ class CompanySearch extends React.Component<DispatchProps & StateProps, CompanyS
         return (
             <div>
                 <div className="uk-modal-header">
-                    <h2 className="uk-modal-title">New Prospect</h2>
+                    <h2 className="uk-modal-title">Search Company</h2>
                 </div>
                 <div className="uk-modal-body">
                     <div className="uk-margin">

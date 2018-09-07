@@ -5,6 +5,7 @@ import { TenderSupplier } from "../../../../model/Tender";
 
 import { uploadElectricityOffer, uploadGasOffer } from '../../../../actions/tenderActions';
 import { closeModalDialog } from "../../../../actions/viewActions";
+import { UploadPanel } from "../../../common/UploadPanel";
 
 interface UploadOfferDialogProps {
     tenderId: string;
@@ -25,7 +26,7 @@ interface DispatchProps {
 }
 
 interface UploadOfferState {
-    file: Blob;
+    file: File;
 }
 
 class UploadOfferDialog extends React.Component<UploadOfferDialogProps & StateProps & DispatchProps, UploadOfferState> {
@@ -34,10 +35,8 @@ class UploadOfferDialog extends React.Component<UploadOfferDialogProps & StatePr
         this.state = {
             file: null
         };
-
-        this.upload = this.upload.bind(this);
-        this.onFileChosen = this.onFileChosen.bind(this);
     }
+
     supplier: HTMLSelectElement;
     useGeneric: HTMLInputElement;
 
@@ -49,13 +48,8 @@ class UploadOfferDialog extends React.Component<UploadOfferDialogProps & StatePr
             this.props.uploadElectricityOffer(this.props.tenderId, this.supplier.value, this.useGeneric.checked, this.state.file);
         }
         
+        this.onFileCleared();
         this.props.closeModalDialog();
-    }
-
-    onFileChosen(e: any){
-        this.setState({
-            file: e.target.files[0]
-        });
     }
 
     renderSupplierSelect(){
@@ -72,11 +66,19 @@ class UploadOfferDialog extends React.Component<UploadOfferDialogProps & StatePr
         );
     }
 
-    render() {
+    onFileSelected(file: File){
+        this.setState({...this.state, file});
+    }
+
+    onFileCleared(){
+        this.setState({...this.state, file: null});
+    }
+
+    render() {        
         return (
             <div>
                 <div className="uk-modal-header">
-                    <h2 className="uk-modal-title">Upload Offer</h2>
+                    <h2 className="uk-modal-title"><i className="fa fa-file-upload uk-margin-right"></i>Upload Offer</h2>
                 </div>
                 <div className="uk-modal-body">
                     <div className="uk-margin">
@@ -87,7 +89,7 @@ class UploadOfferDialog extends React.Component<UploadOfferDialogProps & StatePr
                                     <label className='uk-form-label'>Supplier</label>
                                     {this.renderSupplierSelect()}
                                 </div>
-                                <div className='uk-margin uk-grid-small uk-child-width-auto uk-grid'>
+                                <div className='uk-margin uk-margin-remove-bottom uk-grid-small uk-child-width-auto uk-grid'>
                                     <label>
                                         <input 
                                             className='uk-checkbox'
@@ -97,16 +99,18 @@ class UploadOfferDialog extends React.Component<UploadOfferDialogProps & StatePr
                                             /> Use Generic Template
                                     </label>
                                 </div>
-                                <div className="uk-margin">
-                                    <div className="uk-form-file"><input type="file" onChange={this.onFileChosen}/></div>
-                                </div>
                             </fieldset>
+                            <hr />
+                            <UploadPanel 
+                                file={this.state.file}
+                                onFileSelected={(file: File) => this.onFileSelected(file)}
+                                onFileCleared={() => this.onFileCleared()} />
                         </form>
                     </div>
                 </div>
                 <div className="uk-modal-footer uk-text-right">
-                    <button className="uk-button uk-button-default uk-margin-right" type="button"  onClick={() => this.props.closeModalDialog()}>Cancel</button>
-                    <button className="uk-button uk-button-primary" type="button" onClick={this.upload}>Upload</button>
+                    <button className="uk-button uk-button-default uk-margin-right" type="button"  onClick={() => this.props.closeModalDialog()}><i className="fa fa-times uk-margin-small-right"></i>Cancel</button>
+                    <button className="uk-button uk-button-primary" type="button" onClick={() => this.upload} disabled={this.state.file == null}><i className="fa fa-arrow-circle-up uk-margin-small-right"></i>Upload</button>
                 </div>
             </div>)
     }

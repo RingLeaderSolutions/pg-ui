@@ -35,20 +35,19 @@ class PortfolioSummary extends React.Component<PortfolioSummaryProps & DispatchP
         }
 
         return (
-            <div className="uk-grid-small" data-uk-grid>
-                <div className="uk-width-1-4" />
-                <div className="uk-width-expand">
-                    <div className="uk-grid-small" data-uk-grid>
-                        <div className="uk-width-auto">
+            <div className="uk-grid uk-grid-small">
+                <div className="uk-width-expand" />
+                <div className="uk-width-auto">
+                    <div className="uk-grid uk-grid-small">
+                        <div className="uk-width-auto uk-flex uk-flex-middle">
                             <img className="avatar avatar-xlarge" src={user.avatarUrl} />
-                    
                         </div>
-                        <div className="uk-width-expand">
-                            <h4 className="uk-margin-small-top"><strong>{user.firstName} {user.lastName}</strong></h4>
+                        <div className="uk-width-auto uk-flex uk-flex-middle">
+                            <h4><strong>{user.firstName} {user.lastName}</strong></h4>
                         </div>
                     </div>
                 </div>
-                <div className="uk-width-1-4" />
+                <div className="uk-width-expand" />
             </div>
         )
     }

@@ -47,7 +47,12 @@ h3 > .uk-icon, h4 > .uk-icon, .icon-standard-cursor {
     cursor: default !important;
 }
 
-
+.file-upload-pane {
+    padding: 10px;
+    outline: $text-color dashed 2px;
+    outline-offset:5px;
+    background: #f1f1f1;
+}
 
 .portfolio-meters {
     .buttons {

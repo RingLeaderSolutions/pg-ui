@@ -26,7 +26,8 @@ UIkit.use(Icons);
 
 import 'react-table/react-table.css'
 require('./styles/uikit.css');
-import 'react-datepicker/dist/react-datepicker.css';
+
+import 'react-day-picker/lib/style.css';
 require('./styles/styles.scss');
 
 declare global {

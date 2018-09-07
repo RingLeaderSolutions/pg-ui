@@ -3,10 +3,10 @@ import { MapDispatchToPropsFunction, connect, MapStateToProps } from 'react-redu
 import { ApplicationState } from '../../applicationState';
 import { Account, CompanyInfo } from '../../model/Models';
 import * as moment from 'moment';
-import DatePicker from 'react-datepicker';
 
 import { createAccount, clearAccountCreation } from '../../actions/hierarchyActions';
 import { closeModalDialog } from "../../actions/viewActions";
+import { Today, HundredthYearPast, DayPickerWithMonthYear } from "../common/DayPickerHelpers";
 
 interface CreateAccountDialogProps {    
 }
@@ -28,10 +28,12 @@ interface CreateAccountDialogState {
 class CreateAccountDialog extends React.Component<CreateAccountDialogProps & StateProps & DispatchProps, CreateAccountDialogState> {
     constructor(props: CreateAccountDialogProps & StateProps & DispatchProps){
         super();
+        var defaultDate = props.company ? moment(props.company.incorporationDate, "DD-MM-YYYY") : moment()
         this.state = {
-            incorporationDate: props.company ? moment(props.company.incorporationDate, "DD-MM-YYYY") : moment()
+            incorporationDate: defaultDate
         };
 
+        console.log('create acc date:' + defaultDate.format());
         this.handleIncorporationDateChange = this.handleIncorporationDateChange.bind(this);
         this.createAccount = this.createAccount.bind(this);
     }
@@ -71,12 +73,11 @@ class CreateAccountDialog extends React.Component<CreateAccountDialogProps & Sta
         event.preventDefault();        
     }
 
-    handleIncorporationDateChange(date: moment.Moment, event: React.SyntheticEvent<any>){
+    handleIncorporationDateChange(d: moment.Moment){
         this.setState({
-            incorporationDate: date
+            ...this.state,
+            incorporationDate: d
         });
-
-        event.preventDefault();
     }
 
     close(){
@@ -146,10 +147,14 @@ class CreateAccountDialog extends React.Component<CreateAccountDialogProps & Sta
                                         <div className="uk-margin">
                                             <label className="uk-form-label" data-for="deadline-input">Incorporation Date</label>
                                             <div className="uk-form-controls">
-                                                <DatePicker id="deadline-input"
-                                                            className="uk-input"
-                                                            selected={this.state.incorporationDate}
-                                                            onChange={this.handleIncorporationDateChange}/>
+                                                <div id="deadline-input">
+                                                    <DayPickerWithMonthYear 
+                                                        disableFuture={true} 
+                                                        fromMonth={HundredthYearPast} 
+                                                        toMonth={Today} 
+                                                        onDayChange={(d: moment.Moment) => this.handleIncorporationDateChange(d)}
+                                                        selectedDay={this.state.incorporationDate} />
+                                                </div>
                                             </div>
                                         </div>
                                         <div className='uk-margin'>

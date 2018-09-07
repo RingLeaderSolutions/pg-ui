@@ -3,10 +3,10 @@ import { MapDispatchToPropsFunction, connect, MapStateToProps } from 'react-redu
 import { ApplicationState } from '../../applicationState';
 import { Account } from '../../model/Models';
 import * as moment from 'moment';
-import DatePicker from 'react-datepicker';
 
 import { updateAccount } from '../../actions/hierarchyActions';
 import { closeModalDialog } from "../../actions/viewActions";
+import { DayPickerWithMonthYear, HundredthYearPast, Today } from "../common/DayPickerHelpers";
 
 interface UpdateAccountDialogProps {    
     account: Account;
@@ -72,12 +72,11 @@ class UpdateAccountDialog extends React.Component<UpdateAccountDialogProps & Sta
         this.props.closeModalDialog();
     }
 
-    handleIncorporationDateChange(date: moment.Moment, event: React.SyntheticEvent<any>){
+    handleIncorporationDateChange(date: moment.Moment){
         this.setState({
+            ...this.state,
             incorporationDate: date
         });
-
-        event.preventDefault();
     }
 
     render() {
@@ -140,10 +139,12 @@ class UpdateAccountDialog extends React.Component<UpdateAccountDialogProps & Sta
                                         <div className="uk-margin">
                                             <label className="uk-form-label" data-for="deadline-input">Incorporation Date</label>
                                             <div className="uk-form-controls">
-                                                <DatePicker id="deadline-input"
-                                                            className="uk-input"
-                                                            selected={this.state.incorporationDate}
-                                                            onChange={this.handleIncorporationDateChange}/>
+                                                <DayPickerWithMonthYear 
+                                                            disableFuture={true} 
+                                                            fromMonth={HundredthYearPast} 
+                                                            toMonth={Today} 
+                                                            onDayChange={(d: moment.Moment) => this.handleIncorporationDateChange(d)}
+                                                            selectedDay={this.state.incorporationDate} />
                                             </div>
                                         </div>
                                         <div className='uk-margin'>

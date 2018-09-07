@@ -5,6 +5,7 @@ import { UtilityType } from '../../../model/Models';
 
 import { uploadSupplyMeterData } from '../../../actions/portfolioActions';
 import { closeModalDialog } from "../../../actions/viewActions";
+import { UploadPanel } from "../../common/UploadPanel";
 
 interface UploadSupplyDataDialogProps {
     accountId: string;
@@ -23,7 +24,7 @@ interface DispatchProps {
 }
 
 interface UploadHistoricState {
-    file: Blob;
+    file: File;
 }
 
 class UploadSupplyDataDialog extends React.Component<UploadSupplyDataDialogProps & StateProps & DispatchProps, UploadHistoricState> {
@@ -32,20 +33,21 @@ class UploadSupplyDataDialog extends React.Component<UploadSupplyDataDialogProps
         this.state = {
             file: null
         };
-
-        this.upload = this.upload.bind(this);
-        this.onFileChosen = this.onFileChosen.bind(this);
     }
     
     upload() {
         this.props.uploadSupplyData(this.props.accountId, this.state.file, this.props.type);
+
+        this.onFileCleared();
         this.props.closeModalDialog();
     }
 
-    onFileChosen(e: any){
-        this.setState({
-            file: e.target.files[0]
-        });
+    onFileSelected(file: File){
+        this.setState({...this.state, file});
+    }
+
+    onFileCleared(){
+        this.setState({...this.state, file: null});
     }
 
     render() {
@@ -56,19 +58,15 @@ class UploadSupplyDataDialog extends React.Component<UploadSupplyDataDialogProps
                 </div>
                 <div className="uk-modal-body">
                     <div className="uk-margin">
-                        <p>Select the file you wish to upload.</p>
-                        <form>
-                            <fieldset className="uk-fieldset">
-                                <div className="uk-margin">
-                                    <div className="uk-form-file"><input type="file" onChange={this.onFileChosen}/></div>
-                                </div>
-                            </fieldset>
-                        </form>
+                        <UploadPanel 
+                            file={this.state.file}
+                            onFileSelected={(file: File) => this.onFileSelected(file)}
+                            onFileCleared={() => this.onFileCleared()} />
                     </div>
                 </div>
                 <div className="uk-modal-footer uk-text-right">
                     <button className="uk-button uk-button-default uk-margin-right" type="button" onClick={() => this.props.closeModalDialog()}><i className="fa fa-times uk-margin-small-right"></i>Cancel</button>
-                    <button className="uk-button uk-button-primary" type="button" onClick={this.upload}><i className="fa fa-arrow-circle-up uk-margin-small-right"></i>Upload</button>
+                    <button className="uk-button uk-button-primary" type="button" onClick={() => this.upload} disabled={this.state.file == null}><i className="fa fa-arrow-circle-up uk-margin-small-right"></i>Upload</button>
                 </div>
             </div>)
     }

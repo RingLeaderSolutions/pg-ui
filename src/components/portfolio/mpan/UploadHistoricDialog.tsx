@@ -31,9 +31,6 @@ class UploadHistoricDialog extends React.Component<UploadHistoricDialogProps & S
         this.state = {
             files: null
         };
-
-        this.upload = this.upload.bind(this);
-        this.onFileChosen = this.onFileChosen.bind(this);
     }
     historicalType: HTMLSelectElement;
     
@@ -62,7 +59,7 @@ class UploadHistoricDialog extends React.Component<UploadHistoricDialogProps & S
                         <form>
                             <fieldset className="uk-fieldset">
                                 <div className="uk-margin">
-                                    <div className="uk-form-file"><input type="file" onChange={this.onFileChosen} multiple/></div>
+                                    <div className="uk-form-file"><input type="file" onChange={(e:any) => this.onFileChosen(e)} multiple/></div>
                                 </div>
                                 <select className='uk-select' 
                                     ref={ref => this.historicalType = ref}>
@@ -77,7 +74,7 @@ class UploadHistoricDialog extends React.Component<UploadHistoricDialogProps & S
                 </div>
                 <div className="uk-modal-footer uk-text-right">
                     <button className="uk-button uk-button-default uk-margin-right" type="button" onClick={() => this.props.closeModalDialog()}>Cancel</button>
-                    <button className="uk-button uk-button-primary" type="button" onClick={this.upload}>Upload</button>
+                    <button className="uk-button uk-button-primary" type="button" onClick={() => this.upload()} disabled={this.state.files == null}>Upload</button>
                 </div>
             </div>)
     }
