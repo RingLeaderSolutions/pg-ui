@@ -68,7 +68,7 @@ class TenderRecommendationsList extends React.Component<TenderRecommendationsLis
                 <tr key={s.summaryId}>
                     <td>
                         <button className="uk-button uk-button-default uk-button-small" type="button" onClick={() => this.viewRecommendationReport(s)}>
-                            <span data-uk-icon="icon: info" />
+                            <i className="far fa-eye fa-lg"></i>
                         </button>   
                     </td>
                     <td data-uk-tooltip={`title:${moment(s.created).format("DD-MM-YYYY HH:mm:ss")}`}>{created}</td>
@@ -80,7 +80,7 @@ class TenderRecommendationsList extends React.Component<TenderRecommendationsLis
                     <td>
                         <div>
                             <button className="uk-button uk-button-primary uk-button-small" type="button" onClick={() => this.props.openModalDialog(`send_recommendation_${s.summaryId}`)} disabled={!enableSend}>
-                                <span className="uk-margin-small-right" data-uk-icon="icon: mail" />
+                                <i className="fas fa-envelope uk-margin-small-right"></i>
                                 Send
                             </button>   
                             <ModalDialog dialogId={`send_recommendation_${s.summaryId}`}>
@@ -99,7 +99,7 @@ class TenderRecommendationsList extends React.Component<TenderRecommendationsLis
         if(!hasContact){
             warning = (
                 <div className="uk-alert-warning uk-margin-small-top uk-margin-small-bottom" data-uk-alert>
-                    <p><span className="uk-margin-small-right" data-uk-icon="icon: warning" />Issuance of recommendations is disabled as this portfolio's account does not have any contacts. Please visit the Accounts tab to add a contact to this account.</p>
+                    <p><i className="fas fa-info-circle uk-margin-small-right"></i>Issuance of recommendations is disabled as this portfolio's account does not have any contacts. Please visit the Accounts tab to add a contact to this account.</p>
                 </div>);
         }
 
@@ -168,7 +168,7 @@ class TenderRecommendationsList extends React.Component<TenderRecommendationsLis
                     </div>
                     <div className="uk-width-auto uk-margin-right">
                         <button className="uk-button uk-button-primary uk-button-small" type="button"onClick={() => this.props.openModalDialog("create_recommendation")}>
-                            <span className="uk-margin-small-right" data-uk-icon="icon: plus" />
+                            <i className="fa fa-plus-circle uk-margin-small-right fa-lg"></i>
                             Create Recommendation
                         </button>
                     </div>

@@ -103,9 +103,13 @@ class TenderRecommendationsView extends React.Component<TenderRecommendationsVie
     getTenderTabTitle(tender: Tender){
         switch(tender.utility){
             case "ELECTRICITY":
-                return tender.halfHourly ? "Electricity (HH)" : "Electricity (NHH)";
+                var elecIcon = (<i className="fa fa-bolt uk-margin-small-right fa-lg"></i>);
+                var clockIcon = (<i className="fa fa-clock uk-margin-small-right fa-lg"></i>);
+
+                var title =  tender.halfHourly ? "Electricity (HH)" : "Electricity (NHH)";
+                return (<div>{elecIcon}{tender.halfHourly ? clockIcon : null}{title}</div>);
             case "GAS":
-                return "Gas";
+                return (<div><i className="fa fa-fire uk-margin-small-right fa-lg"></i>Gas</div>);
         }
     }
 

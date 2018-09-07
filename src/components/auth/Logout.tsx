@@ -15,7 +15,7 @@ class Logout extends React.Component<RouteComponentProps<void>, {}> {
                         <h2>You have successfully logged out of the system.</h2>
                         <Link to="/login">
                             <button className="uk-button uk-button-primary" type="button">
-                                <span className="uk-margin-small-right" data-uk-icon="icon: sign-in" />
+                                <i className="fas fa-sign-in-alt uk-margin-small-right"></i>
                                 Log back in
                             </button>
                         </Link>

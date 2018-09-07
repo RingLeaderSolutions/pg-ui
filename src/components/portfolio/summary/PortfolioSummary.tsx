@@ -4,8 +4,6 @@ import { MapDispatchToPropsFunction, connect, MapStateToProps } from 'react-redu
 import CounterCard from "../../common/CounterCard";
 import { Portfolio, PortfolioDetails, User } from '../../../model/Models';
 import PortfolioMeterStatus from "./PortfolioMeterStatus";
-import PortfolioHistory from "./PortfolioHistory";
-import UpdatePortfolioDialog from "../creation/UpdatePortfolioDialog";
 import DeletePortfolioDialog from "../creation/DeletePortfolioDialog";
 import ModalDialog from "../../common/ModalDialog";
 import { openModalDialog } from "../../../actions/viewActions";
@@ -66,10 +64,7 @@ class PortfolioSummary extends React.Component<PortfolioSummaryProps & DispatchP
                 <div className="uk-grid" data-uk-grid>
                     <div className="uk-width-expand@s"></div>
                     <div className="uk-width-auto@s">
-                        <button className='uk-button uk-button-default uk-button-small' onClick={() => this.props.openModalDialog('update_portfolio')}><span data-uk-icon='icon: pencil' /> Edit portfolio</button>
-                    </div>
-                    <div className="uk-width-auto@s">
-                        <button className='uk-button uk-button-danger uk-button-small' onClick={() => this.props.openModalDialog('delete_portfolio')}><span data-uk-icon='icon: close' /> Delete portfolio</button>
+                        <button className='uk-button uk-button-danger uk-button-small' onClick={() => this.props.openModalDialog('delete_portfolio')}><i className="fas fa-trash uk-margin-small-right"></i> Delete portfolio</button>
                     </div>
                 </div>
                 <div className="uk-child-width-expand@s uk-grid-match uk-text-center" data-uk-grid>
@@ -81,7 +76,7 @@ class PortfolioSummary extends React.Component<PortfolioSummaryProps & DispatchP
                     <PortfolioMeterStatus portfolio={portfolio} />
                     <div>
                         <div className="uk-card uk-card-default uk-card-body">
-                            <h4><span className="uk-margin-small-right" data-uk-icon="icon: cloud-upload"></span>Uploads</h4>
+                            <h4><i className="fa fa-file-upload uk-margin-small-right"></i>Uploads</h4>
                             <div className="portfolio-history">
                                 <PortfolioUploads portfolio={portfolio}/>
                             </div>
@@ -89,9 +84,6 @@ class PortfolioSummary extends React.Component<PortfolioSummaryProps & DispatchP
                     </div>
                     {/* <PortfolioHistory portfolio={portfolio} /> */}
                 </div>
-                <ModalDialog dialogId="update_portfolio">
-                    <UpdatePortfolioDialog portfolio={portfolio} detail={detail}/>
-                </ModalDialog>
                 <ModalDialog dialogId="delete_portfolio">
                     <DeletePortfolioDialog portfolioId={portfolio.id}/>
                 </ModalDialog>

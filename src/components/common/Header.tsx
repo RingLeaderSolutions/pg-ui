@@ -27,7 +27,7 @@ export default class Header extends React.Component<HeaderProps, {}> {
           </div>
 
           <div className="uk-width-auto">
-            <span data-uk-icon="icon: sign-out; ratio: 2" title="Log out" data-uk-tooltip onClick={this.logOut}/>
+            <i className="fa fa-sign-out-alt fa-2x" data-uk-tooltip="title:Log out" onClick={this.logOut} style={{cursor: "pointer"}}></i>
           </div>
           
           {/* <img className="avatar avatar-large" src={require('../../images/avatar.jpg')} title="Log out" data-uk-tooltip onClick={this.logOut}/> */}

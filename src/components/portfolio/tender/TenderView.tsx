@@ -72,7 +72,7 @@ class TenderView extends React.Component<TenderViewProps & StateProps & Dispatch
                     </div>
                     <div className="uk-width-expand@s">
                         <button className="uk-button uk-button-default uk-button-small" type="button" onClick={() => this.props.openModalDialog(updateTenderDialogName)}>
-                            <span data-uk-icon="icon: pencil" />
+                            <i className="fas fa-edit"></i>
                         </button>
                     </div>
                 </div>
@@ -87,7 +87,7 @@ class TenderView extends React.Component<TenderViewProps & StateProps & Dispatch
 
                 {/* <div>
                     <button className="uk-button uk-button-danger uk-button-small" type="button" onClick={() => this.deleteTender()}>
-                        <span className="uk-margin-small-right" data-uk-icon="icon: close" />
+                        <i className="fa fa-times uk-margin-small-right"></i>
                         Cancel
                     </button>
                 </div> */}

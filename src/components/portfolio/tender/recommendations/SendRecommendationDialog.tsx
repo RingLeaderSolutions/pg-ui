@@ -62,7 +62,7 @@ class SendRecommendationDialog extends React.Component<SendRecommendationDialogP
                             </div>
                         </div>
                         <div className="uk-margin-small-top">
-                            <p className="uk-text-meta uk-margin-small-left"><span className="icon-standard-cursor uk-margin-small-right" data-uk-icon="icon: mail" />{user.email}</p>
+                            <p className="uk-text-meta uk-margin-small-left"><i className="fas fa-envelope uk-margin-small-right"></i>{user.email}</p>
                         </div>
                     </div>
                 </div>
@@ -78,10 +78,10 @@ class SendRecommendationDialog extends React.Component<SendRecommendationDialogP
                     <div className="uk-card-body">
                         <div className="uk-grid-small" data-uk-grid>
                             <div className="uk-width-auto">
-                                <p><span className="icon-standard-cursor uk-margin-small-right" data-uk-icon="icon: user" />{contact.firstName} {contact.lastName}{role}</p>
+                                <p><i className="fas fa-user uk-margin-small-right"></i>{contact.firstName} {contact.lastName}{role}</p>
                             </div>
                             <div className="uk-width-expand">
-                                <p className="uk-text-meta"><span className="icon-standard-cursor uk-margin-small-right" data-uk-icon="icon: mail" />{contact.email}</p>
+                                <p className="uk-text-meta"><i className="fas fa-envelope uk-margin-small-right"></i>{contact.email}</p>
                             </div>
                         </div>
                     </div>
@@ -103,7 +103,7 @@ class SendRecommendationDialog extends React.Component<SendRecommendationDialogP
                 (<div className="uk-alert-warning uk-margin-small-bottom" data-uk-alert>
                     <div className="uk-grid-small" data-uk-grid>
                         <div className="uk-width-auto">
-                            <span className="uk-margin-small-right" data-uk-icon="icon: warning" />
+                            <i className="fas fa-exclamation-triangle uk-margin-small-right"></i>
                         </div>
                         <div className="uk-width-expand">
                             <p className="uk-text-break">This recommendation report was already sent on <strong>{sentDate}</strong> at <strong>{sentTime}</strong>.</p>    
@@ -130,7 +130,7 @@ class SendRecommendationDialog extends React.Component<SendRecommendationDialogP
                 </div>
                 <div className="uk-modal-footer uk-text-right">
                     <button className="uk-button uk-button-default uk-margin-right" type="button" onClick={() => this.props.closeModalDialog()}>Cancel</button>
-                    <button className="uk-button uk-button-primary" type="button" onClick={() => this.sendRecommendation()}><span className="uk-margin-small-right" data-uk-icon="icon: mail" />Send</button>
+                    <button className="uk-button uk-button-primary" type="button" onClick={() => this.sendRecommendation()}><i className="far fa-envelope uk-margin-small-right"></i>Send</button>
                 </div>
             </div>);
     }

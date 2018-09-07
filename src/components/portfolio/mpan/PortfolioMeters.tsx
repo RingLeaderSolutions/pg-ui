@@ -75,7 +75,7 @@ class PortfolioMeters extends React.Component<PortfolioMetersProps & StateProps 
             sortable: false,
             Cell: row => {
                 var mpanCore = row.value;
-                return (<button className='uk-button uk-button-default uk-button-small' onClick={(ev) => this.excludeMeter(ev, mpanCore)}><span data-uk-icon='icon: close' data-uk-tooltip="title: Exclude" /></button>)   
+                return (<button className='uk-button uk-button-default uk-button-small' onClick={(ev) => this.excludeMeter(ev, mpanCore)}><i className="fas fa-times-circle" data-uk-tooltip="title: Exclude"></i></button>)   
             }
         });
 
@@ -94,6 +94,8 @@ class PortfolioMeters extends React.Component<PortfolioMetersProps & StateProps 
         var excludeDialogId = `exclude_meters_${decodedUtilityType}`;
 
         var hasData = data != null && data.length > 0;
+
+        var showHistoricUpload = hasData && values.filter(arr => arr[2] == "HH").length > 0;
         return (
             <div>
                 <div>
@@ -101,27 +103,27 @@ class PortfolioMeters extends React.Component<PortfolioMetersProps & StateProps 
                         <div className="uk-width-expand@s">
                         </div>
                         <div className="uk-width-auto@s">
-                        { utilityType == UtilityType.Electricity ? (<button className='uk-button uk-button-primary uk-margin-small-left uk-margin-small-right' onClick={() => this.props.openModalDialog('upload_consumption')} disabled={!hasData}><span data-uk-icon='icon: upload' /> Upload Historic Consumption</button>) : null}
+                        { utilityType == UtilityType.Electricity ? (<button className='uk-button uk-button-primary uk-margin-small-left uk-margin-small-right' onClick={() => this.props.openModalDialog('upload_consumption')} disabled={!showHistoricUpload}><i className="fa fa-file-upload uk-margin-small-right fa-lg"></i>Upload Historic Consumption</button>) : null}
                         </div>
                         <div className="uk-width-auto@s">
                             <div className="uk-inline">
                                 <button className="uk-button uk-button-default uk-margin-small-right" type="button">
-                                    <span data-uk-icon="icon: more" />
+                                    <i className="fa fa-ellipsis-v"></i>
                                 </button>
                                 <div data-uk-dropdown="pos:bottom-justify;mode:click">
                                     <ul className="uk-nav uk-dropdown-nav">
                                         <li><a href="#" onClick={() => this.props.openModalDialog(includeDialogId)}>
-                                            <span className="uk-margin-small-right" data-uk-icon="icon: plus" />
+                                            <i className="fa fa-plus uk-margin-small-right"></i>
                                             Include Meters
                                         </a></li>
                                         <li className="uk-nav-divider"></li>
                                         <li><a href="#" onClick={() => this.props.openModalDialog(excludeDialogId)}>
-                                            <span className="uk-margin-small-right" data-uk-icon="icon: close" />
+                                            <i className="fas fa-times-circle uk-margin-small-right"></i>
                                             Exclude All Meters
                                         </a></li>
                                         <li className="uk-nav-divider"></li>
                                         <li><a href="#" onClick={() => this.exportMeterConsumption()}>
-                                            <span className="uk-margin-small-right" data-uk-icon="icon: cloud-download" />
+                                            <i className="fa fa-file-excel uk-margin-small-right"></i>
                                             Export (.XLS)
                                         </a></li>
                                     </ul>
@@ -172,8 +174,8 @@ class PortfolioMeters extends React.Component<PortfolioMetersProps & StateProps 
                 <div className='uk-flex uk-flex-column portfolio-meters restrict-height-hack'>
                     <div className="uk-overflow-auto restrict-height-hack">
                         <ul className="uk-tab">
-                            <li className={this.renderActiveTabStyle(0)} onClick={() => this.selectTab(0)}><a href="#">Electricity</a></li>
-                            <li className={this.renderActiveTabStyle(1)} onClick={() => this.selectTab(1)}><a href="#">Gas</a></li>
+                            <li className={this.renderActiveTabStyle(0)} onClick={() => this.selectTab(0)}><a href="#"><i className="fa fa-bolt uk-margin-small-right fa-lg"></i>Electricity</a></li>
+                            <li className={this.renderActiveTabStyle(1)} onClick={() => this.selectTab(1)}><a href="#"><i className="fa fa-fire uk-margin-small-right fa-lg"></i>Gas</a></li>
                         </ul>
                         <div>
                             {this.renderSelectedTable()}

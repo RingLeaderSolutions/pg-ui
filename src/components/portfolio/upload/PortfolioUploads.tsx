@@ -62,7 +62,7 @@ class PortfolioUploads extends React.Component<PortfolioUploadProps & StateProps
                             <p>{r.requestor.firstName} {r.requestor.lastName}</p>
                         </div></td>
                         <td>
-                            <button className='uk-button uk-button-default uk-button-small' onClick={() => this.fetchAndDisplayReport(r.resultDocId, isImport)}><span data-uk-icon='icon: info' data-uk-tooltip="title: Open" /></button>
+                            <button className='uk-button uk-button-default uk-button-small' onClick={() => this.fetchAndDisplayReport(r.resultDocId, isImport)}><i className="fas fa-eye" data-uk-tooltip="title: View"></i></button>
                         </td>
                     </tr>
                 )

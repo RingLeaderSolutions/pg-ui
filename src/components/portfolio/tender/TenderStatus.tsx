@@ -93,7 +93,7 @@ class TenderStatus extends React.Component<TenderStatusProps & StateProps & Disp
                     <div className="uk-margin-large-left">
                         <p className="uk-text-bold">{tender.assignedSuppliers.length}/{eligibleSupplierCount}
                         <button className="uk-button uk-button-default uk-button-small uk-margin-left" type="button"  onClick={() => this.props.openModalDialog("select_tender_suppliers")}>
-                            <span data-uk-icon="icon: pencil" />
+                            <i className="fas fa-edit"></i>
                         </button>
                         </p>
                     </div>

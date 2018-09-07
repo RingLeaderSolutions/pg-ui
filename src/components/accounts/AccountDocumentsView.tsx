@@ -49,7 +49,7 @@ class AccountDocumentsView extends React.Component<AccountDocumentsViewProps & S
                     <td>{expiry}</td>
                     <td>
                         <a className="uk-button uk-button-default uk-button-small" href={d.blobFileName}>
-                            <span data-uk-icon="icon: cloud-download" />
+                            <i className="fas fa-download"></i>
                         </a> 
                     </td>
                 </tr>
@@ -67,7 +67,7 @@ class AccountDocumentsView extends React.Component<AccountDocumentsViewProps & S
         return (
             <div>
                 <p className="uk-text-right">
-                    <button className='uk-button uk-button-primary uk-button-small uk-margin-small-right' onClick={() => this.props.openModalDialog('upload_account_document')}><span data-uk-icon='icon: upload' /> Upload Document</button>
+                    <button className='uk-button uk-button-primary uk-button-small uk-margin-small-right' onClick={() => this.props.openModalDialog('upload_account_document')}><i className="fa fa-file-upload uk-margin-small-right"></i> Upload Document</button>
                 </p>
                 <table className="uk-table uk-table-divider">
                     <thead>

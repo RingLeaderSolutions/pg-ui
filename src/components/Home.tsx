@@ -37,7 +37,7 @@ class Home extends React.Component<StateProps & DispatchProps, {}> {
 
     renderSelectedTriangle(tab: ApplicationTab){
         if(this.props.selectedTab == tab){
-            return (<span className="uk-margin-small-right" data-uk-icon="icon: triangle-right"></span>)
+            return (<i className="fas fa-caret-right uk-margin-small-right"></i>)
         }
         
         return null;
@@ -65,15 +65,15 @@ class Home extends React.Component<StateProps & DispatchProps, {}> {
                     <ul className="uk-nav-default uk-nav-parent-icon" data-uk-nav>
                         <li className="uk-nav-header">Navigation</li>
                         <li>
-                            <Link to="/">{this.renderSelectedTriangle(ApplicationTab.Dashboard)}<span className="uk-margin-small-right" data-uk-icon="icon: thumbnails"></span>Dashboard</Link>
+                            <Link to="/">{this.renderSelectedTriangle(ApplicationTab.Dashboard)}<i className="fa fa-tachometer-alt uk-margin-small-right fa-lg"></i>Dashboard</Link>
                         </li>
                         <li className="uk-nav-divider"></li>                    
                         <li>
-                            <Link to="/portfolios">{this.renderSelectedTriangle(ApplicationTab.Portfolios)}<span className="uk-margin-small-right" data-uk-icon="icon: table"></span>Portfolios</Link>
+                            <Link to="/portfolios">{this.renderSelectedTriangle(ApplicationTab.Portfolios)}<i className="fa fa-cubes uk-margin-small-right fa-lg"></i>Portfolios</Link>
                         </li>
                         <li className="uk-nav-divider"></li>
                         <li>
-                            <Link to="/accounts">{this.renderSelectedTriangle(ApplicationTab.Accounts)}<span className="uk-margin-small-right" data-uk-icon="icon: social"></span>Accounts</Link>
+                            <Link to="/accounts">{this.renderSelectedTriangle(ApplicationTab.Accounts)}<i className="fa fa-building uk-margin-small-right fa-lg"></i>Accounts</Link>
                         </li>
                     </ul>
                 </div>

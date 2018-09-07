@@ -59,17 +59,17 @@ class AccountContactsView extends React.Component<AccountContactsViewProps & Sta
                         <div>
                             <div className="uk-inline">
                                 <button className="uk-button uk-button-default" type="button">
-                                    <span data-uk-icon="icon: more" />
+                                    <i className="fa fa-ellipsis-v"></i>
                                 </button>
                                 <div data-uk-dropdown="pos:bottom-justify;mode:click">
                                     <ul className="uk-nav uk-dropdown-nav">
                                     <li><a href="#" onClick={() => this.props.openModalDialog(updateContactDialogName)}>
-                                        <span className="uk-margin-small-right" data-uk-icon="icon: pencil" />
+                                        <i className="far fa-edit uk-margin-small-right"></i>
                                         Edit
                                     </a></li>
                                     <li className="uk-nav-divider"></li>
                                     <li><a href="#" onClick={() => this.deleteContact(c.id)}>
-                                        <span className="uk-margin-small-right" data-uk-icon="icon: trash" />
+                                        <i className="far fa-trash-alt uk-margin-small-right"></i>
                                         Delete
                                     </a></li>
                                     </ul>
@@ -96,7 +96,7 @@ class AccountContactsView extends React.Component<AccountContactsViewProps & Sta
         return (
             <div>
                 <p className="uk-text-right">
-                    <button className='uk-button uk-button-primary uk-button-small uk-margin-small-right' onClick={() => this.props.openModalDialog('create-contact')}><span data-uk-icon='icon: plus' /> Add Contact</button>
+                    <button className='uk-button uk-button-primary uk-button-small uk-margin-small-right' onClick={() => this.props.openModalDialog('create-contact')}><i className="fa fa-user-plus uk-margin-small-right"></i> Add Contact</button>
                 </p>
                 <table className="uk-table uk-table-divider">
                     <thead>

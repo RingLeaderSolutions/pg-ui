@@ -142,10 +142,10 @@ class TenderSupplierSelectDialog extends React.Component<TenderSupplierSelectDia
                     {content}
                     <hr />
                     <button className="uk-button uk-button-small uk-button-default uk-margin-right" onClick={() => this.selectAllSuppliers()} type="button">
-                    <span className="uk-margin-small-right" data-uk-icon="icon: check" /> Select All
+                        <i className="fas fa-check-double uk-margin-small-right"></i>Select All
                     </button>
                     <button className="uk-button uk-button-small uk-button-default uk-margin-right" onClick={() => this.selectNoSuppliers()} type="button">
-                        <span className="uk-margin-small-right" data-uk-icon="icon: close" /> Select None
+                        <i className="fas fa-times uk-margin-small-right"></i>Select None
                     </button>
                 </div>
                 <div className="uk-modal-footer uk-text-right">

@@ -118,9 +118,13 @@ class TenderSummary extends React.Component<TenderSummaryProps & StateProps & Di
     getTenderTabTitle(tender: Tender){
         switch(tender.utility){
             case "ELECTRICITY":
-                return tender.halfHourly ? "Electricity (HH)" : "Electricity (NHH)";
+                var elecIcon = (<i className="fa fa-bolt uk-margin-small-right fa-lg"></i>);
+                var clockIcon = (<i className="fa fa-clock uk-margin-small-right fa-lg"></i>);
+
+                var title =  tender.halfHourly ? "Electricity (HH)" : "Electricity (NHH)";
+                return (<div>{elecIcon}{tender.halfHourly ? clockIcon : null}{title}</div>);
             case "GAS":
-                return "Gas";
+                return (<div><i className="fa fa-fire uk-margin-small-right fa-lg"></i>Gas</div>);
         }
     }
 
@@ -129,20 +133,20 @@ class TenderSummary extends React.Component<TenderSummaryProps & StateProps & Di
             case 0:
                 return (
                     <a href="#" onClick={() => this.props.openModalDialog("create_hh_tender")}>
-                        <span className="uk-margin-small-right" data-uk-icon="icon: bolt" />
-                        <span className="uk-margin-small-right" data-uk-icon="icon: clock" />
+                        <i className="fas fa-bolt uk-margin-small-right"></i>
+                        <i className="fas fa-clock uk-margin-small-right"></i>
                         Add HH Tender
                     </a>);
             case 1:
                 return (
                     <a href="#" onClick={() => this.props.openModalDialog("create_nhh_tender")}>
-                        <span className="uk-margin-small-right" data-uk-icon="icon: bolt" />
+                        <i className="fas fa-bolt uk-margin-small-right"></i>
                         Add NHH Tender
                     </a>);
             case 2:
                 return (
                     <a href="#" onClick={() => this.props.openModalDialog("create_gas_tender")}>
-                        <span className="uk-margin-small-right" data-uk-icon="icon: world" />
+                        <i className="fas fa-fire uk-margin-small-right"></i>
                         Add Gas Tender
                     </a>);
         }
@@ -179,7 +183,7 @@ class TenderSummary extends React.Component<TenderSummaryProps & StateProps & Di
                 {canCreate ? (<div className="uk-grid-1-10 uk-margin-right">
                     <div className="uk-inline">
                         <button className="uk-button uk-button-primary uk-button-small" type="button">
-                            <span className="uk-margin-small-right" data-uk-icon="icon: plus" />
+                            <i className="fa fa-plus-circle uk-margin-small-right fa-lg"></i>
                             Add Tender
                         </button>
                         <div data-uk-dropdown="mode:click">

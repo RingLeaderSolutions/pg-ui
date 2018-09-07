@@ -66,7 +66,7 @@ class Login extends React.Component<StateProps & DispatchProps, {}> {
 
                                 {/* <Link to="/password_reset">Forgotten your password?</Link> */}
                                 <button className="uk-button uk-button-primary" type="submit" onClick={this.handleSubmit}>
-                                    <span className="uk-margin-small-right" data-uk-icon="icon: sign-in" />
+                                    <i className="fas fa-sign-in-alt uk-margin-small-right"></i>
                                     Log in
                                 </button>
                             </fieldset>

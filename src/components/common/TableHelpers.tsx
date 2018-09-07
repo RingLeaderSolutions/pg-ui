@@ -15,9 +15,10 @@ export const UserCellRenderer: TableCellRenderer = row => {
 
 export const BooleanCellRenderer: TableCellRenderer = row => {
     if(row.value){
-        return (<span data-uk-icon="icon: check"></span>)
+        return (<i className="fas fa-check"></i>)
+        
     }
-    return (<span data-uk-icon="icon: close"></span>)    
+    return (<i className="fas fa-times"></i>)
 };
 
 export const UserSorter: SortFunction = (a: User, b: User) => {

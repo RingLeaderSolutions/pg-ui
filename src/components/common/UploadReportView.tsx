@@ -32,10 +32,10 @@ class UploadReportView extends React.Component<UploadReportViewProps & StateProp
                         <td>{a.entity}</td>
                         <td>{a.message}</td>
                         <td>{a.failure ? (
-                            <span className="icon-standard-cursor" data-uk-tooltip="title: Failure" data-uk-icon="icon: close"></span>
+                            <i className="fas fa-exclamation-circle" style={{color: "#FF0000"}} data-uk-tooltip="title: Failure"></i>
                         ) : 
                         (
-                            <span className="icon-standard-cursor" data-uk-tooltip="title: Successful" data-uk-icon="icon: check"></span>
+                            <i className="fas fa-check" style={{color: "#00FF00"}} data-uk-tooltip="title: Success"></i>
                         )}</td>
                         <td>{index == 0 ? f.successCount : null}</td>
                         <td>{index == 0 ? f.failureCount : null}</td>

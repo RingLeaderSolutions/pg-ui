@@ -52,7 +52,7 @@ class UploadSupplyDataDialog extends React.Component<UploadSupplyDataDialogProps
         return (
             <div>
                 <div className="uk-modal-header">
-                    <h2 className="uk-modal-title">Upload Supply Data</h2>
+                    <h2 className="uk-modal-title"><i className="fa fa-file-upload uk-margin-right"></i>Upload Supply Data</h2>
                 </div>
                 <div className="uk-modal-body">
                     <div className="uk-margin">
@@ -67,8 +67,8 @@ class UploadSupplyDataDialog extends React.Component<UploadSupplyDataDialogProps
                     </div>
                 </div>
                 <div className="uk-modal-footer uk-text-right">
-                    <button className="uk-button uk-button-default uk-margin-right" type="button" onClick={() => this.props.closeModalDialog()}>Cancel</button>
-                    <button className="uk-button uk-button-primary" type="button" onClick={this.upload}>Upload</button>
+                    <button className="uk-button uk-button-default uk-margin-right" type="button" onClick={() => this.props.closeModalDialog()}><i className="fa fa-times uk-margin-small-right"></i>Cancel</button>
+                    <button className="uk-button uk-button-primary" type="button" onClick={this.upload}><i className="fa fa-arrow-circle-up uk-margin-small-right"></i>Upload</button>
                 </div>
             </div>)
     }

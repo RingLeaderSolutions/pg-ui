@@ -53,21 +53,21 @@ class TenderOffersTable extends React.Component<TenderOffersTableProps & StatePr
         var warningIconColor = "#ffa500";
 
         var indicatorIcons = indicators.map((i, index) => {
-            var className = index == 0 ? "icon-standard-cursor" : "uk-margin-small-left icon-standard-cursor";
+            var margin = index == 0 ? null : "uk-margin-small-left";
 
             switch(i.type){
                 case "EMAIL":
-                    return (<span key={index} className={className} data-uk-icon="icon: mail" data-uk-tooltip="title:This offer was uploaded via email."/>);
+                    return (<i key={index} className={`fas fa-envelope ${margin}`} data-uk-tooltip="title:This offer was uploaded via email."/>);
                 case "UPLOAD":
-                    return (<span key={index} className={className} data-uk-icon="icon: cloud-upload" data-uk-tooltip="title:This offer was uploaded manually."/>);
+                    return (<i key={index} className={`fas fa-cloud-upload-alt ${margin}`} data-uk-tooltip="title:This offer was uploaded manually."/>);
                 case "METER_ERROR":
-                    return (<span key={index} style={{color: errorIconColor}} className={className} data-uk-icon="icon: mail" data-uk-tooltip="title:This offer has missing meters or are in an error state."/>);
+                    return (<i key={index} style={{color: errorIconColor}} className={`fas fa-cube ${margin}`} data-uk-tooltip="title:This offer has missing meters or are in an error state."/>);
                 case "DATE_ERROR":
-                    return (<span key={index} style={{color: errorIconColor}} className={className} data-uk-icon="icon: calendar" data-uk-tooltip="title:This offer has incorrect dates on its meters."/>);
+                    return (<i key={index} style={{color: errorIconColor}} className={`fas fa-calendar-alt ${margin}`} data-uk-tooltip="title:This offer has incorrect dates on its meters."/>);
                 case "CONSUMPTION_VARIATION":
-                    return (<span key={index} style={{color: warningIconColor}} className={className} data-uk-icon="icon: warning" data-uk-tooltip="title:This offer's consumption varies by more than 10%."/>);
+                    return (<i key={index} style={{color: warningIconColor}} className={`fas fa-chart-line ${margin}`} data-uk-tooltip="title:This offer's consumption varies by more than 10%."/>);
                 case "TARIFF_VARIATION":
-                    return (<span key={index} style={{color: errorIconColor}} className={className} data-uk-icon="icon: error" data-uk-tooltip="title:This offer has meters with tariffs that do not match the previously accepted periods."/>);
+                    return (<i key={index} style={{color: errorIconColor}} className={`fas fa-exclamation-triangle ${margin}`} data-uk-tooltip="title:This offer has meters with tariffs that do not match the previously accepted periods."/>);
             }
         });
         return (<div>{indicatorIcons}</div>)
@@ -101,7 +101,7 @@ class TenderOffersTable extends React.Component<TenderOffersTableProps & StatePr
             var supplierImage = supplier == null ? "Unknown" : (<img data-uk-tooltip={`title:${supplier.name}`} src={supplier.logoUri} style={{ maxWidth: "105px", maxHeight: "60px" }}/>);
 
             return (
-                <div>
+                <div key={p.supplierId}>
                     <div key={p.supplierId} className="uk-card uk-card-small uk-card-default uk-card-body">
                         <div className="uk-text-center uk-text-middle">
                             {supplierImage}
@@ -146,27 +146,27 @@ class TenderOffersTable extends React.Component<TenderOffersTableProps & StatePr
                             <div>
                                 <div className="uk-inline">
                                     <button className="uk-button uk-button-default" type="button">
-                                        <span data-uk-icon="icon: more" />
+                                        <i className="fa fa-ellipsis-v"></i>
                                     </button>
                                     <div data-uk-dropdown="pos:bottom-justify;mode:click">
                                         <ul className="uk-nav uk-dropdown-nav">
                                         <li><a href="#" onClick={() => this.exportQuote(quote.quoteId)}>
-                                            <span className="uk-margin-small-right" data-uk-icon="icon: cloud-download" />
+                                            <i className="fas fa-cloud-download-alt uk-margin-small-right"></i>
                                             Download
                                         </a></li>
                                         <li className="uk-nav-divider"></li>
                                         <li><a href="#" onClick={() => this.fetchAndDisplayRates(quote.quoteId, viewQuoteModalName)}>
-                                            <span className="uk-margin-small-right" data-uk-icon="icon: album" />
+                                            <i className="fas fa-pound-sign uk-margin-small-right"></i>
                                             View Contract Rates
                                         </a></li>
                                         <li className="uk-nav-divider"></li>
                                         <li><a href="#" onClick={() => this.props.openModalDialog(collateralDialogName)}>
-                                            <span className="uk-margin-small-right" data-uk-icon="icon: folder" />                                        
+                                            <i className="fas fa-folder-open uk-margin-small-right"></i>                                      
                                             View Collateral
                                         </a></li>
                                         <li className="uk-nav-divider"></li>
                                         <li><a href="#" onClick={() => this.deleteQuote(quote.quoteId)}>
-                                            <span className="uk-margin-small-right" data-uk-icon="icon: trash" />                                        
+                                            <i className="fas fa-trash uk-margin-small-right" style={{color: "#FF0000"}}></i>                              
                                             Delete
                                         </a></li>
                                         </ul>
@@ -265,7 +265,7 @@ class TenderOffersTable extends React.Component<TenderOffersTableProps & StatePr
                         </div>
                         <div className="uk-width-1-2">
                             <button className="uk-button uk-button-primary uk-button-small uk-align-right" type="button"onClick={() => this.props.openModalDialog(uploadOfferName)}>
-                                <span className="uk-margin-small-right" data-uk-icon="icon: cloud-upload" />
+                                <i className="fa fa-file-upload uk-margin-small-right fa-lg"></i>
                                 Upload Offer
                             </button>
                         </div>
@@ -274,8 +274,8 @@ class TenderOffersTable extends React.Component<TenderOffersTableProps & StatePr
                     {hasReceivedQuotes ? (
                         <div className="uk-margin-small-top">
                             <ul data-uk-tab className="uk-tab">
-                                <li><a href="#">Received</a></li>
-                                <li><a href="#">Pending Responses ({pendingQuotes.length})</a></li>
+                                <li><a href="#"><i className="fas fa-envelope-open uk-margin-small-right fa-lg"></i>Received</a></li>
+                                <li><a href="#"><i className="fas fa-hourglass-half uk-margin-small-right fa-lg"></i>Pending Responses ({pendingQuotes.length})</a></li>
                             </ul>
                             <ul className='uk-switcher'>
                                 <li>{this.renderReceivedOffers(receivedQuotes)}</li>
@@ -327,7 +327,7 @@ class TenderOffersTable extends React.Component<TenderOffersTableProps & StatePr
                     <td>{supplierImage}</td>
                     <td>
                         <a className="uk-button uk-button-default uk-button-small" href={p.zipFileName} data-uk-tooltip="title:Download">
-                            <span data-uk-icon="icon: cloud-download" />
+                            <i className="fas fa-cloud-download uk-margin-small-right"></i>
                         </a> 
                     </td>
                 </tr>
@@ -340,13 +340,13 @@ class TenderOffersTable extends React.Component<TenderOffersTableProps & StatePr
                     <div className="uk-width-expand" />
                     <div className="uk-width-auto">
                         <button className="uk-button uk-button-primary uk-button-small" type="button" onClick={() => this.props.openModalDialog("issue_requirements_pack")}>
-                            <span className="uk-margin-small-right" data-uk-icon="icon: mail" />
+                            <i className="fas fa-envelope uk-margin-small-right"></i>
                             Issue
                         </button>
                     </div>
                 </div>
                 <div className="uk-alert-info uk-margin-small-top uk-margin-small-bottom" data-uk-alert>
-                    <p><span className="uk-margin-small-right" data-uk-icon="icon: info" />These requirements packs have not yet been issued.</p>
+                    <p><i className="fas fa-info-circle uk-margin-small-right"></i>These requirements packs have not yet been issued.</p>
                 </div>
                 <table className="uk-table uk-table-divider">
                     <thead>
@@ -433,7 +433,7 @@ class TenderOffersTable extends React.Component<TenderOffersTableProps & StatePr
                     <div className="uk-alert-warning uk-margin-small-bottom uk-alert" data-uk-alert>
                         <div className="uk-grid uk-grid-small" data-uk-grid>
                             <div className="uk-width-auto">
-                                <span className="uk-margin-small-right" data-uk-icon="icon: warning" />
+                                <i className="fas fa-exclamation-triangle uk-margin-small-right"></i>
                             </div>
                             <div className="uk-width-expand">
                                 <p>Tender setup appears to be incomplete. Please ensure an existing contract has been created and its rates have been uploaded.</p>    
@@ -455,7 +455,7 @@ class TenderOffersTable extends React.Component<TenderOffersTableProps & StatePr
                     </div>
                     <div className="uk-width-1-2">
                         <button className="uk-button uk-button-primary uk-button-small uk-align-right" type="button" onClick={() => this.generateNewPack()}>
-                            <span className="uk-margin-small-right" data-uk-icon="icon: plus" />
+                            <i className="fas fa-plus-circle uk-margin-small-right fa-lg"></i>
                             Generate New
                         </button>
                     </div>

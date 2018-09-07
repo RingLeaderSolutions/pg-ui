@@ -214,7 +214,7 @@ class Accounts extends React.Component<AccountsProps & StateProps & DispatchProp
                             </form>
                             <div className="actions-accounts">
                                 <button className="uk-button uk-button-primary" onClick={() => this.props.openModalDialog('new_account')}>
-                                    <span className="uk-margin-small-right" data-uk-icon="plus-circle"></span>
+                                    <i className="fa fa-plus-circle uk-margin-small-right fa-lg"></i>
                                     New account
                                 </button>
                             </div>

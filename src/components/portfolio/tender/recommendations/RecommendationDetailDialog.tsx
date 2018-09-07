@@ -155,9 +155,15 @@ class RecommendationDetailDialog extends React.Component<RecommendationDetailDia
             var isWinningOffer = ru.winner;
             return (
                 <tr key={ru.ranking}>
-                    <td>{`#${ru.ranking + 1}`}</td>
-                    <td>{isWinningOffer ?  (<div><span className="uk-margin-small-right" data-uk-icon="icon: star" style={{color: 'goldenrod'}} /> {supplierText}</div>) : supplierText}</td>
-                    <td>{`${ru.duration} months`}</td>
+                    {isWinningOffer ? 
+                        (
+                            <td>
+                                <i className="fa fa-trophy uk-margin-small-right fa-xs" style={{color: 'goldenrod'}}></i>#{ru.ranking + 1}
+                            </td>
+                        )
+                        : (<td>{`#${ru.ranking + 1}`}</td>)}
+                    <td>{supplierText}</td>
+                    <td>{`${ru.duration}M`}</td>
                     <td>{format(ru.totalIncCCL, { locale: 'en-GB'})}</td>
                     <td>{format(ru.cclCost, { locale: 'en-GB'})}</td>
                     <td>{`${ru.appu.toFixed(4)}p`}</td>
@@ -219,7 +225,7 @@ class RecommendationDetailDialog extends React.Component<RecommendationDetailDia
                     <CounterCard title={format(recommendationSite.currentContract.ccl, { locale: 'en-GB'})} label="CCL" small/>
                     <CounterCard title={`${recommendationSite.currentContract.appu.toFixed(4)}p`} label="Avg Pence Per Unit" small />
                 </div>
-                <h3><span className="uk-margin-small-right" data-uk-icon="icon: star" style={{color: 'goldenrod'}}/>Recommended Supplier Offer</h3>
+                <h3><i className="fa fa-trophy uk-margin-small-right" style={{color: 'goldenrod'}}></i>Recommended Supplier Offer</h3>
                 <div className="uk-child-width-expand@s uk-grid-match uk-text-center" data-uk-grid>
                     <CounterCard content={newSupplierText} label="New Supplier" small/>
                     <CounterCard title={format(recommendationSite.recommendedSiteOffer.totalIncCCL, { locale: 'en-GB'})} label="Annual cost inc CCL" small/>
@@ -229,7 +235,7 @@ class RecommendationDetailDialog extends React.Component<RecommendationDetailDia
                     <CounterCard title={`${recommendationSite.recommendedSiteOffer.paymentTerms} days`} label="Payment Terms" small/>
                     <CounterCard title={recommendationSite.recommendedSiteOffer.fuelType} label="Fuel Type" small/>
                 </div>
-                <h3><span className="uk-margin-small-right" data-uk-icon="icon: star" style={{color: 'goldenrod'}}/>Recommended Supplier Offer Billing Rates</h3>
+                <h3><i className="fa fa-trophy uk-margin-small-right" style={{color: 'goldenrod'}}></i>Recommended Supplier Offer Billing Rates</h3>
                 <div className="uk-grid" style={{backgroundColor: '#f8f8f8', marginLeft: '0'}}>
                     <div className="uk-width-expand" />
                     <table className="uk-table uk-table-divider uk-width-auto">
@@ -374,7 +380,7 @@ class RecommendationDetailDialog extends React.Component<RecommendationDetailDia
                     tabTitle = `${rs.supplierName} (Incumbent)`;
                 }
                 else if(rs.winner){
-                    tabTitle = (<div><span className="uk-margin-small-right" data-uk-icon="icon: star" style={{color: 'goldenrod'}}/> {`${rs.supplierName} (${rs.duration}m V${rs.version} - Winner)`}</div>);
+                    tabTitle = (<div><i className="fa fa-trophy uk-margin-small-right" style={{color: 'goldenrod'}}></i> {`${rs.supplierName} (${rs.duration}m V${rs.version})`}</div>);
                 }
                 else {
                     tabTitle = `${rs.supplierName} (${rs.duration}m V${rs.version})`;
@@ -434,9 +440,15 @@ class RecommendationDetailDialog extends React.Component<RecommendationDetailDia
 
             return (
                 <tr key={os.ranking}>
-                    <td>{`#${os.ranking + 1}`}</td>
-                    <td>{os.winner ?  (<div><span className="uk-margin-small-right" data-uk-icon="icon: star" style={{color: 'goldenrod'}}/> {supplierText}</div>) : supplierText}</td>
-                    <td>{os.duration} months</td>
+                        {os.winner ? 
+                        (
+                            <td>
+                                <i className="fa fa-trophy uk-margin-small-right fa-xs" style={{color: 'goldenrod'}}></i>#{os.ranking + 1}
+                            </td>
+                        )
+                        : (<td>{`#${os.ranking + 1}`}</td>)}
+                    <td>{supplierText}</td>
+                    <td>{os.duration}M</td>
                     <td>{os.version}</td>
                     <td>{format(os.totalIncCCL, { locale: 'en-GB'})}</td>
                     <td>{format(os.cclCost, { locale: 'en-GB'})}</td>
@@ -471,13 +483,13 @@ class RecommendationDetailDialog extends React.Component<RecommendationDetailDia
                 <table className="uk-table uk-table-divider">
                     <thead>
                         <tr>
-                            <th>Ranking</th>
-                            <th>Supplier</th>
+                            <th>Rank</th>
+                            <th></th>
                             <th>Duration</th>
                             <th>Version</th>
                             <th>Total Inc CCL</th>
                             <th>CCL</th>
-                            <th>Average Pence / kWh</th>
+                            <th>Avg Pence / kWh</th>
                             <th>£ Increase or Saving</th>
                             <th>% Increase or Saving</th>
                             <th>£ Adrift of Offer Ranked #1</th>
@@ -497,18 +509,18 @@ class RecommendationDetailDialog extends React.Component<RecommendationDetailDia
                 <div data-uk-grid>
                     <div className="uk-width-expand">
                         <ul data-uk-tab="connect: #reco-tabs-switcher">
-                            <li><a href="#">Summary</a></li>
-                            <li><a href="#">Offers ({this.props.recommendation_suppliers.length - 1})</a></li>
-                            <li><a href="#">Sites ({this.props.selected_recommendation.meterCount})</a></li>
+                            <li><a href="#"><i className="fa fa-list uk-margin-small-right fa-lg"></i>Summary</a></li>
+                            <li><a href="#"><i className="far fa-handshake uk-margin-small-right fa-lg"></i>Offers ({this.props.recommendation_suppliers.length - 1})</a></li>
+                            <li><a href="#"><i className="fas fa-cube uk-margin-small-right fa-lg"></i>Sites ({this.props.selected_recommendation.meterCount})</a></li>
                         </ul>
                     </div>
                     <div className="uk-grid-width-1-10">
                         <a className="uk-button uk-button-default uk-button-small" href={this.props.selected_recommendation.summaryFileName} data-uk-tooltip="title: Download this report as .XLS">
-                            <span className="uk-margin-small-right" data-uk-icon="icon: cloud-download" />
+                            <i className="fa fa-file-excel uk-margin-small-right"></i>
                             Download
                         </a> 
                         <button className="uk-button uk-button-danger uk-button-small uk-margin-xlarge-left" type="button" onClick={() => this.deleteRecommendation()}>
-                            <span className="uk-margin-small-right" data-uk-icon="icon: close" />
+                            <i className="fa fa-trash uk-margin-small-right"></i>
                             Delete
                         </button>   
                     </div>

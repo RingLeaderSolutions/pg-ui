@@ -137,7 +137,7 @@ class IncludeMetersDialog extends React.Component<IncludeMetersDialogProps & Sta
             
         var meters = excludedMeters.map(em => {
             var isSelected = this.state.includedMeters.find(im => im == em.mpanCore) != null;
-            var hhIndicator = em.meterType == "HH" ? (<span className="uk-margin-small-left" data-uk-icon="clock" data-uk-tooltip="title: Half-hourly meter"></span>) : null;
+            var hhIndicator = em.meterType == "HH" ? (<i className="fa fa-clock uk-margin-small-right" data-uk-tooltip="title: Half-hourly meter"></i>) : null;
             return (
                 <div className="uk-width-1-2" key={em.mpanCore}>
                     <label>
@@ -194,10 +194,10 @@ class IncludeMetersDialog extends React.Component<IncludeMetersDialogProps & Sta
                 </div>
                 <hr />
                 <button className="uk-button uk-button-small uk-button-default uk-margin-right" onClick={() => this.includeAllMeters()} type="button">
-                    <span className="uk-margin-small-right" data-uk-icon="icon: check" /> Select All
+                    <i className="fa fa-check-double uk-margin-small-right"></i> Select All
                 </button>
                 <button className="uk-button uk-button-small uk-button-default uk-margin-right" onClick={() => this.includeNoMeters()} type="button">
-                    <span className="uk-margin-small-right" data-uk-icon="icon: close" /> Select None
+                    <i className="fa fa-times uk-margin-small-right fa-lg"></i> Select None
                 </button>
             </fieldset>
         )

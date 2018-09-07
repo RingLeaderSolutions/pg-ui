@@ -14,7 +14,7 @@ export default class ErrorMessage extends React.Component<ErrorMessageProps, {}>
       <div className="uk-alert uk-alert-danger uk-margin-small-bottom" data-uk-alert>
           <div className="uk-grid uk-grid-small" data-uk-grid>
               <div className="uk-width-auto">
-                  <span className="uk-margin-small-right" data-uk-icon="icon: warning" />
+                <i className="fas fa-exclamation-triangle uk-margin-small-right"></i>
               </div>
               <div className="uk-width-expand">
                   <p>{errorMessage}</p>

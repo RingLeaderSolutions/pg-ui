@@ -136,7 +136,7 @@ class CompanySearch extends React.Component<DispatchProps & StateProps, CompanyS
                             </div>
                             <div className="uk-width-auto@s">
                                 <button className="uk-button uk-button-primary" type="button" onClick={this.searchCompany} disabled={!canSearch}>
-                                    <span className="uk-margin-small-right" data-uk-icon="icon: search" />
+                                    <i className="fa fa-search uk-margin-small-right fa-lg"></i>
                                     Search
                                 </button>
                             </div>

@@ -159,7 +159,7 @@ class QuoteImportReportView extends React.Component<QuoteImportReportViewProps &
                             {uploadReport.originalFileNameURI ? (
                                 <p className="download-report">
                                     <a className="uk-button uk-button-default uk-button-small" href={uploadReport.originalFileNameURI} target="_blank">
-                                        <span data-uk-icon="icon: cloud-download" /> Download
+                                        <i className="fas fa-cloud-download-alt uk-margin-small-right"></i> Download
                                     </a>
                                 </p>) : null}
                         </div>

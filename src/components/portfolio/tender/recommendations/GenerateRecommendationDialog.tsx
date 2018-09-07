@@ -59,7 +59,7 @@ class GenerateRecommendationDialog extends React.Component<GenerateRecommendatio
             return (
                 <div>
                     <div className="uk-alert-warning uk-margin-small-top uk-margin-small-bottom" data-uk-alert>
-                        <p><span className="uk-margin-small-right" data-uk-icon="icon: warning" /> Sorry! The latest issuance has not yet received any quotes, so a recommendation cannot be created.</p>
+                        <p><i className="fas fa-exclamation-triangle uk-margin-small-right"></i> Sorry! The latest issuance has not yet received any quotes, so a recommendation cannot be created.</p>
                     </div>
                     <div className="uk-modal-footer uk-text-right">
                         <button className="uk-button uk-button-default uk-margin-right" type="button" onClick={() => this.props.closeModalDialog()}>OK</button>

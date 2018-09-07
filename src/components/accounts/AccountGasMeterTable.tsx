@@ -188,7 +188,7 @@ class AccountGasMeterTable extends React.Component<AccountGasMeterTableProps & S
         return Object.keys(this.props.portfolios).map(p => {
             var portfolioId = this.props.portfolios[p];
             var portfolioLink = `/portfolio/${portfolioId}`;
-            return (<Link to={portfolioLink} key={portfolioId}><button className='uk-button uk-button-default uk-button-small uk-margin-small-right' data-uk-tooltip="title: Jump to portfolio"><span data-uk-icon='icon: link' /> {p}</button></Link>)
+            return (<Link to={portfolioLink} key={portfolioId}><button className='uk-button uk-button-default uk-button-small uk-margin-small-right' data-uk-tooltip="title: Jump to portfolio"><i className="fa fa-external-link-alt uk-margin-small-right"></i>  {p}</button></Link>)
         })
     }
 
@@ -202,7 +202,7 @@ class AccountGasMeterTable extends React.Component<AccountGasMeterTableProps & S
 
         var actions = (
             <div className="actions-accounts">
-                <button className='uk-button uk-button-primary uk-margin-small-right' onClick={() => this.props.openModalDialog('upload-supply-data-gas')}><span data-uk-icon='icon: upload' /> Upload Supply Data</button>    
+                <button className='uk-button uk-button-primary uk-margin-small-right' onClick={() => this.props.openModalDialog('upload-supply-data-gas')}><i className="fa fa-file-upload uk-margin-small-right fa-lg"></i> Upload Supply Data</button>    
             </div>
         );
 

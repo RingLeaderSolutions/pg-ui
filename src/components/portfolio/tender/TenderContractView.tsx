@@ -90,17 +90,17 @@ class TenderContractView extends React.Component<TenderContractViewProps & Dispa
                 <div>
                     <div className="uk-inline">
                         <button className="uk-button uk-button-default" type="button">
-                            <span data-uk-icon="icon: more" />
+                            <i className="fa fa-ellipsis-v"></i>
                         </button>
                         <div data-uk-dropdown="pos:bottom-justify;mode:click">
                             <ul className="uk-nav uk-dropdown-nav">
                                 <li><a href="#" onClick={() => this.props.openModalDialog(uploadExistingDialogName)}>
-                                    <span className="uk-margin-small-right" data-uk-icon="icon: cloud-upload" />
+                                    <i className="fas fa-file-upload uk-margin-small-right"></i>
                                     Upload Contract Rates
                                 </a></li>
                                 <li className="uk-nav-divider"></li>
                                 { hasContractRates ? (<li><a href="#" onClick={() => this.fetchRatesAndOpenDialog(viewContractDialogName)}>
-                                    <span className="uk-margin-small-right" data-uk-icon="icon: copy" />
+                                    <i className="fa fa-pound-sign uk-margin-small-right"></i>
                                     View Contract Rates
                                 </a></li>) : null }
                             </ul>
@@ -164,7 +164,7 @@ class TenderContractView extends React.Component<TenderContractViewProps & Dispa
                     </div>
                     <div className="uk-width-expand">
                         <button className="uk-button uk-button-default uk-button-small" type="button" onClick={() => this.props.openModalDialog(editContractDialogName)}>
-                            <span data-uk-icon="icon: pencil" />
+                            <i className="fas fa-edit"></i>
                         </button>
                     </div>
                     <div className="uk-width-auto">

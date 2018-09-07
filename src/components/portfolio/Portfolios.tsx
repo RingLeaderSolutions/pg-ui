@@ -210,7 +210,7 @@ class Portfolios extends React.Component<PortfoliosProps & StateProps & Dispatch
                             </form>
                             <div className="actions-portfolios">
                                 <button className="uk-button uk-button-primary" onClick={() => this.props.openModalDialog('create_portfolio')}>
-                                    <span className="uk-margin-small-right" data-uk-icon="plus-circle"></span>
+                                    <i className="fa fa-plus-circle uk-margin-small-right fa-lg"></i>
                                     New portfolio
                                 </button>
                             </div>

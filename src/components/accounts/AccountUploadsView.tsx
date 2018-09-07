@@ -60,7 +60,7 @@ class AccountUploadsView extends React.Component<AccountUploadsViewProps & State
                         <p>{r.requestor.firstName} {r.requestor.lastName}</p>
                     </div></td>
                     <td>
-                        <button className='uk-button uk-button-default uk-button-small' onClick={() => this.fetchUploadReport(r.resultDocId)}><span data-uk-icon='icon: menu' data-uk-tooltip="title: Open" /></button>
+                        <button className='uk-button uk-button-default uk-button-small' onClick={() => this.fetchUploadReport(r.resultDocId)}><i className="fas fa-eye uk-margin-small-right"></i></button>
                     </td>
                 </tr>
             )
