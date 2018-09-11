@@ -53,7 +53,7 @@ class PortfolioSummary extends React.Component<PortfolioSummaryProps & DispatchP
     }
 
     render() {
-        var { portfolio, detail } = this.props;
+        var { portfolio } = this.props;
 
         var salesLead = this.renderUser(portfolio.salesLead);
         var supportExec = this.renderUser(portfolio.supportExec);
