@@ -190,6 +190,7 @@ class Accounts extends React.Component<AccountsProps & StateProps & DispatchProp
                     showPagination={false}
                     columns={this.columns}
                     data={this.state.tableData}
+                    style={{maxHeight: `${window.innerHeight - 180}px`}}
                     getTrProps={(state: any, rowInfo: any, column: any, instance: any) => ({
                         onClick: (e: any) => {
                             this.props.history.push(`/account/${rowInfo.original.accountId}`);

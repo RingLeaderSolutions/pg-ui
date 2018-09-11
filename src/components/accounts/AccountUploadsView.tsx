@@ -60,7 +60,7 @@ class AccountUploadsView extends React.Component<AccountUploadsViewProps & State
                         <p>{r.requestor.firstName} {r.requestor.lastName}</p>
                     </div></td>
                     <td>
-                        <button className='uk-button uk-button-default uk-button-small' onClick={() => this.fetchUploadReport(r.resultDocId)}><i className="fas fa-eye uk-margin-small-right"></i></button>
+                        <button className='uk-button uk-button-default uk-button-small' onClick={() => this.fetchUploadReport(r.resultDocId)}><i className="far fa-eye uk-margin-small-right"></i></button>
                     </td>
                 </tr>
             )
@@ -80,9 +80,9 @@ class AccountUploadsView extends React.Component<AccountUploadsViewProps & State
                 <table className="uk-table uk-table-divider">
                     <thead>
                         <tr>
-                            <th>Upload type</th>
+                            <th>Type</th>
                             <th>Notes</th>
-                            <th>Upload Time</th>
+                            <th>Uploaded</th>
                             <th>Requester</th>
                             <th></th>
                         </tr>

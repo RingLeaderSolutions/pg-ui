@@ -75,7 +75,7 @@ class PortfolioMeters extends React.Component<PortfolioMetersProps & StateProps 
             sortable: false,
             Cell: row => {
                 var mpanCore = row.value;
-                return (<button className='uk-button uk-button-default uk-button-small' onClick={(ev) => this.excludeMeter(ev, mpanCore)}><i className="fas fa-times-circle" data-uk-tooltip="title: Exclude"></i></button>)   
+                return (<button className='uk-button uk-button-default uk-button-small borderless-button' onClick={(ev) => this.excludeMeter(ev, mpanCore)}><i className="fas fa-times-circle" data-uk-tooltip="title: Exclude"></i></button>)   
             }
         });
 
@@ -107,7 +107,7 @@ class PortfolioMeters extends React.Component<PortfolioMetersProps & StateProps 
                         </div>
                         <div className="uk-width-auto@s">
                             <div className="uk-inline">
-                                <button className="uk-button uk-button-default uk-margin-small-right" type="button">
+                                <button className="uk-button uk-button-default uk-margin-small-right borderless-button" type="button">
                                     <i className="fa fa-ellipsis-v"></i>
                                 </button>
                                 <div data-uk-dropdown="pos:bottom-justify;mode:click">
@@ -132,12 +132,13 @@ class PortfolioMeters extends React.Component<PortfolioMetersProps & StateProps 
                         </div>
                     </div>
                 </div>
-
+                <hr />
                 {hasData ? (
                     <ReactTable 
                     showPagination={false}
                     columns={tableColumns}
                     data={data}
+                    style={{maxHeight: `${window.innerHeight - 320}px`}}
                     minRows={0}/>
                 ) : 
                 <p className="uk-text-meta uk-text-center">No meters of this type have been included in this portfolio yet. Click on the menu above to include some.</p>}

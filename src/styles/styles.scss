@@ -24,18 +24,17 @@ html, body, .root, .app-container {
 }
 
 .app-container {
-    display: flex;
     padding: 0px !important;
     margin: 0px !important;
 }
 
 .content-container {
-    flex-grow: 1;
     padding: $margin-large 0px 20px 20px;
 }
 
 .content-inner {
-    height: 90%;
+    // height: 90%;
+    // width: 80%;
 }
 
 // UIKit Table hover override (yellow->grey)
@@ -81,4 +80,14 @@ h3 > .uk-icon, h4 > .uk-icon, .icon-standard-cursor {
 
 .uk-alert { 
     color: #000000;
+}
+
+.borderless-button {
+    border: 1px solid transparent;
+}
+
+.borderless-button:hover {
+    border: 1px solid #b2b2b2;
+    color: #333;
+    background-color: transparent;
 }

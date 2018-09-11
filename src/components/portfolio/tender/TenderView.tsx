@@ -67,11 +67,11 @@ class TenderView extends React.Component<TenderViewProps & StateProps & Dispatch
         var content = (
             <div>
                 <div className="uk-grid" data-uk-grid>
-                    <div>
+                    <div className="uk-width-auto uk-flex uk-flex-middle">
                         {title}
                     </div>
-                    <div className="uk-width-expand@s">
-                        <button className="uk-button uk-button-default uk-button-small" type="button" onClick={() => this.props.openModalDialog(updateTenderDialogName)}>
+                    <div className="uk-width-expand@s uk-flex uk-flex-middle">
+                        <button className="uk-button uk-button-default uk-button-small borderless-button" type="button" onClick={() => this.props.openModalDialog(updateTenderDialogName)}>
                             <i className="fas fa-edit"></i>
                         </button>
                     </div>

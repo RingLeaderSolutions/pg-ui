@@ -50,8 +50,8 @@ class Home extends React.Component<StateProps & DispatchProps, {}> {
                 </div>)
         }
         return (
-            <div className="app-container">
-                <div className="sidebar">
+            <div className="uk-grid uk-grid-collapse uk-height-1-1">
+                <div className="sidebar uk-width-1-6 uk-height-1-1">
                     <div className="app-title">
                         <img src={this.props.instance_detail.logoUri} alt={this.props.instance_detail.name} /> 
                         {/* <img src={require('../images/tpi-flow-logo.png')} alt={this.props.instance_detail.name} />  */}
@@ -77,12 +77,14 @@ class Home extends React.Component<StateProps & DispatchProps, {}> {
                         </li>
                     </ul>
                 </div>
-                <div className="content-container">
-                    <Route exact path="/" component={Dashboard} />
-                    <Route path="/portfolios" component={Portfolios} />
-                    <Route path="/accounts" component={Accounts} />
-                    <Route path="/account" component={AccountDetailView} />
-                    <Route path="/portfolio" component={PortfolioDetail} />
+                <div className="uk-height-1-1 uk-width-5-6">
+                    <div className="content-container">
+                        <Route exact path="/" component={Dashboard} />
+                        <Route path="/portfolios" component={Portfolios} />
+                        <Route path="/accounts" component={Accounts} />
+                        <Route path="/account" component={AccountDetailView} />
+                        <Route path="/portfolio" component={PortfolioDetail} />
+                    </div>
                 </div>
             </div>
             );

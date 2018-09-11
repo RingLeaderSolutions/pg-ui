@@ -89,7 +89,7 @@ class TenderContractView extends React.Component<TenderContractViewProps & Dispa
             <div>
                 <div>
                     <div className="uk-inline">
-                        <button className="uk-button uk-button-default" type="button">
+                        <button className="uk-button uk-button-default borderless-button" type="button">
                             <i className="fa fa-ellipsis-v"></i>
                         </button>
                         <div data-uk-dropdown="pos:bottom-justify;mode:click">
@@ -159,15 +159,15 @@ class TenderContractView extends React.Component<TenderContractViewProps & Dispa
         return (
             <div className="uk-card uk-card-small uk-card-default uk-card-body">
                 <div className="uk-grid">
-                    <div className="uk-width-auto">
+                    <div className="uk-width-auto uk-flex uk-flex-middle">
                         <h3>Existing Contract</h3>
                     </div>
-                    <div className="uk-width-expand">
-                        <button className="uk-button uk-button-default uk-button-small" type="button" onClick={() => this.props.openModalDialog(editContractDialogName)}>
+                    <div className="uk-width-expand uk-flex uk-flex-middle">
+                        <button className="uk-button uk-button-default uk-button-small borderless-button" type="button" onClick={() => this.props.openModalDialog(editContractDialogName)}>
                             <i className="fas fa-edit"></i>
                         </button>
                     </div>
-                    <div className="uk-width-auto">
+                    <div className="uk-width-auto uk-flex uk-flex-middle">
                         {actions}
                     </div>
                 </div>

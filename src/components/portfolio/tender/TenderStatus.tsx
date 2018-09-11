@@ -90,12 +90,16 @@ class TenderStatus extends React.Component<TenderStatusProps & StateProps & Disp
   
             <div className="uk-grid uk-margin-small-left uk-margin-small-right uk-grid-match" data-uk-grid>
                 <div className="uk-card uk-card-default uk-card-small uk-card-body uk-width-1-5 uk-text-center">
-                    <div className="uk-margin-large-left">
-                        <p className="uk-text-bold">{tender.assignedSuppliers.length}/{eligibleSupplierCount}
-                        <button className="uk-button uk-button-default uk-button-small uk-margin-left" type="button"  onClick={() => this.props.openModalDialog("select_tender_suppliers")}>
-                            <i className="fas fa-edit"></i>
-                        </button>
-                        </p>
+                    <div className="uk-grid uk-grid-collapse">
+                        <div className="uk-width-expand" />
+                        <div className="uk-width-auto uk-flex uk-flex-middle">
+                            <p className="uk-text-bold">{tender.assignedSuppliers.length}/{eligibleSupplierCount}</p>
+                        </div>
+                        <div className="uk-width-expand uk-flex uk-flex-middle">
+                            <button className="uk-button uk-button-default borderless-button uk-button-small uk-margin-left" type="button"  onClick={() => this.props.openModalDialog("select_tender_suppliers")}>
+                                <i className="fas fa-edit"></i>
+                            </button>
+                        </div>
                     </div>
                     <p className="uk-text-meta uk-margin-small">Assigned Suppliers</p>
                 </div>

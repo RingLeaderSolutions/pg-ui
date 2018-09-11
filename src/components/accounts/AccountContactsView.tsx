@@ -58,7 +58,7 @@ class AccountContactsView extends React.Component<AccountContactsViewProps & Sta
                     <td>
                         <div>
                             <div className="uk-inline">
-                                <button className="uk-button uk-button-default" type="button">
+                                <button className="uk-button uk-button-default borderless-button" type="button">
                                     <i className="fa fa-ellipsis-v"></i>
                                 </button>
                                 <div data-uk-dropdown="pos:bottom-justify;mode:click">
@@ -106,7 +106,7 @@ class AccountContactsView extends React.Component<AccountContactsViewProps & Sta
                             <th>Phone #</th>
                             <th>Email</th>
                             <th>Role</th>
-                            <th>Actions</th>
+                            <th></th>
                         </tr>
                     </thead>
                     <tbody>

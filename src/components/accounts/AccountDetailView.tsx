@@ -82,7 +82,7 @@ class AccountDetailView extends React.Component<AccountDetailViewProps & StatePr
         return (
             <div className="content-inner">
                 <Header title={headerTitle}>
-                    <button className='uk-button uk-button-default uk-button-small uk-margin-large-right' data-uk-tooltip="title: Edit account" onClick={() => this.props.openModalDialog('update-account')}><i className="fas fa-edit"></i></button>
+                    <button className='uk-button uk-button-default uk-button-small uk-margin-large-right borderless-button' data-uk-tooltip="title: Edit account" onClick={() => this.props.openModalDialog('update-account')}><i className="fas fa-edit"></i></button>
                 </Header>
                 <ul className="uk-tab">
                     <li className={this.renderActiveTabStyle(0)} onClick={() => this.selectTab(0)}><a href="#"><i className="fa fa-bolt uk-margin-small-right fa-lg"></i>Electricity</a></li>
@@ -91,7 +91,7 @@ class AccountDetailView extends React.Component<AccountDetailViewProps & StatePr
                     <li className={this.renderActiveTabStyle(3)} onClick={() => this.selectTab(3)}><a href="#"><i className="fa fa-file-signature uk-margin-small-right fa-lg"></i>Documentation</a></li>
                     <li className={this.renderActiveTabStyle(4)} onClick={() => this.selectTab(4)}><a href="#"><i className="fa fa-file-upload uk-margin-small-right fa-lg"></i>Uploads</a></li>
                 </ul>
-                <div className="restrict-height-hack">
+                <div>
                     {this.renderSelectedTab()}
                 </div>
 

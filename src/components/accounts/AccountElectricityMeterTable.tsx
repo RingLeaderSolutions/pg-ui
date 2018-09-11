@@ -275,13 +275,19 @@ class AccountElectricityMeterTable extends React.Component<AccountElectricityMet
                     </form>
                     {actions}
                 </div>
-                
+                <hr />
+                <div>
+
+                    <div >
                 {!hasData ? (<p className="uk-text-meta uk-text-center">No results for search term: <i>{this.state.searchText}</i></p>)
                 : (<ReactTable 
                     showPagination={false}
                     columns={this.columns}
-                    data={this.state.tableData}
+                    data={this.state.tableData}                    
+                    style={{maxHeight: `${window.innerHeight - 320}px`}}
                     minRows={0}/>)}
+                    </div>
+                </div>
             </div>)
     }
 }

@@ -62,7 +62,7 @@ class PortfolioUploads extends React.Component<PortfolioUploadProps & StateProps
                             <p>{r.requestor.firstName} {r.requestor.lastName}</p>
                         </div></td>
                         <td>
-                            <button className='uk-button uk-button-default uk-button-small' onClick={() => this.fetchAndDisplayReport(r.resultDocId, isImport)}><i className="fas fa-eye" data-uk-tooltip="title: View"></i></button>
+                            <button className='uk-button uk-button-default uk-button-small' onClick={() => this.fetchAndDisplayReport(r.resultDocId, isImport)}><i className="far fa-eye" data-uk-tooltip="title: View"></i></button>
                         </td>
                     </tr>
                 )
@@ -73,9 +73,9 @@ class PortfolioUploads extends React.Component<PortfolioUploadProps & StateProps
                 <table className="uk-table uk-table-divider">
                     <thead>
                         <tr>
-                            <th>Upload type</th>
+                            <th>Type</th>
                             <th>Notes</th>
-                            <th>Upload Time</th>
+                            <th>Uploaded</th>
                             <th>Requester</th>
                             <th></th>
                         </tr>
@@ -109,7 +109,7 @@ class PortfolioUploads extends React.Component<PortfolioUploadProps & StateProps
                         <li><a href="#">Tender Data ({this.props.reports.imports.length})</a></li>
                         <li><a href="#">Account Data ({this.props.reports.uploads.length})</a></li>
                     </ul>
-                    <ul className="uk-switcher restrict-height-hack">
+                    <ul className="uk-switcher">
                         <li>{this.renderUploadsTable(this.props.reports.imports, true)}</li>
                         <li>{this.renderUploadsTable(this.props.reports.uploads, false)}</li>
                     </ul>

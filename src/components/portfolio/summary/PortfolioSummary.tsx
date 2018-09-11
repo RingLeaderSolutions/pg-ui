@@ -71,9 +71,13 @@ class PortfolioSummary extends React.Component<PortfolioSummaryProps & DispatchP
                     <CounterCard content={supportExec} label="Tender Analyst" small/>
                     <CounterCard title={String(portfolio.mpans)} label="Included Meters" small />
                 </div>
-                <div className="uk-child-width-expand@s uk-grid-match uk-text-center" data-uk-grid>
-                    <PortfolioMeterStatus portfolio={portfolio} />
-                    <div>
+                <div className="uk-grid-match uk-text-center" data-uk-grid>
+                    <div className="uk-width-auto">
+                        <PortfolioMeterStatus portfolio={portfolio} />
+                    </div>
+
+                    
+                    <div className="uk-width-expand">
                         <div className="uk-card uk-card-default uk-card-body">
                             <h4><i className="fa fa-file-upload uk-margin-small-right"></i>Uploads</h4>
                             <div className="portfolio-history">

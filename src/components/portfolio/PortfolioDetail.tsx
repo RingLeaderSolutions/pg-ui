@@ -92,7 +92,7 @@ class PortfolioDetail extends React.Component<PortfolioDetailProps & StateProps 
         return (
             <div className="content-inner">
                 <Header title={headerTitle}>
-                    <button className='uk-button uk-button-default uk-button-small uk-margin-large-right' data-uk-tooltip="title: Edit portfolio" onClick={() => this.props.openModalDialog('update_portfolio')}><i className="fas fa-edit"></i> </button>
+                    <button className='uk-button uk-button-default uk-button-small uk-margin-large-right borderless-button' data-uk-tooltip="title: Edit portfolio" onClick={() => this.props.openModalDialog('update_portfolio')}><i className="fas fa-edit"></i> </button>
                     <Link to={accountLink}><button className='uk-button uk-button-default uk-button-small'><i className="fa fa-external-link-alt uk-margin-small-right"></i> Jump to Account</button></Link>
                 </Header>
                 <ul className="uk-tab">
@@ -103,7 +103,7 @@ class PortfolioDetail extends React.Component<PortfolioDetailProps & StateProps 
                     <li className={this.renderActiveTabStyle(4)} onClick={() => this.selectTab(4)}><a href="#"><i className="fas fa-award uk-margin-small-right fa-lg"></i> Recommendations</a></li>
                 </ul>
             
-                <div className="restrict-height-hack">
+                <div>
                     {this.renderContent()}
                 </div>
                 <ModalDialog dialogId="update_portfolio">

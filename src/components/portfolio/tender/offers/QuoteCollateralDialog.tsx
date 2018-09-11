@@ -26,7 +26,7 @@ class QuoteCollateralDialog extends React.Component<QuoteCollateralDialogProps &
                     <td>
                         <a className="uk-button uk-button-default uk-button-small" href={p.documentBlobId} target="_blank">
                             {/* <span className="uk-margin-small-right" data-uk-icon="icon: cloud-download" /> */}
-                            <i className="fa fa-eye uk-margin-small-right"></i>
+                            <i className="far fa-eye uk-margin-small-right"></i>
                             View
                         </a> 
                     </td>

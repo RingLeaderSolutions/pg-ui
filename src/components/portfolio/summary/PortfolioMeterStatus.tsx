@@ -32,10 +32,10 @@ class PortfolioMeterStatus extends React.Component<PortfolioMeterStatusProps & S
             <table className="uk-table uk-table-divider">
             <thead>
                 <tr>
-                    <th>Meter Type</th>
+                    <th>Utility</th>
                     <th>Consumption</th>
-                    <th>Supply Data Provided</th>
-                    <th>Historical Provided</th>
+                    <th data-uk-tooltip="title: The number of meters that have successfully uploaded supply data records">Supply Data</th>
+                    <th data-uk-tooltip="title: The number of meters that have associated historic data provided">Historical</th>
                 </tr>
             </thead>
             <tbody>

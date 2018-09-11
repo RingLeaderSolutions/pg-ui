@@ -102,9 +102,11 @@ class TenderOffersTable extends React.Component<TenderOffersTableProps & StatePr
 
             return (
                 <div key={p.supplierId}>
-                    <div key={p.supplierId} className="uk-card uk-card-small uk-card-default uk-card-body">
-                        <div className="uk-text-center uk-text-middle">
-                            {supplierImage}
+                    <div key={p.supplierId} className="uk-card uk-card-small uk-card-default uk-card-body uk-flex-1">
+                        <div className="uk-grid uk-grid-collapse uk-height-1-1">
+                            <div className="uk-width-expand uk-flex uk-flex-middle uk-flex-center">
+                                {supplierImage}
+                            </div>
                         </div>
                     </div>
                 </div>);
@@ -145,7 +147,7 @@ class TenderOffersTable extends React.Component<TenderOffersTableProps & StatePr
                         <td>
                             <div>
                                 <div className="uk-inline">
-                                    <button className="uk-button uk-button-default" type="button">
+                                    <button className="uk-button uk-button-default borderless-button" type="button">
                                         <i className="fa fa-ellipsis-v"></i>
                                     </button>
                                     <div data-uk-dropdown="pos:bottom-justify;mode:click">
@@ -274,8 +276,8 @@ class TenderOffersTable extends React.Component<TenderOffersTableProps & StatePr
                     {hasReceivedQuotes ? (
                         <div className="uk-margin-small-top">
                             <ul data-uk-tab className="uk-tab">
-                                <li><a href="#"><i className="fas fa-envelope-open uk-margin-small-right fa-lg"></i>Received</a></li>
-                                <li><a href="#"><i className="fas fa-hourglass-half uk-margin-small-right fa-lg"></i>Pending Responses ({pendingQuotes.length})</a></li>
+                                <li><a href="#"><i className="fas fa-envelope-open uk-margin-small-right fa-lg" style={{color: "#006400"}}></i>Received</a></li>
+                                <li><a href="#"><i className="fas fa-hourglass-half uk-margin-small-right fa-lg" style={{color: "#FFA500"}}></i>Pending Responses ({pendingQuotes.length})</a></li>
                             </ul>
                             <ul className='uk-switcher'>
                                 <li>{this.renderReceivedOffers(receivedQuotes)}</li>
@@ -312,7 +314,7 @@ class TenderOffersTable extends React.Component<TenderOffersTableProps & StatePr
 
     renderUnissued(){
         if(this.props.tender.unissuedPacks == null || this.props.tender.unissuedPacks.length == 0){
-            return (<p>There are no unissued requirements packs for this tender.</p>);
+            return (<p key="unissued-none">There are no unissued requirements packs for this tender.</p>);
         }
 
         var tableContent = this.props.tender.unissuedPacks.map(p => {
