@@ -16,7 +16,8 @@ import {
     UtilityType,
     AccountDetail,
     SiteDetail,
-    AccountDocument
+    AccountDocument,
+    InstanceDetail
 } from '../model/Models';
 import { PortfolioDetails } from '../model/PortfolioDetails';
 import { BackingSheet, Tender, TenderContract, TenderSupplier, TenderIssuanceEmail, Tariff, TenderRequirements } from '../model/Tender';
@@ -1092,7 +1093,20 @@ export class FakeApiService implements IApiService {
     }
 
     fetchInstanceDetails(){
-        return OK();
+        var data: InstanceDetail = {
+            contactus: '01 111 111111',
+            address: 'HQ',
+            buildType: null,
+            consul: 'host(localhost) port(8500) key(test) ',
+            name: 'Ringleader Solutions',
+            logoUri: 'https://portfoliotest.blob.core.windows.net/suppliers/tpi-flow-logo.png',
+            summaryGasTemplate: 'TenderSummaryReportv7Gas_rls.xls',
+            mongodb: 'mpan',
+            email: 'testflow@ringleadersolutions.com',
+            summaryElectricityTemplate: 'TenderSummaryReportv7_rls.xls'
+          };
+
+        return OK(data);
     }
 
     fetchTenderOffers(portfolioId: string){

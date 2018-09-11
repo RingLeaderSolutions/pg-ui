@@ -67,7 +67,7 @@ export interface InstanceDetail {
     logoUri: string;
     mongodb: string;
     name: string;
-    sumamryElectricityTemplate: string;
+    summaryElectricityTemplate: string;
     summaryGasTemplate: string;
 }
 
