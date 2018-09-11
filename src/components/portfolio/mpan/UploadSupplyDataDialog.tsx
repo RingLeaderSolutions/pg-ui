@@ -66,7 +66,7 @@ class UploadSupplyDataDialog extends React.Component<UploadSupplyDataDialogProps
                 </div>
                 <div className="uk-modal-footer uk-text-right">
                     <button className="uk-button uk-button-default uk-margin-right" type="button" onClick={() => this.props.closeModalDialog()}><i className="fa fa-times uk-margin-small-right"></i>Cancel</button>
-                    <button className="uk-button uk-button-primary" type="button" onClick={() => this.upload} disabled={this.state.file == null}><i className="fa fa-arrow-circle-up uk-margin-small-right"></i>Upload</button>
+                    <button className="uk-button uk-button-primary" type="button" onClick={() => this.upload()} disabled={this.state.file == null}><i className="fa fa-arrow-circle-up uk-margin-small-right"></i>Upload</button>
                 </div>
             </div>)
     }
