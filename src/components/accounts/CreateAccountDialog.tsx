@@ -33,7 +33,6 @@ class CreateAccountDialog extends React.Component<CreateAccountDialogProps & Sta
             incorporationDate: defaultDate
         };
 
-        console.log('create acc date:' + defaultDate.format());
         this.handleIncorporationDateChange = this.handleIncorporationDateChange.bind(this);
         this.createAccount = this.createAccount.bind(this);
     }

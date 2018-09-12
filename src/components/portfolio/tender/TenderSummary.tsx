@@ -11,6 +11,7 @@ import TenderView from "./TenderView";
 import { selectPortfolioTenderTab, openModalDialog } from "../../../actions/viewActions";
 import ModalDialog from "../../common/ModalDialog";
 import CreateTenderDialog from "./CreateTenderDialog";
+import { TenderUtilityIconTabHeader, UtilityIcon } from "../../common/UtilityIcon";
 
 interface TenderSummaryProps {
     portfolio: Portfolio;
@@ -115,39 +116,22 @@ class TenderSummary extends React.Component<TenderSummaryProps & StateProps & Di
         return (<TenderView tender={intendedTender} details={this.props.details} utility={utility} />);
     }
     
-    getTenderTabTitle(tender: Tender){
-        switch(tender.utility){
-            case "ELECTRICITY":
-                var elecIcon = (<i className="fa fa-bolt uk-margin-small-right fa-lg"></i>);
-                var clockIcon = (<i className="fa fa-clock uk-margin-small-right fa-lg"></i>);
-
-                var title =  tender.halfHourly ? "Electricity (HH)" : "Electricity (NHH)";
-                return (<div>{elecIcon}{tender.halfHourly ? clockIcon : null}{title}</div>);
-            case "GAS":
-                return (<div><i className="fa fa-fire uk-margin-small-right fa-lg"></i>Gas</div>);
-        }
-    }
-
     getTenderCreationContent(tenderTypeIndex: number){
         switch(tenderTypeIndex){
             case 0:
                 return (
                     <a href="#" onClick={() => this.props.openModalDialog("create_hh_tender")}>
-                        <i className="fas fa-bolt uk-margin-small-right"></i>
-                        <i className="fas fa-clock uk-margin-small-right"></i>
-                        Add HH Tender
+                        <UtilityIcon utility="hh" iconClass="uk-margin-small-right">Add HH Tender</UtilityIcon>
                     </a>);
             case 1:
                 return (
                     <a href="#" onClick={() => this.props.openModalDialog("create_nhh_tender")}>
-                        <i className="fas fa-bolt uk-margin-small-right"></i>
-                        Add NHH Tender
+                        <UtilityIcon utility="nhh" iconClass="uk-margin-small-right">Add NHH Tender</UtilityIcon>
                     </a>);
             case 2:
                 return (
                     <a href="#" onClick={() => this.props.openModalDialog("create_gas_tender")}>
-                        <i className="fas fa-fire uk-margin-small-right"></i>
-                        Add Gas Tender
+                        <UtilityIcon utility="hh" iconClass="uk-margin-small-right">Add Gas Tender</UtilityIcon>
                     </a>);
         }
     }
@@ -168,7 +152,7 @@ class TenderSummary extends React.Component<TenderSummaryProps & StateProps & Di
                 continue;
             }
 
-            let tab = (<li key={i} className={this.renderActiveTabStyle(i)} onClick={() => this.selectTab(i)}><a href='#'>{this.getTenderTabTitle(tender)}</a></li>);
+            let tab = (<li key={i} className={this.renderActiveTabStyle(i)} onClick={() => this.selectTab(i)}><a href='#'><TenderUtilityIconTabHeader tender={tender} /></a></li>);
             tabs.push(tab);
         }
 

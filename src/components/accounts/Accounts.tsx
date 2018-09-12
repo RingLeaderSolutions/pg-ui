@@ -12,6 +12,7 @@ import ReactTable, { Column } from "react-table";
 import { BooleanCellRenderer } from "../common/TableHelpers";
 import { openModalDialog, selectApplicationTab } from "../../actions/viewActions";
 import ModalDialog from "../common/ModalDialog";
+import * as moment from 'moment';
 
 interface AccountsProps extends RouteComponentProps<void> {
 }
@@ -54,7 +55,8 @@ interface AccountTableEntry {
 class Accounts extends React.Component<AccountsProps & StateProps & DispatchProps, AccountsState> {
     columns: Column[] = [{
         Header: 'Name',
-        accessor: 'name'
+        accessor: 'name',
+        width: 150
     },{
         Header: 'Reg No.',
         accessor: 'regNumber'
@@ -161,7 +163,7 @@ class Accounts extends React.Component<AccountsProps & StateProps & DispatchProp
                 regNumber: account.companyRegistrationNumber,
                 country: account.countryOfOrigin,
                 postcode: account.postcode,
-                incorporationDate: account.incorporationDate,
+                incorporationDate: moment(account.incorporationDate).format("DD/MM/YYYY"),
                 status: account.companyStatus,
                 creditRating: account.creditRating,
                 registeredCharity: account.isRegisteredCharity,

@@ -171,16 +171,14 @@ class PortfolioMeters extends React.Component<PortfolioMetersProps & StateProps 
         var includedElecMeters = this.props.consumption.electrictyConsumptionEntries.map(r => r[1]);
         var includedGasMeters = this.props.consumption.gasConsumptionEntries.map(r => r[1]);
         return (
-            <div className="restrict-height-hack">
-                <div className='uk-flex uk-flex-column portfolio-meters restrict-height-hack'>
-                    <div className="uk-overflow-auto restrict-height-hack">
-                        <ul className="uk-tab">
-                            <li className={this.renderActiveTabStyle(0)} onClick={() => this.selectTab(0)}><a href="#"><i className="fa fa-bolt uk-margin-small-right fa-lg"></i>Electricity</a></li>
-                            <li className={this.renderActiveTabStyle(1)} onClick={() => this.selectTab(1)}><a href="#"><i className="fa fa-fire uk-margin-small-right fa-lg"></i>Gas</a></li>
-                        </ul>
-                        <div>
-                            {this.renderSelectedTable()}
-                        </div>
+            <div>
+                <div className='uk-flex uk-flex-column portfolio-meters'>
+                    <ul className="uk-tab">
+                        <li className={this.renderActiveTabStyle(0)} onClick={() => this.selectTab(0)}><a href="#"><i className="fa fa-bolt uk-margin-small-right fa-lg"></i>Electricity</a></li>
+                        <li className={this.renderActiveTabStyle(1)} onClick={() => this.selectTab(1)}><a href="#"><i className="fa fa-fire uk-margin-small-right fa-lg"></i>Gas</a></li>
+                    </ul>
+                    <div>
+                        {this.renderSelectedTable()}
                     </div>
                 </div>
 

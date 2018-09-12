@@ -1,16 +1,14 @@
 import * as React from "react";
 import { MapDispatchToPropsFunction, connect, MapStateToProps } from 'react-redux';
-import { ApplicationState } from '../../../applicationState';
-import Spinner from '../../common/Spinner';
+import { ApplicationState } from '../../applicationState';
+import Spinner from '../common/Spinner';
 
-import { updateExistingContract } from '../../../actions/tenderActions';
-import { TenderContract, TenderSupplier } from "../../../model/Tender";
-import { closeModalDialog } from "../../../actions/viewActions";
+import { updateAccountContract } from '../../actions/tenderActions';
+import { TenderContract, TenderSupplier } from "../../model/Tender";
+import { closeModalDialog } from "../../actions/viewActions";
 
-interface UpdateExistingContractDialogProps {
-    portfolioId: string;
-    tenderId: string;
-    existingContract: TenderContract;
+interface UpdateContractDialogProps {
+    contract: TenderContract;
 }
 
 interface StateProps {
@@ -21,51 +19,46 @@ interface StateProps {
 }
   
 interface DispatchProps {
-    updateExistingContract: (portfolioId: string, tenderId: string, contract: TenderContract) => void;
+    updateExistingContract: (contract: TenderContract) => void;
     closeModalDialog: () => void;
 }
 
-interface UpdateExistingContractDialogState {
+interface UpdateContractDialogState {
     contractRef: string;
     supplier: string;
     product: string;
 }
 
-class UpdateExistingContractDialog extends React.Component<UpdateExistingContractDialogProps & StateProps & DispatchProps, UpdateExistingContractDialogState> {
-    constructor(props: UpdateExistingContractDialogProps & StateProps & DispatchProps) {
+class UpdateContractDialog extends React.Component<UpdateContractDialogProps & StateProps & DispatchProps, UpdateContractDialogState> {
+    constructor(props: UpdateContractDialogProps & StateProps & DispatchProps) {
         super();
         this.state = {
-            contractRef: props.existingContract.reference,
-            supplier: props.existingContract.supplierId,
-            product: props.existingContract.product
+            contractRef: props.contract.reference,
+            supplier: props.contract.supplierId,
+            product: props.contract.product
         }
     }
 
-    componentWillReceiveProps(nextProps: UpdateExistingContractDialogProps & StateProps & DispatchProps){
-        if(nextProps.existingContract != null) {
+    componentWillReceiveProps(nextProps: UpdateContractDialogProps & StateProps & DispatchProps){
+        if(nextProps.contract != null) {
             this.setState({
-                contractRef: nextProps.existingContract.reference,
-                supplier: nextProps.existingContract.supplierId,
-                product: nextProps.existingContract.product
+                contractRef: nextProps.contract.reference,
+                supplier: nextProps.contract.supplierId,
+                product: nextProps.contract.product
             });
         }
     }
 
     addExistingContract(){
         var contract: TenderContract = {
-            contractId: this.props.existingContract.contractId,
+            ...this.props.contract,
+            
             supplierId: this.state.supplier,
-            accountId: this.props.existingContract.accountId,
             product: this.state.product,
-            reference: this.state.contractRef,
-            utility: this.props.existingContract.utility,
-            incumbent: this.props.existingContract.incumbent,
-            uploaded: this.props.existingContract.uploaded,
-            status: this.props.existingContract.status,
-            sheetCount: this.props.existingContract.sheetCount
+            reference: this.state.contractRef
         };
 
-        this.props.updateExistingContract(this.props.portfolioId, this.props.tenderId, contract);
+        this.props.updateExistingContract(contract);
         this.props.closeModalDialog();
     }
 
@@ -145,20 +138,20 @@ class UpdateExistingContractDialog extends React.Component<UpdateExistingContrac
     }
 }
 
-const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, UpdateExistingContractDialogProps> = (dispatch) => {
+const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, UpdateContractDialogProps> = (dispatch) => {
     return {
-        updateExistingContract: (portfolioId: string, tenderId: string, contract: TenderContract) => dispatch(updateExistingContract(portfolioId, tenderId, contract)),
+        updateExistingContract: (contract: TenderContract) => dispatch(updateAccountContract(contract)),
         closeModalDialog: () => dispatch(closeModalDialog()) 
     };
 };
   
-const mapStateToProps: MapStateToProps<StateProps, UpdateExistingContractDialogProps> = (state: ApplicationState) => {
+const mapStateToProps: MapStateToProps<StateProps, UpdateContractDialogProps> = (state: ApplicationState) => {
     return {
-        suppliers: state.portfolio.tender.suppliers.value,
-        working: state.portfolio.tender.addExistingContract.working || state.portfolio.tender.suppliers.working,
+        suppliers: state.suppliers.value,
+        working: state.portfolio.tender.addExistingContract.working || state.suppliers.working,
         error: state.portfolio.tender.addExistingContract.error,
         errorMessage: state.portfolio.tender.addExistingContract.errorMessage
     };
 };
   
-export default connect(mapStateToProps, mapDispatchToProps)(UpdateExistingContractDialog);
+export default connect(mapStateToProps, mapDispatchToProps)(UpdateContractDialog);

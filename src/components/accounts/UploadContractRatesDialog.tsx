@@ -1,20 +1,17 @@
 import * as React from "react";
 import { MapDispatchToPropsFunction, connect, MapStateToProps } from 'react-redux';
-import { ApplicationState } from '../../../applicationState';
+import { ApplicationState } from '../../applicationState';
 
-import { uploadElectricityBackingSheet, uploadGasBackingSheet } from '../../../actions/tenderActions';
-import { closeModalDialog } from "../../../actions/viewActions";
-import { UploadPanel } from "../../common/UploadPanel";
+import { uploadElectricityBackingSheet, uploadGasBackingSheet } from '../../actions/tenderActions';
+import { closeModalDialog } from "../../actions/viewActions";
+import { UploadPanel } from "../common/UploadPanel";
 
-interface UploadBackingSheetDialogProps {
+interface UploadContractRatesDialogProps {
     contractId: string;
     utilityType: string;
 }
 
 interface StateProps {
-  working: boolean;
-  error: boolean;
-  errorMessage: string;
 }
 
 interface DispatchProps {
@@ -23,11 +20,11 @@ interface DispatchProps {
     closeModalDialog: () => void;
 }
 
-interface UploadBackingSheetState {
+interface UploadContractRatesDialogState {
     file: File;
 }
 
-class UploadBackingSheetDialog extends React.Component<UploadBackingSheetDialogProps & StateProps & DispatchProps, UploadBackingSheetState> {
+class UploadContractRatesDialog extends React.Component<UploadContractRatesDialogProps & StateProps & DispatchProps, UploadContractRatesDialogState> {
     constructor(){
         super();
         this.state = {
@@ -93,7 +90,7 @@ class UploadBackingSheetDialog extends React.Component<UploadBackingSheetDialogP
     }
 }
 
-const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, UploadBackingSheetDialogProps> = (dispatch) => {
+const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, UploadContractRatesDialogProps> = (dispatch) => {
     return {
         uploadElectricityBackingSheet: (contractId: string, useGeneric: boolean, file: Blob) => dispatch(uploadElectricityBackingSheet(contractId, useGeneric, file)),
         uploadGasBackingSheet: (contractId: string, useGeneric: boolean, file: Blob) => dispatch(uploadGasBackingSheet(contractId, useGeneric, file)),
@@ -101,12 +98,9 @@ const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, UploadBackin
     };
 };
   
-const mapStateToProps: MapStateToProps<StateProps, UploadBackingSheetDialogProps> = (state: ApplicationState) => {
+const mapStateToProps: MapStateToProps<StateProps, UploadContractRatesDialogProps> = (state: ApplicationState) => {
     return {
-        working: state.portfolio.details.working,
-        error: state.portfolio.details.error,
-        errorMessage: state.portfolio.details.errorMessage
     };
 };
   
-export default connect(mapStateToProps, mapDispatchToProps)(UploadBackingSheetDialog);
+export default connect(mapStateToProps, mapDispatchToProps)(UploadContractRatesDialog);

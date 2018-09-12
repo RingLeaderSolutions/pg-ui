@@ -258,7 +258,17 @@ class AccountElectricityMeterTable extends React.Component<AccountElectricityMet
                         </form>
                         {actions}
                     </div>
-                    <p className="uk-text-meta uk-text-center">{missingDataMessage} Try uploading meter supply data with the button above.</p>
+                    <hr />
+                    <div className="uk-alert-default uk-margin-right uk-alert" data-uk-alert>
+                        <div className="uk-grid uk-grid-small" data-uk-grid>
+                            <div className="uk-width-auto uk-flex uk-flex-middle">
+                                <i className="fas fa-info-circle uk-margin-small-right"></i>
+                            </div>
+                            <div className="uk-width-expand uk-flex uk-flex-middle">
+                                <p>{missingDataMessage} Click on the button above to get started.</p>    
+                            </div>
+                        </div>
+                    </div>
                 </div>);
         }        
 

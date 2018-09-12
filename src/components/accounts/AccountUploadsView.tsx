@@ -52,15 +52,15 @@ class AccountUploadsView extends React.Component<AccountUploadsViewProps & State
             var requestTime = moment.utc(r.requested).local().fromNow();   
             return (
                 <tr key={r.id}>
-                    <td>{r.dataType}</td>
-                    <td>{r.notes}</td>
+                    <td>{r.dataType == "SUPPLYDATA" ? "Supply Data" : r.dataType}</td>
+                    <td>{r.notes == null || r.notes == "" ? <i>None</i> : r.notes}</td>
                     <td>{requestTime}</td>
                     <td><div className="user">
                         <img className="avatar" src={r.requestor.avatarUrl} />
                         <p>{r.requestor.firstName} {r.requestor.lastName}</p>
                     </div></td>
                     <td>
-                        <button className='uk-button uk-button-default uk-button-small' onClick={() => this.fetchUploadReport(r.resultDocId)}><i className="far fa-eye uk-margin-small-right"></i></button>
+                        <button className='uk-button uk-button-default uk-button-small' onClick={() => this.fetchUploadReport(r.resultDocId)}><i className="far fa-eye"></i></button>
                     </td>
                 </tr>
             )
@@ -83,7 +83,7 @@ class AccountUploadsView extends React.Component<AccountUploadsViewProps & State
                             <th>Type</th>
                             <th>Notes</th>
                             <th>Uploaded</th>
-                            <th>Requester</th>
+                            <th>Uploader</th>
                             <th></th>
                         </tr>
                     </thead>

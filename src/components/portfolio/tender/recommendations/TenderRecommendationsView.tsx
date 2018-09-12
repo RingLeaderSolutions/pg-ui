@@ -9,6 +9,7 @@ import { fetchTenderRecommendations } from '../../../../actions/tenderActions';
 import { Tender } from "../../../../model/Tender";
 import { selectTenderRecommendationsTab } from "../../../../actions/viewActions";
 import TenderRecommendationsList from "./TenderRecommendationsList";
+import { TenderUtilityIconTabHeader } from "../../../common/UtilityIcon";
 
 interface TenderRecommendationsViewProps {
     portfolio: Portfolio;
@@ -100,26 +101,13 @@ class TenderRecommendationsView extends React.Component<TenderRecommendationsVie
         return (<TenderRecommendationsList tender={intendedTender}/>)
     }
 
-    getTenderTabTitle(tender: Tender){
-        switch(tender.utility){
-            case "ELECTRICITY":
-                var elecIcon = (<i className="fa fa-bolt uk-margin-small-right fa-lg"></i>);
-                var clockIcon = (<i className="fa fa-clock uk-margin-small-right fa-lg"></i>);
-
-                var title =  tender.halfHourly ? "Electricity (HH)" : "Electricity (NHH)";
-                return (<div>{elecIcon}{tender.halfHourly ? clockIcon : null}{title}</div>);
-            case "GAS":
-                return (<div><i className="fa fa-fire uk-margin-small-right fa-lg"></i>Gas</div>);
-        }
-    }
-
     renderTabs(){
         var tabs = []
         for(let i = 0; i < 3; i++){
             let tender = this.state.tenderMap.get(i);
 
             if(tender != null) {
-                let tab = (<li key={i} className={this.renderActiveTabStyle(i)} onClick={() => this.selectTab(i)}><a href='#'>{this.getTenderTabTitle(tender)}</a></li>);
+                let tab = (<li key={i} className={this.renderActiveTabStyle(i)} onClick={() => this.selectTab(i)}><a href='#'><TenderUtilityIconTabHeader tender={tender} /></a></li>);
                 tabs.push(tab);
             }
         }

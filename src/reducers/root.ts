@@ -27,7 +27,6 @@ import { TenderState } from './tender/TenderState';
 
 import addExistingContractReducer from './tender/addExistingContractReducer';
 import tendersReducer from './tender/tendersReducer';
-import tenderSuppliersReducer from './tender/tenderSuppliersReducer';
 import deleteTenderReducer from './tender/deleteTenderReducer';
 import deleteQuoteReducer from './tender/deleteQuoteReducer';
 import createTenderReducer from './tender/createTenderReducer';
@@ -55,7 +54,6 @@ const tenderReducer: Reducer<TenderState> = combineReducers<TenderState>({
     selected_recommendation_summary: fetchRecommendationSummaryReducer,
     selected_recommendation_suppliers: fetchRecommendationSuppliersReducer,
     selected_recommendation_sites: fetchRecommendationSitesReducer,
-    suppliers: tenderSuppliersReducer,
     addExistingContract: addExistingContractReducer,
     delete_tender: deleteTenderReducer,
     create_tender: createTenderReducer,
@@ -142,6 +140,7 @@ import retrieveAccountDetailReducer from './hierarchy/retrieveAccountDetailReduc
 import fetchAccountDocumentationReducer from './hierarchy/fetchAccountDocumentationReducer';
 import fetchAccountUploadsReducer from './hierarchy/fetchAccountUploadsReducer';
 import fetchAccountPortfoliosReducer from './hierarchy/fetchAccountPortfoliosReducer';
+import fetchAccountContractsReducer from './hierarchy/fetchAccountContractsReducer';
 
 const hierarchyReducer: Reducer<HierarchyState> = combineReducers<HierarchyState>({
     accounts: retrieveAccountsReducer,
@@ -149,7 +148,8 @@ const hierarchyReducer: Reducer<HierarchyState> = combineReducers<HierarchyState
     selected_documentation: fetchAccountDocumentationReducer,
     selected_uploads: fetchAccountUploadsReducer,
     create_account: accountCreationReducer,
-    selected_portfolios: fetchAccountPortfoliosReducer
+    selected_portfolios: fetchAccountPortfoliosReducer,
+    selected_contracts: fetchAccountContractsReducer
 });
 
 import { ViewState } from './view/ViewState';
@@ -164,6 +164,8 @@ const viewReducer: Reducer<ViewState> = combineReducers<ViewState>({
     modal: modalDialogReducer,
     app: appViewReducer
 });
+
+import tenderSuppliersReducer from './tender/tenderSuppliersReducer';
 
 import selectedUploadReportReducer from './selectedUploadReportReducer';
 import fetchUsersReducer from './fetchUsersReducer';
@@ -180,6 +182,7 @@ const rootReducer: Reducer<ApplicationState> = combineReducers<ApplicationState>
     backend_version: fetchBackendVersionReducer,
     instance_detail: fetchInstanceDetailReducer,
     hierarchy: hierarchyReducer,
+    suppliers: tenderSuppliersReducer,
     selected_upload_report: selectedUploadReportReducer,
     users: fetchUsersReducer,
     view: viewReducer

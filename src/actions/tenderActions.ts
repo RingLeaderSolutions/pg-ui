@@ -8,6 +8,93 @@ import { Dispatch } from 'redux';
 
 import { makeApiRequest } from "./Common";
 
+export function getAccountContracts(accountId: string){    
+    return (dispatch: Dispatch<any>) => {
+        let fetchPromise = ApiService.fetchAccountContracts(accountId);
+        dispatch({ type: types.FETCH_ACCOUNT_CONTRACTS_WORKING });
+
+        makeApiRequest(dispatch,
+            fetchPromise,
+            200, 
+            data => {
+                return { type: types.FETCH_ACCOUNT_CONTRACTS_SUCCESSFUL, data: data as TenderContract[] };
+            }, 
+            error => {
+                return { type: types.FETCH_ACCOUNT_CONTRACTS_FAILED, errorMessage: error };
+            });
+    }
+};
+
+export function createAccountContract(accountId: string, contract: TenderContract){
+    return (dispatch: Dispatch<any>) => {
+        let createPromise = ApiService.createAccountContract(accountId, contract);
+        dispatch({ type: types.CREATE_ACCOUNT_CONTRACT_WORKING });
+
+        makeApiRequest(dispatch,
+            createPromise,
+            200, 
+            data => {
+                return { type: types.CREATE_ACCOUNT_CONTRACT_FAILED, data: null};
+                
+            }, 
+            error => {
+                return { type: types.CREATE_ACCOUNT_CONTRACT_SUCCESSFUL, errorMessage: error };
+            });
+    };
+}
+
+export function updateAccountContract(contract: TenderContract){
+    return (dispatch: Dispatch<any>) => {
+        let createPromise = ApiService.updateAccountContract(contract);
+        dispatch({ type: types.UPDATE_ACCOUNT_CONTRACT_WORKING });
+
+        makeApiRequest(dispatch,
+            createPromise,
+            200, 
+            data => {
+                return { type: types.UPDATE_ACCOUNT_CONTRACT_SUCCESSFUL, data: null};
+                
+            }, 
+            error => {
+                return { type: types.UPDATE_ACCOUNT_CONTRACT_FAILED, errorMessage: error };
+            });
+    };
+}
+
+export function deleteAccountContract(contractId: string){
+    return (dispatch: Dispatch<any>) => {
+        let createPromise = ApiService.deleteAccountContract(contractId);
+        dispatch({ type: types.DELETE_ACCOUNT_CONTRACT_WORKING });
+
+        makeApiRequest(dispatch,
+            createPromise,
+            200, 
+            data => {
+                return { type: types.DELETE_ACCOUNT_CONTRACT_SUCCESSFUL, data: null};
+                
+            }, 
+            error => {
+                return { type: types.DELETE_ACCOUNT_CONTRACT_FAILED, errorMessage: error };
+            });
+    };
+}
+
+export function fetchAccountContractRates(contractId: string){    
+    return (dispatch: Dispatch<any>) => {
+        let fetchPromise = ApiService.fetchAccountContractRates(contractId);
+        dispatch( { type: types.FETCH_ACCOUNT_CONTRACT_BACKINGSHEETS_WORKING });
+
+        makeApiRequest(dispatch,
+            fetchPromise,
+            200, 
+            data => {
+                return { type: types.FETCH_ACCOUNT_CONTRACT_BACKINGSHEETS_SUCCESSFUL, data: data as ContractRatesResponse };
+            }, 
+            error => {
+                return { type: types.FETCH_ACCOUNT_CONTRACT_BACKINGSHEETS_FAILED, errorMessage: error };
+            });
+    }
+};
 
 export function getPortfolioTenders(portfolioId: string){    
     return (dispatch: Dispatch<any>) => {

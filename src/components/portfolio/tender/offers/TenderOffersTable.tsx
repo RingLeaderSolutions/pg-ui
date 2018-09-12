@@ -376,7 +376,17 @@ class TenderOffersTable extends React.Component<TenderOffersTableProps & StatePr
                 return this.renderUnissued();
             }
 
-            return (<p className="uk-margin-small">No requirements packs have been generated or issued for this tender yet<i> Generate some using the menu above.</i>.</p>);
+            return (
+                <div className="uk-alert-default uk-margin uk-margin-large-top uk-alert" data-uk-alert>
+                    <div className="uk-grid uk-grid-small" data-uk-grid>
+                        <div className="uk-width-auto uk-flex uk-flex-middle">
+                            <i className="fas fa-info-circle uk-margin-small-right"></i>
+                        </div>
+                        <div className="uk-width-expand uk-flex uk-flex-middle">
+                            <p>No requirements packs have been generated yet. Click the Generate New button to get started.</p>    
+                        </div>
+                    </div>
+                </div>);
         }
         
         var tabs: any = [];
@@ -434,10 +444,10 @@ class TenderOffersTable extends React.Component<TenderOffersTableProps & StatePr
             let content = (
                     <div className="uk-alert-warning uk-margin-small-bottom uk-alert" data-uk-alert>
                         <div className="uk-grid uk-grid-small" data-uk-grid>
-                            <div className="uk-width-auto">
+                            <div className="uk-width-auto uk-flex uk-flex-middle">
                                 <i className="fas fa-exclamation-triangle uk-margin-small-right"></i>
                             </div>
-                            <div className="uk-width-expand">
+                            <div className="uk-width-expand uk-flex uk-flex-middle">
                                 <p>Tender setup appears to be incomplete. Please ensure an existing contract has been created and its rates have been uploaded.</p>    
                             </div>
                         </div>
@@ -486,8 +496,8 @@ const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, TenderOffers
   
 const mapStateToProps: MapStateToProps<StateProps, TenderOffersTableProps> = (state: ApplicationState) => {
     return {
-        suppliers: state.portfolio.tender.suppliers.value,
-        working: state.portfolio.tender.suppliers.working
+        suppliers: state.suppliers.value,
+        working: state.suppliers.working
     };
 };
   

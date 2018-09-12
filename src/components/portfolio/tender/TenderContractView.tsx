@@ -4,11 +4,8 @@ import { ApplicationState } from '../../../applicationState';
 
 import { fetchContractBackingSheets } from '../../../actions/tenderActions';
 import { Tender, TenderSupplier } from "../../../model/Tender";
-import UploadBackingSheetDialog from './UploadBackingSheetDialog';
-import AddExistingContractDialog from './AddExistingContractDialog';
 import TenderBackingSheetsDialog from './TenderBackingSheetsDialog';
 import Spinner from "../../common/Spinner";
-import UpdateExistingContractDialog from "./UpdateExistingContractDialog";
 import { format } from 'currency-formatter';
 import ModalDialog from "../../common/ModalDialog";
 import { openModalDialog } from "../../../actions/viewActions";
@@ -30,15 +27,10 @@ interface DispatchProps {
 
 class TenderContractView extends React.Component<TenderContractViewProps & DispatchProps & StateProps, {}> { 
     renderAddExistingContract(){
-        var addExistingContractDialogName = `add_contract_${this.props.tender.tenderId}`;
+        // TODO: what to show here?
         return (
             <div>
-                <div>
-                    <button className="uk-button uk-button-primary" type="button" onClick={() => this.props.openModalDialog(addExistingContractDialogName)}>Add existing contract</button>
-                </div>
-                <ModalDialog dialogId={addExistingContractDialogName}>
-                    <AddExistingContractDialog tender={this.props.tender} portfolioId={this.props.portfolioId} />
-                </ModalDialog>
+                <p> No existing contract found - one can be added on the Accounts screen</p>
             </div>);
     }
 
@@ -74,17 +66,13 @@ class TenderContractView extends React.Component<TenderContractViewProps & Dispa
         )
     }
 
-    fetchRatesAndOpenDialog(dialogName: string){
+    fetchRatesAndOpenDialog(){
         let contractId = this.props.tender.existingContract.contractId;
         this.props.fetchContractBackingSheets(this.props.tender.tenderId, contractId);
-        this.props.openModalDialog(dialogName);
+        this.props.openModalDialog("view_tender_contract_rates");
     }
 
     renderContractActions(hasContractRates: boolean){
-        var uploadExistingDialogName = `upload_contract_${this.props.tender.tenderId}`;
-        var viewContractDialogName = `view_contract_${this.props.tender.tenderId}`;
-        var editContractDialogName = `edit_contract_${this.props.tender.tenderId}`;
-
         return (
             <div>
                 <div>
@@ -94,12 +82,7 @@ class TenderContractView extends React.Component<TenderContractViewProps & Dispa
                         </button>
                         <div data-uk-dropdown="pos:bottom-justify;mode:click">
                             <ul className="uk-nav uk-dropdown-nav">
-                                <li><a href="#" onClick={() => this.props.openModalDialog(uploadExistingDialogName)}>
-                                    <i className="fas fa-file-upload uk-margin-small-right"></i>
-                                    Upload Contract Rates
-                                </a></li>
-                                <li className="uk-nav-divider"></li>
-                                { hasContractRates ? (<li><a href="#" onClick={() => this.fetchRatesAndOpenDialog(viewContractDialogName)}>
+                                { hasContractRates ? (<li><a href="#" onClick={() => this.fetchRatesAndOpenDialog()}>
                                     <i className="fa fa-pound-sign uk-margin-small-right"></i>
                                     View Contract Rates
                                 </a></li>) : null }
@@ -107,18 +90,6 @@ class TenderContractView extends React.Component<TenderContractViewProps & Dispa
                         </div>
                     </div>
                 </div>
-
-                <ModalDialog dialogId={uploadExistingDialogName}>
-                    <UploadBackingSheetDialog contractId={this.props.tender.existingContract.contractId} utilityType={this.props.tender.utility} />
-                </ModalDialog>
-
-                <ModalDialog dialogId={viewContractDialogName} dialogClass="backing-sheet-modal">
-                    <TenderBackingSheetsDialog />
-                </ModalDialog>
-
-                <ModalDialog dialogId={editContractDialogName}>
-                    <UpdateExistingContractDialog existingContract={this.props.tender.existingContract} portfolioId={this.props.portfolioId} tenderId={this.props.tender.tenderId} />
-                </ModalDialog>
             </div>
         )
     }
@@ -144,6 +115,7 @@ class TenderContractView extends React.Component<TenderContractViewProps & Dispa
 
         var hasContractRates = this.props.tender.existingContract.sheetCount > 0;
         var warningMessage = null;
+        // TODO: improve this warning message
         if(!hasContractRates){
             warningMessage = (
                 <div className="uk-alert-warning uk-margin-small-top uk-margin-small-bottom" data-uk-alert>
@@ -152,29 +124,17 @@ class TenderContractView extends React.Component<TenderContractViewProps & Dispa
         }
 
         var contractInfo = this.renderContractInfo();
-        var actions = this.renderContractActions(hasContractRates);
-
-        var editContractDialogName = `edit_contract_${this.props.tender.tenderId}`;
 
         return (
             <div className="uk-card uk-card-small uk-card-default uk-card-body">
-                <div className="uk-grid">
-                    <div className="uk-width-auto uk-flex uk-flex-middle">
-                        <h3>Existing Contract</h3>
-                    </div>
-                    <div className="uk-width-expand uk-flex uk-flex-middle">
-                        <button className="uk-button uk-button-default uk-button-small borderless-button" type="button" onClick={() => this.props.openModalDialog(editContractDialogName)}>
-                            <i className="fas fa-edit"></i>
-                        </button>
-                    </div>
-                    <div className="uk-width-auto uk-flex uk-flex-middle">
-                        {actions}
-                    </div>
-                </div>
+                <h3>Existing Contract {this.renderContractActions(hasContractRates)}</h3>
                 <div>
                     {contractInfo}
                     {warningMessage}
                 </div>
+                <ModalDialog dialogId="view_tender_contract_rates" dialogClass="backing-sheet-modal">
+                    <TenderBackingSheetsDialog />
+                </ModalDialog>
             </div>);
     }
 }
@@ -188,8 +148,8 @@ const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, TenderContra
   
 const mapStateToProps: MapStateToProps<StateProps, TenderContractViewProps> = (state: ApplicationState) => {
     return {
-        suppliers: state.portfolio.tender.suppliers.value,
-        working: state.portfolio.tender.suppliers.working
+        suppliers: state.suppliers.value,
+        working: state.suppliers.working
     };
 };
   

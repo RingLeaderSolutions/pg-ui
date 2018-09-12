@@ -9,6 +9,7 @@ import { HierarchyState } from './reducers/hierarchy/HierarchyState';
 import { SelectedUploadReportState } from './reducers/selectedUploadReportReducer';
 import { UsersState } from './reducers/fetchUsersReducer';
 import { ViewState } from './reducers/view/ViewState';
+import { TenderSuppliersState } from './reducers/tender/tenderSuppliersReducer';
 
 export interface ApplicationState {    
     portfolio: PortfolioState;
@@ -20,6 +21,7 @@ export interface ApplicationState {
     backend_version: RequestState;
     instance_detail: RequestState;
     hierarchy: HierarchyState;
+    suppliers: TenderSuppliersState;
     selected_upload_report: SelectedUploadReportState;
     users: UsersState;
     view: ViewState;

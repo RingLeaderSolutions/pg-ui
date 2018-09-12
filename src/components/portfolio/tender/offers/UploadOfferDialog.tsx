@@ -129,7 +129,7 @@ const mapStateToProps: MapStateToProps<StateProps, UploadOfferDialogProps> = (st
         working: state.portfolio.details.working,
         error: state.portfolio.details.error,
         errorMessage: state.portfolio.details.errorMessage,
-        suppliers: state.portfolio.tender.suppliers.value,
+        suppliers: state.suppliers.value,
     };
 };
   

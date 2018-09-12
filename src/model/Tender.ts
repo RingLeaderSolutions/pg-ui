@@ -134,6 +134,9 @@ export interface TenderContract {
     sheetCount: number;
     averagePPU?: number;
     totalIncCCL?: number;
+    contractStart: string;
+    contractEnd: string;
+    activeTenderCount: number;
 }
 
 export interface TenderRecommendation {

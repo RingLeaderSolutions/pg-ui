@@ -35,4 +35,18 @@ const contractBackingSheetReducer = requestResponseReducer(
     }
 );
 
-export default reduceReducers((state = initialRequestState) => state, quoteBackingSheetReducer, contractBackingSheetReducer);
+const accountContractRatesReducer = requestResponseReducer(
+    types.FETCH_ACCOUNT_CONTRACT_BACKINGSHEETS_WORKING,
+    types.FETCH_ACCOUNT_CONTRACT_BACKINGSHEETS_SUCCESSFUL,
+    types.FETCH_ACCOUNT_CONTRACT_BACKINGSHEETS_FAILED,
+    (state, action) => {
+        return {
+            ...state,
+            working: false,  
+            error: false,          
+            value: action.data
+        };
+    }
+);
+
+export default reduceReducers((state = initialRequestState) => state, quoteBackingSheetReducer, contractBackingSheetReducer, accountContractRatesReducer);

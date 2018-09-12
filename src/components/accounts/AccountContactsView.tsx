@@ -29,15 +29,11 @@ interface DispatchProps {
 }
 
 class AccountContactsView extends React.Component<AccountContactsViewProps & StateProps & DispatchProps, {}> {
-
     deleteContact(contactId: string){
         this.props.deleteContact(contactId);
     }
+
     renderAccountContactRows(){
-        if(this.props.account.contacts == null || this.props.account.contacts.length == 0){
-            return (<tr><td colSpan={6}>No contacts have been added yet.</td></tr>);
-        }
-        
         return this.props.account.contacts
         .sort(
             (c1: AccountContact, c2: AccountContact) => {        
@@ -85,6 +81,40 @@ class AccountContactsView extends React.Component<AccountContactsViewProps & Sta
         });
     }
 
+    renderContactsTable(){
+        return (
+            <table className="uk-table uk-table-divider">
+                <thead>
+                    <tr>
+                        <th>First Name</th>
+                        <th>Last Name</th>
+                        <th>Phone #</th>
+                        <th>Email</th>
+                        <th>Role</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {this.renderAccountContactRows()}
+                </tbody>
+            </table>
+        )
+    }
+
+    renderNoContactsWarning(){
+        return (
+            <div className="uk-alert-default uk-margin-right uk-alert" data-uk-alert>
+                <div className="uk-grid uk-grid-small" data-uk-grid>
+                    <div className="uk-width-auto uk-flex uk-flex-middle">
+                        <i className="fas fa-info-circle uk-margin-small-right"></i>
+                    </div>
+                    <div className="uk-width-expand uk-flex uk-flex-middle">
+                        <p>There are no contacts associated with this account. Click on the button above to get started.</p>    
+                    </div>
+                </div>
+            </div>)
+    }
+
     render() {
         if(this.props.error){
             return (<ErrorMessage content={this.props.errorMessage} />);
@@ -92,27 +122,15 @@ class AccountContactsView extends React.Component<AccountContactsViewProps & Sta
         if(this.props.working || this.props.account == null){
             return (<Spinner />);
         }
-        var selectedAccount = this.props.account;
+
+        var hasContacts = this.props.account.contacts != null && this.props.account.contacts.length > 0;
         return (
             <div>
                 <p className="uk-text-right">
-                    <button className='uk-button uk-button-primary uk-button-small uk-margin-small-right' onClick={() => this.props.openModalDialog('create-contact')}><i className="fa fa-user-plus uk-margin-small-right"></i> Add Contact</button>
+                    <button className='uk-button uk-button-primary uk-margin-small-right' onClick={() => this.props.openModalDialog('create-contact')}><i className="fa fa-user-plus-circle uk-margin-small-right"></i> Add Contact</button>
                 </p>
-                <table className="uk-table uk-table-divider">
-                    <thead>
-                        <tr>
-                            <th>First Name</th>
-                            <th>Last Name</th>
-                            <th>Phone #</th>
-                            <th>Email</th>
-                            <th>Role</th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {this.renderAccountContactRows()}
-                    </tbody>
-                </table>
+                {hasContacts ? this.renderContactsTable() : this.renderNoContactsWarning()}
+                
                 <ModalDialog dialogId="create-contact">
                     <CreateContactDialog accountId={this.props.account.id} />
                 </ModalDialog>

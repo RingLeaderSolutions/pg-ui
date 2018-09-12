@@ -3,6 +3,7 @@ import { MapDispatchToPropsFunction, connect, MapStateToProps } from 'react-redu
 import { ApplicationState } from '../../../applicationState';
 import { Portfolio, PortfolioDetails } from '../../../model/Models';
 import Spinner from '../../common/Spinner';
+import { UtilityIcon } from "../../common/UtilityIcon";
 
 interface PortfolioMeterStatusProps {
     portfolio: Portfolio;
@@ -21,7 +22,7 @@ class PortfolioMeterStatus extends React.Component<PortfolioMeterStatusProps & S
         var rows = this.props.details.meterGroups.map(mg => {
             return (
                 <tr key={mg.groupName}>
-                    <td>{mg.groupName}</td>
+                    <td><UtilityIcon utility={mg.groupName} /></td>
                     <td>{mg.consumption.toLocaleString()} kWh</td>
                     <td>{mg.supplyDataCount}/{mg.meterCount}</td>
                     <td>{mg.groupName == "HH" ? `${mg.historicalCount}/${mg.meterCount}` : "N/A"}</td>

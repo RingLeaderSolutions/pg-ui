@@ -562,12 +562,15 @@ export class FakeApiService implements IApiService {
                     supplierId: "1",
                     accountId: "493e1708-2457-48ba-8925-09856d6e9732",
                     product: "fixed",
+                    contractStart: "2017-09-11T16:55:01.223Z",
+                    contractEnd: "2018-09-10T16:55:01.223Z",
                     reference: "havenGas16",
                     utility: "GAS",
                     incumbent: true,
                     uploaded: null,
                     status: null,
-                    sheetCount: 1
+                    sheetCount: 1,
+                    activeTenderCount: 0
                 },
                 requirements: {
                     greenPercentage: 0,
@@ -1130,6 +1133,26 @@ export class FakeApiService implements IApiService {
     }
 
     deleteRecommendation(tenderId: string, recommendationId: string){
+        return OK();
+    }
+
+    fetchAccountContracts(accountId: string){
+        return OK();
+    }
+
+    createAccountContract(accountId: string, contract: TenderContract){
+        return OK();
+    }
+    
+    updateAccountContract(contract: TenderContract){
+        return OK();
+    }
+
+    deleteAccountContract(contractId: string){
+        return OK();
+    }
+
+    fetchAccountContractRates(contractId: string){
         return OK();
     }
 }

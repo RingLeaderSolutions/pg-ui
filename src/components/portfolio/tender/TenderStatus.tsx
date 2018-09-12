@@ -135,7 +135,7 @@ class TenderStatus extends React.Component<TenderStatusProps & StateProps & Disp
                     <p className="uk-text-meta uk-margin-small">Payment Terms</p>
                 </div>
                 <div className="uk-card uk-card-default uk-card-small uk-card-body uk-width-1-4 uk-text-center">
-                    <p className="uk-text-bold uk-margin-small">{durationsString}</p>
+                    <p className="uk-text-bold uk-margin-small">{durationsString} months</p>
                     <p className="uk-text-meta uk-margin-small">Requested Duration{tender.offerTypes.length > 1 ? "s" : null}</p>
                 </div>
             </div>
@@ -152,8 +152,8 @@ const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, TenderStatus
   
 const mapStateToProps: MapStateToProps<StateProps, TenderStatusProps> = (state: ApplicationState) => {
     return {
-        suppliers: state.portfolio.tender.suppliers.value,
-        working: state.portfolio.tender.suppliers.working,
+        suppliers: state.suppliers.value,
+        working: state.suppliers.working,
         error: state.portfolio.tender.tenders.error,
         errorMessage: state.portfolio.tender.tenders.errorMessage
     };

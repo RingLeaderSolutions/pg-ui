@@ -17,6 +17,7 @@ import AccountUploadsView from "./AccountUploadsView";
 import AccountGasMeterTable from "./AccountGasMeterTable";
 import AccountElectricityMeterTable from "./AccountElectricityMeterTable";
 import ModalDialog from "../common/ModalDialog";
+import AccountContractsView from "./AccountContractsView";
 
 interface AccountDetailViewProps extends RouteComponentProps<void> {
 }
@@ -61,10 +62,12 @@ class AccountDetailView extends React.Component<AccountDetailViewProps & StatePr
             case 1:
                 return (<AccountGasMeterTable sites={this.props.account.sites} portfolios={this.props.portfolios} />);
             case 2:
-                return (<AccountContactsView />);
+                return (<AccountContractsView />)
             case 3:
                 return (<AccountDocumentsView account={this.props.account}/>);
             case 4:
+                return (<AccountContactsView />);
+            case 5: 
                 return (<AccountUploadsView accountId={this.props.account.id}/>);
         }
     }
@@ -87,9 +90,10 @@ class AccountDetailView extends React.Component<AccountDetailViewProps & StatePr
                 <ul className="uk-tab">
                     <li className={this.renderActiveTabStyle(0)} onClick={() => this.selectTab(0)}><a href="#"><i className="fa fa-bolt uk-margin-small-right fa-lg"></i>Electricity</a></li>
                     <li className={this.renderActiveTabStyle(1)} onClick={() => this.selectTab(1)}><a href="#"><i className="fa fa-fire uk-margin-small-right fa-lg"></i>Gas</a></li>
-                    <li className={this.renderActiveTabStyle(2)} onClick={() => this.selectTab(2)}><a href="#"><i className="fa fa-users uk-margin-small-right fa-lg"></i>Contacts</a></li>
-                    <li className={this.renderActiveTabStyle(3)} onClick={() => this.selectTab(3)}><a href="#"><i className="fa fa-file-signature uk-margin-small-right fa-lg"></i>Documentation</a></li>
-                    <li className={this.renderActiveTabStyle(4)} onClick={() => this.selectTab(4)}><a href="#"><i className="fa fa-file-upload uk-margin-small-right fa-lg"></i>Uploads</a></li>
+                    <li className={this.renderActiveTabStyle(2)} onClick={() => this.selectTab(2)}><a href="#"><i className="fa fa-file-contract uk-margin-small-right fa-lg"></i>Contracts</a></li>
+                    <li className={this.renderActiveTabStyle(3)} onClick={() => this.selectTab(3)}><a href="#"><i className="fa fa-file uk-margin-small-right fa-lg"></i>Documentation</a></li>
+                    <li className={this.renderActiveTabStyle(4)} onClick={() => this.selectTab(4)}><a href="#"><i className="fa fa-users uk-margin-small-right fa-lg"></i>Contacts</a></li>
+                    <li className={this.renderActiveTabStyle(5)} onClick={() => this.selectTab(5)}><a href="#"><i className="fa fa-file-upload uk-margin-small-right fa-lg"></i>Uploads</a></li>
                 </ul>
                 <div>
                     {this.renderSelectedTab()}

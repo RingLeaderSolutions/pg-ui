@@ -199,7 +199,7 @@ const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, TenderRecomm
   
 const mapStateToProps: MapStateToProps<StateProps, TenderRecommendationsListProps> = (state: ApplicationState) => {
     return {
-        suppliers: state.portfolio.tender.suppliers.value,
+        suppliers: state.suppliers.value,
         working: state.portfolio.tender.issue_summary.working || state.portfolio.account.working,
         error: state.portfolio.tender.issue_summary.error || state.portfolio.account.error,
         errorMessage: state.portfolio.tender.issue_summary.errorMessage || state.portfolio.account.errorMessage,

@@ -9,6 +9,7 @@ import { retrieveAccountDetail } from '../../../actions/hierarchyActions';
 import { includeMeters } from '../../../actions/meterActions';
 import { selectMany } from "../../../helpers/listHelpers";
 import { closeModalDialog } from "../../../actions/viewActions";
+import { Link } from "react-router-dom";
 
 interface IncludeMetersDialogProps {    
     utility: UtilityType;
@@ -184,22 +185,56 @@ class IncludeMetersDialog extends React.Component<IncludeMetersDialogProps & Sta
 
     renderFullMetersDisplay(meters: any[]){
         if(meters.length == 0){
-            return (<p className="uk-margin">There are no meters to include.</p>)
+            var lowerCaseUtility = decodeUtilityType(this.props.utility).toLowerCase();
+            if(this.props.includedMeters.length == 0){
+                return (
+                    <div className="uk-alert-warning uk-margin-small-bottom uk-alert" data-uk-alert>
+                        <div className="uk-grid uk-grid-small" data-uk-grid>
+                            <div className="uk-width-auto uk-flex uk-flex-middle">
+                                <i className="fas fa-exclamation-triangle uk-margin-small-right"></i>
+                            </div>
+                            <div className="uk-width-expand uk-flex uk-flex-middle">
+                                <div>
+                                    <p>This portfolio's account ({this.props.account.companyName}) doesn't contain any {lowerCaseUtility} meters to include.</p>    
+                                    <p><Link to={`/account/${this.props.account.id}`} onClick={() => this.props.closeModalDialog()}>Click here</Link> to visit the account where you can add some.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                )
+            }
+
+            return (
+                <div className="uk-alert-success uk-margin-small-bottom uk-alert" data-uk-alert>
+                        <div className="uk-grid uk-grid-small" data-uk-grid>
+                            <div className="uk-width-auto uk-flex uk-flex-middle">
+                                <i className="fas fa-info-circle uk-margin-small-right"></i>
+                            </div>
+                            <div className="uk-width-expand uk-flex uk-flex-middle">
+                                <p>You have already included all of the available {lowerCaseUtility} meters into this portfolio.</p>    
+                            </div>
+                        </div>
+                    </div>
+            )
         }
-        
+
         return (
-            <fieldset className="uk-fieldset">
-                <div className="include-meter-list" data-uk-grid>
-                    {meters}
-                </div>
-                <hr />
-                <button className="uk-button uk-button-small uk-button-default uk-margin-right" onClick={() => this.includeAllMeters()} type="button">
-                    <i className="fa fa-check-double uk-margin-small-right"></i> Select All
-                </button>
-                <button className="uk-button uk-button-small uk-button-default uk-margin-right" onClick={() => this.includeNoMeters()} type="button">
-                    <i className="fa fa-times uk-margin-small-right fa-lg"></i> Select None
-                </button>
-            </fieldset>
+            <div className="uk-margin">
+                <form>
+                    <fieldset className="uk-fieldset">
+                        <div className="include-meter-list" data-uk-grid>
+                            {meters}
+                        </div>
+                        <hr />
+                        <button className="uk-button uk-button-small uk-button-default uk-margin-right" onClick={() => this.includeAllMeters()} type="button">
+                            <i className="fa fa-check-double uk-margin-small-right"></i> Select All
+                        </button>
+                        <button className="uk-button uk-button-small uk-button-default uk-margin-right" onClick={() => this.includeNoMeters()} type="button">
+                            <i className="fa fa-times uk-margin-small-right fa-lg"></i> Select None
+                        </button>
+                    </fieldset>
+                </form>
+            </div>
         )
     }
 
@@ -218,11 +253,7 @@ class IncludeMetersDialog extends React.Component<IncludeMetersDialogProps & Sta
                     <h2 className="uk-modal-title">Include {decodeUtilityType(this.props.utility)} Meters</h2>
                 </div>
                 <div className="uk-modal-body">
-                    <div className="uk-margin">
-                        <form>
-                            {this.props.utility == UtilityType.Electricity ? this.renderExcludedMpans() : this.renderExcludedMprns()}
-                        </form>
-                    </div>
+                    {this.props.utility == UtilityType.Electricity ? this.renderExcludedMpans() : this.renderExcludedMprns()}
                 </div>
                 <div className="uk-modal-footer uk-text-right">
                     <button className="uk-button uk-button-default uk-margin-right" type="button" onClick={() => this.props.closeModalDialog()}>Cancel</button>

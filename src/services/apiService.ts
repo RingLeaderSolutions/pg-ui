@@ -39,7 +39,13 @@ export interface IApiService {
   fetchAccountDocumentation(accountId: string): Promise<AxiosResponse>;
   fetchAccountUploads(accountId: string): Promise<AxiosResponse>;
   fetchAccountPortfolios(accountId: string): Promise<AxiosResponse>;
-  
+
+  fetchAccountContracts(accountId: string): Promise<AxiosResponse>;
+  createAccountContract(accountId: string, contract: TenderContract): Promise<AxiosResponse>;
+  updateAccountContract(contract: TenderContract): Promise<AxiosResponse>;
+  deleteAccountContract(contractId: string): Promise<AxiosResponse>;
+  fetchAccountContractRates(contractId: string): Promise<AxiosResponse>;
+
   getPortfolioHistory(portfolioId: string): Promise<AxiosResponse>;
 
   getAllMeters(portfolioId: string): Promise<AxiosResponse>;
@@ -628,6 +634,26 @@ export class ApiService implements IApiService {
 
     fetchAccountPortfolios(accountId: string){
         return axios.get(`${this.baseApiUri}/portman-web/portfolios/account/${accountId}/jumplist`, this.getRequestConfig());        
+    }
+
+    fetchAccountContracts(accountId: string){
+        return axios.get(`${this.baseApiUri}/portman-web/contract/account/${accountId}/existing`, this.getRequestConfig());        
+    }
+
+    createAccountContract(accountId: string, contract: TenderContract){
+        return axios.post(`${this.baseApiUri}/portman-web/contract/account/${accountId}`, contract, this.getRequestConfig());        
+    }
+
+    updateAccountContract(contract: TenderContract){
+        return axios.put(`${this.baseApiUri}/portman-web/contract/${contract.contractId}`, contract, this.getRequestConfig());        
+    }
+
+    deleteAccountContract(contractId: string){
+        return axios.delete(`${this.baseApiUri}/portman-web/contract/${contractId}`, this.getRequestConfig());        
+    }
+
+    fetchAccountContractRates(contractId: string){
+        return axios.get(`${this.baseApiUri}/portman-web/contract/${contractId}/backingsheets`, this.getRequestConfig());                
     }
 
     getEndpointPrefix(utility: UtilityType) {

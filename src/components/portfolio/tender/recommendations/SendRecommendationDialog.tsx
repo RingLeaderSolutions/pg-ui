@@ -32,10 +32,56 @@ interface DispatchProps {
     closeModalDialog: () => void;
 }
 
-class SendRecommendationDialog extends React.Component<SendRecommendationDialogProps & StateProps & DispatchProps, {}> {
-    sendRecommendation() {
-        var emails = this.props.account.contacts.filter(ac => ac.email != null && ac.email != "")
+interface SendRecommendationDialogState {
+    availableContacts: AccountContact[];
+    selectedEmails: string[];
+}
+
+class SendRecommendationDialog extends React.Component<SendRecommendationDialogProps & StateProps & DispatchProps, SendRecommendationDialogState> {
+    constructor(props: SendRecommendationDialogProps & StateProps & DispatchProps){
+        super(props);
+
+        var availableContacts = this.getAvailableContacts(props.account);
+        this.state = {
+            availableContacts,
+            selectedEmails: this.getContactEmails(availableContacts)
+        }
+    }
+
+    getAvailableContacts(account: AccountDetail): AccountContact[]{
+        if(account == null || account.contacts == null || account.contacts.length < 1){
+            return [];
+        }
+
+        return account.contacts.filter(ac => ac.email != null && ac.email != "");
+    }
+
+    getContactEmails(contacts: AccountContact[]): string[]{
+        if(contacts.length < 1){
+            return [];
+        }
+
+        return contacts
             .map(ac => ac.email);
+    }
+
+    componentWillReceiveProps(props: SendRecommendationDialogProps & StateProps & DispatchProps){
+        if(this.props.account == null){
+            var availableContacts = this.getAvailableContacts(props.account);
+
+            this.setState({
+                availableContacts,
+                selectedEmails: this.getContactEmails(availableContacts)
+            })   
+        }
+    }
+
+    sendRecommendation() {
+        var emails = [
+            ...this.state.selectedEmails,
+            this.props.portfolio.salesLead.email,
+            this.props.portfolio.supportExec.email
+        ];
 
         this.props.issueSummaryReport(this.props.tender.tenderId, this.props.recommendation.summaryId, emails);
         this.props.closeModalDialog();
@@ -70,13 +116,30 @@ class SendRecommendationDialog extends React.Component<SendRecommendationDialogP
         )
     }
 
+    toggleEmailSelection(email: string){
+        if(this.state.selectedEmails.find(selectedEmail => selectedEmail == email)){
+            this.setState( {
+                selectedEmails: this.state.selectedEmails.filter((selectedEmail) => selectedEmail != email)
+            })
+        }
+        else {
+            this.setState({
+                selectedEmails: [...this.state.selectedEmails, email]
+            })
+        }
+    }
+
     renderAccountContact(contact: AccountContact){
+        var isSelected = this.state.selectedEmails.find(email => email == contact.email) != null;
         var role = contact.role != "" ? ` (${contact.role}) ` : "";
         return (
             <div key={contact.id}>
                 <div className="uk-card uk-card-small uk-card-default">
                     <div className="uk-card-body">
                         <div className="uk-grid-small" data-uk-grid>
+                            <div className="uk-width-auto">
+                                <td><input className="uk-checkbox" type="checkbox" checked={isSelected} onChange={(e) => this.toggleEmailSelection(contact.email)}/></td>
+                            </div>
                             <div className="uk-width-auto">
                                 <p><i className="fas fa-user uk-margin-small-right"></i>{contact.firstName} {contact.lastName}{role}</p>
                             </div>
@@ -90,7 +153,7 @@ class SendRecommendationDialog extends React.Component<SendRecommendationDialogP
     }
 
     renderPackDialogContent(){
-        var accountContacts = this.props.account.contacts.map(ac => {
+        var accountContacts = this.getAvailableContacts(this.props.account).map(ac => {
            return this.renderAccountContact(ac);
         })
 
@@ -123,10 +186,14 @@ class SendRecommendationDialog extends React.Component<SendRecommendationDialogP
                         {this.renderUser(this.props.portfolio.salesLead, "Account Manager")}
                         {this.renderUser(this.props.portfolio.supportExec, "Tender Analyst")}
                     </div>
-                    <p>The following account contacts will also be notified:</p>
-                    <div>
-                        {accountContacts}
-                    </div>
+                    {accountContacts.length > 1 ? (
+                        <div>
+                            <p>Please select which account contacts should also be notified: </p>
+                            <div>
+                                {accountContacts}
+                            </div>
+                        </div>
+                    ) : null }                    
                 </div>
                 <div className="uk-modal-footer uk-text-right">
                     <button className="uk-button uk-button-default uk-margin-right" type="button" onClick={() => this.props.closeModalDialog()}>Cancel</button>

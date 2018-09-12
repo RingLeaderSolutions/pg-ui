@@ -569,7 +569,7 @@ const mapStateToProps: MapStateToProps<StateProps, RecommendationDetailDialogPro
         working: state.portfolio.tender.selected_recommendation_summary.working || state.portfolio.tender.selected_recommendation_suppliers.working,
         error: state.portfolio.tender.selected_recommendation_summary.error || state.portfolio.tender.selected_recommendation_suppliers.error || state.portfolio.tender.selected_recommendation_sites.error,
         errorMessage: state.portfolio.tender.selected_recommendation_summary.errorMessage || state.portfolio.tender.selected_recommendation_suppliers.errorMessage || state.portfolio.tender.selected_recommendation_sites.errorMessage,
-        suppliers: state.portfolio.tender.suppliers.value
+        suppliers: state.suppliers.value
     };
 };
   

@@ -1,6 +1,5 @@
 import { RequestState } from '../RequestState';
 import { TendersState } from './tendersReducer';
-import { TenderSuppliersState } from './tenderSuppliersReducer';
 import { TenderOffersState } from './fetchTenderOffersReducer';
 import { TenderRecommendationsState } from './fetchTenderRecommendationsReducer';
 import { RecommendationSuppliersState } from './fetchRecommendationSuppliersReducer';
@@ -16,7 +15,6 @@ export interface TenderState {
     selected_recommendation_summary: RecommendationSummaryState,
     selected_recommendation_suppliers: RecommendationSuppliersState,
     selected_recommendation_sites: RecommendationSitesState,
-    suppliers: TenderSuppliersState;
     addExistingContract: RequestState;
     delete_tender: RequestState;
     create_tender: RequestState;
