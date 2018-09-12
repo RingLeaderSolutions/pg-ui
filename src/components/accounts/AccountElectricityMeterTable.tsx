@@ -179,6 +179,14 @@ class AccountElectricityMeterTable extends React.Component<AccountElectricityMet
         return filtered;
     }
 
+    parseValue(value: string){
+        if(value == null){
+            return "-";
+        }
+
+        return value;
+    }
+
     createTableData(sites: SiteDetail[], tariffs: Tariff[]): AccountElectricityMeterTableEntry[]{
         var metersBySites = sites
             .sort(
@@ -201,7 +209,7 @@ class AccountElectricityMeterTable extends React.Component<AccountElectricityMet
                             meter: electricityMeter.mpanCore,
                             type: electricityMeter.meterType,
                             tariff: tariff == null ? "Unknown" : tariff.name,
-                            topline: `${electricityMeter.profileClass} ${electricityMeter.meterTimeSwitchCode} ${electricityMeter.llf}`,
+                            topline: `${this.parseValue(electricityMeter.profileClass)} ${this.parseValue(electricityMeter.meterTimeSwitchCode)} ${this.parseValue(electricityMeter.llf)}`,
                             serialNumber: electricityMeter.serialNumber,
                             da: electricityMeter.daAgent,
                             dc: electricityMeter.dcAgent,
