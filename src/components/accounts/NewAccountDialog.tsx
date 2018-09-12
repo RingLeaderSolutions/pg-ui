@@ -69,13 +69,13 @@ class NewAccountDialog extends React.Component<NewAccountDialogProps & StateProp
                 return (
                     <div className="new-account-dialog">
                         <div className="uk-modal-header">
-                            <h2 className="uk-modal-title">Success!</h2>
+                            <h2 className="uk-modal-title"><i className="fa fa-check-circle uk-margin-small-right" style={{color: '006400'}}></i>Success!</h2>
                         </div>
                         <div className="uk-modal-body">
                             Your account has been created! Click below to exit this screen.
                         </div>
                         <div className="uk-modal-footer uk-text-right">
-                            <button className="uk-button uk-button-primary" type="button" onClick={this.finishCreation}>Continue</button>
+                            <button className="uk-button uk-button-primary" type="button" onClick={this.finishCreation}><i className="fa fa-arrow-circle-right uk-margin-small-right"></i>Continue</button>
                         </div>
                     </div>);
         };
@@ -83,7 +83,7 @@ class NewAccountDialog extends React.Component<NewAccountDialogProps & StateProp
         return (
             <div className="new-account-dialog">
                 <div className="uk-modal-header">
-                    <h2 className="uk-modal-title">Create Account</h2>
+                    <h2 className="uk-modal-title"><i className="fa fa-building uk-margin-right"></i>Create Account</h2>
                 </div>
                 <div className="uk-modal-body create-account-dialog">
                     <div className="uk-margin">
@@ -121,7 +121,7 @@ class NewAccountDialog extends React.Component<NewAccountDialogProps & StateProp
                     </div>
                 </div>
                 <div className="uk-modal-footer uk-text-right">
-                    <button className="uk-button uk-button-default uk-margin-right" type="button" onClick={() => this.props.closeModalDialog()}>Cancel</button>
+                    <button className="uk-button uk-button-default uk-margin-right" type="button" onClick={() => this.props.closeModalDialog()}><i className="fa fa-times uk-margin-small-right"></i>Cancel</button>
                 </div>
             </div>)
     }

@@ -18,6 +18,7 @@ import AccountGasMeterTable from "./AccountGasMeterTable";
 import AccountElectricityMeterTable from "./AccountElectricityMeterTable";
 import ModalDialog from "../common/ModalDialog";
 import AccountContractsView from "./AccountContractsView";
+import AccountSummaryView from "./AccountSummaryView";
 
 interface AccountDetailViewProps extends RouteComponentProps<void> {
 }
@@ -58,17 +59,18 @@ class AccountDetailView extends React.Component<AccountDetailViewProps & StatePr
     renderSelectedTab(){
         switch(this.props.selectedTab){
             case 0:
-                return (<AccountElectricityMeterTable sites={this.props.account.sites} portfolios={this.props.portfolios} />);
+                return (<AccountSummaryView />)
             case 1:
-                return (<AccountGasMeterTable sites={this.props.account.sites} portfolios={this.props.portfolios} />);
+                return (<AccountElectricityMeterTable sites={this.props.account.sites} portfolios={this.props.portfolios} />);
             case 2:
-                return (<AccountContractsView />)
+                return (<AccountGasMeterTable sites={this.props.account.sites} portfolios={this.props.portfolios} />);
             case 3:
-                return (<AccountDocumentsView account={this.props.account}/>);
+                return (<AccountContractsView />)
             case 4:
+                return (<AccountDocumentsView account={this.props.account}/>);
+            case 5:
                 return (<AccountContactsView />);
-            case 5: 
-                return (<AccountUploadsView accountId={this.props.account.id}/>);
+            
         }
     }
 
@@ -84,16 +86,16 @@ class AccountDetailView extends React.Component<AccountDetailViewProps & StatePr
         var headerTitle = `Account: ${selectedAccount.companyName}`;
         return (
             <div className="content-inner">
-                <Header title={headerTitle}>
+                <Header title={headerTitle} icon="fa fa-building">
                     <button className='uk-button uk-button-default uk-button-small uk-margin-large-right borderless-button' data-uk-tooltip="title: Edit account" onClick={() => this.props.openModalDialog('update-account')}><i className="fas fa-edit"></i></button>
                 </Header>
                 <ul className="uk-tab">
-                    <li className={this.renderActiveTabStyle(0)} onClick={() => this.selectTab(0)}><a href="#"><i className="fa fa-bolt uk-margin-small-right fa-lg"></i>Electricity</a></li>
-                    <li className={this.renderActiveTabStyle(1)} onClick={() => this.selectTab(1)}><a href="#"><i className="fa fa-fire uk-margin-small-right fa-lg"></i>Gas</a></li>
-                    <li className={this.renderActiveTabStyle(2)} onClick={() => this.selectTab(2)}><a href="#"><i className="fa fa-file-contract uk-margin-small-right fa-lg"></i>Contracts</a></li>
-                    <li className={this.renderActiveTabStyle(3)} onClick={() => this.selectTab(3)}><a href="#"><i className="fa fa-file uk-margin-small-right fa-lg"></i>Documentation</a></li>
-                    <li className={this.renderActiveTabStyle(4)} onClick={() => this.selectTab(4)}><a href="#"><i className="fa fa-users uk-margin-small-right fa-lg"></i>Contacts</a></li>
-                    <li className={this.renderActiveTabStyle(5)} onClick={() => this.selectTab(5)}><a href="#"><i className="fa fa-file-upload uk-margin-small-right fa-lg"></i>Uploads</a></li>
+                    <li className={this.renderActiveTabStyle(0)} onClick={() => this.selectTab(0)}><a href="#"><i className="fa fa-list uk-margin-small-right fa-lg"></i>Summary</a></li>
+                    <li className={this.renderActiveTabStyle(1)} onClick={() => this.selectTab(1)}><a href="#"><i className="fa fa-bolt uk-margin-small-right fa-lg"></i>Electricity</a></li>
+                    <li className={this.renderActiveTabStyle(2)} onClick={() => this.selectTab(2)}><a href="#"><i className="fa fa-fire uk-margin-small-right fa-lg"></i>Gas</a></li>
+                    <li className={this.renderActiveTabStyle(3)} onClick={() => this.selectTab(3)}><a href="#"><i className="fa fa-file-contract uk-margin-small-right fa-lg"></i>Contracts</a></li>
+                    <li className={this.renderActiveTabStyle(4)} onClick={() => this.selectTab(4)}><a href="#"><i className="fa fa-file uk-margin-small-right fa-lg"></i>Documentation</a></li>
+                    <li className={this.renderActiveTabStyle(5)} onClick={() => this.selectTab(5)}><a href="#"><i className="fa fa-users uk-margin-small-right fa-lg"></i>Contacts</a></li>
                 </ul>
                 <div>
                     {this.renderSelectedTab()}

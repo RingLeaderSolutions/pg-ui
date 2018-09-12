@@ -42,21 +42,13 @@ interface AccountTableEntry {
     name: string;
     regNumber: string;
     country: string;
-    postcode: string;
-    incorporationDate: string;
     status: string;
-    creditRating: string;
-    registeredCharity: boolean;
-    cclException: boolean;
-    vatEligible: boolean;
-    fitException: boolean;
 }
 
 class Accounts extends React.Component<AccountsProps & StateProps & DispatchProps, AccountsState> {
     columns: Column[] = [{
         Header: 'Name',
         accessor: 'name',
-        width: 150
     },{
         Header: 'Reg No.',
         accessor: 'regNumber'
@@ -64,35 +56,10 @@ class Accounts extends React.Component<AccountsProps & StateProps & DispatchProp
         Header: 'Country',
         accessor: 'country'
     },{
-        Header: 'Postcode',
-        accessor: "postcode",
-    },{
-        Header: 'Incorporation Date',
-        accessor: 'incorporationDate'
-    },{
         Header: 'Status',
         accessor: 'status'
-    },{
-        Header: 'Credit Rating',
-        accessor: 'creditRating'
-    },{
-        Header: 'Reg Charity',
-        accessor: 'registeredCharity',
-        Cell: BooleanCellRenderer
-    },{
-        Header: 'CCL Exception',
-        accessor: 'cclException',
-        Cell: BooleanCellRenderer
-    },{
-        Header: 'VAT Eligible',
-        accessor: 'vatEligible',
-        Cell: BooleanCellRenderer
-    },{
-        Header: 'FIT Exception',
-        accessor: 'fitException',
-        Cell: BooleanCellRenderer
     }];
-    stringProperties: string[] = ["accountId", "name", "country", "postcode", "incorporationDate", "status", "creditRating"];
+    stringProperties: string[] = ["accountId", "name", "country", "regNumber", "status"];
 
     constructor() {
         super();
@@ -184,7 +151,31 @@ class Accounts extends React.Component<AccountsProps & StateProps & DispatchProp
             tableContent =  (<Spinner />);
         }
         else if(this.props.accounts == null || this.props.accounts.length == 0){
-            tableContent =  (<p className="table-warning">There are no accounts. Create one using the button above!</p>)
+            tableContent = (
+                <div className="uk-alert-default uk-margin-right uk-alert" data-uk-alert>
+                    <div className="uk-grid uk-grid-small" data-uk-grid>
+                        <div className="uk-width-auto uk-flex uk-flex-middle">
+                            <i className="fas fa-info-circle uk-margin-small-right"></i>
+                        </div>
+                        <div className="uk-width-expand uk-flex uk-flex-middle">
+                            <p>No accounts have been created or loaded yet. Get started with the button above!</p>    
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+        else if (this.state.searchText != "" && this.state.tableData.length == 0){
+            tableContent = (
+                <div className="uk-alert-default uk-margin-right uk-alert" data-uk-alert>
+                    <div className="uk-grid uk-grid-small" data-uk-grid>
+                        <div className="uk-width-auto uk-flex uk-flex-middle">
+                            <i className="fas fa-info-circle uk-margin-small-right"></i>
+                        </div>
+                        <div className="uk-width-expand uk-flex uk-flex-middle">
+                            <p>No results for search term: <i>{this.state.searchText}</i></p>    
+                        </div>
+                    </div>
+                </div>)
         }
         else {
             tableContent = (
@@ -201,13 +192,12 @@ class Accounts extends React.Component<AccountsProps & StateProps & DispatchProp
                             cursor: 'pointer'
                         } 
                       })}
-                      minRows={0}/>
-            )
+                      minRows={0}/>);
         }
 
         return (
             <div className="content-inner">
-                <Header title="Accounts" />
+                <Header title="Accounts" icon="fa fa-building"/>
                 <div className="content-accounts">
                     <div className="table-accounts">
                         <div className="search-accounts">

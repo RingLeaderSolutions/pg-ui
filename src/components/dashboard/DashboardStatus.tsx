@@ -47,7 +47,18 @@ class DashboardStatus extends React.Component<StatusProps & StateProps & Dispatc
         }
         else {
             if(this.props.status.statusList.length == 0){
-                content = (<p>Sorry, there are no portfolios for this team yet!</p>)                
+                content = (
+                    (<div className="uk-alert-default uk-margin-right uk-alert" data-uk-alert>
+                        <div className="uk-grid uk-grid-small" data-uk-grid>
+                            <div className="uk-width-auto uk-flex uk-flex-middle">
+                                <i className="fas fa-info-circle uk-margin-small-right"></i>
+                            </div>
+                            <div className="uk-width-expand uk-flex uk-flex-middle">
+                                <p>Sorry! No portfolios have been created yet. Visit the Portfolios tab to get started.</p>    
+                            </div>
+                        </div>
+                    </div>)
+                );          
             }
             else {
                 content = this.renderChart();

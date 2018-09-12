@@ -1,5 +1,6 @@
 import * as React from "react";
 import { Tender } from "../../model/Tender";
+import { UtilityType } from "../../model/Models";
 
 interface UtilityIconProps{
 	utility: string;
@@ -64,5 +65,27 @@ export class TenderUtilityIconTabHeader extends React.Component<TenderUtilityIco
             case "GAS":
                 return (<UtilityIcon utility="gas" iconClass="uk-margin-small-right">Gas</UtilityIcon>)
         }
+	}
+}
+
+export function getWellFormattedUtilityName(utility: string){
+	switch(utility){
+		case "ELECTRICITY":
+			return "Electricity";
+		case "GAS":
+			return "Gas";
+		default:
+			return utility;
+	}
+}
+
+export function getWellFormattedUtilityType(utility: UtilityType){
+	switch(utility){
+		case UtilityType.Electricity:
+			return "Electricity";
+		case UtilityType.Gas:
+			return "Gas";
+		default:
+			return utility;
 	}
 }

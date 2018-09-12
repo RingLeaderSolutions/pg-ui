@@ -250,14 +250,14 @@ class IncludeMetersDialog extends React.Component<IncludeMetersDialogProps & Sta
         return (
             <div>
                 <div className="uk-modal-header">
-                    <h2 className="uk-modal-title">Include {decodeUtilityType(this.props.utility)} Meters</h2>
+                    <h2 className="uk-modal-title"><i className="fas fa-folder-plus uk-margin-right"></i>Include {decodeUtilityType(this.props.utility)} Meters</h2>
                 </div>
                 <div className="uk-modal-body">
                     {this.props.utility == UtilityType.Electricity ? this.renderExcludedMpans() : this.renderExcludedMprns()}
                 </div>
                 <div className="uk-modal-footer uk-text-right">
-                    <button className="uk-button uk-button-default uk-margin-right" type="button" onClick={() => this.props.closeModalDialog()}>Cancel</button>
-                    <button className="uk-button uk-button-primary" type="button" onClick={() => this.completeInclusion()} disabled={saveDisabled}>Save</button>
+                    <button className="uk-button uk-button-default uk-margin-right" type="button" onClick={() => this.props.closeModalDialog()}><i className="fa fa-times uk-margin-small-right"></i>Cancel</button>
+                    <button className="uk-button uk-button-primary" type="button" onClick={() => this.completeInclusion()} disabled={saveDisabled}><i className="fas fa-folder-plus uk-margin-small-right"></i>Save</button>
                 </div>
             </div>)
     }

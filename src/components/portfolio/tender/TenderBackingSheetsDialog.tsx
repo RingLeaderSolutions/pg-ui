@@ -64,13 +64,13 @@ class TenderBackingSheetsDialog extends React.Component<TenderBackingSheetsDialo
         return (
             <div>
                 <div className="uk-modal-header">
-                    <h2 className="uk-modal-title">Contract Rates</h2>
+                    <h2 className="uk-modal-title"><i className="fas fa-pound-sign uk-margin-right"></i>Contract Rates</h2>
                 </div>
                 <div className="uk-modal-body uk-overflow-auto">
                     {this.renderDynamicTable(this.props.contract_rates.headers, this.props.contract_rates.entries)}
                 </div>
                 <div className="uk-modal-footer uk-text-right">
-                    <button className="uk-button uk-button-default uk-margin-right" type="button" onClick={() => this.props.closeModalDialog()}>Close</button>
+                    <button className="uk-button uk-button-default uk-margin-right" type="button" onClick={() => this.props.closeModalDialog()}><i className="fas fa-times uk-margin-small-right"></i>Close</button>
                 </div>
             </div>)
     }

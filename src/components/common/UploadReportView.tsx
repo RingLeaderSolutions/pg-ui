@@ -35,7 +35,7 @@ class UploadReportView extends React.Component<UploadReportViewProps & StateProp
                             <i className="fas fa-exclamation-circle" style={{color: "#FF0000"}} data-uk-tooltip="title: Failure"></i>
                         ) : 
                         (
-                            <i className="fas fa-check" style={{color: "#00FF00"}} data-uk-tooltip="title: Success"></i>
+                            <i className="fas fa-check-circle" style={{color: "#006400"}} data-uk-tooltip="title: Success"></i>
                         )}</td>
                         <td>{index == 0 ? f.successCount : null}</td>
                         <td>{index == 0 ? f.failureCount : null}</td>
@@ -70,13 +70,13 @@ class UploadReportView extends React.Component<UploadReportViewProps & StateProp
         return (
             <div>
                 <div className="uk-modal-header">
-                    <h2 className="uk-modal-title">Upload Report: {this.props.uploadReport.uploadType}</h2>
+                    <h2 className="uk-modal-title"><i className="fa fa-file-upload uk-margin-right"></i>Upload Report: {this.props.uploadReport.uploadType}</h2>
                 </div>
                 <div className="uk-modal-body uk-overflow-auto">
                     {this.renderTable()}
                 </div>
                 <div className="uk-modal-footer uk-text-right">
-                    <button className="uk-button uk-button-default uk-margin-right" type="button" onClick={() => this.props.closeModalDialog()}>Close</button>
+                    <button className="uk-button uk-button-default uk-margin-right" type="button" onClick={() => this.props.closeModalDialog()}><i className="fa fa-times uk-margin-small-right"></i>Close</button>
                 </div>
             </div>)
     }

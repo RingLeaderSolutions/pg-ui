@@ -6,6 +6,7 @@ import { TenderSupplier } from "../../../../model/Tender";
 import { uploadElectricityOffer, uploadGasOffer } from '../../../../actions/tenderActions';
 import { closeModalDialog } from "../../../../actions/viewActions";
 import { UploadPanel } from "../../../common/UploadPanel";
+import { getWellFormattedUtilityName } from "../../../common/UtilityIcon";
 
 interface UploadOfferDialogProps {
     tenderId: string;
@@ -74,11 +75,13 @@ class UploadOfferDialog extends React.Component<UploadOfferDialogProps & StatePr
         this.setState({...this.state, file: null});
     }
 
-    render() {        
+    render() {  
+        var friendlyUtility = getWellFormattedUtilityName(this.props.utilityType);
+              
         return (
             <div>
                 <div className="uk-modal-header">
-                    <h2 className="uk-modal-title"><i className="fa fa-file-upload uk-margin-right"></i>Upload Offer</h2>
+                    <h2 className="uk-modal-title"><i className="fa fa-file-upload uk-margin-right"></i>Upload {friendlyUtility} Offer</h2>
                 </div>
                 <div className="uk-modal-body">
                     <div className="uk-margin">

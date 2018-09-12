@@ -64,8 +64,8 @@ class CompanySearch extends React.Component<DispatchProps & StateProps, CompanyS
         let frameContent;
         let actionContent = (
             <div className="uk-modal-footer uk-text-right">
-                <button className="uk-button uk-button-default uk-margin-right" type="button" disabled>Clear search</button>
-                <button className="uk-button uk-button-primary" type="button" disabled>Continue</button>
+                <button className="uk-button uk-button-default uk-margin-right" type="button" disabled><i className="fa fa-eraser uk-margin-small-right"></i>Clear search</button>
+                <button className="uk-button uk-button-primary" type="button" disabled><i className="fa fa-arrow-circle-right uk-margin-small-right"></i>Continue</button>
             </div>
         );
 
@@ -105,14 +105,14 @@ class CompanySearch extends React.Component<DispatchProps & StateProps, CompanyS
                         </div>
                     </div>
                     <hr />
-                    <p>If this is the company you were looking for, click the <i>Onboard</i> button below.</p>
+                    <p>If this is the company you were looking for, click the <i>Continue</i> button below.</p>
                 </div>
             );
 
             actionContent = (
                 <div className="uk-modal-footer uk-text-right">
-                    <button className="uk-button uk-button-default uk-margin-right" type="button" onClick={this.clearCompany}>Clear search</button>
-                    <button className="uk-button uk-button-primary" type="button" onClick={this.onboard}>Onboard</button>
+                    <button className="uk-button uk-button-default uk-margin-right" type="button" onClick={this.clearCompany}><i className="fa fa-eraser uk-margin-small-right"></i>Clear search</button>
+                    <button className="uk-button uk-button-primary" type="button" onClick={this.onboard}><i className="fa fa-arrow-circle-right uk-margin-small-right"></i>Continue</button>
                 </div>
             )
         }
@@ -121,7 +121,7 @@ class CompanySearch extends React.Component<DispatchProps & StateProps, CompanyS
         return (
             <div>
                 <div className="uk-modal-header">
-                    <h2 className="uk-modal-title">Search Company</h2>
+                    <h2 className="uk-modal-title"><i className="fa fa-search uk-margin-right"></i>Search Company</h2>
                 </div>
                 <div className="uk-modal-body">
                     <div className="uk-margin">

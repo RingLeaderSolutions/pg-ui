@@ -72,39 +72,30 @@ class GenerateRecommendationDialog extends React.Component<GenerateRecommendatio
             <div>
                 <p>You are generating a recommendation report against the issuance issued on <strong>{this.getFormattedDateTime(this.props.issuance.created)}</strong>, which has received <strong>{quoteOptions.length}</strong> supplier responses.</p>
                 <form>
-                    <div className='uk-flex'>
-                        <div className='uk-card uk-card-default uk-card-body uk-flex-1'>
-                            <fieldset className='uk-fieldset'>
-
-                                <div className="uk-margin">
-                                    <select className='uk-select' 
-                                        ref={ref => this.quoteSelectElement = ref}>
-                                        <option value="" disabled>Select</option>
-                                        {quoteOptions}
-                                    </select>
-                                </div>
-
-                                <div className='uk-margin'>
-                                    <label className='uk-form-label'>Market Commentary</label>
-                                    <textarea className='uk-textarea' 
-                                        rows={4}
-                                        ref={ref => this.marketCommentaryElement = ref}/>
-                                </div>
-
-                                <div className='uk-margin'>
-                                    <label className='uk-form-label'>Quote Selection Commentary</label>
-                                    <textarea className='uk-textarea' 
-                                        rows={4}
-                                        ref={ref => this.selectionCommentaryElement = ref}/>
-                                </div>
-                            </fieldset>
+                    <fieldset className='uk-fieldset'>
+                        <div className="uk-margin">
+                            <select className='uk-select' 
+                                ref={ref => this.quoteSelectElement = ref}>
+                                <option value="" disabled>Select</option>
+                                {quoteOptions}
+                            </select>
                         </div>
-                    </div>
+
+                        <div className='uk-margin'>
+                            <label className='uk-form-label'>Market Commentary</label>
+                            <textarea className='uk-textarea' 
+                                rows={4}
+                                ref={ref => this.marketCommentaryElement = ref}/>
+                        </div>
+
+                        <div className='uk-margin'>
+                            <label className='uk-form-label'>Quote Selection Commentary</label>
+                            <textarea className='uk-textarea' 
+                                rows={4}
+                                ref={ref => this.selectionCommentaryElement = ref}/>
+                        </div>
+                    </fieldset>
                 </form>
-                <div className="uk-modal-footer uk-text-right">
-                    <button className="uk-button uk-button-default uk-margin-right" type="button" onClick={() => this.props.closeModalDialog()}>Cancel</button>
-                    <button className="uk-button uk-button-primary" type="button" onClick={() => this.generateReport()}>Generate</button>
-                </div>
             </div>);
     }
 
@@ -123,12 +114,16 @@ class GenerateRecommendationDialog extends React.Component<GenerateRecommendatio
         return (
             <div>
                 <div className="uk-modal-header">
-                    <h2 className="uk-modal-title">Create Recommendation Report</h2>
+                    <h2 className="uk-modal-title"><i className="fas fa-award uk-margin-right"></i>Create Recommendation Report</h2>
                 </div>
                 <div className="uk-modal-body">
                     <div>
                         {content}
                     </div>
+                </div>
+                <div className="uk-modal-footer uk-text-right">
+                    <button className="uk-button uk-button-default uk-margin-right" type="button" onClick={() => this.props.closeModalDialog()}><i className="fas fa-times uk-margin-small-right"></i>Cancel</button>
+                    <button className="uk-button uk-button-primary" type="button" onClick={() => this.generateReport()}><i className="fas fa-plus-circle uk-margin-small-right"></i>Create</button>
                 </div>
             </div>)
     }

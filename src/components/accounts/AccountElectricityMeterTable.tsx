@@ -297,7 +297,17 @@ class AccountElectricityMeterTable extends React.Component<AccountElectricityMet
                 <div>
 
                     <div >
-                {!hasData ? (<p className="uk-text-meta uk-text-center">No results for search term: <i>{this.state.searchText}</i></p>)
+                {!hasData ? (
+                    <div className="uk-alert-default uk-margin-right uk-alert" data-uk-alert>
+                        <div className="uk-grid uk-grid-small" data-uk-grid>
+                            <div className="uk-width-auto uk-flex uk-flex-middle">
+                                <i className="fas fa-info-circle uk-margin-small-right"></i>
+                            </div>
+                            <div className="uk-width-expand uk-flex uk-flex-middle">
+                                <p>No results for search term: <i>{this.state.searchText}</i></p>    
+                            </div>
+                        </div>
+                    </div>)
                 : (<ReactTable 
                     showPagination={false}
                     columns={this.columns}

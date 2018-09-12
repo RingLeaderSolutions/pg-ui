@@ -84,14 +84,24 @@ class CreateAccountDialog extends React.Component<CreateAccountDialogProps & Sta
         this.props.closeModalDialog();
     }
 
+    getAddressFromCompany(company: CompanyInfo){
+        if(company == null){
+            return "";
+        }
+        
+        return [company.addressLine1, company.addressLine2, company.postTown, company.county]
+            .filter(s => s != null && s != "")
+            .join(', ');
+    }
+
     render() {
         var { company } = this.props;
-        var address = company ? `${company.addressLine1}, ${company.addressLine2}, ${company.postTown}, ${company.county}` : null;
+        var address = this.getAddressFromCompany(company)
 
         return (
             <div>
                 <div className="uk-modal-header">
-                    <h2 className="uk-modal-title">Create Account</h2>
+                    <h2 className="uk-modal-title"><i className="fa fa-building uk-margin-right"></i>Create Account</h2>
                 </div>
                 <div className="uk-modal-body">
                     <div className="uk-margin">
@@ -221,8 +231,8 @@ class CreateAccountDialog extends React.Component<CreateAccountDialogProps & Sta
                     </div>
                 </div>
                 <div className="uk-modal-footer uk-text-right">
-                    <button className="uk-button uk-button-default uk-margin-right" type="button" onClick={() => this.close()}>Cancel</button>
-                    <button className="uk-button uk-button-primary" type="button" onClick={this.createAccount}>Create</button>
+                    <button className="uk-button uk-button-default uk-margin-right" type="button" onClick={() => this.close()}><i className="fa fa-times uk-margin-small-right"></i>Cancel</button>
+                    <button className="uk-button uk-button-primary" type="button" onClick={this.createAccount}><i className="fa fa-plus-circle uk-margin-small-right"></i>Create</button>
                 </div>
             </div>)
     }

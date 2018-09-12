@@ -6,6 +6,7 @@ import { UtilityType } from '../../../model/Models';
 import { uploadSupplyMeterData } from '../../../actions/portfolioActions';
 import { closeModalDialog } from "../../../actions/viewActions";
 import { UploadPanel } from "../../common/UploadPanel";
+import { getWellFormattedUtilityType } from "../../common/UtilityIcon";
 
 interface UploadSupplyDataDialogProps {
     accountId: string;
@@ -51,13 +52,16 @@ class UploadSupplyDataDialog extends React.Component<UploadSupplyDataDialogProps
     }
 
     render() {
+        var friendlyUtility = getWellFormattedUtilityType(this.props.type);
         return (
             <div>
                 <div className="uk-modal-header">
-                    <h2 className="uk-modal-title"><i className="fa fa-file-upload uk-margin-right"></i>Upload Supply Data</h2>
+                    <h2 className="uk-modal-title"><i className="fa fa-file-upload uk-margin-right"></i>Upload {friendlyUtility} Supply Data</h2>
                 </div>
                 <div className="uk-modal-body">
                     <div className="uk-margin">
+                        <p>Please upload the file representing the {friendlyUtility} supply data.</p> 
+                    
                         <UploadPanel 
                             file={this.state.file}
                             onFileSelected={(file: File) => this.onFileSelected(file)}

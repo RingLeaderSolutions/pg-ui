@@ -178,7 +178,31 @@ class Portfolios extends React.Component<PortfoliosProps & StateProps & Dispatch
             tableContent =  (<Spinner />);
         }
         else if(this.props.portfolios == null || this.props.portfolios.length == 0){
-            tableContent =  (<p className="table-warning">There are no portfolios for this team yet. You can create one using the "New Portfolio" button above!</p>)
+            tableContent = (
+                <div className="uk-alert-default uk-margin-right uk-alert" data-uk-alert>
+                    <div className="uk-grid uk-grid-small" data-uk-grid>
+                        <div className="uk-width-auto uk-flex uk-flex-middle">
+                            <i className="fas fa-info-circle uk-margin-small-right"></i>
+                        </div>
+                        <div className="uk-width-expand uk-flex uk-flex-middle">
+                            <p>It's looking rather empty in here... Create a portfolio using the button above!</p>    
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+        else if (this.state.searchText != "" && this.state.tableData.length == 0){
+            tableContent = (
+                <div className="uk-alert-default uk-margin-right uk-alert" data-uk-alert>
+                    <div className="uk-grid uk-grid-small" data-uk-grid>
+                        <div className="uk-width-auto uk-flex uk-flex-middle">
+                            <i className="fas fa-info-circle uk-margin-small-right"></i>
+                        </div>
+                        <div className="uk-width-expand uk-flex uk-flex-middle">
+                            <p>No results for search term: <i>{this.state.searchText}</i></p>    
+                        </div>
+                    </div>
+                </div>)
         }
         else {
             tableContent = (
@@ -194,14 +218,14 @@ class Portfolios extends React.Component<PortfoliosProps & StateProps & Dispatch
                         style: {
                             cursor: 'pointer'
                         } 
-                      })}
-                      minRows={0}/>
-            )
+                        })}
+                        minRows={0}/>);
         }
+         
 
         return (
             <div className="content-inner">
-                <Header title="Portfolios" />
+                <Header title="Portfolios" icon="fa fa-cubes"/>
                 <div className="content-portfolios">
                     <div className="table-portfolios">
                         <div className="search-portfolios">

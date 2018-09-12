@@ -59,7 +59,7 @@ const YearMonthForm: React.SFC<CaptionElementProps & YearMonthFormProps> = (prop
     };
 
     return (
-        <form className="DayPicker-Caption">
+        <div className="DayPicker-Caption">
         <select className='uk-select' name="month" onChange={(e) => handleChange(e)} value={date.getMonth()}>
             {months.map((month, i) => (
             <option key={month} value={i}>
@@ -74,7 +74,7 @@ const YearMonthForm: React.SFC<CaptionElementProps & YearMonthFormProps> = (prop
             </option>
             ))}
         </select>
-        </form>
+        </div>
     );
 }
 

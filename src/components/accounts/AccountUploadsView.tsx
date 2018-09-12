@@ -75,6 +75,12 @@ class AccountUploadsView extends React.Component<AccountUploadsViewProps & State
             return (<Spinner />);
         }
 
+        if(this.props.reports.uploads.length == 0){
+            return (
+                <div className="uk-alert-warning uk-margin-small-top uk-margin-small-bottom" data-uk-alert>
+                    <p><i className="fas fa-info-circle uk-margin-small-right"></i>There haven't been any uploads for this account yet.</p>
+                </div>);
+        }
         return (
             <div>
                 <table className="uk-table uk-table-divider">

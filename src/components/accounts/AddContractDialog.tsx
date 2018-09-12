@@ -92,7 +92,7 @@ class AddExistingContractDialog extends React.Component<AddExistingContractDialo
         return (
             <div>
                 <div className="uk-modal-header">
-                    <h2 className="uk-modal-title">Add existing contract</h2>
+                    <h2 className="uk-modal-title"><i className="fas fa-file-contract uk-margin-right"></i>Add existing contract</h2>
                 </div>
                 <div className="uk-modal-body">
                     <form>
@@ -109,7 +109,7 @@ class AddExistingContractDialog extends React.Component<AddExistingContractDialo
                             </div>
 
                             <div className='uk-margin'>
-                                <label className='uk-form-label'>Contract Ref</label>
+                                <label className='uk-form-label'>Contract Reference</label>
                                 <input className='uk-input' 
                                     value={this.state.contractRef}
                                     onChange={(e) => this.handleFormChange("contractRef", e)}/>
@@ -133,8 +133,8 @@ class AddExistingContractDialog extends React.Component<AddExistingContractDialo
                         </form>
                 </div>
                 <div className="uk-modal-footer uk-text-right">
-                    <button className="uk-button uk-button-default uk-margin-right" type="button"  onClick={() => this.props.closeModalDialog()}>Cancel</button>
-                    <button className="uk-button uk-button-primary" type="button" onClick={() => this.addExistingContract()}>Add</button>
+                    <button className="uk-button uk-button-default uk-margin-right" type="button"  onClick={() => this.props.closeModalDialog()}><i className="fas fa-times uk-margin-small-right"></i>Cancel</button>
+                    <button className="uk-button uk-button-primary" type="button" onClick={() => this.addExistingContract()}><i className="fas fa-plus-circle uk-margin-small-right"></i>Add</button>
                 </div>
             </div>)
     }

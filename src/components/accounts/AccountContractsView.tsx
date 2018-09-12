@@ -12,7 +12,7 @@ import { openModalDialog } from "../../actions/viewActions";
 import ModalDialog from "../common/ModalDialog";
 import { getAccountContracts, getTenderSuppliers, fetchAccountContractRates, deleteAccountContract } from "../../actions/tenderActions";
 import { TenderContract, TenderSupplier } from "../../model/Tender";
-import { UtilityIcon } from "../common/UtilityIcon";
+import { UtilityIcon, getWellFormattedUtilityName } from "../common/UtilityIcon";
 import UpdateContractDialog from "./UpdateContractDialog";
 import TenderBackingSheetsDialog from "../portfolio/tender/TenderBackingSheetsDialog";
 import AddContractDialog from "./AddContractDialog";
@@ -73,17 +73,6 @@ class AccountContractsView extends React.Component<AccountContractsViewProps & S
         );
     }
 
-    getWellFormattedUtilityName(utility: string){
-        switch(utility){
-            case "ELECTRICITY":
-                return "Electricity";
-            case "GAS":
-                return "Gas";
-            default:
-                return utility;
-        }
-    }
-
     renderContractsRows(){
         return this.props.contracts.map(c => {
             var hasContractRates = c.sheetCount > 0;
@@ -104,7 +93,7 @@ class AccountContractsView extends React.Component<AccountContractsViewProps & S
                         </div>
                     </td>
                     <td>{supplierImage}</td>
-                    <td><UtilityIcon utility={c.utility} iconClass="uk-margin-small-right">{this.getWellFormattedUtilityName(c.utility)}</UtilityIcon></td>
+                    <td><UtilityIcon utility={c.utility} iconClass="uk-margin-small-right">{getWellFormattedUtilityName(c.utility)}</UtilityIcon></td>
                     <td>{c.product}</td>
                     <td>{c.contractStart != null ? moment(c.contractStart).format("DD/MM/YYYY") : "-"}</td>
                     <td>{c.contractEnd != null ? moment(c.contractEnd).format("DD/MM/YYYY") : "-"}</td>
@@ -143,7 +132,7 @@ class AccountContractsView extends React.Component<AccountContractsViewProps & S
                             </div>
                         
                         <ModalDialog dialogId={`upload_rates_${c.contractId}`}>
-                            <UploadContractRatesDialog contractId={c.contractId} utilityType={c.utility} />
+                            <UploadContractRatesDialog contract={c} supplier={supplier}/>
                         </ModalDialog>
 
                         <ModalDialog dialogId={`edit_contract_${c.contractId}`}>

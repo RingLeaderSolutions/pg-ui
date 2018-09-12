@@ -91,7 +91,7 @@ class PortfolioDetail extends React.Component<PortfolioDetailProps & StateProps 
         var accountLink = `/account/${detail.portfolio.accountId}`;
         return (
             <div className="content-inner">
-                <Header title={headerTitle}>
+                <Header title={headerTitle} icon="fa fa-cubes"> 
                     <button className='uk-button uk-button-default uk-button-small uk-margin-large-right borderless-button' data-uk-tooltip="title: Edit portfolio" onClick={() => this.props.openModalDialog('update_portfolio')}><i className="fas fa-edit"></i> </button>
                     <Link to={accountLink}><button className='uk-button uk-button-default uk-button-small'><i className="fa fa-external-link-alt uk-margin-small-right"></i> Jump to Account</button></Link>
                 </Header>

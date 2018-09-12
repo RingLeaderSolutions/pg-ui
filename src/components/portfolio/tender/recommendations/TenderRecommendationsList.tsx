@@ -148,12 +148,22 @@ class TenderRecommendationsList extends React.Component<TenderRecommendationsLis
             return (<div className="uk-margin"><ErrorMessage content={this.props.errorMessage}/></div>);
         }
         else if(this.props.tender.issuances == null || this.props.tender.issuances.length == 0){
-            return (<div className="uk-margin"><p>No packs have been issued for this tender yet.</p></div>);
+            return (
+                <div className="uk-margin">
+                    <div className="uk-alert-info uk-margin-small-top uk-margin-small-bottom" data-uk-alert>
+                        <p><i className="fas fa-info-circle uk-margin-small-right"></i>No packs have been issued for this tender yet. Head back to the Offers tab to issue some requirements and start receiving offers.</p>
+                    </div>
+                </div>);
         }
 
         let content;
         if(this.props.tender.summaries == null || this.props.tender.summaries.length == 0){
-            content = (<p>No recommendations have been generated for this tender yet.</p>);
+            content = (
+            <div className="uk-margin">
+                <div className="uk-alert-info uk-margin-small-top uk-margin-small-bottom" data-uk-alert>
+                    <p><i className="fas fa-info-circle uk-margin-small-right"></i>No recommendations have been generated for this tender yet. Click on the button above to get started!</p>
+                </div>
+            </div>);
         }
         else {
             content = this.renderSummaryTable();

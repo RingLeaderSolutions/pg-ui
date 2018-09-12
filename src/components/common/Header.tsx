@@ -6,6 +6,7 @@ import AuthService from '../../services/AuthService';
 interface HeaderProps {
   title: string;
   children?: any;
+  icon?: string;
 }
 
 export default class Header extends React.Component<HeaderProps, {}> {
@@ -13,13 +14,14 @@ export default class Header extends React.Component<HeaderProps, {}> {
     AuthService.logout();
   }
   render() {
+    var icon = this.props.icon ? (<i className={`${this.props.icon} uk-margin-right`}></i>) : null;
     return (
       <div className="header">
         <NotificationContainer />
         <div className="header-content" data-uk-grid>
           <div className="uk-width-expand" data-uk-grid>
             <div className="uk-width-auto">
-              <h3>{this.props.title}</h3>
+              <h3>{icon}{this.props.title}</h3>
             </div>
             <div className="uk-width-expand">
               {this.props.children}

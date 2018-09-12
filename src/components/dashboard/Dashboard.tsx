@@ -14,7 +14,6 @@ interface DispatchProps {
 
 class Dashboard extends React.Component<DispatchProps, {}> {
     componentDidMount(){
-        console.log('dashboard mount');
         this.props.selectApplicationTab(ApplicationTab.Dashboard);
     }
     
@@ -22,7 +21,7 @@ class Dashboard extends React.Component<DispatchProps, {}> {
         return (
             <div className="content-inner">
                 <div className="content-dashboard">
-                    <Header title="Dashboard" />
+                    <Header title="Dashboard" icon="fa fa-tachometer-alt"/>
                     <div className="content-dashboard">
                         <DashboardSummary />
                         <div className="uk-child-width-expand@s uk-grid-match uk-text-center" data-uk-grid data-uk-height-match="target: > div > .uk-card">

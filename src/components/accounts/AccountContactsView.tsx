@@ -45,7 +45,7 @@ class AccountContactsView extends React.Component<AccountContactsViewProps & Sta
             var updateContactDialogName = `update_contact_${c.id}`;
 
             return (
-                <tr key={c.id}>
+                <tr key={c.id} className="uk-table-middle">
                     <td>{c.firstName}</td>
                     <td>{c.lastName}</td>
                     <td>{c.phoneNumber}</td>
@@ -127,7 +127,7 @@ class AccountContactsView extends React.Component<AccountContactsViewProps & Sta
         return (
             <div>
                 <p className="uk-text-right">
-                    <button className='uk-button uk-button-primary uk-margin-small-right' onClick={() => this.props.openModalDialog('create-contact')}><i className="fa fa-user-plus-circle uk-margin-small-right"></i> Add Contact</button>
+                    <button className='uk-button uk-button-primary uk-margin-small-right' onClick={() => this.props.openModalDialog('create-contact')}><i className="fas fa-user-plus uk-margin-small-right"></i> Add Contact</button>
                 </p>
                 {hasContacts ? this.renderContactsTable() : this.renderNoContactsWarning()}
                 

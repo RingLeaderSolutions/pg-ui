@@ -66,7 +66,7 @@ class UpdatePortfolioDialog extends React.Component<UpdatePortfolioDialogProps &
         return (
             <div>
                 <div className="uk-modal-header">
-                    <h2 className="uk-modal-title">Edit Portfolio</h2>
+                    <h2 className="uk-modal-title"><i className="fas fa-cubes uk-margin-right"></i>Edit Portfolio</h2>
                 </div>
                 <div className="uk-modal-body">
                     <div className="uk-margin">
@@ -103,8 +103,8 @@ class UpdatePortfolioDialog extends React.Component<UpdatePortfolioDialogProps &
                     </div>
                 </div>
                 <div className="uk-modal-footer uk-text-right">
-                    <button className="uk-button uk-button-default uk-margin-right" type="button" onClick={() => this.props.closeModalDialog()}>Cancel</button>
-                    <button className="uk-button uk-button-primary" type="button" onClick={() => this.editPortfolio()}>Update</button>
+                    <button className="uk-button uk-button-default uk-margin-right" type="button" onClick={() => this.props.closeModalDialog()}><i className="fas fa-times uk-margin-small-right"></i>Cancel</button>
+                    <button className="uk-button uk-button-primary" type="button" onClick={() => this.editPortfolio()}><i className="fas fa-edit uk-margin-small-right"></i>Save</button>
                 </div>
             </div>)
     }

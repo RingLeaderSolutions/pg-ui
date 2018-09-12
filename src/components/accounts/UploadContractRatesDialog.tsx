@@ -5,10 +5,12 @@ import { ApplicationState } from '../../applicationState';
 import { uploadElectricityBackingSheet, uploadGasBackingSheet } from '../../actions/tenderActions';
 import { closeModalDialog } from "../../actions/viewActions";
 import { UploadPanel } from "../common/UploadPanel";
+import { TenderSupplier, TenderContract } from "../../model/Tender";
+import { getWellFormattedUtilityName } from "../common/UtilityIcon";
 
 interface UploadContractRatesDialogProps {
-    contractId: string;
-    utilityType: string;
+    contract: TenderContract;   
+    supplier: TenderSupplier; 
 }
 
 interface StateProps {
@@ -34,11 +36,12 @@ class UploadContractRatesDialog extends React.Component<UploadContractRatesDialo
     useGeneric: HTMLInputElement;
     
     upload() {
-        if(this.props.utilityType == "GAS"){
-            this.props.uploadGasBackingSheet(this.props.contractId, this.useGeneric.checked, this.state.file);
+        var { contractId, utility } = this.props.contract;
+        if(utility == "GAS"){
+            this.props.uploadGasBackingSheet(contractId, this.useGeneric.checked, this.state.file);
         }
         else {
-            this.props.uploadElectricityBackingSheet(this.props.contractId, this.useGeneric.checked, this.state.file);
+            this.props.uploadElectricityBackingSheet(contractId, this.useGeneric.checked, this.state.file);
         }
 
         this.onFileCleared();
@@ -54,16 +57,32 @@ class UploadContractRatesDialog extends React.Component<UploadContractRatesDialo
     }
 
     render() {
+        var { supplier, contract } = this.props;
+        var { reference, utility } = contract;
+
+        var friendlyUtility = getWellFormattedUtilityName(utility);
+        var supplierImage = supplier == null ? "Unknown" : (<img data-uk-tooltip={`title:${supplier.name}`} src={supplier.logoUri} style={{ maxWidth: "140px", maxHeight: "80px"}}/>);
+
         return (
             <div>
                 <div className="uk-modal-header">
-                    <h2 className="uk-modal-title"><i className="fa fa-file-upload uk-margin-right"></i>Upload Contract Rates</h2>
+                    <h2 className="uk-modal-title"><i className="fa fa-file-upload uk-margin-right"></i>Upload {friendlyUtility} Contract Rates</h2>
                 </div>
                 <div className="uk-modal-body">
                     <div className="uk-margin">
+                        <div className="uk-grid uk-grid-collapse">
+                            <div className="uk-width-expand" />
+                            <div className="uk-width-auto uk-flex uk-flex-middle">
+                                {supplierImage}
+                            </div>
+                            <div className="uk-width-expand" />
+                        </div>
+                        <p>Please upload the file representing the existing <strong>{supplier.name}</strong> {friendlyUtility} contract rates.</p> 
+                        <p>Contract Reference: <i>{reference}</i>.</p>
+                        <hr />
                         <form>
                             <fieldset className="uk-fieldset">
-                                <div className='uk-grid-small uk-child-width-auto uk-grid'>
+                                <div className='uk-margin-bottom'>
                                     <label>
                                         <input 
                                             className='uk-checkbox'
@@ -74,7 +93,7 @@ class UploadContractRatesDialog extends React.Component<UploadContractRatesDialo
                                     </label>
                                 </div>
                             </fieldset>
-                            <hr />
+                            
                             <UploadPanel 
                                 file={this.state.file}
                                 onFileSelected={(file: File) => this.onFileSelected(file)}

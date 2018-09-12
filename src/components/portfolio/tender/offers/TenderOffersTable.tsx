@@ -136,7 +136,7 @@ class TenderOffersTable extends React.Component<TenderOffersTableProps & StatePr
                 var collateralDialogName = `view_collateral_${quote.quoteId}`;
 
                 return (
-                    <tr key={quote.quoteId}>
+                    <tr key={quote.quoteId} className="uk-table-middle">
                         <td>{supplierImage}</td>
                         <td>{`${quote.contractLength} months`}</td>
                         <td>{this.mapIndicatorsToIcons(quote.indicators)}</td>  
@@ -168,7 +168,7 @@ class TenderOffersTable extends React.Component<TenderOffersTableProps & StatePr
                                         </a></li>
                                         <li className="uk-nav-divider"></li>
                                         <li><a href="#" onClick={() => this.deleteQuote(quote.quoteId)}>
-                                            <i className="fas fa-trash uk-margin-small-right" style={{color: "#FF0000"}}></i>                              
+                                            <i className="fas fa-trash uk-margin-small-right"></i>                              
                                             Delete
                                         </a></li>
                                         </ul>
@@ -242,6 +242,7 @@ class TenderOffersTable extends React.Component<TenderOffersTableProps & StatePr
 
         return (
             <div key={issuance.issuanceId}>
+                {this.renderDeadlineWarning()}
                 <div className="uk-grid uk-margin-small-left uk-margin-small-right uk-grid-match" data-uk-grid>
                     <div className="uk-card uk-card-default uk-card-small uk-card-body uk-width-1-4 uk-text-center">
                         <p className="uk-text-bold uk-margin-small">{created}</p>
@@ -263,7 +264,7 @@ class TenderOffersTable extends React.Component<TenderOffersTableProps & StatePr
                 <div className="uk-margin-medium-top">
                     <div className="uk-grid" data-uk-grid>
                         <div className="uk-width-expand@s">
-                            {hasReceivedQuotes ? (<h3>Offers</h3>) : (<h3>Pending Supplier Responses</h3>)}
+                            {hasReceivedQuotes ? (<h3><i className="fas fa-handshake uk-margin-right"></i>Offers</h3>) : (<h3><i className="fas fa-hourglass-half uk-margin-right"></i>Pending Supplier Responses</h3>)}
                         </div>
                         <div className="uk-width-1-2">
                             <button className="uk-button uk-button-primary uk-button-small uk-align-right" type="button"onClick={() => this.props.openModalDialog(uploadOfferName)}>
@@ -314,7 +315,21 @@ class TenderOffersTable extends React.Component<TenderOffersTableProps & StatePr
 
     renderUnissued(){
         if(this.props.tender.unissuedPacks == null || this.props.tender.unissuedPacks.length == 0){
-            return (<p key="unissued-none">There are no unissued requirements packs for this tender.</p>);
+            return (
+                <div key="unissued-alert">
+                    {this.renderDeadlineWarning()}
+                    <div key="unissued-alert" className="uk-alert-primary uk-margin uk-alert" data-uk-alert>
+                        <div className="uk-grid uk-grid-small" data-uk-grid>
+                            <div className="uk-width-auto uk-flex uk-flex-middle">
+                                <i className="fas fa-info-circle uk-margin-small-right"></i>
+                            </div>
+                            <div className="uk-width-expand uk-flex uk-flex-middle">
+                                <p>This tender has no unissued or pending requirements packs. Click above to generate a new pack for review.</p>    
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )
         }
 
         var tableContent = this.props.tender.unissuedPacks.map(p => {
@@ -329,7 +344,7 @@ class TenderOffersTable extends React.Component<TenderOffersTableProps & StatePr
                     <td>{supplierImage}</td>
                     <td>
                         <a className="uk-button uk-button-default uk-button-small" href={p.zipFileName} data-uk-tooltip="title:Download">
-                            <i className="fas fa-cloud-download uk-margin-small-right"></i>
+                            <i className="fas fa-cloud-download-alt"></i>
                         </a> 
                     </td>
                 </tr>
@@ -347,6 +362,7 @@ class TenderOffersTable extends React.Component<TenderOffersTableProps & StatePr
                         </button>
                     </div>
                 </div>
+                {this.renderDeadlineWarning()}
                 <div className="uk-alert-info uk-margin-small-top uk-margin-small-bottom" data-uk-alert>
                     <p><i className="fas fa-info-circle uk-margin-small-right"></i>These requirements packs have not yet been issued.</p>
                 </div>
@@ -377,13 +393,16 @@ class TenderOffersTable extends React.Component<TenderOffersTableProps & StatePr
             }
 
             return (
-                <div className="uk-alert-default uk-margin uk-margin-large-top uk-alert" data-uk-alert>
-                    <div className="uk-grid uk-grid-small" data-uk-grid>
-                        <div className="uk-width-auto uk-flex uk-flex-middle">
-                            <i className="fas fa-info-circle uk-margin-small-right"></i>
-                        </div>
-                        <div className="uk-width-expand uk-flex uk-flex-middle">
-                            <p>No requirements packs have been generated yet. Click the Generate New button to get started.</p>    
+                <div>
+                    {this.renderDeadlineWarning()}
+                    <div className="uk-alert-default uk-margin uk-margin-top uk-alert" data-uk-alert>
+                        <div className="uk-grid uk-grid-small" data-uk-grid>
+                            <div className="uk-width-auto uk-flex uk-flex-middle">
+                                <i className="fas fa-info-circle uk-margin-small-right"></i>
+                            </div>
+                            <div className="uk-width-expand uk-flex uk-flex-middle">
+                                <p>No requirements packs have been generated yet. Click the Generate New button to get started.</p>    
+                            </div>
                         </div>
                     </div>
                 </div>);
@@ -435,6 +454,29 @@ class TenderOffersTable extends React.Component<TenderOffersTableProps & StatePr
             </div>)
     }
 
+    renderDeadlineWarning(){
+        var deadline = moment(this.props.tender.deadline);
+        var deadlineHasPassed = moment().diff(deadline, 'hours') > 0;
+        if(deadlineHasPassed){
+            return (
+                <div className="uk-alert uk-alert-warning uk-margin-top" data-uk-alert>
+                    <div className="uk-grid uk-grid-small" data-uk-grid>
+                        <div className="uk-width-auto uk-flex uk-flex-middle">
+                            <i className="fas fa-exclamation-triangle uk-margin-small-right"></i>
+                        </div>
+                        <div className="uk-width-expand uk-flex uk-flex-middle">
+                            <div>
+                                <p>This tender's deadline ({deadline.format("DD/MM/YYYY")}) has now passed.</p>
+                                <p>You won't be able to generate new or issue existing requirements packs to suppliers until this has been set to a date in the future.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>)
+        }
+        
+        return null;
+    }
+
     render(){
         if(this.props.working){
             let content = (<Spinner hasMargin={true} />);
@@ -442,16 +484,16 @@ class TenderOffersTable extends React.Component<TenderOffersTableProps & StatePr
         }
         if(this.props.tender.existingContract == null || this.props.tender.existingContract.sheetCount == 0){
             let content = (
-                    <div className="uk-alert-warning uk-margin-small-bottom uk-alert" data-uk-alert>
-                        <div className="uk-grid uk-grid-small" data-uk-grid>
-                            <div className="uk-width-auto uk-flex uk-flex-middle">
-                                <i className="fas fa-exclamation-triangle uk-margin-small-right"></i>
-                            </div>
-                            <div className="uk-width-expand uk-flex uk-flex-middle">
-                                <p>Tender setup appears to be incomplete. Please ensure an existing contract has been created and its rates have been uploaded.</p>    
-                            </div>
+                <div className="uk-alert-warning uk-margin-small-bottom uk-alert" data-uk-alert>
+                    <div className="uk-grid uk-grid-small" data-uk-grid>
+                        <div className="uk-width-auto uk-flex uk-flex-middle">
+                            <i className="fas fa-exclamation-triangle uk-margin-small-right"></i>
                         </div>
-                    </div>)
+                        <div className="uk-width-expand uk-flex uk-flex-middle">
+                            <p>Tender setup appears to be incomplete. Please ensure an existing contract has been created and its rates have been uploaded.</p>    
+                        </div>
+                    </div>
+                </div>)
 
             return this.renderCardContent(content);
         }
@@ -459,11 +501,12 @@ class TenderOffersTable extends React.Component<TenderOffersTableProps & StatePr
         var viewQuoteRatesDialogName = `view_quote_rates_${this.props.tender.tenderId}`;
 
         var offersContent = this.renderOffersContent();
+
         let content = (
             <div>
                 <div className="uk-grid" data-uk-grid>
                     <div className="uk-width-expand@s">
-                        <h3>Requirements Packs</h3>
+                        <h3><i className="fas fa-archive uk-margin-right"></i>Requirements Packs</h3>
                     </div>
                     <div className="uk-width-1-2">
                         <button className="uk-button uk-button-primary uk-button-small uk-align-right" type="button" onClick={() => this.generateNewPack()}>

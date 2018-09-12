@@ -134,7 +134,18 @@ class TenderRecommendationsView extends React.Component<TenderRecommendationsVie
             return this.renderContent(spinner);
         }
         if(this.props.recommendations.length == 0){
-            var noTendersMessage = (<p>No tenders have been added for this portfolio yet. Visit the Tender tab to start the tendering process.</p>);
+            var noTendersMessage = (
+                (<div className="uk-alert-default uk-margin-right uk-alert" data-uk-alert>
+                    <div className="uk-grid uk-grid-small" data-uk-grid>
+                        <div className="uk-width-auto uk-flex uk-flex-middle">
+                            <i className="fas fa-info-circle uk-margin-small-right"></i>
+                        </div>
+                        <div className="uk-width-expand uk-flex uk-flex-middle">
+                            <p>No tenders have been added for this portfolio yet. Visit the Tender tab to start the tendering process.</p>    
+                        </div>
+                    </div>
+                </div>)
+            );
             return this.renderContent(noTendersMessage);
         }
         

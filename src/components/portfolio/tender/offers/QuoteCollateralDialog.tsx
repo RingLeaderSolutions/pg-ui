@@ -36,10 +36,6 @@ class QuoteCollateralDialog extends React.Component<QuoteCollateralDialogProps &
     }
 
     renderCollateralTable(){
-        if(!this.props.collateral || this.props.collateral.length == 0){
-            return (<p>This quote does not have any collateral.</p>);
-        }
-
         var tableContent = this.renderTableContent();
         return (
             <table className="uk-table uk-table-divider">
@@ -57,18 +53,24 @@ class QuoteCollateralDialog extends React.Component<QuoteCollateralDialogProps &
 
 
     render() {
+        var hasCollateral = this.props.collateral && this.props.collateral.length > 0;
         return (
             <div>
                 <div className="uk-modal-header">
-                    <h2 className="uk-modal-title">Quote Collateral</h2>
+                    <h2 className="uk-modal-title"><i className="fas fa-folder-open uk-margin-small-right"></i>Quote Collateral</h2>
                 </div>
                 <div className="uk-modal-body">
-                    <div className="uk-margin">
+                
+                {hasCollateral ? 
+                    (<div className="uk-margin">
                         {this.renderCollateralTable()}
-                    </div>
+                    </div>)
+                :
+                    (<p>This quote does not have any collateral.</p>)}
+
                 </div>
                 <div className="uk-modal-footer uk-text-right">
-                    <button className="uk-button uk-button-default uk-margin-right" type="button" onClick={() => this.props.closeModalDialog()}>Close</button>
+                    <button className="uk-button uk-button-default uk-margin-right" type="button" onClick={() => this.props.closeModalDialog()}><i className="fas fa-times uk-margin-small-right"></i>Close</button>
                 </div>
             </div>)
     }

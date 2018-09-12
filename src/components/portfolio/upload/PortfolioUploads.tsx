@@ -101,7 +101,10 @@ class PortfolioUploads extends React.Component<PortfolioUploadProps & StateProps
         var hasAccountDataUploads = this.props.reports.uploads.length > 0;
         var hasAnyUploads = hasTenderDataUploads || hasAccountDataUploads;
 
-        var content = (<p>No uploads have been completed against this portfolio yet.</p>);
+        var content = (
+            <div className="uk-alert-warning uk-margin-small-top uk-margin-small-bottom" data-uk-alert>
+                <p><i className="fas fa-info-circle uk-margin-small-right"></i>There haven't been any uploads for this portfolio yet.</p>
+            </div>);
         if(hasTenderDataUploads && hasAccountDataUploads){
             content = (
                 <div>
