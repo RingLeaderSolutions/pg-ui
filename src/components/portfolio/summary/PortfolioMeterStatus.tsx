@@ -58,7 +58,7 @@ class PortfolioMeterStatus extends React.Component<PortfolioMeterStatusProps & S
         return (
             <div>
                 <div className="uk-card uk-card-default uk-card-body">
-                    <h4><i className="fas fa-stopwatch uk-margin-small-right"></i>Meter Status</h4>
+                    <h4 className="uk-text-center"><i className="fas fa-stopwatch uk-margin-small-right"></i>Meter Status</h4>
                     {content}
                 </div>
             </div>

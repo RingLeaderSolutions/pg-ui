@@ -49,12 +49,14 @@ class AccountUploadsView extends React.Component<AccountUploadsViewProps & State
                 return 0;
             })
         .map(r => {
-            var requestTime = moment.utc(r.requested).local().fromNow();   
+            var localRequested = moment.utc(r.requested).local();
+                var requestTime = localRequested.fromNow();
+                var detailedRequestTime = localRequested.format("DD/MM/YYYY HH:mm:ss");
             return (
                 <tr key={r.id}>
                     <td>{r.dataType == "SUPPLYDATA" ? "Supply Data" : r.dataType}</td>
-                    <td>{r.notes == null || r.notes == "" ? <i>None</i> : r.notes}</td>
-                    <td>{requestTime}</td>
+                    <td>{r.notes == null || r.notes == "" ? (<i>None</i>) : r.notes}</td>
+                    <td><p data-uk-tooltip={`title:${detailedRequestTime}`}>{requestTime}</p></td>
                     <td><div className="user">
                         <img className="avatar" src={r.requestor.avatarUrl} />
                         <p>{r.requestor.firstName} {r.requestor.lastName}</p>

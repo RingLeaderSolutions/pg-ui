@@ -11,6 +11,7 @@ import UploadReportView from "../../common/UploadReportView";
 import QuoteImportReportView from "./QuoteImportReportView";
 import { openModalDialog } from "../../../actions/viewActions";
 import ModalDialog from "../../common/ModalDialog";
+import { UtilityIcon } from "../../common/UtilityIcon";
 
 interface PortfolioUploadProps {
     portfolio: Portfolio;
@@ -42,6 +43,17 @@ class PortfolioUploads extends React.Component<PortfolioUploadProps & StateProps
         this.props.openModalDialog(dialogName)
     }
 
+    friendlyDataType(type: string){
+        switch(type){
+            case "QUOTE":
+                return (<p><i className="far fa-handshake uk-margin-small-right fa-lg"></i>Offer</p>);
+            case "HISTORICAL":
+                return (<UtilityIcon utility="hh" iconClass="uk-margin-small-right">Historic</UtilityIcon>)
+            default:
+                return (<p>{type}</p>)
+        }
+    }
+
     renderUploadsTable(reports: UploadReport[], isImport: boolean){
         var rows = reports
             .sort(
@@ -51,12 +63,14 @@ class PortfolioUploads extends React.Component<PortfolioUploadProps & StateProps
                     return 0;
                 })
             .map(r => {
-                var requestTime = moment.utc(r.requested).local().fromNow();   
+                var localRequested = moment.utc(r.requested).local();
+                var requestTime = localRequested.fromNow();
+                var detailedRequestTime = localRequested.format("DD/MM/YYYY HH:mm:ss");
                 return (
                     <tr key={r.id}>
-                        <td>{r.dataType}</td>
-                        <td>{r.notes}</td>
-                        <td>{requestTime}</td>
+                        <td>{this.friendlyDataType(r.dataType)}</td>
+                        <td>{r.notes == null || r.notes == "" ? (<i>None</i>) : r.notes}</td>
+                        <td><p data-uk-tooltip={`title:${detailedRequestTime}`}>{requestTime}</p></td>
                         <td><div className="user">
                             <img className="avatar" src={r.requestor.avatarUrl} />
                             <p>{r.requestor.firstName} {r.requestor.lastName}</p>
@@ -102,7 +116,7 @@ class PortfolioUploads extends React.Component<PortfolioUploadProps & StateProps
         var hasAnyUploads = hasTenderDataUploads || hasAccountDataUploads;
 
         var content = (
-            <div className="uk-alert-warning uk-margin-small-top uk-margin-small-bottom" data-uk-alert>
+            <div className="uk-alert-default uk-margin-small-top uk-margin-small-bottom" data-uk-alert>
                 <p><i className="fas fa-info-circle uk-margin-small-right"></i>There haven't been any uploads for this portfolio yet.</p>
             </div>);
         if(hasTenderDataUploads && hasAccountDataUploads){

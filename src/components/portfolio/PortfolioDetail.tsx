@@ -8,7 +8,6 @@ import { Portfolio, PortfolioDetails, ApplicationTab } from '../../model/Models'
 import Spinner from '../common/Spinner';
 
 import PortfolioSummary from "./summary/PortfolioSummary";
-import PortfolioUploads from "./upload/PortfolioUploads";
 import PortfolioMeters from "./mpan/PortfolioMeters";
 
 import { getSinglePortfolio, getPortfolioDetails } from '../../actions/portfolioActions';
