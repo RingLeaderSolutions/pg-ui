@@ -2,7 +2,7 @@ import * as types from "../actions/actionTypes";
 import { HubConnection } from "@aspnet/signalr-client";
 import { NotificationMessage } from '../model/NotificationMessage';
 import { getPortfolioDetails, fetchPortfolioUploads, getAllPortfolios, getSinglePortfolio } from '../actions/portfolioActions';
-import { getPortfolioTenders, fetchTenderOffers, fetchTenderRecommendations } from '../actions/tenderActions';
+import { getPortfolioTenders, fetchTenderOffers, fetchTenderRecommendations, getAccountContracts } from '../actions/tenderActions';
 import { retrieveAccountDetail, fetchAccountDocumentation, fetchAccountUploads, retrieveAccounts } from '../actions/hierarchyActions';
 import { fetchMeterConsumption } from '../actions/meterActions';
 import { ApplicationState } from "../applicationState";
@@ -33,7 +33,7 @@ export default function connectSignalR(store: any) {
                         store.dispatch(fetchPortfolioUploads(currentPortfolio.id));
                     }
                 }
-                if(data.Category == "created" || data.Category == "deleted"){
+                if(data.Category == "created" || data.Category == "deleted" || data.Category == "edited"){
                     store.dispatch(getAllPortfolios())
                 }
                 break;
@@ -82,6 +82,10 @@ export default function connectSignalR(store: any) {
                 break;
             case "account":
                 if(currentAccount && data.EntityId == currentAccount.id){
+                    if(data.Category == "contract"){
+                        store.dispatch(getAccountContracts(currentAccount.id));
+                        return;
+                    }
                     store.dispatch(retrieveAccountDetail(currentAccount.id));
                     store.dispatch(fetchAccountDocumentation(currentAccount.id));
                     store.dispatch(fetchAccountUploads(currentAccount.id));
@@ -89,6 +93,7 @@ export default function connectSignalR(store: any) {
                 switch(data.Category){
                     case "created":
                     case "deleted":
+                    case "updated":
                         store.dispatch(retrieveAccounts());
                         break;
                     case "supplydata_upload_failed":

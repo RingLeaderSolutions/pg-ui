@@ -61,6 +61,7 @@ class UploadContractRatesDialog extends React.Component<UploadContractRatesDialo
         var { reference, utility } = contract;
 
         var friendlyUtility = getWellFormattedUtilityName(utility);
+        var supplierName = supplier == null ? "Unknown" : supplier.name;
         var supplierImage = supplier == null ? "Unknown" : (<img data-uk-tooltip={`title:${supplier.name}`} src={supplier.logoUri} style={{ maxWidth: "140px", maxHeight: "80px"}}/>);
 
         return (
@@ -77,7 +78,7 @@ class UploadContractRatesDialog extends React.Component<UploadContractRatesDialo
                             </div>
                             <div className="uk-width-expand" />
                         </div>
-                        <p>Please upload the file representing the existing <strong>{supplier.name}</strong> {friendlyUtility} contract rates.</p> 
+                        <p>Please upload the file representing the existing <strong>{supplierName}</strong> {friendlyUtility} contract rates.</p> 
                         <p>Contract Reference: <i>{reference}</i>.</p>
                         <hr />
                         <form>
