@@ -5,6 +5,7 @@ import { PortfolioDetails } from '../../../model/Models';
 
 import { uploadHistoric } from '../../../actions/portfolioActions';
 import { closeModalDialog } from "../../../actions/viewActions";
+import { MultiUploadPanel } from "../../common/UploadPanel";
 
 interface UploadHistoricDialogProps {
     details: PortfolioDetails;
@@ -22,7 +23,7 @@ interface DispatchProps {
 }
 
 interface UploadHistoricState {
-    files: Blob[];
+    files: File[];
 }
 
 class UploadHistoricDialog extends React.Component<UploadHistoricDialogProps & StateProps & DispatchProps, UploadHistoricState> {
@@ -40,10 +41,14 @@ class UploadHistoricDialog extends React.Component<UploadHistoricDialogProps & S
         this.props.closeModalDialog();
     }
 
-    onFileChosen(e: any){
+    onFilesSelected(files: File[]){
         this.setState({
-            files: e.target.files
+            files
         });
+    }
+
+    onFilesCleared(){
+        this.setState({...this.state, files: null});
     }
 
     render() {
@@ -51,16 +56,13 @@ class UploadHistoricDialog extends React.Component<UploadHistoricDialogProps & S
         return (
             <div>
                 <div className="uk-modal-header">
-                    <h2 className="uk-modal-title">Upload Historical Consumption</h2>
+                    <h2 className="uk-modal-title"><i className="fa fa-file-upload uk-margin-right"></i>Upload Historical Consumption</h2>
                 </div>
                 <div className="uk-modal-body">
                     <div className="uk-margin">
-                        <p>Select the file you wish to upload.</p>
+                        <p>Select the files you wish to upload.</p>
                         <form>
                             <fieldset className="uk-fieldset">
-                                <div className="uk-margin">
-                                    <div className="uk-form-file"><input type="file" onChange={(e:any) => this.onFileChosen(e)} multiple/></div>
-                                </div>
                                 <select className='uk-select' 
                                     ref={ref => this.historicalType = ref}>
                                     <option value="" disabled>Select</option>
@@ -69,12 +71,17 @@ class UploadHistoricDialog extends React.Component<UploadHistoricDialogProps & S
                                     <option value="UKDC">UKDC</option>
                                 </select>
                             </fieldset>
+                            <hr />
+                            <MultiUploadPanel 
+                                files={this.state.files}
+                                onFilesSelected={(files: File[]) => this.onFilesSelected(files)}
+                                onFilesCleared={() => this.onFilesCleared()} />
                         </form>
                     </div>
                 </div>
                 <div className="uk-modal-footer uk-text-right">
-                    <button className="uk-button uk-button-default uk-margin-right" type="button" onClick={() => this.props.closeModalDialog()}>Cancel</button>
-                    <button className="uk-button uk-button-primary" type="button" onClick={() => this.upload()} disabled={this.state.files == null}>Upload</button>
+                    <button className="uk-button uk-button-default uk-margin-right" type="button" onClick={() => this.props.closeModalDialog()}><i className="fas fa-times uk-margin-right"></i>Cancel</button>
+                    <button className="uk-button uk-button-primary" type="button" onClick={() => this.upload()} disabled={this.state.files == null}><i className="fa fa-arrow-circle-up uk-margin-right"></i>Upload</button>
                 </div>
             </div>)
     }
@@ -82,7 +89,7 @@ class UploadHistoricDialog extends React.Component<UploadHistoricDialogProps & S
 
 const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, UploadHistoricDialogProps> = (dispatch) => {
     return {
-        uploadHistoric: (portfolioId: string, files: Blob[], historicalType: string) => dispatch(uploadHistoric(portfolioId, files, historicalType)),
+        uploadHistoric: (portfolioId: string, files: File[], historicalType: string) => dispatch(uploadHistoric(portfolioId, files, historicalType)),
         closeModalDialog: () => dispatch(closeModalDialog())
     };
 };
