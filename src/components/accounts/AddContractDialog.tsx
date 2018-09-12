@@ -27,23 +27,58 @@ interface DispatchProps {
 
 interface AddExistingContractDialogState {
     contractRef: string;
-    supplier: number;
+    supplier: string;
+    eligibleSuppliers: TenderSupplier[];
     product: string;
-    utility: string;
+    utility: UtilityType;
 }
 
 class AddExistingContractDialog extends React.Component<AddExistingContractDialogProps & StateProps & DispatchProps, AddExistingContractDialogState> {
     constructor(props: AddExistingContractDialogProps & StateProps & DispatchProps) {
         super();
+        
+        var eligibleSuppliers = props.suppliers != null && props.suppliers.length > 0 ? this.getEligibleSuppliers(UtilityType.Electricity, props.suppliers) : [];
         this.state = {
             contractRef: "",
-            supplier: 0,
+            supplier: "",
             product: "",
-            utility: "electricity"
+            utility: UtilityType.Electricity,
+            eligibleSuppliers
+        }
+    }
+
+    componentWillReceiveProps(nextProps: AddExistingContractDialogProps & StateProps & DispatchProps){
+        if(nextProps.suppliers != null && nextProps.suppliers.length > 0){
+            var eligibleSuppliers = this.getEligibleSuppliers(this.state.utility, nextProps.suppliers);
+            var newSelected = this.getSelectedSupplierFromEligible(this.state.supplier, eligibleSuppliers);
+
+            this.setState({
+                ...this.state,
+                eligibleSuppliers,
+                supplier: newSelected
+            })
+        }
+    }
+
+    getSelectedSupplierFromEligible(selectedSupplierId: string, eligibleSuppliers: TenderSupplier[]){
+        var existsInEligible = eligibleSuppliers.find(s => s.supplierId == selectedSupplierId);
+        return existsInEligible == null ? "" : selectedSupplierId;
+    }
+
+    getEligibleSuppliers(utility: UtilityType, suppliers: TenderSupplier[]){
+        switch(utility){
+            case UtilityType.Electricity:
+                return suppliers.filter(s => s.electricitySupplier);
+            case UtilityType.Gas:
+                return suppliers.filter(s => s.gasSupplier);
+            default:
+                console.log("Unknown utility type: " + {utility});
+                return [];
         }
     }
 
     addExistingContract(){
+        var utilityString = getWellFormattedUtilityType(this.state.utility).toLowerCase();
         var contract: TenderContract = {
             contractId: null,
             supplierId: String(this.state.supplier),
@@ -52,7 +87,7 @@ class AddExistingContractDialog extends React.Component<AddExistingContractDialo
             reference: this.state.contractRef,
             contractStart: null,
             contractEnd: null,
-            utility: this.state.utility,
+            utility: utilityString,
             incumbent: true,
             uploaded: null,
             status: null,
@@ -64,7 +99,7 @@ class AddExistingContractDialog extends React.Component<AddExistingContractDialo
     }
 
     renderSupplierSelect(){
-        var options = this.props.suppliers.map(s => {
+        var options = this.state.eligibleSuppliers.map(s => {
                 return (<option key={s.supplierId} value={s.supplierId}>{s.name}</option>)
         })
 
@@ -72,31 +107,30 @@ class AddExistingContractDialog extends React.Component<AddExistingContractDialo
             <select className='uk-select' 
                 value={this.state.supplier}
                 onChange={(e) => this.handleFormChange("supplier", e)}>
-                <option value={0} disabled>Select</option>
+                <option value="" disabled>Select</option>
                 {options}
             </select>
         );
     }
 
-    toggleUtility(type: UtilityType){
-        var utility = getWellFormattedUtilityType(type).toLowerCase();
+    toggleUtility(utility: UtilityType){
         if(this.state.utility == utility){
             return;
         }
 
+        var eligibleSuppliers = this.getEligibleSuppliers(utility, this.props.suppliers);
+        var newSelected = this.getSelectedSupplierFromEligible(this.state.supplier, eligibleSuppliers);
+
+        
         this.setState({
             ...this.state,
-            utility
+            utility,
+            eligibleSuppliers,
+            supplier: newSelected
         });
     }
 
-    utilityIsSelected(type: UtilityType){
-        var utility = getWellFormattedUtilityType(type).toLowerCase();
-        return this.state.utility == utility;
-    }
-
-    getSelectedUtilityCardClass(type: UtilityType){
-        var utility = getWellFormattedUtilityType(type).toLowerCase();
+    getSelectedUtilityCardClass(utility: UtilityType){
         if(this.state.utility == utility){
             return "uk-card-primary";
         }
@@ -111,6 +145,15 @@ class AddExistingContractDialog extends React.Component<AddExistingContractDialo
             ...this.state,
             [attribute]: value
         })
+    }
+
+    canSubmit(): boolean {
+        var canSubmit = 
+            (this.state.contractRef.length > 0 && 
+            this.state.supplier.length > 0 &&
+            this.state.utility != null &&
+            this.state.product.length > 0);
+        return canSubmit;
     }
 
     render() {
@@ -134,7 +177,7 @@ class AddExistingContractDialog extends React.Component<AddExistingContractDialo
                                                 <h4><i className="fas fa-bolt uk-margin-right fa-lg"></i>Electricity</h4>
                                             </div>
                                             <div className="uk-width-auto uk-flex uk-flex-middle">
-                                                {this.utilityIsSelected(UtilityType.Electricity) ? <i className="fas fa-check-circle fa-lg" style={{color: '#ffffff'}}/> : null}
+                                                {this.state.utility == UtilityType.Electricity ? <i className="fas fa-check-circle fa-lg" style={{color: '#ffffff'}}/> : null}
                                             </div>
                                         </div>
                                     </div>
@@ -146,7 +189,7 @@ class AddExistingContractDialog extends React.Component<AddExistingContractDialo
                                                 <h4><i className="fas fa-fire uk-margin-right fa-lg"></i>Gas</h4>
                                             </div>
                                             <div className="uk-width-auto uk-flex uk-flex-middle">
-                                                {this.utilityIsSelected(UtilityType.Gas) ? <i className="fas fa-check-circle fa-lg" style={{color: '#ffffff'}}/> : null}
+                                                {this.state.utility == UtilityType.Gas ? <i className="fas fa-check-circle fa-lg" style={{color: '#ffffff'}}/> : null}
                                             </div>
                                         </div>
                                     </div>
@@ -179,7 +222,7 @@ class AddExistingContractDialog extends React.Component<AddExistingContractDialo
                 </div>
                 <div className="uk-modal-footer uk-text-right">
                     <button className="uk-button uk-button-default uk-margin-right" type="button"  onClick={() => this.props.closeModalDialog()}><i className="fas fa-times uk-margin-small-right"></i>Cancel</button>
-                    <button className="uk-button uk-button-primary" type="button" onClick={() => this.addExistingContract()}><i className="fas fa-plus-circle uk-margin-small-right"></i>Add</button>
+                    <button className="uk-button uk-button-primary" type="button" onClick={() => this.addExistingContract()} disabled={!this.canSubmit()}><i className="fas fa-plus-circle uk-margin-small-right"></i>Add</button>
                 </div>
             </div>)
     }
