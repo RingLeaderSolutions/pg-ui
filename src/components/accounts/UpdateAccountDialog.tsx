@@ -84,7 +84,7 @@ class UpdateAccountDialog extends React.Component<UpdateAccountDialogProps & Sta
         return (
             <div>
                 <div className="uk-modal-header">
-                    <h2 className="uk-modal-title">Update Account: {account.companyName}</h2>
+                    <h2 className="uk-modal-title"><i className="fa fa-building uk-margin-right"></i>Edit Account: {account.companyName}</h2>
                 </div>
                 <div className="uk-modal-body">
                     <div className="uk-margin">
@@ -213,8 +213,8 @@ class UpdateAccountDialog extends React.Component<UpdateAccountDialogProps & Sta
                     </div>
                 </div>
                 <div className="uk-modal-footer uk-text-right">
-                    <button className="uk-button uk-button-default uk-margin-right" type="button" onClick={() => this.props.closeModalDialog()}>Cancel</button>
-                    <button className="uk-button uk-button-primary" type="button" onClick={() => this.updateAccount()}>Save</button>
+                    <button className="uk-button uk-button-default uk-margin-right" type="button" onClick={() => this.props.closeModalDialog()}><i className="fa fa-times uk-margin-small-right"></i>Cancel</button>
+                    <button className="uk-button uk-button-primary" type="button" onClick={() => this.updateAccount()}><i className="fa fa-edit uk-margin-small-right"></i>Save</button>
                 </div>
             </div>)
     }

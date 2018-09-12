@@ -196,6 +196,7 @@ class AccountContractsView extends React.Component<AccountContractsViewProps & S
                 <p className="uk-text-right">
                     <button className='uk-button uk-button-primary uk-margin-small-right' onClick={() => this.props.openModalDialog('add_contract')}><i className="fa fa-plus-circle uk-margin-small-right"></i>Add Existing Contract</button>
                 </p>
+                <hr/>
                 {hasContracts ? this.renderContractsTable() : this.renderNoContractsWarning()}
                 <ModalDialog dialogId={`view_account_rates`} dialogClass="backing-sheet-modal">
                     <TenderBackingSheetsDialog />

@@ -129,6 +129,7 @@ class AccountContactsView extends React.Component<AccountContactsViewProps & Sta
                 <p className="uk-text-right">
                     <button className='uk-button uk-button-primary uk-margin-small-right' onClick={() => this.props.openModalDialog('create-contact')}><i className="fas fa-user-plus uk-margin-small-right"></i> Add Contact</button>
                 </p>
+                <hr />
                 {hasContacts ? this.renderContactsTable() : this.renderNoContactsWarning()}
                 
                 <ModalDialog dialogId="create-contact">

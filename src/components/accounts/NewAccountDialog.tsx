@@ -69,7 +69,7 @@ class NewAccountDialog extends React.Component<NewAccountDialogProps & StateProp
                 return (
                     <div className="new-account-dialog">
                         <div className="uk-modal-header">
-                            <h2 className="uk-modal-title"><i className="fa fa-check-circle uk-margin-small-right" style={{color: '006400'}}></i>Success!</h2>
+                            <h2 className="uk-modal-title"><i className="fa fa-check-circle uk-margin-small-right" style={{color: '#006400'}}></i>Success!</h2>
                         </div>
                         <div className="uk-modal-body">
                             Your account has been created! Click below to exit this screen.

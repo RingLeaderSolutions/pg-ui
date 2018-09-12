@@ -102,7 +102,7 @@ class AccountDocumentsView extends React.Component<AccountDocumentsViewProps & S
                 <p className="uk-text-right">
                     <button className='uk-button uk-button-primary uk-margin-small-right' onClick={() => this.props.openModalDialog('upload_account_document')}><i className="fa fa-file-upload uk-margin-small-right"></i> Upload Document</button>
                 </p>
-
+                <hr />
                 {hasDocumentation ? this.renderDocumentsTable() : this.renderNoDocumentsWarning()}
 
                 <ModalDialog dialogId="upload_account_document">

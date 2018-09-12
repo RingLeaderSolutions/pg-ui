@@ -131,7 +131,7 @@ class TenderSummary extends React.Component<TenderSummaryProps & StateProps & Di
             case 2:
                 return (
                     <a href="#" onClick={() => this.props.openModalDialog("create_gas_tender")}>
-                        <UtilityIcon utility="hh" iconClass="uk-margin-small-right">Add Gas Tender</UtilityIcon>
+                        <UtilityIcon utility="gas" iconClass="uk-margin-small-right">Add Gas Tender</UtilityIcon>
                     </a>);
         }
     }
