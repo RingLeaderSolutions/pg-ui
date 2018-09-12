@@ -26,14 +26,6 @@ interface DispatchProps {
 }
 
 class TenderContractView extends React.Component<TenderContractViewProps & DispatchProps & StateProps, {}> { 
-    renderAddExistingContract(){
-        // TODO: what to show here?
-        return (
-            <div>
-                <p> No existing contract found - one can be added on the Accounts screen</p>
-            </div>);
-    }
-
     renderContractInfo(){
         var { existingContract } = this.props.tender;
         var existingSupplier = this.props.suppliers.find(s => s.supplierId == existingContract.supplierId);
@@ -71,66 +63,48 @@ class TenderContractView extends React.Component<TenderContractViewProps & Dispa
         this.props.fetchContractBackingSheets(this.props.tender.tenderId, contractId);
         this.props.openModalDialog("view_tender_contract_rates");
     }
-
-    renderContractActions(hasContractRates: boolean){
-        return (
-            <div>
-                <div>
-                    <div className="uk-inline">
-                        <button className="uk-button uk-button-default borderless-button" type="button">
-                            <i className="fa fa-ellipsis-v"></i>
-                        </button>
-                        <div data-uk-dropdown="pos:bottom-justify;mode:click">
-                            <ul className="uk-nav uk-dropdown-nav">
-                                { hasContractRates ? (<li><a href="#" onClick={() => this.fetchRatesAndOpenDialog()}>
-                                    <i className="fa fa-pound-sign uk-margin-small-right"></i>
-                                    View Contract Rates
-                                </a></li>) : null }
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        )
-    }
-    
+   
     render() {
         if(this.props.working){
             return (<Spinner />);
         }
+
+        var cardContent = null;
+        var titleContent = null;
         if(this.props.tender.existingContract == null){
-            var content = this.renderAddExistingContract();
-
-            return (
-                <div className="uk-card uk-card-small uk-card-default uk-card-body">
-                    <div className="uk-grid">
-                        <h3 className="uk-width-expand@s">Existing Contract</h3>
-                    </div>
-                    <div className="uk-margin">
-                        {content}
-                    </div>
-                </div>
-            )
+            // TODO: improve this warning message with more info and link to account
+            cardContent = (<p>No existing contract found - one can be added on the Accounts screen</p>);
         }
+        else {
+            var hasContractRates = this.props.tender.existingContract.sheetCount > 0;
+            var warningMessage = null;
+            
+            if(!hasContractRates){
+                // TODO: improve this warning message with link to account
+                warningMessage = (
+                    <div className="uk-alert-warning uk-margin-small-top uk-margin-small-bottom" data-uk-alert>
+                        <p>Comparison is not yet possible - please upload contract rate(s).</p>
+                    </div>);
+            }
+            else {
+                titleContent = (<button className='uk-button uk-button-default uk-button-small' onClick={() => this.fetchRatesAndOpenDialog()}><i className="fa fa-pound-sign uk-margin-small-right"></i>View Contract Rates</button>);
+            }
 
-        var hasContractRates = this.props.tender.existingContract.sheetCount > 0;
-        var warningMessage = null;
-        // TODO: improve this warning message
-        if(!hasContractRates){
-            warningMessage = (
-                <div className="uk-alert-warning uk-margin-small-top uk-margin-small-bottom" data-uk-alert>
-                    <p>Comparison is not yet possible - please upload contract rate(s).</p>
-                </div>);
+            cardContent = (<div>{this.renderContractInfo()}{warningMessage}</div>);
         }
-
-        var contractInfo = this.renderContractInfo();
 
         return (
             <div className="uk-card uk-card-small uk-card-default uk-card-body">
-                <h3>Existing Contract {this.renderContractActions(hasContractRates)}</h3>
-                <div>
-                    {contractInfo}
-                    {warningMessage}
+                <div className="uk-grid uk-grid-small">
+                    <div className="uk-width-expand">
+                        <h3>Existing Contract</h3>
+                    </div>
+                    <div className="uk-width-auto">
+                        {titleContent}
+                    </div>
+                </div>
+                <div className="uk-margin">
+                    {cardContent}
                 </div>
                 <ModalDialog dialogId="view_tender_contract_rates" dialogClass="backing-sheet-modal">
                     <TenderBackingSheetsDialog />

@@ -187,7 +187,7 @@ class AccountContractsView extends React.Component<AccountContractsViewProps & S
                         <i className="fas fa-info-circle uk-margin-small-right"></i>
                     </div>
                     <div className="uk-width-expand uk-flex uk-flex-middle">
-                        <p>Existing contracts have not yet been provided for this account. Click on the button above to get started.</p>    
+                        <p>No existing contracts have been provided for this account yet. Click on the button above to get started.</p>    
                     </div>
                 </div>
             </div>);

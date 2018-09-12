@@ -12,8 +12,8 @@ export class UtilityIcon extends React.Component<UtilityIconProps, {}> {
 	readonly tooltipMap = new Map<string, string>([
 		["electricity", "Electricity"],
 		["gas", "Gas"],
-		["nhh", "Non half-hourly Electricity"],
-		["hh", "Half-hourly Electricity"],
+		["nhh", "Non half-hourly electricity"],
+		["hh", "Half-hourly electricity"],
 	]);
 
 	renderContained(...icons: any[]){
