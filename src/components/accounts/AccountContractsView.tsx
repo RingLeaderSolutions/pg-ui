@@ -73,6 +73,43 @@ class AccountContractsView extends React.Component<AccountContractsViewProps & S
         );
     }
 
+    renderActionList(contract: TenderContract, hasContractRates: boolean){
+        var options = [];
+        var divider = (key: number) => (<li key={key} className="uk-nav-divider"></li>);
+        
+        var edit = (
+            <li key="ec"><a href="#" onClick={() => this.props.openModalDialog(`edit_contract_${contract.contractId}`)}>
+                <i className="fas fa-edit uk-margin-small-right"></i>
+                Edit
+            </a></li>);
+        
+        var upload = (
+            <li key="ur"><a href="#" onClick={() => this.props.openModalDialog(`upload_rates_${contract.contractId}`)}>
+                <i className="fas fa-file-upload uk-margin-small-right"></i>
+                Upload Contract Rates
+            </a></li>);
+
+        options.push(edit, divider(1), upload, divider(2))
+        
+        if(hasContractRates){
+            var viewRates = (
+                <li key="vc"><a href="#" onClick={() => this.fetchRatesAndOpenDialog(contract.contractId)}>
+                    <i className="fa fa-pound-sign uk-margin-small-right"></i>
+                    View Contract Rates
+                </a></li>);
+            options.push(viewRates, divider(3));
+        }
+        
+        var deleteContract = (
+            <li key="dc"><a href="#" onClick={(ev) => this.deleteContract(ev, contract)}>
+                <i className="fas fa-trash uk-margin-small-right"></i>
+                Delete
+            </a></li>);
+        options.push(deleteContract);
+
+        return options;
+    }
+
     renderContractsRows(){
         return this.props.contracts.map(c => {
             var hasContractRates = c.sheetCount > 0;
@@ -108,25 +145,7 @@ class AccountContractsView extends React.Component<AccountContractsViewProps & S
                                 </button>
                                 <div data-uk-dropdown="pos:bottom-justify;mode:click">
                                     <ul className="uk-nav uk-dropdown-nav">
-                                        <li><a href="#" onClick={() => this.props.openModalDialog(`edit_contract_${c.contractId}`)}>
-                                            <i className="fas fa-edit uk-margin-small-right"></i>
-                                            Edit
-                                        </a></li>
-                                        <li className="uk-nav-divider"></li>                                    
-                                        <li><a href="#" onClick={() => this.props.openModalDialog(`upload_rates_${c.contractId}`)}>
-                                            <i className="fas fa-file-upload uk-margin-small-right"></i>
-                                            Upload Contract Rates
-                                        </a></li>
-                                        <li className="uk-nav-divider"></li>
-                                        { hasContractRates ? (<li><a href="#" onClick={() => this.fetchRatesAndOpenDialog(c.contractId)}>
-                                            <i className="fa fa-pound-sign uk-margin-small-right"></i>
-                                            View Contract Rates
-                                        </a></li>) : null }
-                                        <li className="uk-nav-divider"></li> 
-                                        <li><a href="#" onClick={(ev) => this.deleteContract(ev, c)}>
-                                            <i className="fas fa-trash uk-margin-small-right"></i>
-                                            Delete
-                                        </a></li>
+                                        {this.renderActionList(c, hasContractRates)}
                                     </ul>
                                 </div>
                             </div>

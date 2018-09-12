@@ -15,6 +15,7 @@ import {
 } from 'react-router-dom';
 import { InstanceDetail, ApplicationTab } from "../model/Models";
 import Spinner from "./common/Spinner";
+import ErrorMessage from "./common/ErrorMessage";
 
 
 interface StateProps {
@@ -22,6 +23,8 @@ interface StateProps {
     instance_detail: InstanceDetail;
     working: boolean;
     selectedTab: ApplicationTab;
+    error: boolean;
+    errorMessage: string;
 }
   
 interface DispatchProps {
@@ -48,6 +51,9 @@ class Home extends React.Component<StateProps & DispatchProps, {}> {
                 <div className="app-container">
                     <Spinner hasMargin={true}/>
                 </div>)
+        }
+        if(this.props.error){
+            return <div className="uk-flex uk-flex-center uk-flex-middle"><ErrorMessage content={this.props.errorMessage} /></div>
         }
         return (
             <div className="uk-grid uk-grid-collapse uk-height-1-1">
@@ -103,6 +109,8 @@ const mapStateToProps: MapStateToProps<StateProps, {}> = (state: ApplicationStat
         backendVersion: state.backend_version.value,
         instance_detail: state.instance_detail.value,
         working: state.backend_version.working || state.instance_detail.working,
+        error: state.backend_version.error || state.backend_version.error,
+        errorMessage: state.backend_version.errorMessage || state.backend_version.errorMessage,
         selectedTab: state.view.app.selectedTab
     };
 };

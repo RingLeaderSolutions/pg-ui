@@ -53,7 +53,6 @@ class CreatePortfolioFromAccountDialog extends React.Component<CreatePortfolioFr
         this.props.closeModalDialog();
     }
 
-
     render() {
         if(this.props.error){
             return (<ErrorMessage content={this.props.errorMessage} />);
