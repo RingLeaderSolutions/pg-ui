@@ -93,7 +93,7 @@ export class MultiUploadPanel extends React.Component<MultiUploadPanelProps, {}>
                 </div>);
         }
         
-        var fileViews = files.map(f => {
+        var fileViews = files.map((f, index) => {
             return (<FileView file={f} bottomMargin />)
         });
 
@@ -102,7 +102,7 @@ export class MultiUploadPanel extends React.Component<MultiUploadPanelProps, {}>
                 <div className="uk-flex uk-flex-right uk-margin-small-bottom">
                     <button className='uk-button uk-button-default uk-button-small' onClick={() => this.clearFiles()}><i className="fas fa-trash uk-margin-small-right" data-uk-tooltip="title: Clear"></i>Clear</button>
                 </div>
-                <div className="uk-panel-scrollable uk-height-max-medium" style={{height: 'auto', border: 'none', 'resize': 'none'}}>
+                <div className="uk-height-max-medium" style={{overflow: 'auto', padding: '0px 10px'}}>
                     {fileViews}
                 </div>
             </div>
