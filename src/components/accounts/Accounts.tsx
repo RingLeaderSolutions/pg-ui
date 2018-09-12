@@ -222,6 +222,7 @@ class Accounts extends React.Component<AccountsProps & StateProps & DispatchProp
                                 </button>
                             </div>
                         </div>
+                        <hr />
                         <div className="container-table-accounts">
                             {tableContent}
                         </div>

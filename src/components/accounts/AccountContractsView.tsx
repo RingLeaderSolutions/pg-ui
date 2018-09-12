@@ -88,9 +88,9 @@ class AccountContractsView extends React.Component<AccountContractsViewProps & S
         return this.props.contracts.map(c => {
             var hasContractRates = c.sheetCount > 0;
             var supplier = this.props.suppliers.find(su => su.supplierId == c.supplierId);
-            var supplierImage = supplier == null ? "Unknown" : (<img data-uk-tooltip={`title:${supplier.name}`} src={supplier.logoUri} style={{ maxWidth: "105px", maxHeight: "60px" }}/>);
+            var supplierImage = supplier == null ? "Unknown" : (<img data-uk-tooltip={`title:${supplier.name}`} src={supplier.logoUri} style={{ maxWidth: "70px", maxHeight: "40px"}}/>);
             return (
-                <tr key={c.contractId}>
+                <tr key={c.contractId} className="uk-table-middle">
                     <td>
                         <div className="uk-grid uk-grid-collapse">
                             <div className="uk-grid-auto uk-flex uk-flex-middle">
