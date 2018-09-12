@@ -6,6 +6,8 @@ import Spinner from '../common/Spinner';
 import { createAccountContract } from '../../actions/tenderActions';
 import { TenderContract, TenderSupplier } from "../../model/Tender";
 import { closeModalDialog } from "../../actions/viewActions";
+import { UtilityIcon, getWellFormattedUtilityType } from "../common/UtilityIcon";
+import { UtilityType } from "../../model/Models";
 
 interface AddExistingContractDialogProps {
     accountId: string;
@@ -76,6 +78,32 @@ class AddExistingContractDialog extends React.Component<AddExistingContractDialo
         );
     }
 
+    toggleUtility(type: UtilityType){
+        var utility = getWellFormattedUtilityType(type).toLowerCase();
+        if(this.state.utility == utility){
+            return;
+        }
+
+        this.setState({
+            ...this.state,
+            utility
+        });
+    }
+
+    utilityIsSelected(type: UtilityType){
+        var utility = getWellFormattedUtilityType(type).toLowerCase();
+        return this.state.utility == utility;
+    }
+
+    getSelectedUtilityCardClass(type: UtilityType){
+        var utility = getWellFormattedUtilityType(type).toLowerCase();
+        if(this.state.utility == utility){
+            return "uk-card-primary";
+        }
+
+        return "uk-card-default";
+    }
+
     handleFormChange(attribute: string, event: React.ChangeEvent<any>){
         var value = event.target.value;
 
@@ -97,15 +125,32 @@ class AddExistingContractDialog extends React.Component<AddExistingContractDialo
                 <div className="uk-modal-body">
                     <form>
                         <fieldset className='uk-fieldset'>
-                            <div className='uk-margin'>
-                                <label className='uk-form-label'>Utility</label>
-                                <select className='uk-select' 
-                                    value={this.state.utility}
-                                    onChange={(e) => this.handleFormChange("utility", e)}>
-                                    <option value="" disabled>Select</option>
-                                    <option value="electricity">Electricity</option>
-                                    <option value="gas">Gas</option>
-                                </select>
+                            <p>Please choose which utility that the existing contract covers:</p>
+                            <div className="uk-grid uk-grid-small">
+                                <div className="uk-width-1-2">
+                                    <div className={`uk-card uk-card-small ${this.getSelectedUtilityCardClass(UtilityType.Electricity)} uk-card-hover uk-card-body`} onClick={() => this.toggleUtility(UtilityType.Electricity)} style={{cursor: 'pointer'}}>
+                                        <div className="uk-grid uk-grid-collapse">
+                                            <div className="uk-width-expand uk-flex uk-flex-middle">
+                                                <h4><i className="fas fa-bolt uk-margin-right fa-lg"></i>Electricity</h4>
+                                            </div>
+                                            <div className="uk-width-auto uk-flex uk-flex-middle">
+                                                {this.utilityIsSelected(UtilityType.Electricity) ? <i className="fas fa-check-circle fa-lg" style={{color: '#ffffff'}}/> : null}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="uk-width-1-2">
+                                    <div className={`uk-card uk-card-small ${this.getSelectedUtilityCardClass(UtilityType.Gas)} uk-card-hover uk-card-body`} onClick={() => this.toggleUtility(UtilityType.Gas)} style={{cursor: 'pointer'}}>
+                                        <div className="uk-grid uk-grid-collapse">
+                                            <div className="uk-width-expand uk-flex uk-flex-middle">
+                                                <h4><i className="fas fa-fire uk-margin-right fa-lg"></i>Gas</h4>
+                                            </div>
+                                            <div className="uk-width-auto uk-flex uk-flex-middle">
+                                                {this.utilityIsSelected(UtilityType.Gas) ? <i className="fas fa-check-circle fa-lg" style={{color: '#ffffff'}}/> : null}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
 
                             <div className='uk-margin'>
