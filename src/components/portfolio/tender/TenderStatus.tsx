@@ -54,6 +54,13 @@ class TenderStatus extends React.Component<TenderStatusProps & StateProps & Disp
         return this.props.suppliers.filter(s => s.electricitySupplier).length;
     }
 
+    renderStringIfNotNull(value: string){
+        if(value == null || value == ""){
+            return "-";
+        }
+        return value;
+    }
+
     render() {
         if(this.props.error){
             return (<ErrorMessage content={this.props.errorMessage} />);
@@ -141,7 +148,7 @@ class TenderStatus extends React.Component<TenderStatusProps & StateProps & Disp
 
             <div className="uk-grid uk-margin-small-left uk-margin-small-right uk-grid-match" data-uk-grid>
                 <div className="uk-card uk-card-default uk-card-small uk-card-body uk-width-1-4 uk-text-center">
-                    <p className="uk-text-bold uk-margin-small">{tender.billingMethod}</p>
+                    <p className="uk-text-bold uk-margin-small">{this.renderStringIfNotNull(tender.billingMethod)}</p>
                     <p className="uk-text-meta uk-margin-small">Billing Method</p>
                 </div>
                 <div className="uk-card uk-card-default uk-card-small uk-card-body uk-width-1-4 uk-text-center">
@@ -149,7 +156,7 @@ class TenderStatus extends React.Component<TenderStatusProps & StateProps & Disp
                     <p className="uk-text-meta uk-margin-small">Deadline</p>
                 </div>
                 <div className="uk-card uk-card-default uk-card-small uk-card-body uk-width-1-4 uk-text-center">
-                    <p className="uk-text-bold uk-margin-small">{tender.requirements.paymentTerms} days</p>
+                    <p className="uk-text-bold uk-margin-small">{tender.requirements.paymentTerms != 0 ? `${tender.requirements.paymentTerms} days` : "-"}</p>
                     <p className="uk-text-meta uk-margin-small">Payment Terms</p>
                 </div>
                 <div className="uk-card uk-card-default uk-card-small uk-card-body uk-width-1-4 uk-text-center">
