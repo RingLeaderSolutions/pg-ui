@@ -28,6 +28,9 @@ interface DispatchProps {
 
 class AccountSummaryView extends React.Component<AccountSummaryViewProps & StateProps & DispatchProps, {}> {
     calculateTotalMeters(){
+        if(this.props.account.sites.length == 0){
+            return 0;
+        }
         var meterCountBySite =  this.props.account.sites.map(s => s.mpans.length + s.mprns.length);
         return meterCountBySite.reduce((pv, cv) => pv + cv);
     }
