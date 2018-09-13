@@ -134,13 +134,24 @@ class RecommendationDetailDialog extends React.Component<RecommendationDetailDia
     renderContent(content: any, title: any){
         return (<div>
             <div className="uk-modal-header">
-                <h2 className="uk-modal-title">{title}</h2>
+                <h2 className="uk-modal-title"><i className="fas fa-bullhorn uk-margin-right"></i>{title}</h2>
             </div>
             <div className="uk-modal-body">
                 {content}
             </div>
             <div className="uk-modal-footer uk-text-right">
-                <button className="uk-button uk-button-default uk-margin-right" type="button"  onClick={() => this.props.closeModalDialog()}>OK</button>
+                <div className="uk-grid uk-grid-small">
+                    {this.props.selected_recommendation != null ? (
+                        <div className="uk-width-expand uk-margin-small-left">
+                            <a className="uk-button uk-button-default" href={this.props.selected_recommendation.summaryFileName} data-uk-tooltip="title: Download this report as .XLS">
+                                <i className="fa fa-file-download uk-margin-small-right"></i>
+                                Download
+                            </a> 
+                        </div>) : null}
+                    <div className="uk-width-auto">
+                        <button className="uk-button uk-button-default uk-margin-right" type="button"  onClick={() => this.props.closeModalDialog()}><i className="fas fa-check-circle uk-margin-small-right"></i>OK</button>
+                    </div>
+                </div>
             </div>
         </div>);
     }
@@ -218,14 +229,14 @@ class RecommendationDetailDialog extends React.Component<RecommendationDetailDia
                     <CounterCard title={recommendationSite.billingAddress} label="Billing Address" small/>
                     <CounterCard title={recommendationSite.supplierAddress} label="Supplier Address" small/>
                 </div>
-                <h3>Existing Contract</h3>
+                <h3><i className="fas fa-file-signature uk-margin-small-right"></i>Existing Contract</h3>
                 <div className="uk-child-width-expand@s uk-grid-match uk-text-center" data-uk-grid>
                     <CounterCard content={currentSupplierText} label="Current Supplier" small/>
                     <CounterCard title={format(recommendationSite.currentContract.totalIncCCL, { locale: 'en-GB'})} label="Comparative total cost inc CCL" small/>
                     <CounterCard title={format(recommendationSite.currentContract.ccl, { locale: 'en-GB'})} label="CCL" small/>
                     <CounterCard title={`${recommendationSite.currentContract.appu.toFixed(4)}p`} label="Avg Pence Per Unit" small />
                 </div>
-                <h3><i className="fa fa-trophy uk-margin-small-right" style={{color: 'goldenrod'}}></i>Recommended Supplier Offer</h3>
+                <h3><i className="fa fa-trophy uk-margin-small-right" style={{color: 'goldenrod'}}></i><i className="fas fa-handshake uk-margin-small-right"></i>Recommended Supplier Offer</h3>
                 <div className="uk-child-width-expand@s uk-grid-match uk-text-center" data-uk-grid>
                     <CounterCard content={newSupplierText} label="New Supplier" small/>
                     <CounterCard title={format(recommendationSite.recommendedSiteOffer.totalIncCCL, { locale: 'en-GB'})} label="Annual cost inc CCL" small/>
@@ -235,7 +246,7 @@ class RecommendationDetailDialog extends React.Component<RecommendationDetailDia
                     <CounterCard title={`${recommendationSite.recommendedSiteOffer.paymentTerms} days`} label="Payment Terms" small/>
                     <CounterCard title={recommendationSite.recommendedSiteOffer.fuelType} label="Fuel Type" small/>
                 </div>
-                <h3><i className="fa fa-trophy uk-margin-small-right" style={{color: 'goldenrod'}}></i>Recommended Supplier Offer Billing Rates</h3>
+                <h3><i className="fa fa-trophy uk-margin-small-right" style={{color: 'goldenrod'}}></i><i className="fas fa-pound-sign uk-margin-small-right"></i>Recommended Supplier Offer Billing Rates</h3>
                 <div className="uk-grid" style={{backgroundColor: '#f8f8f8', marginLeft: '0'}}>
                     <div className="uk-width-expand" />
                     <table className="uk-table uk-table-divider uk-width-auto">
@@ -255,7 +266,7 @@ class RecommendationDetailDialog extends React.Component<RecommendationDetailDia
                     </table>
                     <div className="uk-width-expand" />
                 </div>
-                <h3>Offers received</h3>
+                <h3><i className="fas fa-handshake uk-margin-small-right"></i>Offers received</h3>
                 <table className="uk-table uk-table-divider">
                     <thead>
                         <tr>
@@ -355,7 +366,7 @@ class RecommendationDetailDialog extends React.Component<RecommendationDetailDia
                         <CounterCard title={recommendationSupplier.winner ? "Yes" : "No"} label="Winning Offer" small/>
                     </div>) : null}
                 </div>
-                <h3>Contract Rates</h3>
+                <h3><i className="fas fa-pound-sign uk-margin-small-right"></i>Contract Rates</h3>
                 <table className="uk-table uk-table-divider">
                     <thead>
                         <tr>
@@ -473,13 +484,13 @@ class RecommendationDetailDialog extends React.Component<RecommendationDetailDia
                     <CounterCard data-uk-tooltip={`title: ${summary.reportDate}`} title={created} label="Report Created" small/>
                     <CounterCard data-uk-tooltip={selectedRecommendation.communicated == null ? null : `title: ${selectedRecommendation.communicated}`} title={communicated} label="Last sent" small/>
                 </div>
-                <h3>Existing Contract</h3>
+                <h3><i className="fas fa-file-signature uk-margin-small-right"></i>Existing Contract</h3>
                 <div className="uk-child-width-expand@s uk-grid-match uk-text-center" data-uk-grid>
                     <CounterCard content={existingSupplierText} label="Incumbent Supplier" small/>
                     <CounterCard title={format(summary.existingtotalIncCCL, { locale: 'en-GB'})} label="Total Inc CCL" small/>
                     <CounterCard title={`${summary.existingAPPU.toFixed(4)}p`} label="Average Pence Per Unit" small/>
                 </div>
-                <h3>Offers Received</h3>
+                <h3><i className="fas fa-handshake uk-margin-small-right"></i>Offers Received</h3>
                 <table className="uk-table uk-table-divider">
                     <thead>
                         <tr>
@@ -511,15 +522,11 @@ class RecommendationDetailDialog extends React.Component<RecommendationDetailDia
                         <ul data-uk-tab="connect: #reco-tabs-switcher">
                             <li><a href="#"><i className="fa fa-list uk-margin-small-right fa-lg"></i>Summary</a></li>
                             <li><a href="#"><i className="fas fa-handshake uk-margin-small-right fa-lg"></i>Offers ({this.props.recommendation_suppliers.length - 1})</a></li>
-                            <li><a href="#"><i className="fas fa-tachometer uk-margin-small-right fa-lg"></i>Sites ({this.props.selected_recommendation.meterCount})</a></li>
+                            <li><a href="#"><i className="fas fa-tachometer-alt uk-margin-small-right fa-lg"></i>Sites ({this.props.selected_recommendation.meterCount})</a></li>
                         </ul>
                     </div>
                     <div className="uk-grid-width-1-10">
-                        <a className="uk-button uk-button-default uk-button-small" href={this.props.selected_recommendation.summaryFileName} data-uk-tooltip="title: Download this report as .XLS">
-                            <i className="fa fa-file-excel uk-margin-small-right"></i>
-                            Download
-                        </a> 
-                        <button className="uk-button uk-button-danger uk-button-small uk-margin-xlarge-left" type="button" onClick={() => this.deleteRecommendation()}>
+                        <button className="uk-button uk-button-danger uk-button-small" type="button" onClick={() => this.deleteRecommendation()}>
                             <i className="fa fa-trash uk-margin-small-right"></i>
                             Delete
                         </button>   
