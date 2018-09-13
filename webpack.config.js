@@ -3,8 +3,8 @@ var webpack = require('webpack');
 var HtmlWebpackPlugin = require('html-webpack-plugin');
 
 var config = {
+  mode: 'development',
   entry: [
-    "webpack/hot/dev-server",
     "webpack-hot-middleware/client",
     "./src/App.tsx"],
 
@@ -20,7 +20,7 @@ var config = {
   },
 
   module: {
-    loaders: [
+    rules: [
       {
         test: /\.tsx?$/,
         loader: "ts-loader",
@@ -40,8 +40,8 @@ var config = {
           loader: 'file-loader',
           options: {
             name: '[name].[ext]',
-            outputPath: 'fonts/',    // where the fonts will go
-            publicPath: '../'       // override the default path
+            //outputPath: 'fonts/',    // where the fonts will go
+            //publicPath: '../'       // override the default path
           }
         }]
       },
