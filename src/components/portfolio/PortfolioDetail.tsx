@@ -96,7 +96,7 @@ class PortfolioDetail extends React.Component<PortfolioDetailProps & StateProps 
                 </Header>
                 <ul className="uk-tab">
                     <li className={this.renderActiveTabStyle(0)} onClick={() => this.selectTab(0)}><a href="#"><i className="fa fa-list uk-margin-small-right fa-lg"></i> Summary</a></li>
-                    <li className={this.renderActiveTabStyle(1)} onClick={() => this.selectTab(1)}><a href="#"><i className="fa fa-cube uk-margin-small-right fa-lg"></i> Meters</a></li>
+                    <li className={this.renderActiveTabStyle(1)} onClick={() => this.selectTab(1)}><a href="#"><i className="fa fa-tachometer uk-margin-small-right fa-lg"></i> Meters</a></li>
                     <li className={this.renderActiveTabStyle(2)} onClick={() => this.selectTab(2)}><a href="#"><i className="fas fa-shopping-cart uk-margin-small-right fa-lg"></i> Tenders</a></li>
                     <li className={this.renderActiveTabStyle(3)} onClick={() => this.selectTab(3)}><a href="#"><i className="fas fa-handshake uk-margin-small-right fa-lg"></i> Offers</a></li>
                     <li className={this.renderActiveTabStyle(4)} onClick={() => this.selectTab(4)}><a href="#"><i className="fas fa-bullhorn uk-margin-small-right fa-lg"></i> Recommendations</a></li>

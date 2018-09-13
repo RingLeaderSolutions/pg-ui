@@ -61,7 +61,7 @@ class TenderOffersTable extends React.Component<TenderOffersTableProps & StatePr
                 case "UPLOAD":
                     return (<i key={index} className={`fas fa-cloud-upload-alt ${margin}`} data-uk-tooltip="title:This offer was uploaded manually."/>);
                 case "METER_ERROR":
-                    return (<i key={index} style={{color: errorIconColor}} className={`fas fa-cube ${margin}`} data-uk-tooltip="title:This offer has missing meters or are in an error state."/>);
+                    return (<i key={index} style={{color: errorIconColor}} className={`fas fa-tachometer ${margin}`} data-uk-tooltip="title:This offer has missing meters or are in an error state."/>);
                 case "DATE_ERROR":
                     return (<i key={index} style={{color: errorIconColor}} className={`fas fa-calendar-alt ${margin}`} data-uk-tooltip="title:This offer has incorrect dates on its meters."/>);
                 case "CONSUMPTION_VARIATION":
