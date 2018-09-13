@@ -139,7 +139,7 @@ class RecommendationDetailDialog extends React.Component<RecommendationDetailDia
             <div className="uk-modal-body">
                 {content}
             </div>
-            <div className="uk-modal-footer uk-text-right">
+            <div className="uk-modal-footer">
                 <div className="uk-grid uk-grid-small">
                     {this.props.selected_recommendation != null ? (
                         <div className="uk-width-expand uk-margin-small-left">
