@@ -3,20 +3,15 @@
 .sidebar {
     padding: $margin-large;
     border-right: 1px solid $grey-border;
-    .app-title {
-        // img {
-        //     height: 120px;
-        // }
-        .environment {
-            text-align: right;
-            span {
-                margin-top: 0px;
-            }
-        }
-        
-    }
-
+  
     li {
         margin: $margin-large $margin-medium;
     }
+}
+
+.label-grey {
+    background: #f4f4f5;
+    color: #666666;
+    margin-top: 0px;
+    font-size: 0.8rem;
 }

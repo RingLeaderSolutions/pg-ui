@@ -94,15 +94,16 @@ class Home extends React.Component<StateProps & DispatchProps, {}> {
                     <div className="app-title">
                         <img src={this.props.instance_detail.logoUri} alt={this.props.instance_detail.name} /> 
                         {/* <img src={require('../images/tpi-flow-logo.png')} alt={this.props.instance_detail.name} />  */}
-                        <div className="environment">
-                            <span className="uk-label">{appConfig.environment_name} v0.1.40</span>
+                    </div>
+                    <div className="uk-text-center">
+                        <div>
+                            <span className="uk-label label-grey">{appConfig.environment_name} v0.1.40</span>
                         </div>
-                        <div className="environment">
-                            <span className="uk-label">Backend v{this.props.backendVersion}</span>
+                        <div>
+                            <span className="uk-label label-grey">Server v{this.props.backendVersion}</span>
                         </div>
                     </div>
-                    <ul className="uk-nav-default uk-nav-parent-icon" data-uk-nav>
-                        <li className="uk-nav-header">Navigation</li>
+                    <ul className="uk-margin-large-top uk-nav-default uk-nav-parent-icon" data-uk-nav>
                         <li>
                             <Link to="/">{this.renderSelectedTriangle(ApplicationTab.Dashboard)}<i className="fa fa-tachometer-alt uk-margin-small-right fa-lg"></i>Dashboard</Link>
                         </li>
