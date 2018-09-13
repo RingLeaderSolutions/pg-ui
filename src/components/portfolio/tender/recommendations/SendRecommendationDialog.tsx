@@ -135,7 +135,7 @@ class SendRecommendationDialog extends React.Component<SendRecommendationDialogP
                     <div className="uk-card-body" style={{padding: '5px'}}>
                         <div className="uk-grid-small" data-uk-grid>
                             <div className="uk-width-auto uk-flex uk-flex-middle">
-                                <td><input className="uk-checkbox" type="checkbox" checked={isSelected} onChange={(e) => this.toggleEmailSelection(contact.email)}/></td>
+                                <input className="uk-checkbox" type="checkbox" checked={isSelected} onChange={(e) => this.toggleEmailSelection(contact.email)}/>
                             </div>
                             <div className="uk-width-expand uk-flex uk-flex-middle">
                                 <p><i className="fas fa-user-circle fa-lg uk-margin-small-right"></i>{contact.firstName} {contact.lastName}{role} <i className="fas fa-envelope-open uk-margin-small-left" data-uk-tooltip={`title:${contact.email}`}></i></p>
