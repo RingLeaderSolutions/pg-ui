@@ -90,7 +90,7 @@ class PortfolioDetail extends React.Component<PortfolioDetailProps & StateProps 
         var accountLink = `/account/${detail.portfolio.accountId}`;
         return (
             <div className="content-inner">
-                <Header title={headerTitle} icon="fa fa-cubes"> 
+                <Header title={headerTitle} icon="fas fa-layer-group"> 
                     <button className='uk-button uk-button-default uk-button-small uk-margin-large-right borderless-button' data-uk-tooltip="title: Edit portfolio" onClick={() => this.props.openModalDialog('update_portfolio')}><i className="fas fa-edit"></i> </button>
                     <Link to={accountLink}><button className='uk-button uk-button-default uk-button-small'><i className="fa fa-external-link-alt uk-margin-small-right"></i> Jump to Account</button></Link>
                 </Header>
@@ -98,8 +98,8 @@ class PortfolioDetail extends React.Component<PortfolioDetailProps & StateProps 
                     <li className={this.renderActiveTabStyle(0)} onClick={() => this.selectTab(0)}><a href="#"><i className="fa fa-list uk-margin-small-right fa-lg"></i> Summary</a></li>
                     <li className={this.renderActiveTabStyle(1)} onClick={() => this.selectTab(1)}><a href="#"><i className="fa fa-cube uk-margin-small-right fa-lg"></i> Meters</a></li>
                     <li className={this.renderActiveTabStyle(2)} onClick={() => this.selectTab(2)}><a href="#"><i className="fas fa-shopping-cart uk-margin-small-right fa-lg"></i> Tenders</a></li>
-                    <li className={this.renderActiveTabStyle(3)} onClick={() => this.selectTab(3)}><a href="#"><i className="far fa-handshake uk-margin-small-right fa-lg"></i> Offers</a></li>
-                    <li className={this.renderActiveTabStyle(4)} onClick={() => this.selectTab(4)}><a href="#"><i className="fas fa-award uk-margin-small-right fa-lg"></i> Recommendations</a></li>
+                    <li className={this.renderActiveTabStyle(3)} onClick={() => this.selectTab(3)}><a href="#"><i className="fas fa-handshake uk-margin-small-right fa-lg"></i> Offers</a></li>
+                    <li className={this.renderActiveTabStyle(4)} onClick={() => this.selectTab(4)}><a href="#"><i className="fas fa-bullhorn uk-margin-small-right fa-lg"></i> Recommendations</a></li>
                 </ul>
             
                 <div>

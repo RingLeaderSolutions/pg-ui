@@ -63,6 +63,10 @@ class TenderSummary extends React.Component<TenderSummaryProps & StateProps & Di
             return;
         }
 
+        if(nextProps.tenders == null){
+            return;
+        }
+        
         var hh = nextProps.tenders.find(o => o.halfHourly && o.utility == "ELECTRICITY");
         var nhh = nextProps.tenders.find(o => !o.halfHourly && o.utility == "ELECTRICITY");
         var gas = nextProps.tenders.find(o => o.utility == "GAS");

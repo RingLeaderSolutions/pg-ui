@@ -141,7 +141,7 @@ class UpdateContractDialog extends React.Component<UpdateContractDialogProps & S
         return (
             <div>
                 <div className="uk-modal-header">
-                    <h2 className="uk-modal-title"><i className="fas fa-file-contract uk-margin-right"></i>Edit existing contract</h2>
+                    <h2 className="uk-modal-title"><i className="fas fa-file-signature uk-margin-right"></i>Edit existing contract</h2>
                 </div>
                 <div className="uk-modal-body">
                     <form>

@@ -66,7 +66,7 @@ class UpdatePortfolioDialog extends React.Component<UpdatePortfolioDialogProps &
         return (
             <div>
                 <div className="uk-modal-header">
-                    <h2 className="uk-modal-title"><i className="fas fa-cubes uk-margin-right"></i>Edit Portfolio</h2>
+                    <h2 className="uk-modal-title"><i className="fas fa-layer-group uk-margin-right"></i>Edit Portfolio</h2>
                 </div>
                 <div className="uk-modal-body">
                     <div className="uk-margin">

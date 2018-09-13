@@ -236,7 +236,7 @@ class Portfolios extends React.Component<PortfoliosProps & StateProps & Dispatch
 
         return (
             <div className="content-inner">
-                <Header title="Portfolios" icon="fa fa-cubes"/>
+                <Header title="Portfolios" icon="fas fa-layer-group"/>
                 <div className="content-portfolios">
                     <div className="table-portfolios">
                         <div className="search-portfolios">

@@ -114,7 +114,7 @@ class GenerateRecommendationDialog extends React.Component<GenerateRecommendatio
         return (
             <div>
                 <div className="uk-modal-header">
-                    <h2 className="uk-modal-title"><i className="fas fa-award uk-margin-right"></i>Create Recommendation Report</h2>
+                    <h2 className="uk-modal-title"><i className="fas fa-bullhorn uk-margin-right"></i>Create Recommendation Report</h2>
                 </div>
                 <div className="uk-modal-body">
                     <div>

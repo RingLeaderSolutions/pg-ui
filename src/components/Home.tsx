@@ -109,7 +109,7 @@ class Home extends React.Component<StateProps & DispatchProps, {}> {
                         </li>
                         <li className="uk-nav-divider"></li>                    
                         <li>
-                            <Link to="/portfolios">{this.renderSelectedTriangle(ApplicationTab.Portfolios)}<i className="fa fa-cubes uk-margin-small-right fa-lg"></i>Portfolios</Link>
+                            <Link to="/portfolios">{this.renderSelectedTriangle(ApplicationTab.Portfolios)}<i className="fas fa-layer-group uk-margin-small-right fa-lg"></i>Portfolios</Link>
                         </li>
                         <li className="uk-nav-divider"></li>
                         <li>

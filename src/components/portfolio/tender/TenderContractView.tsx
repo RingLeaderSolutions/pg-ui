@@ -9,10 +9,12 @@ import Spinner from "../../common/Spinner";
 import { format } from 'currency-formatter';
 import ModalDialog from "../../common/ModalDialog";
 import { openModalDialog } from "../../../actions/viewActions";
+import { Link } from "react-router-dom";
+import { PortfolioSummary } from "../../../model/PortfolioDetails";
 
 interface TenderContractViewProps {
     tender: Tender;
-    portfolioId: string;
+    portfolio: PortfolioSummary;
 }
 
 interface StateProps {
@@ -72,18 +74,22 @@ class TenderContractView extends React.Component<TenderContractViewProps & Dispa
         var cardContent = null;
         var titleContent = null;
         if(this.props.tender.existingContract == null){
-            // TODO: improve this warning message with more info and link to account
-            cardContent = (<p>No existing contract found - one can be added on the Accounts screen</p>);
+            cardContent = (
+                <div className="uk-alert-warning uk-margin-small-top uk-margin-small-bottom uk-text-center" data-uk-alert>
+                    <p><i className="fas fa-exclamation-triangle uk-margin-small-right"></i>We couldn't match this portfolio's included meters to a valid existing contract on its account.</p>
+                    <p><Link to={`/account/${this.props.portfolio.accountId}`}>Click here</Link> to visit the account where you can add a valid contract.</p>
+                </div>
+            );
         }
         else {
             var hasContractRates = this.props.tender.existingContract.sheetCount > 0;
             var warningMessage = null;
             
             if(!hasContractRates){
-                // TODO: improve this warning message with link to account
                 warningMessage = (
-                    <div className="uk-alert-warning uk-margin-small-top uk-margin-small-bottom" data-uk-alert>
-                        <p>Comparison is not yet possible - please upload contract rate(s).</p>
+                    <div className="uk-alert-warning uk-margin-small-top uk-margin-small-bottom uk-text-center" data-uk-alert>
+                        <p><i className="fas fa-exclamation-triangle uk-margin-small-right"></i>This contract does not yet have any rates associated with it.</p>
+                        <p><Link to={`/account/${this.props.tender.existingContract.accountId}`}>Click here</Link> to visit the account where you can upload some.</p>
                     </div>);
             }
             else {
@@ -97,7 +103,7 @@ class TenderContractView extends React.Component<TenderContractViewProps & Dispa
             <div className="uk-card uk-card-small uk-card-default uk-card-body">
                 <div className="uk-grid uk-grid-small">
                     <div className="uk-width-expand">
-                        <h3>Existing Contract</h3>
+                        <h3 className="uk-margin-left"><i className="fas fa-file-signature uk-margin-small-right"></i>Existing Contract</h3>
                     </div>
                     <div className="uk-width-auto">
                         {titleContent}

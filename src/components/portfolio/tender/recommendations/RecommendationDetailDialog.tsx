@@ -510,7 +510,7 @@ class RecommendationDetailDialog extends React.Component<RecommendationDetailDia
                     <div className="uk-width-expand">
                         <ul data-uk-tab="connect: #reco-tabs-switcher">
                             <li><a href="#"><i className="fa fa-list uk-margin-small-right fa-lg"></i>Summary</a></li>
-                            <li><a href="#"><i className="far fa-handshake uk-margin-small-right fa-lg"></i>Offers ({this.props.recommendation_suppliers.length - 1})</a></li>
+                            <li><a href="#"><i className="fas fa-handshake uk-margin-small-right fa-lg"></i>Offers ({this.props.recommendation_suppliers.length - 1})</a></li>
                             <li><a href="#"><i className="fas fa-cube uk-margin-small-right fa-lg"></i>Sites ({this.props.selected_recommendation.meterCount})</a></li>
                         </ul>
                     </div>
