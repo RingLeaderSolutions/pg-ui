@@ -51,10 +51,7 @@ class TenderSummary extends React.Component<TenderSummaryProps & StateProps & Di
     componentDidMount(){
         let portfolioId = this.props.portfolio.id;     
         this.props.getPortfolioTenders(portfolioId);
-
-        if(this.props.consumption == null){
-            this.props.fetchMeterConsumption(portfolioId);      
-        }
+        this.props.fetchMeterConsumption(portfolioId);      
     }
 
     componentWillReceiveProps(nextProps: TenderSummaryProps & StateProps & DispatchProps){
