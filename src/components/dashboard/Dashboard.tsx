@@ -21,7 +21,7 @@ class Dashboard extends React.Component<DispatchProps, {}> {
         return (
             <div className="content-inner">
                 <div className="content-dashboard">
-                    <Header title="Dashboard" icon="fa fa-tachometer-alt"/>
+                    <Header title="Dashboard" icon="fas fa-chart-line"/>
                     <div className="content-dashboard">
                         <DashboardSummary />
                         <div className="uk-child-width-expand@s uk-grid-match uk-text-center" data-uk-grid data-uk-height-match="target: > div > .uk-card">

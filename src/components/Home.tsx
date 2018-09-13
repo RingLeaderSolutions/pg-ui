@@ -105,7 +105,7 @@ class Home extends React.Component<StateProps & DispatchProps, {}> {
                     </div>
                     <ul className="uk-margin-large-top uk-nav-default uk-nav-parent-icon" data-uk-nav>
                         <li>
-                            <Link to="/">{this.renderSelectedTriangle(ApplicationTab.Dashboard)}<i className="fa fa-tachometer-alt uk-margin-small-right fa-lg"></i>Dashboard</Link>
+                            <Link to="/">{this.renderSelectedTriangle(ApplicationTab.Dashboard)}<i className="fas fa-chart-line uk-margin-small-right fa-lg"></i>Dashboard</Link>
                         </li>
                         <li className="uk-nav-divider"></li>                    
                         <li>
