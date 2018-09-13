@@ -46,6 +46,7 @@ class AccountContactsView extends React.Component<AccountContactsViewProps & Sta
 
             return (
                 <tr key={c.id} className="uk-table-middle">
+                    <td style={{padding: '0px'}}><i className="fa fa-user-circle fa-lg"></i></td>
                     <td>{c.firstName}</td>
                     <td>{c.lastName}</td>
                     <td>{c.phoneNumber}</td>
@@ -86,6 +87,7 @@ class AccountContactsView extends React.Component<AccountContactsViewProps & Sta
             <table className="uk-table uk-table-divider">
                 <thead>
                     <tr>
+                        <th></th>
                         <th>First Name</th>
                         <th>Last Name</th>
                         <th>Phone #</th>
