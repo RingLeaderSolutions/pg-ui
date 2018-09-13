@@ -97,7 +97,7 @@ class Home extends React.Component<StateProps & DispatchProps, {}> {
                     </div>
                     <div className="uk-text-center">
                         <div>
-                            <span className="uk-label label-grey">{appConfig.environment_name} v0.1.40</span>
+                            <span className="uk-label label-grey">{appConfig.environment_name} v0.1.41</span>
                         </div>
                         <div>
                             <span className="uk-label label-grey">Server v{this.props.backendVersion}</span>
