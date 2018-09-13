@@ -72,7 +72,7 @@ class CreatePortfolioFromAccountDialog extends React.Component<CreatePortfolioFr
         return (
             <div>
                 <div className="uk-modal-header">
-                    <h2 className="uk-modal-title">Create New Portfolio</h2>
+                    <h2 className="uk-modal-title"><i className="fas fa-layer-group uk-margin-right"></i>Create New Portfolio</h2>
                 </div>
                 <div className="uk-modal-body">
                     <div className="uk-margin">
@@ -114,8 +114,8 @@ class CreatePortfolioFromAccountDialog extends React.Component<CreatePortfolioFr
                     </div>
                 </div>
                 <div className="uk-modal-footer uk-text-right">
-                    <button className="uk-button uk-button-default uk-margin-right" type="button" onClick={() => this.props.closeModalDialog()}>Cancel</button>
-                    <button className="uk-button uk-button-primary" type="button" onClick={() => this.createPortfolio()}>Create</button>
+                    <button className="uk-button uk-button-default uk-margin-right" type="button" onClick={() => this.props.closeModalDialog()}><i className="fas fa-times uk-margin-small-right"></i>Cancel</button>
+                    <button className="uk-button uk-button-primary" type="button" onClick={() => this.createPortfolio()}><i className="fas fa-plus-circle uk-margin-small-right"></i>Create</button>
                 </div>
             </div>)
     }
