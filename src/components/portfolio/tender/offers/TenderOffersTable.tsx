@@ -276,7 +276,7 @@ class TenderOffersTable extends React.Component<TenderOffersTableProps & StatePr
 
                     {hasReceivedQuotes ? (
                         <div className="uk-margin-small-top">
-                            <ul data-uk-tab className="uk-tab">
+                            <ul data-uk-switcher="connect: +.uk-switcher" className="uk-tab">
                                 <li><a href="#"><i className="fas fa-envelope-open uk-margin-small-right fa-lg" style={{color: "#006400"}}></i>Received</a></li>
                                 <li><a href="#"><i className="fas fa-hourglass-half uk-margin-small-right fa-lg" style={{color: "#FFA500"}}></i>Pending Responses ({pendingQuotes.length})</a></li>
                             </ul>
@@ -435,10 +435,10 @@ class TenderOffersTable extends React.Component<TenderOffersTableProps & StatePr
 
         return (
             <div className="uk-margin-top">
-                <ul data-uk-tab="connect: #offerTabSwitcher">
+                <ul className="uk-tab" data-uk-switcher="connect: +.uk-switcher">
                     {tabs}
                 </ul>
-                <ul id="offerTabSwitcher" className="uk-switcher">
+                <ul className="uk-switcher">
                     {tabContent}
                 </ul>
             </div>

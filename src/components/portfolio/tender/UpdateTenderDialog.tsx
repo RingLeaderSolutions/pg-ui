@@ -349,7 +349,7 @@ class UpdateTenderDialog extends React.Component<UpdateTenderDialogProps & State
                 </div>
                 <div className="uk-modal-body">
                     <div>
-                    <ul data-uk-tab className="uk-tab">
+                    <ul data-uk-switcher="connect: +.uk-switcher" className="uk-tab">
                         <li><a href="#">General</a></li>
                         <li><a href="#">Requirements</a></li>
                     </ul>

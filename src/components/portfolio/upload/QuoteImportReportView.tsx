@@ -164,16 +164,16 @@ class QuoteImportReportView extends React.Component<QuoteImportReportViewProps &
                                 </p>) : null}
                         </div>
                     </div>
-                        <ul data-uk-tab>
-                            <li><a href="#">Import results</a></li>
-                            { unmappedCount > 0 ? (<li><a href="#">Unmapped Columns ({unmappedCount})</a></li>) : null }
-                            { hasValidationErrors ? (<li><a href="#">Validation Errors ({validationErrorCount})</a></li>) : null }
-                        </ul>
-                        <ul className="uk-switcher">
-                            <li>{this.renderImportResultsTable(template)}</li>
-                            { unmappedCount > 0 ? (<li>{this.renderUnmappedColumnsTable(template)}</li>) : null }
-                            { hasValidationErrors ? (<li>{this.renderValidationErrors(uploadReport)}</li>) : null }
-                        </ul>
+                    <ul className="uk-tab" data-uk-switcher="connect: +.uk-switcher">
+                        <li><a href="#">Import results</a></li>
+                        { unmappedCount > 0 ? (<li><a href="#">Unmapped Columns ({unmappedCount})</a></li>) : null }
+                        { hasValidationErrors ? (<li><a href="#">Validation Errors ({validationErrorCount})</a></li>) : null }
+                    </ul>
+                    <ul className="uk-switcher">
+                        <li>{this.renderImportResultsTable(template)}</li>
+                        { unmappedCount > 0 ? (<li>{this.renderUnmappedColumnsTable(template)}</li>) : null }
+                        { hasValidationErrors ? (<li>{this.renderValidationErrors(uploadReport)}</li>) : null }
+                    </ul>
                 </div>
                 <div className="uk-modal-footer uk-text-right">
                     <button className="uk-button uk-button-default uk-margin-right" type="button" onClick={() => this.props.closeModalDialog()}>Close</button>

@@ -332,14 +332,14 @@ class CreateTenderDialog extends React.Component<CreateTenderDialogProps & State
                 </div>
                 <div className="uk-modal-body">
                     <div>
-                    <ul data-uk-tab className="uk-tab">
-                        <li><a href="#">General</a></li>
-                        <li><a href="#">Requirements</a></li>
-                    </ul>
-                    <ul className='uk-switcher'>
-                        <li>{this.renderGeneralEditForm()}</li>
-                        <li>{this.renderRequirementsEditForm()}</li>
-                    </ul>
+                        <ul data-uk-switcher="connect: +.uk-switcher" className="uk-tab">
+                            <li><a href="#">General</a></li>
+                            <li><a href="#">Requirements</a></li>
+                        </ul>
+                        <ul className='uk-switcher'>
+                            {this.renderGeneralEditForm()}
+                            {this.renderRequirementsEditForm()}
+                        </ul>
                     </div>
                     <div>
                                        

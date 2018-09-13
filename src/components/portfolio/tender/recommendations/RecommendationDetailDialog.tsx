@@ -325,7 +325,7 @@ class RecommendationDetailDialog extends React.Component<RecommendationDetailDia
                         <button className="uk-button uk-button-small uk-button-default" type="button" onClick={() => this.getPreviousSites()} disabled={previousIsDisabled}><span className={previousIsDisabled ? "icon-standard-cursor" : null} data-uk-icon="icon: chevron-left" /></button>
                     </div>
                     <div className="uk-width-expand">
-                        <ul data-uk-tab="connect: #sites-tab-switcher">
+                        <ul data-uk-switcher="connect: #sites-tab-switcher" className="uk-tab">
                             {tabs}
                         </ul>
                     </div>
@@ -406,7 +406,7 @@ class RecommendationDetailDialog extends React.Component<RecommendationDetailDia
 
         return (
             <div className="uk-margin-top">
-                <ul data-uk-tab>
+                <ul className="uk-tab" data-uk-switcher="connect: +.uk-switcher">
                     {tabs}
                 </ul>
                 <ul className="uk-switcher">

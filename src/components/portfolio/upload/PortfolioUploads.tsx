@@ -122,7 +122,7 @@ class PortfolioUploads extends React.Component<PortfolioUploadProps & StateProps
         if(hasTenderDataUploads && hasAccountDataUploads){
             content = (
                 <div>
-                    <ul data-uk-tab>
+                    <ul className="uk-tab" data-uk-switcher="connect: +.uk-switcher">
                         <li><a href="#">Tender Data ({this.props.reports.imports.length})</a></li>
                         <li><a href="#">Account Data ({this.props.reports.uploads.length})</a></li>
                     </ul>
