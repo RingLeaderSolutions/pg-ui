@@ -136,7 +136,7 @@ class TenderSupplierSelectDialog extends React.Component<TenderSupplierSelectDia
         return (
             <div>
                 <div className="uk-modal-header">
-                    <h2 className="uk-modal-title">Select Suppliers</h2>
+                    <h2 className="uk-modal-title"><i className="fas fa-check-square uk-margin-small-right"></i>Select Suppliers</h2>
                 </div>
                 <div className="uk-modal-body">
                     {content}
@@ -149,8 +149,8 @@ class TenderSupplierSelectDialog extends React.Component<TenderSupplierSelectDia
                     </button>
                 </div>
                 <div className="uk-modal-footer uk-text-right">
-                    <button className="uk-button uk-button-default uk-margin-right" type="button" onClick={() => this.props.closeModalDialog()}>Done</button>
-                    <button className="uk-button uk-button-primary uk-margin-right" type="button" onClick={() => this.saveSuppliers()}>Save</button>
+                    <button className="uk-button uk-button-default uk-margin-right" type="button" onClick={() => this.props.closeModalDialog()}><i className="fas fa-times uk-margin-small-right"></i>Cancel</button>
+                    <button className="uk-button uk-button-primary uk-margin-right" type="button" onClick={() => this.saveSuppliers()}><i className="fas fa-edit uk-margin-small-right"></i>Save</button>
                 </div>
             </div>)
     }

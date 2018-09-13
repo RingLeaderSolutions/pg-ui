@@ -46,9 +46,9 @@ class PortfolioUploads extends React.Component<PortfolioUploadProps & StateProps
     friendlyDataType(type: string){
         switch(type){
             case "QUOTE":
-                return (<p><i className="fas fa-handshake uk-margin-small-right fa-lg"></i>Offer</p>);
+                return (<p><i className="fas fa-handshake uk-margin-small-right fa-lg" data-uk-tooltip="title:Offer"></i></p>);
             case "HISTORICAL":
-                return (<p><i className="fas fa-clock uk-margin-small-right fa-lg"></i>Historic</p>)
+                return (<p><i className="fas fa-clock uk-margin-small-right fa-lg" data-uk-tooltip="title:Electricity Historical Data"></i></p>)
             default:
                 return (<p>{type}</p>)
         }

@@ -76,7 +76,7 @@ class TenderRecommendationsList extends React.Component<TenderRecommendationsLis
                     <td>{s.supplierCount}</td>
                     <td>{supplierText}</td>
                     <td>{s.winningDuration == 0 ? "Flexi" : `${s.winningDuration} months`}</td>
-                    <td data-uk-tooltip={s.communicated ? `title:${moment(s.communicated).format("DD-MM-YYYY HH:mm:ss")}` : "title:This recommendation report has not yet been sent."}>{communicated}</td>
+                    <td data-uk-tooltip={s.communicated ? `title:${moment.utc(s.communicated).local().format("DD/MM/YYYY HH:mm:ss")}` : "title:This recommendation report has not yet been sent."}>{communicated}</td>
                     <td>
                         <div>
                             <button className="uk-button uk-button-primary uk-button-small" type="button" onClick={() => this.props.openModalDialog(`send_recommendation_${s.summaryId}`)} disabled={!enableSend}>

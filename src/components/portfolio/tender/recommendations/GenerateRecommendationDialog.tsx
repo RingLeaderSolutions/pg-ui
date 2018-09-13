@@ -70,7 +70,7 @@ class GenerateRecommendationDialog extends React.Component<GenerateRecommendatio
 
         return (
             <div>
-                <p>You are generating a recommendation report against the issuance issued on <strong>{this.getFormattedDateTime(this.props.issuance.created)}</strong>, which has received <strong>{quoteOptions.length}</strong> supplier responses.</p>
+                <p>You are creating a recommendation report against the issuance issued on <strong>{this.getFormattedDateTime(this.props.issuance.created)}</strong>, which has received <strong>{quoteOptions.length}</strong> supplier responses.</p>
                 <form>
                     <fieldset className='uk-fieldset'>
                         <div className="uk-margin">

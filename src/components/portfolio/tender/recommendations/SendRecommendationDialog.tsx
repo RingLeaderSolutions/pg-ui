@@ -94,7 +94,7 @@ class SendRecommendationDialog extends React.Component<SendRecommendationDialogP
     renderUser(user: User, title: string){
         return (
             <div>
-                <div className="uk-card uk-card-small uk-card-default" style={{width: "300px"}}>
+                <div className="uk-card uk-card-small uk-card-default">
                     <div className="uk-card-header">
                         <h4>{title}</h4>
                     </div>
@@ -104,11 +104,8 @@ class SendRecommendationDialog extends React.Component<SendRecommendationDialogP
                                 <img className="avatar avatar-xlarge" src={user.avatarUrl} />
                             </div>
                             <div className="uk-width-expand">
-                                <p className="uk-margin-small-top">{user.firstName} {user.lastName}</p>
+                                <p className="uk-margin-small-top">{user.firstName} {user.lastName} <i className="fas fa-envelope-open uk-margin-small-left" data-uk-tooltip={`title:${user.email}`}></i></p>
                             </div>
-                        </div>
-                        <div className="uk-margin-small-top">
-                            <p className="uk-text-meta uk-margin-small-left"><i className="fas fa-envelope uk-margin-small-right"></i>{user.email}</p>
                         </div>
                     </div>
                 </div>
@@ -133,18 +130,15 @@ class SendRecommendationDialog extends React.Component<SendRecommendationDialogP
         var isSelected = this.state.selectedEmails.find(email => email == contact.email) != null;
         var role = contact.role != "" ? ` (${contact.role}) ` : "";
         return (
-            <div key={contact.id}>
+            <div key={contact.id} className="uk-margin-small-top">
                 <div className="uk-card uk-card-small uk-card-default">
-                    <div className="uk-card-body">
+                    <div className="uk-card-body" style={{padding: '5px'}}>
                         <div className="uk-grid-small" data-uk-grid>
-                            <div className="uk-width-auto">
+                            <div className="uk-width-auto uk-flex uk-flex-middle">
                                 <td><input className="uk-checkbox" type="checkbox" checked={isSelected} onChange={(e) => this.toggleEmailSelection(contact.email)}/></td>
                             </div>
-                            <div className="uk-width-auto">
-                                <p><i className="fas fa-user uk-margin-small-right"></i>{contact.firstName} {contact.lastName}{role}</p>
-                            </div>
-                            <div className="uk-width-expand">
-                                <p className="uk-text-meta"><i className="fas fa-envelope uk-margin-small-right"></i>{contact.email}</p>
+                            <div className="uk-width-expand uk-flex uk-flex-middle">
+                                <p><i className="fas fa-user-circle fa-lg uk-margin-small-right"></i>{contact.firstName} {contact.lastName}{role} <i className="fas fa-envelope-open uk-margin-small-left" data-uk-tooltip={`title:${contact.email}`}></i></p>
                             </div>
                         </div>
                     </div>
@@ -159,7 +153,7 @@ class SendRecommendationDialog extends React.Component<SendRecommendationDialogP
 
         var warning = null;
         if(this.props.recommendation.communicated != null){
-            var sent = moment(this.props.recommendation.communicated);
+            var sent = moment.utc(this.props.recommendation.communicated).local();
             var sentDate = sent.format("dddd Do MMMM YYYY");
             var sentTime = sent.format("HH:mm");
             warning = 
@@ -186,18 +180,18 @@ class SendRecommendationDialog extends React.Component<SendRecommendationDialogP
                         {this.renderUser(this.props.portfolio.salesLead, "Account Manager")}
                         {this.renderUser(this.props.portfolio.supportExec, "Tender Analyst")}
                     </div>
-                    {accountContacts.length > 1 ? (
-                        <div>
+                    {accountContacts.length > 0 ? (
+                        <div className="uk-margin-medium-top">
                             <p>Please select which account contacts should also be notified: </p>
-                            <div>
+                            <div className="uk-height-max-small" style={{overflow: 'auto', padding: '5px 10px'}}>
                                 {accountContacts}
                             </div>
                         </div>
                     ) : null }                    
                 </div>
                 <div className="uk-modal-footer uk-text-right">
-                    <button className="uk-button uk-button-default uk-margin-right" type="button" onClick={() => this.props.closeModalDialog()}>Cancel</button>
-                    <button className="uk-button uk-button-primary" type="button" onClick={() => this.sendRecommendation()}><i className="far fa-envelope uk-margin-small-right"></i>Send</button>
+                    <button className="uk-button uk-button-default uk-margin-right" type="button" onClick={() => this.props.closeModalDialog()}><i className="fas fa-times uk-margin-small-right"></i>Cancel</button>
+                    <button className="uk-button uk-button-primary" type="button" onClick={() => this.sendRecommendation()}><i className="fas fa-envelope uk-margin-small-right"></i>Send</button>
                 </div>
             </div>);
     }
@@ -217,7 +211,7 @@ class SendRecommendationDialog extends React.Component<SendRecommendationDialogP
         return (
             <div>
                 <div className="uk-modal-header">
-                    <h2 className="uk-modal-title">Send Recommendation</h2>
+                    <h2 className="uk-modal-title"><i className="fas fa-envelope uk-margin-right" data-uk-tooltip="title:Offer"></i>Send Recommendation</h2>
                 </div>
                 <div>
                     {content}
