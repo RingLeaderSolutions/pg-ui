@@ -18,12 +18,20 @@ interface DispatchProps {
 }
 
 class PortfolioMeterStatus extends React.Component<PortfolioMeterStatusProps & StateProps & DispatchProps, {}> {
+    renderConsumptionValue(value: number){
+        if(value > 1000000){
+            var gigaValue = value / 1000000;
+            return `${gigaValue.toFixed(3).toLocaleString()} GWh`;
+        }
+        return `${value.toLocaleString()} kWh`;
+    }
+
     createSummaryTable(){
         var rows = this.props.details.meterGroups.map(mg => {
             return (
                 <tr key={mg.groupName}>
                     <td><UtilityIcon utility={mg.groupName} /></td>
-                    <td>{mg.consumption.toLocaleString()} kWh</td>
+                    <td>{this.renderConsumptionValue(mg.consumption)}</td>
                     <td>{mg.supplyDataCount}/{mg.meterCount}</td>
                     <td>{mg.groupName == "HH" ? `${mg.historicalCount}/${mg.meterCount}` : "N/A"}</td>
                 </tr>
