@@ -159,12 +159,36 @@ class PortfolioMeters extends React.Component<PortfolioMetersProps & StateProps 
         );
     }
 
-    renderDynamicTable(columns: string[], values: string[][], utilityType: UtilityType){
+    renderDynamicTable(values: string[][], utilityType: UtilityType){
         var decodedUtilityType = decodeUtilityType(utilityType);
         var includeDialogId = `include_meters_${decodedUtilityType}`;
         var excludeDialogId = `exclude_meters_${decodedUtilityType}`;
 
         var hasData = this.state.tableData != null && this.state.tableData.length > 0;
+
+        var tableContent;
+        if(values.length == 0){
+            tableContent = (
+                <div className="uk-alert-default uk-margin-small-top uk-margin-small-bottom" data-uk-alert>
+                    <p><i className="fas fa-info-circle uk-margin-small-right"></i>No meters of this type have been included in this portfolio yet. Click on the menu above to include some.</p>
+                </div>);
+        }
+        else if(this.state.searchText != "" && this.state.tableData.length == 0){
+            tableContent = (
+                <div className="uk-alert-default uk-margin-small-top uk-margin-small-bottom" data-uk-alert>
+                    <p><i className="fas fa-info-circle uk-margin-small-right"></i>No results for search term: <i>{this.state.searchText}</i></p>
+                </div>);
+        }
+        else {
+            tableContent = (
+                <ReactTable 
+                    showPagination={false}
+                    columns={this.state.tableColumns}
+                    data={this.state.tableData}
+                    style={{maxHeight: `${window.innerHeight - 320}px`}}
+                    minRows={0}/>
+            )
+        }
 
         var showHistoricUpload = hasData && values.filter(arr => arr[2] == "HH").length > 0;
         return (
@@ -209,25 +233,7 @@ class PortfolioMeters extends React.Component<PortfolioMetersProps & StateProps 
                     </div>
                 </div>
                 <hr />
-                {hasData ? (
-                    <ReactTable 
-                    showPagination={false}
-                    columns={this.state.tableColumns}
-                    data={this.state.tableData}
-                    style={{maxHeight: `${window.innerHeight - 320}px`}}
-                    minRows={0}/>
-                ) : 
-                (<div className="uk-alert-default uk-margin-right uk-alert" data-uk-alert>
-                    <div className="uk-grid uk-grid-small" data-uk-grid>
-                        <div className="uk-width-auto uk-flex uk-flex-middle">
-                            <i className="fas fa-info-circle uk-margin-small-right"></i>
-                        </div>
-                        <div className="uk-width-expand uk-flex uk-flex-middle">
-                            <p>No meters of this type have been included in this portfolio yet. Click on the menu above to include some.</p>    
-                        </div>
-                    </div>
-                </div>)}
-                
+                {tableContent}                
             </div>);
     }
     
@@ -242,9 +248,9 @@ class PortfolioMeters extends React.Component<PortfolioMetersProps & StateProps 
     renderSelectedTable(){
         switch(this.props.selectedTab){
             case 0:
-                return this.renderDynamicTable(this.props.consumption.electricityHeaders, this.props.consumption.electrictyConsumptionEntries, UtilityType.Electricity);
+                return this.renderDynamicTable(this.props.consumption.electrictyConsumptionEntries, UtilityType.Electricity);
             case 1:
-                return this.renderDynamicTable(this.props.consumption.gasHeaders, this.props.consumption.gasConsumptionEntries, UtilityType.Gas);
+                return this.renderDynamicTable(this.props.consumption.gasConsumptionEntries, UtilityType.Gas);
         }
     }
 
