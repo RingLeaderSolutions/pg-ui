@@ -62,7 +62,7 @@ class TenderRecommendationsList extends React.Component<TenderRecommendationsLis
             var supplier = this.props.suppliers.find(su => su.supplierId == s.supplierId);
             var supplierText = supplier == null ? "Unknown" : (<img src={supplier.logoUri} style={{ maxWidth: "70px", maxHeight: "40px"}}/>);
 
-            var created = moment.utc(s.created).local().fromNow();  
+            var created = moment.utc(s.created).local();
             var communicated = s.communicated != null ? moment.utc(s.communicated).local().fromNow() : "Never";
             return (
                 <tr key={s.summaryId}>
@@ -71,7 +71,7 @@ class TenderRecommendationsList extends React.Component<TenderRecommendationsLis
                             <i className="far fa-eye fa-lg"></i>
                         </button>   
                     </td>
-                    <td data-uk-tooltip={`title:${moment(s.created).format("DD-MM-YYYY HH:mm:ss")}`}>{created}</td>
+                    <td data-uk-tooltip={`title:${created.format("DD/MM/YYYY HH:mm:ss")}`}>{created.fromNow()}</td>
                     <td>{s.meterCount}</td>
                     <td>{s.supplierCount}</td>
                     <td>{supplierText}</td>

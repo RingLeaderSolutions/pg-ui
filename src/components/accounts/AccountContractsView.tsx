@@ -110,22 +110,38 @@ class AccountContractsView extends React.Component<AccountContractsViewProps & S
         return options;
     }
 
+    renderStatusIcon(status: string){
+        switch(status.toLowerCase()){
+            case "expired":
+                return (<i style={{color: '#c21807'}} data-uk-tooltip="title:This contract has expired." className="fas fa-clock"></i>);
+            case "active":
+                return (<i style={{color: '#006400'}} data-uk-tooltip="title:This contract is active." className="fas fa-check-circle"></i>);
+            case "pending":
+                return (<i style={{color: '#ffa500'}} data-uk-tooltip="title:This contract is pending." className="fas fa-hourglass-half"></i>);
+            default:
+                return (<i style={{color: '#c21807'}} data-uk-tooltip="title: Unknown status" className="fas fa-question-circle"></i>)
+        }
+    }
+
     renderContractsRows(){
         return this.props.contracts.map(c => {
             var hasContractRates = c.sheetCount > 0;
             var supplier = this.props.suppliers.find(su => su.supplierId == c.supplierId);
             var supplierImage = supplier == null ? "Unknown" : (<img data-uk-tooltip={`title:${supplier.name}`} src={supplier.logoUri} style={{ maxWidth: "70px", maxHeight: "40px"}}/>);
+            var created = moment.utc(c.uploaded).local();
+            
             return (
                 <tr key={c.contractId} className="uk-table-middle">
+                    <td>{c.reference}</td>
                     <td>
                         <div className="uk-grid uk-grid-collapse">
                             <div className="uk-grid-auto uk-flex uk-flex-middle">
                                 {!hasContractRates ? 
-                                    (<i style={{color: '#ffa500'}} data-uk-tooltip="title: This existing contract's rates have not yet been uploaded and processed." className="fas fa-exclamation-triangle uk-margin-small-right"></i>) : 
-                                    (<i style={{color: '#006400'}} data-uk-tooltip={`title: This existing contract's rates have been successfully processed.`} className="fas fa-check-circle uk-margin-small-right"></i>)}
+                                        (<i style={{color: '#ffa500'}} data-uk-tooltip="title:This existing contract's rates have not yet been uploaded and processed." className="fas fa-exclamation-triangle uk-margin-right"></i>) : 
+                                        (<i style={{color: '#006400'}} data-uk-tooltip={`title:This existing contract's rates have been successfully processed.`} className="fas fa-pound-sign uk-margin-right"></i>)}
                             </div>
-                            <div className="uk-grid-expand uk-flex uk-flex-middle">
-                                {c.reference}
+                            <div className="uk-grid-auto uk-flex uk-flex-middle">
+                                {this.renderStatusIcon(c.status)}
                             </div>
                         </div>
                     </td>
@@ -136,7 +152,7 @@ class AccountContractsView extends React.Component<AccountContractsViewProps & S
                     <td>{c.contractEnd != null ? moment(c.contractEnd).format("DD/MM/YYYY") : "-"}</td>
                     <td>{hasContractRates ? format(c.totalIncCCL, { locale: 'en-GB'}) : "-"}</td>
                     <td>{hasContractRates ? `${c.averagePPU.toFixed(4)}p` : "-"}</td>
-                    <td>{moment.utc(c.uploaded).local().fromNow()}</td>
+                    <td data-uk-tooltip={`title:${created.format("DD/MM/YYYY HH:mm:ss")}`}>{created.fromNow()}</td>
                     <td>
                         <div>
                             <div className="uk-inline">
@@ -170,6 +186,7 @@ class AccountContractsView extends React.Component<AccountContractsViewProps & S
             <thead>
                 <tr>
                     <th>Reference</th>
+                    <th>Status</th>
                     <th>Supplier</th>
                     <th>Utility</th>
                     <th>Product</th>
