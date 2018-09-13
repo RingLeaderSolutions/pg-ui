@@ -152,6 +152,17 @@ class Portfolios extends React.Component<PortfoliosProps & StateProps & Dispatch
         return filtered;
     }
 
+    toFriendlyPortfolioStatus(value: string){
+        switch(value){
+            case "onboard":
+                return "Onboarding";
+            case "tender":
+                return "Tender"
+            default:
+                return value;
+        }
+    }
+
     createTableData(portfolios: Portfolio[]): PortfolioTableEntry[]{
         return portfolios
             .filter(p => p.id != null)
@@ -159,7 +170,7 @@ class Portfolios extends React.Component<PortfoliosProps & StateProps & Dispatch
                 return {
                     portfolioId: portfolio.id,
                     name: portfolio.title,
-                    status: portfolio.status,
+                    status: this.toFriendlyPortfolioStatus(portfolio.status),
                     accountMgr: portfolio.salesLead,
                     tenderAnalyst: portfolio.supportExec,
                     siteCount: portfolio.sites,

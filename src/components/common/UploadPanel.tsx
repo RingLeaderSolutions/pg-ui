@@ -27,6 +27,9 @@ class FileView extends React.Component<FileViewProps, {}> {
             case ".ppt":
                 iconClass = "file-powerpoint";
                 break;
+            case ".zip":
+                iconClass = "file-archive";
+                break;
             case ".pdf":
                 iconClass = "file-pdf";
                 break;

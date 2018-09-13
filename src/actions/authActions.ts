@@ -26,7 +26,6 @@ export function fetchBackendVersion(){
             200, 
             data => {
                 return { type: types.FETCH_BACKEND_VERSION_SUCCESSFUL, data: (data as BackendVersion).version};
-                
             }, 
             error => {
                 return { type: types.FETCH_BACKEND_VERSION_FAILED, errorMessage: error };
@@ -44,7 +43,6 @@ export function fetchInstanceDetails(){
             200, 
             data => {
                 return { type: types.FETCH_INSTANCE_DETAILS_SUCCESSFUL, data: data};
-                
             }, 
             error => {
                 return { type: types.FETCH_INSTANCE_DETAILS_FAILED, errorMessage: error };

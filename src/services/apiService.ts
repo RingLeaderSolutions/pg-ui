@@ -145,7 +145,7 @@ export class ApiService implements IApiService {
                 }
               }
               else {
-                console.log(`Error: Encountered issue setting up Axios Request:\r\n${error.message}`);
+                  console.log(`Error: Encountered issue communicating with API @ [${error.config.url}]:\r\n${error.message}\r\n${error.stack}`);
               }
       
               return Promise.reject(error);

@@ -70,7 +70,6 @@ class AccountDetailView extends React.Component<AccountDetailViewProps & StatePr
                 return (<AccountDocumentsView account={this.props.account}/>);
             case 5:
                 return (<AccountContactsView />);
-            
         }
     }
 

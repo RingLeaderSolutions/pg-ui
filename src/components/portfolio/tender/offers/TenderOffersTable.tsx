@@ -195,7 +195,7 @@ class TenderOffersTable extends React.Component<TenderOffersTableProps & StatePr
                             <th>Version</th>
                             <th>Contract Value</th>
                             <th>APPU</th>
-                            <th></th>
+                            <th>Best of breed</th>
                             <th></th>
                         </tr>
                     </thead>

@@ -50,7 +50,9 @@ class PortfolioMeterStatus extends React.Component<PortfolioMeterStatusProps & S
         var content = (<Spinner hasMargin={true}/>);
         if(!this.props.working && this.props.details.meterGroups != null){
             if(this.props.details.meterGroups.length == 0){
-                content = (<p>There are no meters uploaded for this portfolio yet</p>);    
+                content = (<div className="uk-alert-default uk-margin-small-top uk-margin-small-bottom" data-uk-alert>
+                <p><i className="fas fa-info-circle uk-margin-small-right"></i>No meters have been uploaded to this portfolio yet.</p>
+            </div>);    
             }
             content = this.createSummaryTable();
         }

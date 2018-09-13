@@ -43,11 +43,19 @@ class AccountSummaryView extends React.Component<AccountSummaryViewProps & State
         return value;
     }
 
+    renderAddress(value: string){
+        var address = this.renderFriendlyValue(value);
+        if(address.length >= 13){
+            return <h6><strong>{address}</strong></h6>
+        }
+        return (<h4><strong>{address}</strong></h4>);
+    }
+
     renderBooleanIcon(value: boolean){
         if(value){
-            return (<p><i className="fa fa-check-circle uk-margin-small-right fa-2x" style={{color: '#006400'}}></i></p>)
+            return (<p><i className="fa fa-check-circle fa-2x" style={{color: '#006400'}}></i></p>)
         }
-        return (<p><i className="fa fa-times-circle uk-margin-small-right fa-2x" style={{color: '#8B0000'}}></i></p>)
+        return (<p><i className="fa fa-times-circle fa-2x" style={{color: '#8B0000'}}></i></p>)
     }
 
     render() {
@@ -73,7 +81,7 @@ class AccountSummaryView extends React.Component<AccountSummaryViewProps & State
                 <div className="uk-child-width-expand@s uk-grid-match uk-text-center" data-uk-grid>
                     <CounterCard title={this.renderFriendlyValue(account.creditRating)} label="Credit Rating" small/>
                     <CounterCard title={incorporationDate} label="Incorporation Date" small />
-                    <CounterCard title={this.renderFriendlyValue(account.address)} label="Address" small/>
+                    <CounterCard content={this.renderAddress(account.address)} label="Address" small/>
                     <CounterCard title={this.renderFriendlyValue(account.postcode)} label="Postcode" small/>
                     <CounterCard title={this.renderFriendlyValue(account.countryOfOrigin)} label="Country" small/>
                 </div>

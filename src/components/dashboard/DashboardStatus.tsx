@@ -28,11 +28,22 @@ class DashboardStatus extends React.Component<StatusProps & StateProps & Dispatc
         this.props.getStatus();
     }
 
+    toFriendlyPortfolioStatus(value: string){
+        switch(value){
+            case "onboard":
+                return "Onboarding";
+            case "tender":
+                return "Tender"
+            default:
+                return value;
+        }
+    }
+
     renderChart(){
         var config = ChartConfig;
         
         config.series[0].data = this.props.status.statusList.map(statusItem => {
-            return { name: statusItem.status, y: statusItem.count };
+            return { name: this.toFriendlyPortfolioStatus(statusItem.status), y: statusItem.count };
         });
 
         return (<ReactHighCharts config={config} />);

@@ -24,19 +24,42 @@ html, body, .root, .app-container {
   background-color: $app-background;
 }
 
-.app-container {
-    padding: 0px !important;
-    margin: 0px !important;
+@keyframes slideInFromLeft {
+    0% {
+        transform: translateX(-100%);
+    }
+    100% {
+        transform: translateX(0);
+    }
+}
+
+@keyframes slideInFromTop {
+    0% {
+        transform: translateY(-100%);
+    }
+    100% {
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+
+.app-container, .app-loading-container, .content-inner {
+    animation: 0.5s ease-out 0s 1 fadeIn;
 }
 
 .content-container {
     padding: $margin-large 0px 20px 20px;
 }
 
-.content-inner {
-    // height: 90%;
-    // width: 80%;
-}
 
 // UIKit Table hover override (yellow->grey)
 .uk-table-hover > tr:hover, .uk-table-hover tbody tr:hover {

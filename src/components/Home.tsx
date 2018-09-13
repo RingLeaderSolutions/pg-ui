@@ -14,8 +14,6 @@ import {
     Link
 } from 'react-router-dom';
 import { InstanceDetail, ApplicationTab } from "../model/Models";
-import Spinner from "./common/Spinner";
-import ErrorMessage from "./common/ErrorMessage";
 
 
 interface StateProps {
@@ -34,8 +32,10 @@ interface DispatchProps {
 
 class Home extends React.Component<StateProps & DispatchProps, {}> {
     componentDidMount(){
-        this.props.fetchBackendVersion();
-        this.props.fetchInstanceDetails();
+        setTimeout(() => {
+            this.props.fetchBackendVersion();
+            this.props.fetchInstanceDetails();
+        }, 2000);
     }
 
     renderSelectedTriangle(tab: ApplicationTab){
@@ -48,15 +48,48 @@ class Home extends React.Component<StateProps & DispatchProps, {}> {
     render(){
         if(this.props.working){
             return (
-                <div className="app-container">
-                    <Spinner hasMargin={true}/>
-                </div>)
+                <div className="uk-cover-container uk-height-viewport">
+                    <img src={require('../images/panels.png')} alt="" data-uk-cover />
+                    <div className="app-loading-container uk-position-center">
+                        <div className="uk-card uk-card-body uk-card-default">
+                            <img src={require('../images/tpi-flow-logo.png')} alt="TPI Flow" />
+                            <div>
+                                <div className="spinner-2"></div>
+                                <h4 className="uk-text-center">Initialising...</h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>);
         }
         if(this.props.error){
-            return <div className="uk-flex uk-flex-center uk-flex-middle"><ErrorMessage content={this.props.errorMessage} /></div>
+            return (
+                <div className="uk-cover-container uk-height-viewport">
+                    <img src={require('../images/panels.png')} alt="" data-uk-cover />
+                    <div className="app-loading-container uk-position-center">
+                        <div className="uk-card uk-card-body uk-card-default">
+                            <img src={require('../images/tpi-flow-logo.png')} alt="TPI Flow" />
+                            <div className="uk-alert uk-alert-danger uk-margin-small-bottom" data-uk-alert>
+                                <div className="uk-grid uk-grid-small" data-uk-grid>
+                                    <div className="uk-width-auto uk-flex uk-flex-middle">
+                                        <i className="fas fa-exclamation-triangle uk-margin-small-right"></i>
+                                    </div>
+                                    <div className="uk-width-expand uk-flex uk-flex-middle">
+                                        <div>
+                                            <p><strong>Sorry!</strong> We seem to be having trouble loading the application right now.</p>
+                                            <p>Please contact support using the button below so that we can help you resolve this issue promptly.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="uk-width-auto uk-text-center">
+                                <a className="uk-button uk-button-default uk-button-small uk-margin-small-top" href={`mailto:support@tpiflow.com?subject=Error%20Loading%20TPI%20Flow%20at%20${window.location.origin}`}><i className="fas fa-envelope uk-margin-small-right"></i>Contact Support</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>);
         }
         return (
-            <div className="uk-grid uk-grid-collapse uk-height-1-1">
+            <div className="app-container uk-grid uk-grid-collapse uk-height-1-1">
                 <div className="sidebar uk-width-1-6 uk-height-1-1">
                     <div className="app-title">
                         <img src={this.props.instance_detail.logoUri} alt={this.props.instance_detail.name} /> 
