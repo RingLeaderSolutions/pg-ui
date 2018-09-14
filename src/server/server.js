@@ -9,8 +9,8 @@ var dotenv = require('dotenv');
 var configSubstitutor = require('./config/ConfigSubstitutor');
 
 // Constants
-const configDirectory = "config";
-const appConfigPath = "./appConfig.js";
+const configDirectory = "../../config";
+const appConfigPath = path.resolve(__dirname, configDirectory, "appConfig.js");
 const CONTENT_TYPE_HTML = "text/html";
 
 // Defaults
@@ -72,7 +72,7 @@ if (lifecycleEvent == "debug") {
         next();
     });
 
-    var webpackConfig = require('./webpack.config.js');
+    var webpackConfig = require('../app/webpack.config.js');
     var compiler = webpack(webpackConfig);
 
     app.use(webpackDevMiddleware(compiler, {
@@ -89,11 +89,14 @@ if (lifecycleEvent == "debug") {
     }));
 }
 else {
-    log("WARNING", `Standard mode detected, setting up static routes for /build`);
-    app.use(express.static(__dirname + '/build'));
+    var buildDirectory = path.resolve(__dirname, "../../build");
+    log("WARNING", `Standard mode detected, setting up static routes for files in [${buildDirectory}]`);
+    app.use(express.static(buildDirectory));
 
+    var appEntry = path.resolve(buildDirectory, 'index.html');
+    log("WARNING", `Setting up route for [/*] to [${appEntry}]`);
     app.get('/*', function (request, response) {
-        response.sendFile(path.resolve(__dirname, 'build', 'index.html'))
+        response.sendFile(appEntry)
     });
 }
 

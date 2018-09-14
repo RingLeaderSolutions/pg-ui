@@ -2,12 +2,12 @@
   "name": "pg-ui",
   "version": "1.0.0",
   "description": "UI for the Portfolio Generation project",
-  "main": "server.js",
+  "main": "src/server/server.js",
   "scripts": {
-    "build": "webpack -p --config webpack.production.config",
-    "build-dev": "webpack",
-    "debug": "nodemon -e js,env -i /build -V ./server.js",
-    "start": "node server.js"
+    "build": "webpack -p --config src/app/webpack.production.config.js",
+    "build-dev": "webpack --config src/app/webpack.config.js",
+    "debug": "nodemon -e js,env -i /build -V ./src/server/server.js",
+    "start": "node src/server/server.js"
   },
   "repository": {
     "type": "git",

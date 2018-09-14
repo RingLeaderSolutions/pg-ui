@@ -1,4 +1,4 @@
-var appConfig = {
+const appConfig = Object.freeze({
     baseApiUri: '${TPIFLOW_BASE_API_URI}',
     signalRUri: '${TPIFLOW_SIGNALR_URI}',
     hierarchyApiUri: '${TPIFLOW_HIERARCHY_API_URI}',
@@ -8,4 +8,4 @@ var appConfig = {
     auth0_clientId: '${TPIFLOW_AUTH0_CLIENT_ID}',
     auth0_domain: '${TPIFLOW_AUTH0_DOMAIN}',
     environment_name: '${TPIFLOW_ENVIRONMENT_NAME}'
-}
+});

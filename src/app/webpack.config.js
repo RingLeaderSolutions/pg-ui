@@ -6,11 +6,11 @@ var config = {
   mode: 'development',
   entry: [
     "webpack-hot-middleware/client",
-    "./src/App.tsx"],
+    "./src/app/App.tsx"],
 
   devtool: "source-map",
   output: {
-    path: path.resolve(__dirname, "build"),
+    path: path.resolve(__dirname, "../../build"),
     filename: "bundle.js",
     publicPath: "/"
   },
@@ -51,8 +51,8 @@ var config = {
         new webpack.HotModuleReplacementPlugin(),
         new HtmlWebpackPlugin({
             title: 'TPI Flow',
-            template: './index.ejs',
-            favicon: 'favicon.ico'
+            template: './src/app/index.ejs',
+            favicon: './src/app/favicon.ico'
         })]
 };
 
