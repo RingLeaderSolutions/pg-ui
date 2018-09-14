@@ -1,42 +1,70 @@
 var express = require('express');
 var webpack = require('webpack');
-var devServer = require('webpack-dev-middleware');
-var hotServer = require('webpack-hot-middleware');
+var webpackDevMiddleware = require('webpack-dev-middleware');
+var webpackHotMiddleware = require('webpack-hot-middleware');
 var fs = require('fs');
 var path = require("path");
 var app = express();
 var dotenv = require('dotenv');
 var configSubstitutor = require('./config/ConfigSubstitutor');
 
-// Default the environment to development if none is provided
-process.env.TPIFLOW_ENV = process.env.TPIFLOW_ENV || 'development';
-console.log(`TPIFLOW_ENV=${process.env.TPIFLOW_ENV}`);
+// Constants
+const configDirectory = "config";
+const appConfigPath = "./appConfig.js";
+const CONTENT_TYPE_HTML = "text/html";
 
-// Search for a config.$environment.env file to load variables from
-var envFilePath = __dirname + '/config/config.' + process.env.TPIFLOW_ENV + '.env';
-if (fs.existsSync(envFilePath)) {
-    console.log(`Using config file ${envFilePath}`);
-    dotenv.config({ path: envFilePath });
+// Defaults
+const defaultPort = 8585;
+const defaultTPIFlowEnvironment = "development";
+
+const log = function(severity, message) {
+    console.log(`[tpiflow_server]: [${severity}] - ${message}`);
 }
 
-// Load the config file and re-write the appConfig file for usage
-var configFileContents = fs.readFileSync('./appConfig.js', 'utf-8');
+// -- [Startup] Step 1: Check and set expected environment variables 
+var nodeVersion = process.version;
+var tpiEnv = process.env.TPIFLOW_ENV;
+var lifecycleEvent = process.env.npm_lifecycle_event;
+var port = process.env.PORT;
+log("INFO", `Initialising server: [NODE_VERSION: ${nodeVersion}] [NPM_LIFECYCLE_EVENT: ${lifecycleEvent}] [TPIFLOW_ENV: ${tpiEnv}] [PORT: ${port}]`);
+
+if(tpiEnv == null){
+    log("WARNING", `Warning: No [TPIFLOW_ENV] variable set. Defaulting to [${defaultTPIFlowEnvironment}]`);    
+    tpiEnv = defaultTPIFlowEnvironment;
+}
+
+if(port == null){
+    log("WARNING", `Warning: No [PORT] set. Defaulting to [${defaultPort}]`);    
+    port = defaultPort;
+}
+
+// -- [Startup] Step 2: Select config.env file, if it exists
+var configFile = `config.${tpiEnv}.env`;
+var absoluteEnvPath = path.resolve(__dirname, configDirectory, configFile);
+if (fs.existsSync(absoluteEnvPath)) {
+    log("INFO", `Found configuration file for [${tpiEnv}]. Setting environment variables contained in [${absoluteEnvPath}]`);
+    dotenv.config({ path: absoluteEnvPath });
+}
+else {
+    log("WARNING", `Using process environment variables - no configuration file was found for [${tpiEnv}] at [${absoluteEnvPath}].`);
+}
+
+// -- [Startup] Step 3: Load appConfig.js and rewrite it in-memory to contain environment variable values
+var configFileContents = fs.readFileSync(appConfigPath, 'utf-8');
 configFileContents = configSubstitutor(configFileContents);
 
-var applyStaticRoutes = function (app) {
-    app.get('/appConfig.js', function (request, response) {
-        response.send(configFileContents)
-    });
-}
+log("INFO", `Successfully substituted appConfig variables`);
 
-if (process.env.npm_lifecycle_event === 'start') {
-    var webpackConfig = require('./webpack.config.js');
-    var compiler = webpack(webpackConfig);
+// -- [Startup] Step 4: Apply express route exception for appConfig.js
+app.get('/appConfig.js', function (request, response) {
+    response.send(configFileContents)
+});
+log("INFO", `Applied express route exception for appConfig.`);
 
-    const CONTENT_TYPE_HTML = "text/html";
+// -- [Startup] Step 5: Setup express routing, with debug info if necessary
+if (lifecycleEvent == "debug") {
+    log("WARNING", `Debug mode detected: setting up dev & hot server with HMR enabled`);
 
-    applyStaticRoutes(app);
-    
     app.use(function (req, res, next) {
         if (req.headers.accept && req.headers.accept.substr(0, CONTENT_TYPE_HTML.length) === CONTENT_TYPE_HTML) {
             req.url = '/index.html';
@@ -44,29 +72,30 @@ if (process.env.npm_lifecycle_event === 'start') {
         next();
     });
 
-    app.use(devServer(compiler, {
+    var webpackConfig = require('./webpack.config.js');
+    var compiler = webpack(webpackConfig);
+
+    app.use(webpackDevMiddleware(compiler, {
         stats: { colors: true },
         historyApiFallback: true
     }));
-    app.use(hotServer(compiler, {
-        log: console.log, path: '/__webpack_hmr', heartbeat: 10 * 1000
-    }));
 
+    const hmrLog = function(message){
+        console.log(`[tpiflow_server_hmr]: ${message}`);
+    }
+
+    app.use(webpackHotMiddleware(compiler, {
+        log: hmrLog, path: '/__webpack_hmr', heartbeat: 10 * 1000
+    }));
 }
 else {
+    log("WARNING", `Standard mode detected, setting up static routes for /build`);
     app.use(express.static(__dirname + '/build'));
 
-    applyStaticRoutes(app);
-
-    // handle every other route with index.html, which will contain
-    // a script tag to your application's JavaScript file(s).
     app.get('/*', function (request, response) {
         response.sendFile(path.resolve(__dirname, 'build', 'index.html'))
     });
 }
 
-console.log('passed port: ' + process.env.PORT);
-var port = process.env.PORT || 8585;
 app.listen(port);
-
-console.log('Express server running on port: ' + port);
+log("INFO", `Initialisation complete, server running.`);
