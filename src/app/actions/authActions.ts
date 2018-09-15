@@ -1,9 +1,9 @@
-import AuthService from "../services/AuthService";
+import AuthService from "../services/authService";
 import * as types from "./actionTypes";
 
 import { Dispatch } from 'redux';
 import { BackendVersion } from "../model/Models";
-import { makeApiRequest } from "./Common";
+import { makeApiRequest } from "./common";
 import ApiService from "../services/apiService";
 
 export function login(email: string, password: string, redirectRoute?: string){

@@ -8,10 +8,10 @@ import { Portfolio,
          UploadResponse,
          Account,
          UploadReportsResponse,
-         User} from "../Model/Models";
+         User} from "../model/Models";
 
 import * as types from "./actionTypes";
-import { makeApiRequest } from "./Common";
+import { makeApiRequest } from "./common";
 
 import { Dispatch } from 'redux';
 import { PortfolioRequirements } from "../model/PortfolioDetails";

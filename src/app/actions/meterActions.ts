@@ -1,11 +1,11 @@
 import ApiService from "../services/apiService";
 
-import { Mpan, MeterPortfolio, MeterConsumptionSummary } from "../Model/Meter";
+import { Mpan, MeterPortfolio, MeterConsumptionSummary } from "../model/Meter";
 
 import * as types from "./actionTypes";
 import { Dispatch } from 'redux';
 
-import { makeApiRequest } from "./Common";
+import { makeApiRequest } from "./common";
 import { ExportResponse } from "../model/Models";
 
 

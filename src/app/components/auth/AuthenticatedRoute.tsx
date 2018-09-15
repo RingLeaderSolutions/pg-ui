@@ -1,7 +1,7 @@
 import * as React from "react";
 import { Route, RouteProps, Redirect } from 'react-router';
 
-import AuthService from '../../services/AuthService';
+import AuthService from '../../services/authService';
 
 const RedirectRoute : React.SFC<{}> = () => {
     return <Redirect to="/login" />

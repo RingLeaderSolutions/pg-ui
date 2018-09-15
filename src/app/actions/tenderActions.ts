@@ -1,12 +1,12 @@
 import ApiService from "../services/apiService";
 
-import { Tender, TenderContract, TenderSupplier, BackingSheet, TenderIssuanceEmail, TenderRequirements, ContractRatesResponse, RecommendationSite, RecommendationSupplier, RecommendationSummary, TenderRecommendation } from "../Model/Tender";
+import { Tender, TenderContract, TenderSupplier, BackingSheet, TenderIssuanceEmail, TenderRequirements, ContractRatesResponse, RecommendationSite, RecommendationSupplier, RecommendationSummary, TenderRecommendation } from "../model/Tender";
 import { UploadResponse, UtilityType, ExportResponse } from "../model/Models";
 
 import * as types from "./actionTypes";
 import { Dispatch } from 'redux';
 
-import { makeApiRequest } from "./Common";
+import { makeApiRequest } from "./common";
 
 export function getAccountContracts(accountId: string){    
     return (dispatch: Dispatch<any>) => {

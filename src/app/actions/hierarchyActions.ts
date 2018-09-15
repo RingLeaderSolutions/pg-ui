@@ -1,8 +1,8 @@
 import ApiService from "../services/apiService";
-import { Account, AccountDetail, UploadResponse, UploadReportsResponse, CompanyInfo } from "../Model/Models";
+import { Account, AccountDetail, UploadResponse, UploadReportsResponse, CompanyInfo } from "../model/Models";
 
 import * as types from "./actionTypes";
-import { makeApiRequest } from "./Common";
+import { makeApiRequest } from "./common";
 
 import { Dispatch } from 'redux';
 import { AccountContact, AccountDocument } from "../model/HierarchyObjects";

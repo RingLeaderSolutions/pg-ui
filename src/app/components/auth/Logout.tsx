@@ -1,7 +1,7 @@
 import * as React from "react";
 import { RouteComponentProps } from 'react-router';
 
-import AuthService from '../../services/AuthService';
+import AuthService from '../../services/authService';
 import { Link } from "react-router-dom";
 
 class Logout extends React.Component<RouteComponentProps<void>, {}> {

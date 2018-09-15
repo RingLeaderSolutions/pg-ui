@@ -1,10 +1,10 @@
 import { AxiosResponse } from 'axios';
 import axios from 'axios';
-import { Portfolio, CompanyInfo, PortfolioContact, PortfolioRequirements, Account, AccountCompanyStatusFlags, UtilityType, User } from "../model/Models";
+import { CompanyInfo, PortfolioContact, PortfolioRequirements, Account, AccountCompanyStatusFlags, UtilityType, User } from "../model/Models";
 import { FakeApiService } from './fakeApiService';
 import StorageService from './storageService';
 import { Mpan } from '../model/Meter';
-import { Tender, TenderContract, TenderSupplier, TenderRequirements } from '../model/Tender';
+import { Tender, TenderContract } from '../model/Tender';
 import * as moment from 'moment';
 import { AccountContact } from '../model/HierarchyObjects';
 import { PortfolioCreationRequest } from '../model/Portfolio';

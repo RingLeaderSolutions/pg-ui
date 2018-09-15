@@ -1,7 +1,7 @@
 import * as React from "react";
 import NotificationContainer from './NotificationContainer';
 
-import AuthService from '../../services/AuthService';
+import AuthService from '../../services/authService';
 
 interface HeaderProps {
   title: string;

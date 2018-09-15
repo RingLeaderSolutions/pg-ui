@@ -1,8 +1,8 @@
 import ApiService from "../services/apiService";
-import { DashboardPortfolioSummary, DashboardPortfolioStatus, DashboardPortfolioTimeline } from "../Model/Models";
+import { DashboardPortfolioSummary, DashboardPortfolioStatus, DashboardPortfolioTimeline } from "../model/Models";
 
 import * as types from "./actionTypes";
-import { makeApiRequest } from "./Common";
+import { makeApiRequest } from "./common";
 
 import { Dispatch } from 'redux';
 

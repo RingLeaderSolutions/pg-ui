@@ -7,10 +7,21 @@
     "preserveConstEnums": true,
     "removeComments": true,
 
+    // TODO: Enable this and fix the results
+    //"strictNullChecks": true,
+
+    // TODO: Enable, requires TS v2.6
+    //"strictFunctionTypes": true,
+
+    // TODO: Enable, requires TS v2.7
+    //"strictPropertyInitialization": true,
+    
+    "alwaysStrict": true,
     "noImplicitAny": true,
+    "noImplicitThis": true,
     "noFallthroughCasesInSwitch": true,
     "noImplicitReturns": true,
-    "noImplicitThis": true,
+    "forceConsistentCasingInFileNames": true
   },
   "exclude": [
     "node_modules"
