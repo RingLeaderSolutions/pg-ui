@@ -275,13 +275,13 @@ export class FakeApiService implements IApiService {
     getPortfolioDetails(portfolioId: string) {
         var contact: PortfolioContact = {
             id: "ca49abcc-c483-427b-9adb-47a7d08d1d9a",
-			firstName: "Bertie",
-			lastName: "Basset",
-			email: "bertie.basset@wherever.com",
-			role: "procurement",
-			phoneNumber: "+44 2020202222",
-			accountId: "493e1708-2457-48ba-8925-09856d6e9732",
-			portfolioId: "4d584e81-91c2-47b4-85f9-411db125af51"
+            firstName: "Bertie",
+            lastName: "Basset",
+            email: "bertie.basset@wherever.com",
+            role: "procurement",
+            phoneNumber: "+44 2020202222",
+            accountId: "493e1708-2457-48ba-8925-09856d6e9732",
+            portfolioId: "4d584e81-91c2-47b4-85f9-411db125af51"
         };
 
         var portfolioDetails: PortfolioDetails = {
@@ -419,8 +419,8 @@ export class FakeApiService implements IApiService {
         };
         
         return OK(data);
-	}
-		
+    }
+        
     uploadSupplyMeterData(accountId: string, file: Blob, utility: UtilityType){
         return OK();
     }
