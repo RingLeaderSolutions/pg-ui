@@ -1,8 +1,10 @@
 {
     "search.exclude": {
+        "**/.git": true,
+        "**/tmp": true,
         "**/node_modules": true,
-        "build/bundle.js": true
-    }
-,
-"typescript.tsdk": "./node_modules/typescript/lib"
+        "**/bower_components": true,
+        "build/*": true
+    },
+    "typescript.tsdk": "./node_modules/typescript/lib"
 }
