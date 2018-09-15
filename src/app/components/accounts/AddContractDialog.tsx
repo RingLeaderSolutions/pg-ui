@@ -8,6 +8,7 @@ import { TenderContract, TenderSupplier } from "../../model/Tender";
 import { closeModalDialog } from "../../actions/viewActions";
 import { UtilityIcon, getWellFormattedUtilityType } from "../common/UtilityIcon";
 import { UtilityType } from "../../model/Models";
+import { StringsAreNotNullOrEmpty } from "../../helpers/ValidationHelpers";
 
 interface AddExistingContractDialogProps {
     accountId: string;
@@ -148,12 +149,10 @@ class AddExistingContractDialog extends React.Component<AddExistingContractDialo
     }
 
     canSubmit(): boolean {
-        var canSubmit = 
-            (this.state.contractRef.length > 0 && 
-            this.state.supplier.length > 0 &&
-            this.state.utility != null &&
-            this.state.product.length > 0);
-        return canSubmit;
+        return StringsAreNotNullOrEmpty(this.state.contractRef,
+             this.state.supplier,
+              this.state.product) 
+            && this.state.utility != null;
     }
 
     render() {
