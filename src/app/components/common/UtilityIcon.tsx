@@ -63,7 +63,9 @@ export class TenderUtilityIconTabHeader extends React.Component<TenderUtilityIco
 
                 return (<UtilityIcon utility={utility} iconClass="uk-margin-small-right">{title}</UtilityIcon>)
             case "GAS":
-                return (<UtilityIcon utility="gas" iconClass="uk-margin-small-right">Gas</UtilityIcon>)
+				return (<UtilityIcon utility="gas" iconClass="uk-margin-small-right">Gas</UtilityIcon>)
+			default:
+				throw new RangeError(`Unknown tender utility: [${utility}]`);
         }
 	}
 }

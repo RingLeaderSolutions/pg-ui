@@ -70,6 +70,8 @@ class PortfolioDetail extends React.Component<PortfolioDetailProps & StateProps 
                 return (<TenderOffersView portfolio={portfolio}/>)
             case 4:
                 return (<TenderRecommendationsView portfolio={portfolio}/>)
+            default:
+                return (<p>No tab selected</p>);
         }
     }
 

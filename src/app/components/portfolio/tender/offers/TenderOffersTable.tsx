@@ -68,6 +68,8 @@ class TenderOffersTable extends React.Component<TenderOffersTableProps & StatePr
                     return (<i key={index} style={{color: warningIconColor}} className={`fas fa-chart-line ${margin}`} data-uk-tooltip="title:This offer's consumption varies by more than 10%."/>);
                 case "TARIFF_VARIATION":
                     return (<i key={index} style={{color: errorIconColor}} className={`fas fa-exclamation-triangle ${margin}`} data-uk-tooltip="title:This offer has meters with tariffs that do not match the previously accepted periods."/>);
+                default:
+                    return (<i key={index} className={`fas fa-info-circle ${margin}`} data-uk-tooltip={`title:${i.detail}`}/>)
             }
         });
         return (<div>{indicatorIcons}</div>)

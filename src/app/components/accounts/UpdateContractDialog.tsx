@@ -69,6 +69,8 @@ class UpdateContractDialog extends React.Component<UpdateContractDialogProps & S
                 return UtilityType.Electricity;
             case "gas":
                 return UtilityType.Gas;
+            default:
+                throw new RangeError(`No valid UtilityType for utility [${utility}]`);
         }
     }
 

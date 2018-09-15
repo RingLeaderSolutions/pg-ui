@@ -13,7 +13,6 @@ import UploadSupplyDataDialog from "../portfolio/mpan/UploadSupplyDataDialog";
 import UpdateAccountDialog from "./UpdateAccountDialog";
 import AccountContactsView from "./AccountContactsView";
 import AccountDocumentsView from "./AccountDocumentsView";
-import AccountUploadsView from "./AccountUploadsView";
 import AccountGasMeterTable from "./AccountGasMeterTable";
 import AccountElectricityMeterTable from "./AccountElectricityMeterTable";
 import ModalDialog from "../common/ModalDialog";
@@ -70,9 +69,10 @@ class AccountDetailView extends React.Component<AccountDetailViewProps & StatePr
                 return (<AccountDocumentsView account={this.props.account}/>);
             case 5:
                 return (<AccountContactsView />);
+            default:
+                return (<p>No tab selected</p>);
         }
     }
-
 
     render() {
         if(this.props.error){

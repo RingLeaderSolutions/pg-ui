@@ -89,6 +89,9 @@ export class AuthService implements IAuthService {
             }
           });
         }
+        else {
+            return Promise.reject("AuthResult was null or no idtoken was provided");
+        }
       }
 
     isLoggedIn() {

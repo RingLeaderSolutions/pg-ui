@@ -143,6 +143,8 @@ class TenderSummary extends React.Component<TenderSummaryProps & StateProps & Di
                     <a href="#" onClick={() => this.props.openModalDialog("create_gas_tender")}>
                         <UtilityIcon utility="gas" iconClass="uk-margin-small-right">Add Gas Tender</UtilityIcon>
                     </a>);
+            default:
+                throw new RangeError(`No valid tender type for index [${tenderTypeIndex}]`);
         }
     }
 
@@ -156,6 +158,8 @@ class TenderSummary extends React.Component<TenderSummaryProps & StateProps & Di
                 return hasElectricityMeters && meterDetails.electrictyConsumptionEntries.filter(arr => arr[2] == "NHH").length > 0;
             case 2:
                 return meterDetails.gasConsumptionEntries.length > 0;
+            default:
+                throw new RangeError(`No valid tender type for index [${tenderTypeIndex}]`);
         }
     }
 

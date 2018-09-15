@@ -251,6 +251,8 @@ class PortfolioMeters extends React.Component<PortfolioMetersProps & StateProps 
                 return this.renderDynamicTable(this.props.consumption.electrictyConsumptionEntries, UtilityType.Electricity);
             case 1:
                 return this.renderDynamicTable(this.props.consumption.gasConsumptionEntries, UtilityType.Gas);
+            default:
+                return (<p>No tab selected</p>);
         }
     }
 
