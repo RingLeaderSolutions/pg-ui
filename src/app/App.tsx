@@ -19,14 +19,11 @@ import { Switch } from "react-router";
 import * as moment from 'moment';
 moment.locale('en-GB');
 
-// NOTE: Unable to get proper TS definitions working with UIkit.
-const UIkit = require('uikit');
-const Icons = require('uikit/dist/js/uikit-icons');
-UIkit.use(Icons);
+import * as UIkit from 'uikit';
+import * as UIkitIcons from 'uikit/dist/js/uikit-icons';
+UIkit.use(UIkitIcons);
 
 import 'react-table/react-table.css'
-require('./styles/uikit.css');
-
 import 'react-day-picker/lib/style.css';
 require('./styles/styles.scss');
 

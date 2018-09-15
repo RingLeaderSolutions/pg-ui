@@ -17,7 +17,7 @@ import UpdateContractDialog from "./UpdateContractDialog";
 import TenderBackingSheetsDialog from "../portfolio/tender/TenderBackingSheetsDialog";
 import AddContractDialog from "./AddContractDialog";
 import UploadContractRatesDialog from "./UploadContractRatesDialog";
-const UIkit = require('uikit'); 
+import * as UIkit from 'uikit'; 
 
 interface AccountContractsViewProps {
 }

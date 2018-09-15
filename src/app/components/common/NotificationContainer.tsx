@@ -2,8 +2,7 @@ import * as React from "react";
 import { connect, MapStateToProps } from 'react-redux';
 import { ApplicationState } from '../../applicationState';
 import { NotificationMessage } from '../../model/NotificationMessage';
-
-const UIkit = require('uikit'); 
+import * as UIkit from 'uikit';
 
 
 interface StateProps {

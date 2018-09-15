@@ -6,8 +6,7 @@ import { getPortfolioTenders, fetchTenderOffers, fetchTenderRecommendations, get
 import { retrieveAccountDetail, fetchAccountDocumentation, fetchAccountUploads, retrieveAccounts } from '../actions/hierarchyActions';
 import { fetchMeterConsumption } from '../actions/meterActions';
 import { ApplicationState } from "../applicationState";
-
-const UIkit = require('uikit'); 
+import * as UIkit from 'uikit';
 
 export default function connectSignalR(store: any) {
     let connection = new HubConnection(appConfig.signalRUri);

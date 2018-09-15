@@ -15,7 +15,7 @@ import UploadOfferDialog from "./UploadOfferDialog";
 import IssueTenderPackDialog from "../IssueTenderPackDialog";
 import { openModalDialog } from "../../../../actions/viewActions";
 import ModalDialog from "../../../common/ModalDialog";
-const UIkit = require('uikit'); 
+import * as UIkit from 'uikit';
 
 interface TenderOffersTableProps {
     tender: Tender;

@@ -12,7 +12,7 @@ import ExcludeAllMetersDialog from "./ExcludeAllMetersDialog";
 import ReactTable, { Column } from "react-table";
 import { selectPortfolioMeterTab, openModalDialog } from "../../../actions/viewActions";
 import ModalDialog from "../../common/ModalDialog";
-const UIkit = require('uikit'); 
+import * as UIkit from 'uikit';
 
 interface PortfolioMetersProps {
     portfolio: Portfolio;
