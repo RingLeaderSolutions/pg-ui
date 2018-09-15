@@ -7,6 +7,7 @@ import * as moment from 'moment';
 import { createAccount, clearAccountCreation } from '../../actions/hierarchyActions';
 import { closeModalDialog } from "../../actions/viewActions";
 import { Today, HundredthYearPast, DayPickerWithMonthYear } from "../common/DayPickerHelpers";
+import { StringsAreNotNullOrEmpty } from "../../helpers/ValidationHelpers";
 
 interface CreateAccountDialogProps {    
 }
@@ -22,54 +23,80 @@ interface DispatchProps {
 }
 
 interface CreateAccountDialogState {
+    companyName: string;
+    companyReg: string;
+    address: string;
+    postcode: string;
+    country: string;
+    status: string;
+    creditRating: string;
+    vatEligible: boolean;
+    registeredCharity: boolean;
+    fitEligible: boolean;
+    cclEligible: boolean;
     incorporationDate: moment.Moment;
 }
 
 class CreateAccountDialog extends React.Component<CreateAccountDialogProps & StateProps & DispatchProps, CreateAccountDialogState> {
     constructor(props: CreateAccountDialogProps & StateProps & DispatchProps){
-        super();
-        var defaultDate = props.company ? moment(props.company.incorporationDate, "DD-MM-YYYY") : moment()
-        this.state = {
-            incorporationDate: defaultDate
-        };
-
-        this.handleIncorporationDateChange = this.handleIncorporationDateChange.bind(this);
-        this.createAccount = this.createAccount.bind(this);
+        super(props);
+        this.state = this.getStateFromCompany(props.company);
     }
 
-    companyName: HTMLInputElement;
-    companyReg: HTMLInputElement;
-    address: HTMLInputElement;
-    postcode: HTMLInputElement;
-    country: HTMLSelectElement;
-    status: HTMLSelectElement;
-    creditRating: HTMLInputElement;
-    vatEligible: HTMLInputElement;
-    registeredCharity: HTMLInputElement;
-    fitEligible: HTMLInputElement;
-    cclEligible: HTMLInputElement;
+    getStateFromCompany(company: CompanyInfo) : CreateAccountDialogState {
+        var defaults: CreateAccountDialogState = {
+            incorporationDate:  moment(),
+            companyName: '',
+            companyReg: '',
+            address: '',
+            postcode: '',
+            country: '',
+            status: '',
+            creditRating: '',
+            vatEligible: true,
+            registeredCharity: false,
+            fitEligible: true,
+            cclEligible: true
+        };
 
-    createAccount(event: any){
+        if(company != null){
+            return {
+                ...defaults,
+                incorporationDate: moment(company.incorporationDate, "DD-MM-YYYY"),
+                companyName: company.companyName,
+                companyReg: company.companyNumber,
+                status: company.companyStatus,
+                address: [company.addressLine1, company.addressLine2, company.postTown, company.county]
+                        .filter(s => s != null && s != "")
+                        .join(', '),
+                country: company.countryOfOrigin,
+                postcode: company.postcode
+            }
+        }
+
+        return defaults;
+    }
+
+    createAccount(){
         var account: Account = {
             id: null,
             accountNumber: null,
             contact: null,
-            companyName: this.companyName.value,
-            companyRegistrationNumber: this.companyReg.value,
-            address: this.address.value,
-            postcode: this.postcode.value,
-            countryOfOrigin: this.country.value,
+            companyName: this.state.companyName,
+            companyRegistrationNumber: this.state.companyReg,
+            address: this.state.address,
+            postcode: this.state.postcode,
+            countryOfOrigin: this.state.country,
             incorporationDate: this.state.incorporationDate.format("YYYY-MM-DDTHH:mm:ss"),
-            companyStatus: this.status.value,
-            creditRating: this.creditRating.value,
-            isVATEligible: this.vatEligible.checked,
-            isRegisteredCharity: this.registeredCharity.checked,
-            hasFiTException: !this.fitEligible.checked,
-            hasCCLException: !this.cclEligible.checked,
+            companyStatus: this.state.status,
+            creditRating: this.state.creditRating,
+            isVATEligible: this.state.vatEligible,
+            isRegisteredCharity: this.state.registeredCharity,
+            hasFiTException: !this.state.fitEligible,
+            hasCCLException: !this.state.cclEligible,
         }
         
-        this.props.createAccount(account);
-        event.preventDefault();        
+        this.props.createAccount(account);   
     }
 
     handleIncorporationDateChange(d: moment.Moment){
@@ -79,25 +106,27 @@ class CreateAccountDialog extends React.Component<CreateAccountDialogProps & Sta
         });
     }
 
+    handleFormChange(attribute: string, event: React.ChangeEvent<any>, isCheck: boolean = false){
+        var value = isCheck ? event.target.checked : event.target.value;
+
+        this.setState({
+            ...this.state,
+            [attribute]: value
+        })
+    }
+
+    canSubmit(){
+        return StringsAreNotNullOrEmpty(
+            this.state.companyName,
+            this.state.status);
+    }
+
     close(){
         this.props.clearAccountCreation();
         this.props.closeModalDialog();
     }
 
-    getAddressFromCompany(company: CompanyInfo){
-        if(company == null){
-            return "";
-        }
-        
-        return [company.addressLine1, company.addressLine2, company.postTown, company.county]
-            .filter(s => s != null && s != "")
-            .join(', ');
-    }
-
     render() {
-        var { company } = this.props;
-        var address = this.getAddressFromCompany(company)
-
         return (
             <div>
                 <div className="uk-modal-header">
@@ -114,38 +143,38 @@ class CreateAccountDialog extends React.Component<CreateAccountDialogProps & Sta
                                             <input 
                                                 className='uk-input' 
                                                 type='text' 
-                                                defaultValue={company ? company.companyName : null}
-                                                ref={ref => this.companyName = ref} />
+                                                value={this.state.companyName}
+                                        onChange={(e) => this.handleFormChange("companyName", e)} />
                                         </div>
                                         <div className='uk-margin'>
                                             <label className='uk-form-label'>Company Registration No.</label>
                                             <input 
                                                 className='uk-input' 
                                                 type='text' 
-                                                defaultValue={company ? company.companyNumber : null}
-                                                ref={ref => this.companyReg = ref} />
+                                                value={this.state.companyReg}
+                                        onChange={(e) => this.handleFormChange("companyReg", e)} />
                                         </div>
                                         <div className='uk-margin'>
                                             <label className='uk-form-label'>Address</label>
                                             <input 
                                                 className='uk-input' 
                                                 type='text' 
-                                                defaultValue={address}
-                                                ref={ref => this.address = ref} />
+                                                value={this.state.address}
+                                                onChange={(e) => this.handleFormChange("address", e)} />
                                         </div>
                                         <div className='uk-margin'>
                                             <label className='uk-form-label'>Postcode</label>
                                             <input 
                                                 className='uk-input' 
                                                 type='text' 
-                                                defaultValue={company ? company.postcode : null}
-                                                ref={ref => this.postcode = ref} />
+                                                value={this.state.postcode}
+                                                onChange={(e) => this.handleFormChange("postcode", e)} />
                                         </div>
                                         <div className='uk-margin'>
                                             <label className='uk-form-label'>Country</label>
                                             <select className='uk-select' 
-                                                defaultValue={company ? company.countryOfOrigin : null}
-                                                ref={ref => this.country = ref}>
+                                                value={this.state.country}
+                                                onChange={(e) => this.handleFormChange("country", e)}>
                                                 <option value="" disabled>Select</option>
                                                 <option value="United Kingdom">United Kingdom</option>
                                                 <option value="Ireland">Ireland</option>
@@ -169,8 +198,8 @@ class CreateAccountDialog extends React.Component<CreateAccountDialogProps & Sta
                                         <div className='uk-margin'>
                                             <label className='uk-form-label'>Status</label>
                                             <select className='uk-select' 
-                                                defaultValue={company ? company.companyStatus : null}
-                                                ref={ref => this.status = ref}>
+                                                value={this.state.status}
+                                                onChange={(e) => this.handleFormChange("status", e)}>
                                                 <option value="" disabled>Select</option>
                                                 <option value="Active">Active</option>
                                                 <option value="On-boarding">On-boarding</option>
@@ -182,15 +211,16 @@ class CreateAccountDialog extends React.Component<CreateAccountDialogProps & Sta
                                             <input 
                                                 className='uk-input' 
                                                 type='text' 
-                                                ref={ref => this.creditRating = ref} />
+                                                value={this.state.creditRating}
+                                                onChange={(e) => this.handleFormChange("creditRating", e)} />
                                         </div>
                                         <div className='uk-margin'>
                                             <label>
                                                 <input 
                                                     className='uk-checkbox'
                                                     type='checkbox' 
-                                                    defaultChecked={true}
-                                                    ref={ref => this.vatEligible = ref}
+                                                    checked={this.state.vatEligible}
+                                                    onChange={(e) => this.handleFormChange("vatEligible", e, true)}
                                                     /> Is VAT Eligible
                                             </label>
                                         </div>
@@ -199,8 +229,8 @@ class CreateAccountDialog extends React.Component<CreateAccountDialogProps & Sta
                                                 <input 
                                                     className='uk-checkbox'
                                                     type='checkbox' 
-                                                    defaultChecked={false}
-                                                    ref={ref => this.registeredCharity = ref}
+                                                    checked={this.state.registeredCharity}
+                                                    onChange={(e) => this.handleFormChange("registeredCharity", e, true)}
                                                     /> Is Registered Charity
                                             </label>
                                         </div>
@@ -209,8 +239,8 @@ class CreateAccountDialog extends React.Component<CreateAccountDialogProps & Sta
                                                 <input 
                                                     className='uk-checkbox'
                                                     type='checkbox' 
-                                                    defaultChecked={false}
-                                                    ref={ref => this.fitEligible = ref}
+                                                    checked={this.state.fitEligible}
+                                                    onChange={(e) => this.handleFormChange("fitEligible", e, true)}
                                                     /> Is FiT Eligible
                                             </label>
                                         </div>
@@ -219,8 +249,8 @@ class CreateAccountDialog extends React.Component<CreateAccountDialogProps & Sta
                                                 <input 
                                                     className='uk-checkbox'
                                                     type='checkbox' 
-                                                    defaultChecked={false}
-                                                    ref={ref => this.cclEligible = ref}
+                                                    checked={this.state.cclEligible}
+                                                    onChange={(e) => this.handleFormChange("cclEligible", e, true)}
                                                     /> Is CCL Eligible
                                             </label>
                                         </div>
@@ -232,7 +262,7 @@ class CreateAccountDialog extends React.Component<CreateAccountDialogProps & Sta
                 </div>
                 <div className="uk-modal-footer uk-text-right">
                     <button className="uk-button uk-button-default uk-margin-right" type="button" onClick={() => this.close()}><i className="fa fa-times uk-margin-small-right"></i>Cancel</button>
-                    <button className="uk-button uk-button-primary" type="button" onClick={this.createAccount}><i className="fa fa-plus-circle uk-margin-small-right"></i>Create</button>
+                    <button className="uk-button uk-button-primary" type="button" onClick={() => this.createAccount()} disabled={!this.canSubmit()}><i className="fa fa-plus-circle uk-margin-small-right"></i>Create</button>
                 </div>
             </div>)
     }
