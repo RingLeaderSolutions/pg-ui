@@ -1,4 +1,5 @@
 declare var appConfig: {
+    version: string;
     baseApiUri: string;
     signalRUri: string;
     hierarchyApiUri: string;
@@ -8,5 +9,4 @@ declare var appConfig: {
     auth0_callbackUrl: string;
     auth0_logoutCallbackUrl: string;
     environment_name: string;
-    version: string;
   };

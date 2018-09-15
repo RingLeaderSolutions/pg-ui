@@ -1,12 +1,13 @@
 {
   "name": "pg-ui",
-  "version": "1.0.0",
+  "version": "0.1.47",
   "description": "UI for the Portfolio Generation project",
   "main": "src/server/server.js",
   "scripts": {
     "build": "webpack -p --config src/app/webpack.production.config.js",
     "build-dev": "webpack --config src/app/webpack.config.js",
-    "debug": "nodemon -e js,env -i /build -V ./src/server/server.js",
+    "debug": "nodemon --ext js,env,json --ignore '/build/*.js' --ignore '/src/app/*.js' --verbose ./src/server/server.js",
+    "debug-client": "node src/server/server.js",
     "start": "node src/server/server.js"
   },
   "repository": {
@@ -16,7 +17,7 @@
   "author": "Daniel May <daniel.may@ringleadersolutions.com>",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/RingLeaderSolutions/pg-ui/issues"
+    "url": "https://ringleadersolutions.atlassian.net/browse/TPI"
   },
   "homepage": "https://github.com/RingLeaderSolutions/pg-ui#readme",
   "devDependencies": {

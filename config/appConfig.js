@@ -1,4 +1,5 @@
 const appConfig = Object.freeze({
+    version: '@{TPIFLOW_VERSION}',
     baseApiUri: '${TPIFLOW_BASE_API_URI}',
     signalRUri: '${TPIFLOW_SIGNALR_URI}',
     hierarchyApiUri: '${TPIFLOW_HIERARCHY_API_URI}',

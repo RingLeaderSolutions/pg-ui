@@ -6,7 +6,8 @@ var config = {
   mode: 'development',
   entry: [
     "webpack-hot-middleware/client",
-    "./src/app/App.tsx"],
+    "./src/app/App.tsx"
+  ],
 
   devtool: "source-map",
   output: {

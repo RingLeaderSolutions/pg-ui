@@ -62,7 +62,7 @@ app.get('/appConfig.js', function (request, response) {
 log("INFO", `Applied express route exception for appConfig.`);
 
 // -- [Startup] Step 5: Setup express routing, with debug info if necessary
-if (lifecycleEvent == "debug") {
+if (lifecycleEvent == "debug" || lifecycleEvent == "debug-client") {
     log("WARNING", `Debug mode detected: setting up dev & hot server with HMR enabled`);
 
     app.use(function (req, res, next) {

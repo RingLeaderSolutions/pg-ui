@@ -93,11 +93,10 @@ class Home extends React.Component<StateProps & DispatchProps, {}> {
                 <div className="sidebar uk-width-1-6 uk-height-1-1">
                     <div className="app-title">
                         <img src={this.props.instance_detail.logoUri} alt={this.props.instance_detail.name} /> 
-                        {/* <img src={require('../images/tpi-flow-logo.png')} alt={this.props.instance_detail.name} />  */}
                     </div>
                     <div className="uk-text-center">
                         <div>
-                            <span className="uk-label label-grey">{appConfig.environment_name} v0.1.46</span>
+                            <span className="uk-label label-grey">{appConfig.environment_name} v{appConfig.version}</span>
                         </div>
                         <div>
                             <span className="uk-label label-grey">Server v{this.props.backendVersion}</span>

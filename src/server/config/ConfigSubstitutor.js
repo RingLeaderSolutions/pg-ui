@@ -1,8 +1,19 @@
 "use strict";
+
+const versionToken = '@{TPIFLOW_VERSION}';
+
+var pjson = require('../../../package.json');
+const version = pjson.version;
+
 module.exports = function (contents) {
     var regExp = /\${(.+?[^}])}/g;
 
     let tempContents = contents;    
+
+    // Static replacement for the version - pulled from package.config
+    tempContents = tempContents.replace("@{TPIFLOW_VERSION}", version);
+    console.log(`[ConfigSubstitutor] - [INFO]: Replaced version token [${versionToken}] with [${version}]`);
+
     var result;
     while ((result = regExp.exec(contents))) {
         let token = result[0];
