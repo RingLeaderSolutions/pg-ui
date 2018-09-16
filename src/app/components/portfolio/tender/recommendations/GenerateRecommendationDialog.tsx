@@ -82,8 +82,10 @@ class GenerateRecommendationDialog extends React.Component<GenerateRecommendatio
         if(quoteOptions.length == 0){
             return (
                 <div>
-                    <div className="uk-alert-warning uk-margin-small-top uk-margin-small-bottom" data-uk-alert>
-                        <p><i className="fas fa-exclamation-triangle uk-margin-small-right"></i> Sorry! The latest issuance has not yet received any quotes, so a recommendation cannot be created.</p>
+                    <div className="uk-modal-body">
+                        <div className="uk-alert-warning uk-margin-small-top uk-margin-small-bottom" data-uk-alert>
+                            <p><i className="fas fa-exclamation-triangle uk-margin-small-right"></i> Sorry! The latest issuance has not yet received any quotes, so a recommendation cannot be created.</p>
+                        </div>
                     </div>
                     <div className="uk-modal-footer uk-text-right">
                         <button className="uk-button uk-button-default uk-margin-right" type="button" onClick={() => this.props.closeModalDialog()}>OK</button>
@@ -94,35 +96,41 @@ class GenerateRecommendationDialog extends React.Component<GenerateRecommendatio
 
         return (
             <div>
-                <p>You are creating a recommendation report against the issuance issued on <strong>{this.getFormattedDateTime(this.props.issuance.created)}</strong>, which has received <strong>{quoteOptions.length}</strong> supplier responses.</p>
-                <form>
-                    <fieldset className='uk-fieldset'>
-                        <div className="uk-margin">
-                            <select className='uk-select' 
-                                value={this.state.selectedQuoteId}
-                                onChange={(e) => this.handleFormChange("selectedQuoteId", e)}>
-                                <option value="" disabled>Select</option>
-                                {quoteOptions}
-                            </select>
-                        </div>
+                <div className="uk-modal-body">
+                    <p>You are creating a recommendation report against the issuance issued on <strong>{this.getFormattedDateTime(this.props.issuance.created)}</strong>, which has received <strong>{quoteOptions.length}</strong> supplier responses.</p>
+                    <form>
+                        <fieldset className='uk-fieldset'>
+                            <div className="uk-margin">
+                                <select className='uk-select' 
+                                    value={this.state.selectedQuoteId}
+                                    onChange={(e) => this.handleFormChange("selectedQuoteId", e)}>
+                                    <option value="" disabled>Select</option>
+                                    {quoteOptions}
+                                </select>
+                            </div>
 
-                        <div className='uk-margin'>
-                            <label className='uk-form-label'>Market Commentary</label>
-                            <textarea className='uk-textarea' 
-                                rows={4}
-                                value={this.state.marketCommentary}
-                                onChange={(e) => this.handleFormChange("marketCommentary", e)} />
-                        </div>
+                            <div className='uk-margin'>
+                                <label className='uk-form-label'>Market Commentary</label>
+                                <textarea className='uk-textarea' 
+                                    rows={4}
+                                    value={this.state.marketCommentary}
+                                    onChange={(e) => this.handleFormChange("marketCommentary", e)} />
+                            </div>
 
-                        <div className='uk-margin'>
-                            <label className='uk-form-label'>Quote Selection Commentary</label>
-                            <textarea className='uk-textarea' 
-                                rows={4}
-                                value={this.state.selectionCommentary}
-                                onChange={(e) => this.handleFormChange("selectionCommentary", e)} />
-                        </div>
-                    </fieldset>
-                </form>
+                            <div className='uk-margin'>
+                                <label className='uk-form-label'>Quote Selection Commentary</label>
+                                <textarea className='uk-textarea' 
+                                    rows={4}
+                                    value={this.state.selectionCommentary}
+                                    onChange={(e) => this.handleFormChange("selectionCommentary", e)} />
+                            </div>
+                        </fieldset>
+                    </form>
+                </div>
+                <div className="uk-modal-footer uk-text-right">
+                    <button className="uk-button uk-button-default uk-margin-right" type="button" onClick={() => this.props.closeModalDialog()}><i className="fas fa-times uk-margin-small-right"></i>Cancel</button>
+                    <button className="uk-button uk-button-primary" type="button" onClick={() => this.generateReport()} disabled={!this.canSubmit()}><i className="fas fa-plus-circle uk-margin-small-right"></i>Create</button>
+                </div>
             </div>);
     }
 
@@ -150,15 +158,7 @@ class GenerateRecommendationDialog extends React.Component<GenerateRecommendatio
                 <div className="uk-modal-header">
                     <h2 className="uk-modal-title"><i className="fas fa-bullhorn uk-margin-right"></i>Create Recommendation Report</h2>
                 </div>
-                <div className="uk-modal-body">
-                    <div>
-                        {content}
-                    </div>
-                </div>
-                <div className="uk-modal-footer uk-text-right">
-                    <button className="uk-button uk-button-default uk-margin-right" type="button" onClick={() => this.props.closeModalDialog()}><i className="fas fa-times uk-margin-small-right"></i>Cancel</button>
-                    <button className="uk-button uk-button-primary" type="button" onClick={() => this.generateReport()} disabled={!this.canSubmit()}><i className="fas fa-plus-circle uk-margin-small-right"></i>Create</button>
-                </div>
+                {content}
             </div>)
     }
 }

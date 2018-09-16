@@ -97,7 +97,7 @@ export class MultiUploadPanel extends React.Component<MultiUploadPanelProps, {}>
         }
         
         var fileViews = files.map((f, index) => {
-            return (<FileView file={f} bottomMargin />)
+            return (<FileView key={index} file={f} bottomMargin />)
         });
 
         return (

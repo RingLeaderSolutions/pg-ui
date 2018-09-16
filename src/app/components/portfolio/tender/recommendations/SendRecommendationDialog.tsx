@@ -132,7 +132,7 @@ class SendRecommendationDialog extends React.Component<SendRecommendationDialogP
         return (
             <div key={contact.id} className="uk-margin-small-top">
                 <div className="uk-card uk-card-small uk-card-default">
-                    <div className="uk-card-body" style={{padding: '5px'}}>
+                    <div className="uk-card-body" style={{padding: '10px 20px'}}>
                         <div className="uk-grid-small" data-uk-grid>
                             <div className="uk-width-auto uk-flex uk-flex-middle">
                                 <input className="uk-checkbox" type="checkbox" checked={isSelected} onChange={(e) => this.toggleEmailSelection(contact.email)}/>

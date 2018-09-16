@@ -34,12 +34,12 @@ interface UpdatePortfolioDialogState {
 }
 
 class UpdatePortfolioDialog extends React.Component<UpdatePortfolioDialogProps & StateProps & DispatchProps, UpdatePortfolioDialogState> {
-    constructor(){
-        super();
+    constructor(props: UpdatePortfolioDialogProps & StateProps & DispatchProps){
+        super(props);
         this.state = {
-            title: "",
-            supportExecId: "",
-            salesLeadId: ""
+            title: props.portfolio.title,
+            supportExecId: String(props.portfolio.supportExec.id),
+            salesLeadId: String(props.portfolio.salesLead.id)
         };
     }
 

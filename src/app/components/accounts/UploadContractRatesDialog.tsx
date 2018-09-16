@@ -103,8 +103,7 @@ class UploadContractRatesDialog extends React.Component<UploadContractRatesDialo
                                             className='uk-checkbox'
                                             type='checkbox' 
                                             checked={this.state.useGeneric}
-                                            onChange={(e) => this.handleFormChange("useGeneric", e, true)} />
-                                            Use Generic Template
+                                            onChange={(e) => this.handleFormChange("useGeneric", e, true)} /> Use Generic Template
                                     </label>
                                 </div>
                             </fieldset>
