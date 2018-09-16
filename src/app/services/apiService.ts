@@ -621,8 +621,8 @@ export class ApiService implements IApiService {
             blobFileName: files[0],
             accountId,
             documentType,
-            received: moment().format("YYYY-MM-DDTHH:mm:ss"),
-            expiry: moment().add(1, 'years').format("YYYY-MM-DDTHH:mm:ss"),
+            received: moment().utc().format("YYYY-MM-DDTHH:mm:ss"),
+            expiry: moment().utc().add(1, 'years').format("YYYY-MM-DDTHH:mm:ss"),
         };
 
         return axios.post(`${this.baseApiUri}/portman-web/documentation/account`, payload, this.getRequestConfig());
