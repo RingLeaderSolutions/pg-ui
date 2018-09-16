@@ -130,7 +130,7 @@ class UpdateAccountDialog extends React.Component<UpdateAccountDialogProps & Sta
                                                 className='uk-input' 
                                                 type='text' 
                                                 value={this.state.companyReg}
-                                        onChange={(e) => this.handleFormChange("companyReg", e)} />
+                                                onChange={(e) => this.handleFormChange("companyReg", e)} />
                                         </div>
                                         <div className='uk-margin'>
                                             <label className='uk-form-label'>Address</label>

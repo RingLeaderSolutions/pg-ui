@@ -6,10 +6,11 @@ import ErrorMessage from "../../../common/ErrorMessage";
 import * as moment from 'moment';
 
 import { generateSummaryReport } from '../../../../actions/tenderActions';
-import { Tender, TenderPack, TenderSupplier, TenderQuote, TenderIssuance } from "../../../../model/Tender";
+import { Tender, TenderSupplier, TenderQuote, TenderIssuance } from "../../../../model/Tender";
 import { format } from 'currency-formatter';
 import { selectMany } from "../../../../helpers/listHelpers";
 import { closeModalDialog } from "../../../../actions/viewActions";
+import { StringsAreNotNullOrEmpty } from "../../../../helpers/ValidationHelpers";
 
 interface GenerateRecommendationDialogProps {
     tender: Tender;
@@ -28,18 +29,41 @@ interface DispatchProps {
     closeModalDialog: () => void;
 }
 
-class GenerateRecommendationDialog extends React.Component<GenerateRecommendationDialogProps & StateProps & DispatchProps, {}> {    
-    quoteSelectElement: HTMLSelectElement;
-    selectionCommentaryElement: HTMLTextAreaElement;
-    marketCommentaryElement: HTMLTextAreaElement;
+interface GenerateRecommendationDialogState {
+    selectedQuoteId: string;
+    selectionCommentary: string
+    marketCommentary: string;
+}
+class GenerateRecommendationDialog extends React.Component<GenerateRecommendationDialogProps & StateProps & DispatchProps, GenerateRecommendationDialogState> {    
+    constructor(){
+        super();
+        this.state = {
+            selectedQuoteId: "",
+            selectionCommentary: "",
+            marketCommentary: ""
+        };
+    }
 
     generateReport() {
-        this.props.generateSummaryReport(this.props.tender.tenderId, this.quoteSelectElement.value, this.marketCommentaryElement.value, this.selectionCommentaryElement.value);
+        this.props.generateSummaryReport(
+            this.props.tender.tenderId,
+            this.state.selectedQuoteId, 
+            this.state.marketCommentary, 
+            this.state.selectionCommentary);
         this.props.closeModalDialog();
     }
 
     getFormattedDateTime(dateTime: string){
         return moment.utc(dateTime).local().format("MMMM Do, HH:mm");
+    }
+
+    handleFormChange(attribute: string, event: React.ChangeEvent<any>, isCheck: boolean = false){
+        var value = isCheck ? event.target.checked : event.target.value;
+
+        this.setState({
+            ...this.state,
+            [attribute]: value
+        })
     }
 
     renderPackDialogContent(){
@@ -75,7 +99,8 @@ class GenerateRecommendationDialog extends React.Component<GenerateRecommendatio
                     <fieldset className='uk-fieldset'>
                         <div className="uk-margin">
                             <select className='uk-select' 
-                                ref={ref => this.quoteSelectElement = ref}>
+                                value={this.state.selectedQuoteId}
+                                onChange={(e) => this.handleFormChange("selectedQuoteId", e)}>
                                 <option value="" disabled>Select</option>
                                 {quoteOptions}
                             </select>
@@ -85,18 +110,27 @@ class GenerateRecommendationDialog extends React.Component<GenerateRecommendatio
                             <label className='uk-form-label'>Market Commentary</label>
                             <textarea className='uk-textarea' 
                                 rows={4}
-                                ref={ref => this.marketCommentaryElement = ref}/>
+                                value={this.state.marketCommentary}
+                                onChange={(e) => this.handleFormChange("marketCommentary", e)} />
                         </div>
 
                         <div className='uk-margin'>
                             <label className='uk-form-label'>Quote Selection Commentary</label>
                             <textarea className='uk-textarea' 
                                 rows={4}
-                                ref={ref => this.selectionCommentaryElement = ref}/>
+                                value={this.state.selectionCommentary}
+                                onChange={(e) => this.handleFormChange("selectionCommentary", e)} />
                         </div>
                     </fieldset>
                 </form>
             </div>);
+    }
+
+    canSubmit(){
+        return StringsAreNotNullOrEmpty(
+            this.state.selectedQuoteId,
+             this.state.marketCommentary,
+              this.state.selectionCommentary);
     }
 
     render() {
@@ -123,7 +157,7 @@ class GenerateRecommendationDialog extends React.Component<GenerateRecommendatio
                 </div>
                 <div className="uk-modal-footer uk-text-right">
                     <button className="uk-button uk-button-default uk-margin-right" type="button" onClick={() => this.props.closeModalDialog()}><i className="fas fa-times uk-margin-small-right"></i>Cancel</button>
-                    <button className="uk-button uk-button-primary" type="button" onClick={() => this.generateReport()}><i className="fas fa-plus-circle uk-margin-small-right"></i>Create</button>
+                    <button className="uk-button uk-button-primary" type="button" onClick={() => this.generateReport()} disabled={!this.canSubmit()}><i className="fas fa-plus-circle uk-margin-small-right"></i>Create</button>
                 </div>
             </div>)
     }

@@ -3,6 +3,7 @@ import { MapDispatchToPropsFunction, connect, MapStateToProps } from 'react-redu
 import { ApplicationState } from '../../applicationState';
 
 import { login } from '../../actions/authActions';
+import { StringsAreNotNullOrEmpty } from "../../helpers/ValidationHelpers";
 
 interface StateProps {
   working: boolean;
@@ -14,22 +15,36 @@ interface DispatchProps {
     login: (email: string, password:string, redirectRoute?: string) => void;
 }
 
-class Login extends React.Component<StateProps & DispatchProps, {}> {
+interface LoginState {
+    email: string;
+    password: string;
+}
+
+class Login extends React.Component<StateProps & DispatchProps, LoginState> {
     constructor(props: StateProps & DispatchProps) {
         super(props);
 
-        this.handleSubmit = this.handleSubmit.bind(this)
+        this.state = {
+            email: "",
+            password: ""
+        };
     }
-    email: HTMLInputElement;
-    password: HTMLInputElement;
 
-    handleSubmit(event: any) {
-        event.preventDefault();
+    handleSubmit() {
+        this.props.login(this.state.email, this.state.password, null);
+    }
 
-        const email = this.email.value;
-        const password = this.password.value
+    handleFormChange(attribute: string, event: React.ChangeEvent<any>, isCheck: boolean = false){
+        var value = isCheck ? event.target.checked : event.target.value;
 
-        this.props.login(email, password, null);
+        this.setState({
+            ...this.state,
+            [attribute]: value
+        })
+    }
+
+    canSubmit(){
+        return StringsAreNotNullOrEmpty(this.state.email, this.state.password);
     }
 
     render() {
@@ -47,30 +62,34 @@ class Login extends React.Component<StateProps & DispatchProps, {}> {
                     <div className="uk-card uk-card-body uk-card-default">
                         <img src={require('../../images/tpi-flow-logo.png')} alt="TPI Flow" />
                         <h4>Log in with your account details below.</h4>
-                        <form className="auth-form">
+                        <form>
                             <fieldset className="uk-fieldset">
                                 {error}
                                 <div className="uk-margin">
                                     <div className="uk-inline">
                                         <span className="uk-form-icon" data-uk-icon="icon: user"></span>
-                                        <input id="email" className="uk-input" type="email" placeholder="Email" ref={ref => this.email = ref} />
+                                        <input id="email" className="uk-input" type="email" placeholder="Email"
+                                        value={this.state.email}
+                                        onChange={(e) => this.handleFormChange("email", e)} />
                                     </div>
                                 </div>
 
                                 <div className="uk-margin">
                                     <div className="uk-margin uk-inline">
                                         <span className="uk-form-icon" data-uk-icon="icon: lock"></span>
-                                        <input id="password" className="uk-input" type="password" placeholder="Password" ref={ref => this.password = ref} />
+                                        <input id="password" className="uk-input" type="password" placeholder="Password" 
+                                        value={this.state.password}
+                                        onChange={(e) => this.handleFormChange("password", e)}/>
                                     </div>
                                 </div>
 
                                 {/* <Link to="/password_reset">Forgotten your password?</Link> */}
-                                <button className="uk-button uk-button-primary" type="submit" onClick={this.handleSubmit}>
-                                    <i className="fas fa-sign-in-alt uk-margin-small-right"></i>
-                                    Log in
-                                </button>
                             </fieldset>
                         </form>
+                        <button className="uk-button uk-button-primary" onClick={() => this.handleSubmit()} disabled={!this.canSubmit()}>
+                            <i className="fas fa-sign-in-alt uk-margin-small-right"></i>
+                            Log in
+                        </button>
                         </div>
                 </div>
             </div>

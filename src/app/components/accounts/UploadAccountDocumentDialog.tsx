@@ -5,6 +5,7 @@ import { ApplicationState } from '../../applicationState';
 import { uploadAccountDocument } from '../../actions/hierarchyActions';
 import { closeModalDialog } from "../../actions/viewActions";
 import { UploadPanel } from "../common/UploadPanel";
+import { StringIsNotNullOrEmpty } from "../../helpers/ValidationHelpers";
 
 interface UploadAccountDocumentDialogProps {
     accountId: string;
@@ -23,19 +24,20 @@ interface DispatchProps {
 
 interface UploadAccountDocumentDialogState {
     file: File;
+    documentType: string;
 }
 
 class UploadAccountDocumentDialog extends React.Component<UploadAccountDocumentDialogProps & StateProps & DispatchProps, UploadAccountDocumentDialogState> {
     constructor(){
         super();
         this.state = {
-            file: null
+            file: null,
+            documentType: ""
         };
     }
-    documentType: HTMLSelectElement;
     
     upload() {
-        this.props.uploadAccountDocument(this.props.accountId, this.documentType.value, this.state.file);
+        this.props.uploadAccountDocument(this.props.accountId, this.state.documentType, this.state.file);
         this.onFileCleared();
         this.props.closeModalDialog();
     }
@@ -46,6 +48,19 @@ class UploadAccountDocumentDialog extends React.Component<UploadAccountDocumentD
 
     onFileCleared(){
         this.setState({...this.state, file: null});
+    }
+
+    handleFormChange(attribute: string, event: React.ChangeEvent<any>, isCheck: boolean = false){
+        var value = isCheck ? event.target.checked : event.target.value;
+
+        this.setState({
+            ...this.state,
+            [attribute]: value
+        })
+    }
+
+    canSubmit(){
+        return this.state.file != null && StringIsNotNullOrEmpty(this.state.documentType);
     }
 
     render() {
@@ -62,7 +77,8 @@ class UploadAccountDocumentDialog extends React.Component<UploadAccountDocumentD
                                 <div className="uk-margin">
                                     <label className='uk-form-label'>Document Type</label>
                                     <select className='uk-select' 
-                                        ref={ref => this.documentType = ref}>
+                                        value={this.state.documentType}
+                                        onChange={(e) => this.handleFormChange("documentType", e)}>
                                         <option value="" disabled>Select</option>
                                         <option value="loa">Letter of Authority</option>
                                         <option value="Other">Other</option>
@@ -79,7 +95,7 @@ class UploadAccountDocumentDialog extends React.Component<UploadAccountDocumentD
                 </div>
                 <div className="uk-modal-footer uk-text-right">
                     <button className="uk-button uk-button-default uk-margin-right" type="button" onClick={() => this.props.closeModalDialog()}><i className="fa fa-times uk-margin-small-right"></i>Cancel</button>
-                    <button className="uk-button uk-button-primary" type="button" onClick={() => this.upload()} disabled={this.state.file == null}><i className="fa fa-arrow-circle-up uk-margin-small-right"></i>Upload</button>
+                    <button className="uk-button uk-button-primary" type="button" onClick={() => this.upload()} disabled={!this.canSubmit()}><i className="fa fa-arrow-circle-up uk-margin-small-right"></i>Upload</button>
                 </div>
             </div>)
     }

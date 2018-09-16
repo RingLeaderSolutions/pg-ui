@@ -7,6 +7,7 @@ import { uploadElectricityOffer, uploadGasOffer } from '../../../../actions/tend
 import { closeModalDialog } from "../../../../actions/viewActions";
 import { UploadPanel } from "../../../common/UploadPanel";
 import { getWellFormattedUtilityName } from "../../../common/UtilityIcon";
+import { StringIsNotNullOrEmpty } from "../../../../helpers/ValidationHelpers";
 
 interface UploadOfferDialogProps {
     tenderId: string;
@@ -28,29 +29,39 @@ interface DispatchProps {
 
 interface UploadOfferState {
     file: File;
+    supplierId: string;
+    useGeneric: boolean;
 }
 
 class UploadOfferDialog extends React.Component<UploadOfferDialogProps & StateProps & DispatchProps, UploadOfferState> {
     constructor(){
         super();
         this.state = {
-            file: null
+            file: null,
+            supplierId: "",
+            useGeneric: false
         };
     }
 
-    supplier: HTMLSelectElement;
-    useGeneric: HTMLInputElement;
-
     upload() {
         if(this.props.utilityType.toLowerCase() == "gas"){
-            this.props.uploadGasOffer(this.props.tenderId, this.supplier.value, this.useGeneric.checked, this.state.file);
+            this.props.uploadGasOffer(this.props.tenderId, this.state.supplierId, this.state.useGeneric, this.state.file);
         }
         else {
-            this.props.uploadElectricityOffer(this.props.tenderId, this.supplier.value, this.useGeneric.checked, this.state.file);
+            this.props.uploadElectricityOffer(this.props.tenderId, this.state.supplierId, this.state.useGeneric, this.state.file);
         }
         
         this.onFileCleared();
         this.props.closeModalDialog();
+    }
+
+    handleFormChange(attribute: string, event: React.ChangeEvent<any>, isCheck: boolean = false){
+        var value = isCheck ? event.target.checked : event.target.value;
+
+        this.setState({
+            ...this.state,
+            [attribute]: value
+        })
     }
 
     renderSupplierSelect(){
@@ -60,7 +71,8 @@ class UploadOfferDialog extends React.Component<UploadOfferDialogProps & StatePr
 
         return (
             <select className='uk-select' 
-                ref={ref => this.supplier = ref}>
+                value={this.state.supplierId}
+                onChange={(e) => this.handleFormChange("supplierId", e)}>
                 <option value="" disabled>Select</option>
                 {options}
             </select>
@@ -75,6 +87,9 @@ class UploadOfferDialog extends React.Component<UploadOfferDialogProps & StatePr
         this.setState({...this.state, file: null});
     }
 
+    canSubmit(){
+        return this.state.file != null && StringIsNotNullOrEmpty(this.state.supplierId);
+    }
     render() {  
         var friendlyUtility = getWellFormattedUtilityName(this.props.utilityType);
               
@@ -97,8 +112,8 @@ class UploadOfferDialog extends React.Component<UploadOfferDialogProps & StatePr
                                         <input 
                                             className='uk-checkbox'
                                             type='checkbox' 
-                                            defaultChecked={false}
-                                            ref={ref => this.useGeneric = ref}
+                                            checked={this.state.useGeneric}
+                                            onChange={(e) => this.handleFormChange("useGeneric", e, true)}
                                             /> Use Generic Template
                                     </label>
                                 </div>
@@ -113,7 +128,7 @@ class UploadOfferDialog extends React.Component<UploadOfferDialogProps & StatePr
                 </div>
                 <div className="uk-modal-footer uk-text-right">
                     <button className="uk-button uk-button-default uk-margin-right" type="button"  onClick={() => this.props.closeModalDialog()}><i className="fa fa-times uk-margin-small-right"></i>Cancel</button>
-                    <button className="uk-button uk-button-primary" type="button" onClick={() => this.upload()} disabled={this.state.file == null}><i className="fa fa-arrow-circle-up uk-margin-small-right"></i>Upload</button>
+                    <button className="uk-button uk-button-primary" type="button" onClick={() => this.upload()} disabled={!this.canSubmit()}><i className="fa fa-arrow-circle-up uk-margin-small-right"></i>Upload</button>
                 </div>
             </div>)
     }

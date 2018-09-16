@@ -9,6 +9,7 @@ import { retrieveAccounts } from '../../../actions/hierarchyActions';
 import { fetchUsers, createPortfolio } from '../../../actions/portfolioActions';
 import { PortfolioCreationRequest } from "../../../model/Portfolio";
 import { closeModalDialog } from "../../../actions/viewActions";
+import { StringsAreNotNullOrEmpty } from "../../../helpers/ValidationHelpers";
 
 interface CreatePortfolioFromAccountDialogProps {    
 }
@@ -28,11 +29,23 @@ interface DispatchProps {
     closeModalDialog: () => void;
 }
 
-class CreatePortfolioFromAccountDialog extends React.Component<CreatePortfolioFromAccountDialogProps & StateProps & DispatchProps, {}> {
-    title: HTMLInputElement;
-    account: HTMLSelectElement;
-    supportExec: HTMLSelectElement;
-    salesLead: HTMLSelectElement;
+interface CreatePortfolioDialogState {
+    title: string;
+    selectedAccountId: string;
+    supportExecId: string;
+    salesLeadId: string;
+}
+
+class CreatePortfolioFromAccountDialog extends React.Component<CreatePortfolioFromAccountDialogProps & StateProps & DispatchProps, CreatePortfolioDialogState> {
+    constructor(){
+        super();
+        this.state = {
+            title: "",
+            selectedAccountId: "",
+            supportExecId: "",
+            salesLeadId: ""
+        };
+    }
 
     componentDidMount(){
         this.props.retrieveAccounts();
@@ -41,16 +54,33 @@ class CreatePortfolioFromAccountDialog extends React.Component<CreatePortfolioFr
 
     createPortfolio(){
         var portfolio: PortfolioCreationRequest = {
-            accountId: this.account.value,
-            title: this.title.value,
+            accountId: this.state.selectedAccountId,
+            title: this.state.title,
             teamId: 989,
             category: "direct",
-            supportOwner: Number(this.supportExec.value),
-            ownerId: Number(this.salesLead.value)
+            supportOwner: Number(this.state.supportExecId),
+            ownerId: Number(this.state.salesLeadId)
         }
         
         this.props.createPortfolio(portfolio);
         this.props.closeModalDialog();
+    }
+
+    handleFormChange(attribute: string, event: React.ChangeEvent<any>, isCheck: boolean = false){
+        var value = isCheck ? event.target.checked : event.target.value;
+
+        this.setState({
+            ...this.state,
+            [attribute]: value
+        })
+    }
+
+    canSubmit(){
+        return StringsAreNotNullOrEmpty(
+            this.state.title,
+            this.state.selectedAccountId,
+            this.state.salesLeadId,
+            this.state.supportExecId);
     }
 
     render() {
@@ -81,7 +111,8 @@ class CreatePortfolioFromAccountDialog extends React.Component<CreatePortfolioFr
                                 <div className='uk-margin'>
                                     <label className='uk-form-label'>Account</label>
                                     <select className='uk-select' 
-                                        ref={ref => this.account = ref}>
+                                        value={this.state.selectedAccountId}
+                                        onChange={(e) => this.handleFormChange("selectedAccountId", e)}>
                                         <option value="" disabled>Select</option>
                                         {accountOptions}
                                     </select>
@@ -91,12 +122,14 @@ class CreatePortfolioFromAccountDialog extends React.Component<CreatePortfolioFr
                                     <input 
                                         className='uk-input' 
                                         type='text' 
-                                        ref={ref => this.title = ref} />
+                                        value={this.state.title}
+                                        onChange={(e) => this.handleFormChange("title", e)} />
                                 </div>
                                 <div className='uk-margin'>
                                     <label className='uk-form-label'>Account Manager</label>
                                     <select className='uk-select' 
-                                        ref={ref => this.salesLead = ref}>
+                                        value={this.state.salesLeadId}
+                                        onChange={(e) => this.handleFormChange("salesLeadId", e)}>
                                         <option value="" disabled>Select</option>
                                         {userOptions}
                                     </select>
@@ -104,7 +137,8 @@ class CreatePortfolioFromAccountDialog extends React.Component<CreatePortfolioFr
                                 <div className='uk-margin'>
                                     <label className='uk-form-label'>Tender Analyst</label>
                                     <select className='uk-select' 
-                                        ref={ref => this.supportExec = ref}>
+                                        value={this.state.supportExecId}
+                                        onChange={(e) => this.handleFormChange("supportExecId", e)}>
                                         <option value="" disabled>Select</option>
                                         {userOptions}
                                     </select>
@@ -115,7 +149,7 @@ class CreatePortfolioFromAccountDialog extends React.Component<CreatePortfolioFr
                 </div>
                 <div className="uk-modal-footer uk-text-right">
                     <button className="uk-button uk-button-default uk-margin-right" type="button" onClick={() => this.props.closeModalDialog()}><i className="fas fa-times uk-margin-small-right"></i>Cancel</button>
-                    <button className="uk-button uk-button-primary" type="button" onClick={() => this.createPortfolio()}><i className="fas fa-plus-circle uk-margin-small-right"></i>Create</button>
+                    <button className="uk-button uk-button-primary" type="button" onClick={() => this.createPortfolio()} disabled={!this.canSubmit()}><i className="fas fa-plus-circle uk-margin-small-right"></i>Create</button>
                 </div>
             </div>)
     }

@@ -1,5 +1,9 @@
 export function StringsAreNotNullOrEmpty(...values: string[]){
     return values.every(s => {
-        return s != null && s != undefined && s.length > 0;
+        return StringIsNotNullOrEmpty(s);
     })
+}
+
+export function StringIsNotNullOrEmpty(s: string){
+    return s != null && s != undefined && s.length > 0;
 }

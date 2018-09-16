@@ -56,6 +56,10 @@ html, body, .root, .app-container {
 }
 
 
+.app-loading-container {
+    max-width: 500px;
+}
+
 .app-container, .app-loading-container, .content-inner {
     animation: 0.5s ease-out 0s 1 fadeIn;
 }

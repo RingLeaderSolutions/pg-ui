@@ -6,6 +6,7 @@ import { PortfolioDetails } from '../../../model/Models';
 import { uploadHistoric } from '../../../actions/portfolioActions';
 import { closeModalDialog } from "../../../actions/viewActions";
 import { MultiUploadPanel } from "../../common/UploadPanel";
+import { StringIsNotNullOrEmpty } from "../../../helpers/ValidationHelpers";
 
 interface UploadHistoricDialogProps {
     details: PortfolioDetails;
@@ -24,20 +25,24 @@ interface DispatchProps {
 
 interface UploadHistoricState {
     files: File[];
+    historicalType: string;
 }
 
 class UploadHistoricDialog extends React.Component<UploadHistoricDialogProps & StateProps & DispatchProps, UploadHistoricState> {
     constructor(){
         super();
         this.state = {
-            files: null
+            files: null,
+            historicalType: ""
         };
     }
-    historicalType: HTMLSelectElement;
     
     upload() {
-        var portfolioId = this.props.details.portfolio.id;
-        this.props.uploadHistoric(portfolioId, this.state.files, this.historicalType.value);
+        this.props.uploadHistoric(
+            this.props.details.portfolio.id,
+             this.state.files,
+              this.state.historicalType);
+
         this.props.closeModalDialog();
     }
 
@@ -51,8 +56,20 @@ class UploadHistoricDialog extends React.Component<UploadHistoricDialogProps & S
         this.setState({...this.state, files: null});
     }
 
-    render() {
+    handleFormChange(attribute: string, event: React.ChangeEvent<any>, isCheck: boolean = false){
+        var value = isCheck ? event.target.checked : event.target.value;
 
+        this.setState({
+            ...this.state,
+            [attribute]: value
+        })
+    }
+
+    canSubmit(){
+        return this.state.files != null && StringIsNotNullOrEmpty(this.state.historicalType);
+    }
+
+    render() {
         return (
             <div>
                 <div className="uk-modal-header">
@@ -64,7 +81,8 @@ class UploadHistoricDialog extends React.Component<UploadHistoricDialogProps & S
                         <form>
                             <fieldset className="uk-fieldset">
                                 <select className='uk-select' 
-                                    ref={ref => this.historicalType = ref}>
+                                    value={this.state.historicalType}
+                                    onChange={(e) => this.handleFormChange("historicalType", e)} >
                                     <option value="" disabled>Select</option>
                                     <option value="Generic">Generic</option>
                                     <option value="BACKWARDS">Backwards</option>
@@ -81,7 +99,7 @@ class UploadHistoricDialog extends React.Component<UploadHistoricDialogProps & S
                 </div>
                 <div className="uk-modal-footer uk-text-right">
                     <button className="uk-button uk-button-default uk-margin-right" type="button" onClick={() => this.props.closeModalDialog()}><i className="fas fa-times uk-margin-right"></i>Cancel</button>
-                    <button className="uk-button uk-button-primary" type="button" onClick={() => this.upload()} disabled={this.state.files == null}><i className="fa fa-arrow-circle-up uk-margin-right"></i>Upload</button>
+                    <button className="uk-button uk-button-primary" type="button" onClick={() => this.upload()} disabled={!this.canSubmit()}><i className="fa fa-arrow-circle-up uk-margin-right"></i>Upload</button>
                 </div>
             </div>)
     }

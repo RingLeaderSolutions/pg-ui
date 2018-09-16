@@ -24,24 +24,25 @@ interface DispatchProps {
 
 interface UploadContractRatesDialogState {
     file: File;
+    useGeneric: boolean;
 }
 
 class UploadContractRatesDialog extends React.Component<UploadContractRatesDialogProps & StateProps & DispatchProps, UploadContractRatesDialogState> {
     constructor(){
         super();
         this.state = {
-            file: null
+            file: null,
+            useGeneric: false
         };
     }
-    useGeneric: HTMLInputElement;
     
     upload() {
         var { contractId, utility } = this.props.contract;
         if(utility == "GAS"){
-            this.props.uploadGasBackingSheet(contractId, this.useGeneric.checked, this.state.file);
+            this.props.uploadGasBackingSheet(contractId, this.state.useGeneric, this.state.file);
         }
         else {
-            this.props.uploadElectricityBackingSheet(contractId, this.useGeneric.checked, this.state.file);
+            this.props.uploadElectricityBackingSheet(contractId, this.state.useGeneric, this.state.file);
         }
 
         this.onFileCleared();
@@ -54,6 +55,19 @@ class UploadContractRatesDialog extends React.Component<UploadContractRatesDialo
 
     onFileCleared(){
         this.setState({...this.state, file: null});
+    }
+
+    handleFormChange(attribute: string, event: React.ChangeEvent<any>, isCheck: boolean = false){
+        var value = isCheck ? event.target.checked : event.target.value;
+
+        this.setState({
+            ...this.state,
+            [attribute]: value
+        })
+    }
+
+    canSubmit() {
+        return this.state.file != null;
     }
 
     render() {
@@ -88,9 +102,9 @@ class UploadContractRatesDialog extends React.Component<UploadContractRatesDialo
                                         <input 
                                             className='uk-checkbox'
                                             type='checkbox' 
-                                            defaultChecked={false}
-                                            ref={ref => this.useGeneric = ref}
-                                            /> Use Generic Template
+                                            checked={this.state.useGeneric}
+                                            onChange={(e) => this.handleFormChange("useGeneric", e, true)} />
+                                            Use Generic Template
                                     </label>
                                 </div>
                             </fieldset>
@@ -104,7 +118,7 @@ class UploadContractRatesDialog extends React.Component<UploadContractRatesDialo
                 </div>
                 <div className="uk-modal-footer uk-text-right">
                     <button className="uk-button uk-button-default uk-margin-right" type="button" onClick={() => this.props.closeModalDialog()}><i className="fa fa-times uk-margin-small-right"></i>Cancel</button>
-                    <button className="uk-button uk-button-primary" type="button" onClick={() => this.upload()} disabled={this.state.file == null}><i className="fa fa-arrow-circle-up uk-margin-small-right"></i>Upload</button>
+                    <button className="uk-button uk-button-primary" type="button" onClick={() => this.upload()} disabled={!this.canSubmit()}><i className="fa fa-arrow-circle-up uk-margin-small-right"></i>Upload</button>
                 </div>
             </div>)
     }
