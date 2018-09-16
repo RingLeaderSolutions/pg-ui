@@ -65,7 +65,7 @@ class DashboardStatus extends React.Component<StatusProps & StateProps & Dispatc
                                 <i className="fas fa-info-circle uk-margin-small-right"></i>
                             </div>
                             <div className="uk-width-expand uk-flex uk-flex-middle">
-                                <p>Sorry! No portfolios have been created yet. Visit the Portfolios tab to get started.</p>    
+                                <p>Sorry! No portfolios have been created yet.</p>    
                             </div>
                         </div>
                     </div>)
