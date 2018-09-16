@@ -1,6 +1,6 @@
 {
   "name": "pg-ui",
-  "version": "0.1.48",
+  "version": "0.1.49",
   "description": "UI for the Portfolio Generation project",
   "main": "src/server/server.js",
   "scripts": {
