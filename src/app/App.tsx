@@ -25,6 +25,7 @@ UIkit.use(UIkitIcons);
 
 import 'react-table/react-table.css'
 import 'react-day-picker/lib/style.css';
+import NotFound from "./components/NotFound";
 require('./styles/styles.scss');
 
 declare global {
@@ -63,6 +64,8 @@ class App extends React.Component<{}, {}> {
                         <AuthenticatedRoute path="/portfolio" component={Home} />
                         <AuthenticatedRoute path="/accounts" component={Home} />
                         <AuthenticatedRoute path="/account" component={Home} />
+
+                        <Route component={NotFound} />
                     </Switch>
                 </Router>
             </Provider>
@@ -78,10 +81,10 @@ function mapDispatchToProps(dispatch: any) {
     return {};
 }
 
-const WrappedApp = connect(mapStateToProps, mapDispatchToProps)(App);
+const ConnectedApp = connect(mapStateToProps, mapDispatchToProps)(App);
 
 
 ReactDOM.render(
-    <WrappedApp store={store} />,
+    <ConnectedApp store={store} />,
     document.getElementById("root")
 );
