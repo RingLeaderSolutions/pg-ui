@@ -11,12 +11,6 @@ declare var appConfig: {
     environment_name: string;
   };
 
-declare interface NodeModule {
-    hot: {
-        accept: () => void;
-    }
-}
-
 declare module 'uikit'{
     const use: (what: any) => void;
 

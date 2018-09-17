@@ -30,6 +30,7 @@
     "@types/react-redux": "^4.4.45",
     "@types/react-router": "^4.0.12",
     "@types/react-router-dom": "^4.0.5",
+    "@types/webpack-env": "^1.13.6",
     "css-loader": "^1.0.0",
     "express": "^4.16.0",
     "file-loader": "^2.0.0",

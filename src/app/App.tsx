@@ -38,28 +38,28 @@ connectSignalR(store);
 
 const App : React.SFC<{}> = () => {
     return (
-        <Router>
-            <Switch>
-                <AuthenticatedRoute exact path="/" component={Home} />
-                
-                <Route exact path="/login" component={Login} />
-                <Route exact path="/login_complete" component={LoginComplete} />
-                <Route exact path="/logout" component={Logout} />                        
+        <Provider store={store}>
+            <Router>
+                <Switch>
+                    <AuthenticatedRoute exact path="/" component={Home} />
+                    
+                    <Route exact path="/login" component={Login} />
+                    <Route exact path="/login_complete" component={LoginComplete} />
+                    <Route exact path="/logout" component={Logout} />                        
 
-                <AuthenticatedRoute path="/portfolios" component={Home} />
-                <AuthenticatedRoute path="/portfolio" component={Home} />
-                <AuthenticatedRoute path="/accounts" component={Home} />
-                <AuthenticatedRoute path="/account" component={Home} />
+                    <AuthenticatedRoute path="/portfolios" component={Home} />
+                    <AuthenticatedRoute path="/portfolio" component={Home} />
+                    <AuthenticatedRoute path="/accounts" component={Home} />
+                    <AuthenticatedRoute path="/account" component={Home} />
 
-                <Route component={NotFound} />
-            </Switch>
-        </Router>
+                    <Route component={NotFound} />
+                </Switch>
+            </Router>
+        </Provider>
     )
 }
 
 ReactDOM.render(
-    <Provider store={store}>
-        <App />
-    </Provider>,
+    <App />,
     document.getElementById("root")
 );
