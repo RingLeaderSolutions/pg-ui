@@ -7,11 +7,36 @@ import { retrieveAccountDetail, fetchAccountDocumentation, fetchAccountUploads, 
 import { fetchMeterConsumption } from '../actions/meterActions';
 import { ApplicationState } from "../applicationState";
 import * as UIkit from 'uikit';
+import { Store } from "redux";
 
-export default function connectSignalR(store: any) {
-    let connection = new HubConnection(appConfig.signalRUri);
+const NotifyMethodName = 'Notify';
 
-    connection.on('Notify', (data: NotificationMessage) => {
+export default class SignalRController {
+    connection: HubConnection;
+    store: Store<ApplicationState>;
+
+    constructor(store: Store<ApplicationState>){
+        this.store = store;
+        this.connection = new HubConnection(appConfig.signalRUri)
+        
+        this.onNotification = this.onNotification.bind(this);
+    }
+
+    start() {
+        this.connection.on(NotifyMethodName, this.onNotification)
+        this.connection.start()
+            .then(() => console.log('SignalR hub connected'));
+    }
+
+    stop() {
+        this.connection.off(NotifyMethodName, this.onNotification)
+        this.connection.stop();
+        console.log('SignalR hub disconnected');
+    }
+
+    onNotification(data: NotificationMessage) {
+        const store = this.store;
+
         console.log(data);
         var currentState: ApplicationState = store.getState();
 
@@ -104,10 +129,7 @@ export default function connectSignalR(store: any) {
                 }
                 break;
         }
-    });
-
-    connection.start()
-        .then(() => console.log('SignalR hub connected'));
+    }
 }
 
 function showNotification(message: string, success: boolean){

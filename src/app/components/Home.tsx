@@ -1,20 +1,17 @@
 import * as React from "react";
 import { MapDispatchToPropsFunction, connect, MapStateToProps } from 'react-redux';
+import { Route,Link} from 'react-router-dom';
+
 import { ApplicationState } from '../applicationState';
 import { fetchBackendVersion, fetchInstanceDetails } from '../actions/authActions';
+
+import { InstanceDetail, ApplicationTab } from "../model/Models";
 
 import Dashboard from "./dashboard/Dashboard";
 import Portfolios from "./portfolio/Portfolios";
 import Accounts from "./accounts/Accounts";
 import PortfolioDetail from "./portfolio/PortfolioDetail";
 import AccountDetailView from "./accounts/AccountDetailView";
-
-import {
-    Route,
-    Link
-} from 'react-router-dom';
-import { InstanceDetail, ApplicationTab } from "../model/Models";
-
 
 interface StateProps {
     backendVersion: string;
@@ -32,10 +29,8 @@ interface DispatchProps {
 
 class Home extends React.Component<StateProps & DispatchProps, {}> {
     componentDidMount(){
-        setTimeout(() => {
-            this.props.fetchBackendVersion();
-            this.props.fetchInstanceDetails();
-        }, 2000);
+        this.props.fetchBackendVersion();
+        this.props.fetchInstanceDetails();
     }
 
     renderSelectedTriangle(tab: ApplicationTab){

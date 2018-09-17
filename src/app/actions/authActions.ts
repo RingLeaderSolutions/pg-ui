@@ -21,15 +21,17 @@ export function fetchBackendVersion(){
         let fetchVersionPromise = ApiService.fetchBackendVersion();
         dispatch({ type: types.FETCH_BACKEND_VERSION_WORKING });
 
-        makeApiRequest(dispatch,
-            fetchVersionPromise,
-            200, 
-            data => {
-                return { type: types.FETCH_BACKEND_VERSION_SUCCESSFUL, data: (data as BackendVersion).version};
-            }, 
-            error => {
-                return { type: types.FETCH_BACKEND_VERSION_FAILED, errorMessage: error };
-            });
+        setTimeout(() => {
+            makeApiRequest(dispatch,
+                fetchVersionPromise,
+                200, 
+                data => {
+                    return { type: types.FETCH_BACKEND_VERSION_SUCCESSFUL, data: (data as BackendVersion).version};
+                }, 
+                error => {
+                    return { type: types.FETCH_BACKEND_VERSION_FAILED, errorMessage: error };
+                });
+        }, 2000);
     };
 }
 
