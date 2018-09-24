@@ -21,6 +21,7 @@ interface LoginState {
 }
 
 class Login extends React.Component<StateProps & DispatchProps, LoginState> {
+    loginButton: HTMLButtonElement;
     constructor(props: StateProps & DispatchProps) {
         super(props);
 
@@ -28,6 +29,10 @@ class Login extends React.Component<StateProps & DispatchProps, LoginState> {
             email: "",
             password: ""
         };
+    }
+
+    componentDidMount(){
+        this.loginButton.focus();
     }
 
     handleSubmit() {
@@ -86,7 +91,7 @@ class Login extends React.Component<StateProps & DispatchProps, LoginState> {
                                 {/* <Link to="/password_reset">Forgotten your password?</Link> */}
                             </fieldset>
                         </form>
-                        <button className="uk-button uk-button-primary" onClick={() => this.handleSubmit()} disabled={!this.canSubmit()}>
+                        <button className="uk-button uk-button-primary" ref={(button) => this.loginButton = button}onClick={() => this.handleSubmit()} disabled={!this.canSubmit()}>
                             <i className="fas fa-sign-in-alt uk-margin-small-right"></i>
                             Log in
                         </button>
