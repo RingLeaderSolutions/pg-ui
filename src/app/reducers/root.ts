@@ -141,6 +141,7 @@ import fetchAccountDocumentationReducer from './hierarchy/fetchAccountDocumentat
 import fetchAccountUploadsReducer from './hierarchy/fetchAccountUploadsReducer';
 import fetchAccountPortfoliosReducer from './hierarchy/fetchAccountPortfoliosReducer';
 import fetchAccountContractsReducer from './hierarchy/fetchAccountContractsReducer';
+import renewContractReducer from './hierarchy/renewContractReducer';
 
 const hierarchyReducer: Reducer<HierarchyState> = combineReducers<HierarchyState>({
     accounts: retrieveAccountsReducer,
@@ -149,7 +150,8 @@ const hierarchyReducer: Reducer<HierarchyState> = combineReducers<HierarchyState
     selected_uploads: fetchAccountUploadsReducer,
     create_account: accountCreationReducer,
     selected_portfolios: fetchAccountPortfoliosReducer,
-    selected_contracts: fetchAccountContractsReducer
+    selected_contracts: fetchAccountContractsReducer,
+    renew_contract: renewContractReducer
 });
 
 import { ViewState } from './view/ViewState';

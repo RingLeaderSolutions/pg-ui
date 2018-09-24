@@ -139,6 +139,12 @@ export interface TenderContract {
     activeTenderCount: number;
 }
 
+export interface ContractRenewalResponse {
+    portfolioId: string;
+    title: string;
+    status: string;
+}
+
 export interface TenderRecommendation {
     summaryId: string;
     accepted: string;
