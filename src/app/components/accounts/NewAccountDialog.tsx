@@ -62,8 +62,14 @@ class NewAccountDialog extends React.Component<NewAccountDialogProps & StateProp
                     </div>);
             case AccountCreationStage.Creation:
                 return (
-                    <div className="uk-modal-body new-account-dialog">
-                        <Spinner />
+                    <div className="new-account-dialog">
+                        <div className="uk-modal-header">
+                            <h2 className="uk-modal-title"><i className="fa fa-building uk-margin-right"></i>Working...</h2>
+                        </div>
+                        <div className="uk-margin-medium uk-modal-body">
+                            <div className="spinner-2"></div>
+                            <h4 className="uk-text-center">Creating account...</h4>
+                        </div>
                     </div>);
             case AccountCreationStage.Complete:
                 return (
