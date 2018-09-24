@@ -9,9 +9,11 @@ import { closeModalDialog } from "../../actions/viewActions";
 import ErrorMessage from "../common/ErrorMessage";
 import { ContractRenewalStage } from "../../model/app/ContractRenewalStage";
 import { Link } from "react-router-dom";
+import ModalDialog from "../common/ModalDialog";
 
-interface AddExistingContractDialogProps {
+interface RenewContractDialogProps {
     contract: TenderContract;
+    dialogId: string;
 }
 
 interface StateProps {
@@ -31,9 +33,11 @@ interface DispatchProps {
     closeModalDialog: () => void;
 }
 
-class AddExistingContractDialog extends React.Component<AddExistingContractDialogProps & StateProps & DispatchProps, {}> {
+class RenewContractDialog extends React.Component<RenewContractDialogProps & StateProps & DispatchProps, {}> {
     componentDidMount(){
-        this.props.getSuppliers();
+        if(this.props.suppliers == null){
+            this.props.getSuppliers();
+        }
     }
 
     renewContract(){
@@ -57,11 +61,11 @@ class AddExistingContractDialog extends React.Component<AddExistingContractDialo
         return (
             <div>
                 <div className="uk-modal-header">
-                    <h2 className="uk-modal-title"><i className="fas fa-exclamation-triangle uk-margin-right"></i><i className="fas fa-file-signature uk-margin-right"></i>Renew Existing Contract: Working</h2>
+                    <h2 className="uk-modal-title"><i className="fas fa-exclamation-triangle uk-margin-right"></i><i className="fas fa-file-signature uk-margin-right"></i>Working</h2>
                 </div>
                  <div className="uk-modal-body">
-                    <p>Contract renewal in progress (Step {step})</p>
-                    <Spinner />
+                    <div className="spinner-2"></div>
+                    <h4 className="uk-text-center uk-margin-bottom">Contract renewal in progress (Step {step})</h4>
                 </div>
             </div>
         )
@@ -79,7 +83,7 @@ class AddExistingContractDialog extends React.Component<AddExistingContractDialo
         return <ErrorMessage />
     }
 
-    render(){
+    renderDialog(){
         if(this.props.suppliers == null){
             return this.renderSupplierPane();
         }
@@ -89,7 +93,7 @@ class AddExistingContractDialog extends React.Component<AddExistingContractDialo
                 return (
                     <div>
                         <div className="uk-modal-header">
-                            <h2 className="uk-modal-title"><i className="fas fa-redo uk-margin-right"></i><i className="fas fa-file-signature uk-margin-right"></i>Renew Existing Contractr</h2>
+                            <h2 className="uk-modal-title"><i className="fas fa-redo uk-margin-right"></i><i className="fas fa-file-signature uk-margin-right"></i>Renew Existing Contract</h2>
                         </div>
                         <div className="uk-modal-body">
                             <p>This process will:</p>
@@ -135,21 +139,32 @@ class AddExistingContractDialog extends React.Component<AddExistingContractDialo
                             <h2 className="uk-modal-title"><i className="fa fa-check-circle uk-margin-small-right" style={{color: '#006400'}}></i>Success!</h2>
                         </div>
                         <div className="uk-modal-body">
-                            <p>This contract was successfully renewed!</p> 
-                            {successMessage}
-                            <p>Click on the button below to view the portfolio, or click OK to close this window.</p>
-                            <Link to={`/portfolio/${result.portfolioId}`}>
-                                <button className='uk-button uk-button-default uk-button-small uk-margin-top' data-uk-tooltip="title: Jump to portfolio">
-                                <i className="fa fa-external-link-alt uk-margin-small-right"></i>{result.title}</button>
-                            </Link>
+                            <div className="uk-text-center">
+                                <h4>This contract was successfully renewed!</h4> 
+                                {successMessage}
+                                <p>Click on the button below to view the portfolio, or click OK to close this window.</p>
+                                <Link to={`/portfolio/${result.portfolioId}`}>
+                                    <button className='uk-button uk-button-default uk-button-small uk-margin-top' data-uk-tooltip="title: Jump to portfolio">
+                                    <i className="fa fa-external-link-alt uk-margin-small-right"></i>{result.title}</button>
+                                </Link>    
+                            </div>
+                            
                         </div>
                         {this.renderOnlyOKButton()}
                     </div>);
         }
     }
+
+    render(){
+        return (
+            <ModalDialog dialogId={this.props.dialogId} onClose={() => this.props.clearRenewalState()}>
+                {this.renderDialog()}
+            </ModalDialog>
+        )
+    }
 }
 
-const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, AddExistingContractDialogProps> = (dispatch) => {
+const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, RenewContractDialogProps> = (dispatch) => {
     return {
         getSuppliers: () => dispatch(getTenderSuppliers()),
         renewContract: (contractId: string) => dispatch(createContractRenewal(contractId)),
@@ -158,7 +173,7 @@ const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, AddExistingC
     };
 };
   
-const mapStateToProps: MapStateToProps<StateProps, AddExistingContractDialogProps> = (state: ApplicationState) => {
+const mapStateToProps: MapStateToProps<StateProps, RenewContractDialogProps> = (state: ApplicationState) => {
     return {
         suppliers: state.suppliers.value,
         suppliers_working: state.suppliers.working,
@@ -170,4 +185,4 @@ const mapStateToProps: MapStateToProps<StateProps, AddExistingContractDialogProp
     };
 };
   
-export default connect(mapStateToProps, mapDispatchToProps)(AddExistingContractDialog);
+export default connect(mapStateToProps, mapDispatchToProps)(RenewContractDialog);

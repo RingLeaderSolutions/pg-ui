@@ -15,7 +15,7 @@ export default class ErrorMessage extends React.Component<ErrorMessageProps, {}>
       errorMessage = this.props.children;
     }
     return (
-      <div className="uk-alert uk-alert-danger uk-margin-small-bottom" data-uk-alert>
+      <div className="uk-alert uk-alert-danger" data-uk-alert>
           <div className="uk-grid uk-grid-small" data-uk-grid>
               <div className="uk-width-auto uk-flex uk-flex-middle">
                 <i className="fas fa-exclamation-triangle uk-margin-small-right"></i>

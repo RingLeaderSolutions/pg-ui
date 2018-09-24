@@ -23,10 +23,10 @@ export function createContractRenewal(contractId: string){
             fetchPromise,
             200, 
             data => {
-                // HACK: Schedule a wait of 10 seconds before showing the user the completion, to let the backend do its thing
+                // HACK: Schedule a wait of 5 seconds before showing the user the completion, to let the backend do its thing
                 setTimeout(() => {
                   dispatch({type: types.CREATE_CONTRACT_RENEWAL_WAIT_COMPLETED, data: data as ContractRenewalResponse })
-                }, 10000);
+                }, 5000);
 
                 return { type: types.CREATE_CONTRACT_RENEWAL_SUCCESSFUL, data: null};
             }, 
