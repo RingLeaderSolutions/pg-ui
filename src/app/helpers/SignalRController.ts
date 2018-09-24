@@ -7,7 +7,8 @@ import { retrieveAccountDetail, fetchAccountDocumentation, fetchAccountUploads, 
 import { fetchMeterConsumption } from '../actions/meterActions';
 import { ApplicationState } from "../applicationState";
 import * as UIkit from 'uikit';
-import { Store } from "redux";
+import { Store, Dispatch } from "redux";
+import { push } from 'connected-react-router';
 
 const NotifyMethodName = 'Notify';
 
@@ -48,7 +49,9 @@ export default class SignalRController {
             case "portfoliometers":
                 if(currentPortfolio && data.PortfolioId == currentPortfolio.id){
                     if(data.Category == "deleted"){
-                        window.location.replace('/portfolios');
+                        store.dispatch((dispatch: Dispatch<any>) => {
+                            dispatch(push('/portfolios'));
+                        });
                     }
                     else {
                         store.dispatch(getSinglePortfolio(currentPortfolio.id));
