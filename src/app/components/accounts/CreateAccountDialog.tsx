@@ -66,7 +66,6 @@ class CreateAccountDialog extends React.Component<CreateAccountDialogProps & Sta
                 incorporationDate: moment(company.incorporationDate, "DD-MM-YYYY"),
                 companyName: company.companyName,
                 companyReg: company.companyNumber,
-                status: company.companyStatus,
                 address: [company.addressLine1, company.addressLine2, company.postTown, company.county]
                         .filter(s => s != null && s != "")
                         .join(', '),
@@ -76,10 +75,6 @@ class CreateAccountDialog extends React.Component<CreateAccountDialogProps & Sta
         }
 
         return defaults;
-    }
-
-    tryMapStatus(status: string){
-        
     }
 
     createAccount(){
@@ -93,7 +88,7 @@ class CreateAccountDialog extends React.Component<CreateAccountDialogProps & Sta
             postcode: this.state.postcode,
             countryOfOrigin: this.state.country,
             incorporationDate: this.state.incorporationDate.format("YYYY-MM-DDTHH:mm:ss"),
-            companyStatus: '',
+            companyStatus: this.state.status,
             creditRating: this.state.creditRating,
             isVATEligible: this.state.vatEligible,
             isRegisteredCharity: this.state.registeredCharity,
