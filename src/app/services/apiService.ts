@@ -45,6 +45,7 @@ export interface IApiService {
   updateAccountContract(contract: TenderContract): Promise<AxiosResponse>;
   deleteAccountContract(contractId: string): Promise<AxiosResponse>;
   fetchAccountContractRates(contractId: string): Promise<AxiosResponse>;
+  createContractRenewal(contractId: string) : Promise<AxiosResponse>;
 
   getPortfolioHistory(portfolioId: string): Promise<AxiosResponse>;
 
@@ -654,6 +655,10 @@ export class ApiService implements IApiService {
 
     fetchAccountContractRates(contractId: string){
         return axios.get(`${this.baseApiUri}/portman-web/contract/${contractId}/backingsheets`, this.getRequestConfig());                
+    }
+
+    createContractRenewal(contractId: string){
+        return axios.get(`${this.baseApiUri}/portman-web/contract/trigger/renewal/${contractId}`, this.getRequestConfig());                        
     }
 
     getEndpointPrefix(utility: UtilityType) {

@@ -1155,6 +1155,10 @@ export class FakeApiService implements IApiService {
     fetchAccountContractRates(contractId: string){
         return OK();
     }
+
+    createContractRenewal(contractId: string){
+        return OK();
+    }
 }
 
 export default new FakeApiService();

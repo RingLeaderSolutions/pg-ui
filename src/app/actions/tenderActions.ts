@@ -8,6 +8,23 @@ import { Dispatch } from 'redux';
 
 import { makeApiRequest } from "./common";
 
+export function createContractRenewal(contractId: string){
+    return (dispatch: Dispatch<any>) => {
+        let fetchPromise = ApiService.createContractRenewal(contractId);
+        dispatch({ type: types.CREATE_CONTRACT_RENEWAL_WORKING });
+
+        makeApiRequest(dispatch,
+            fetchPromise,
+            200, 
+            data => {
+                return { type: types.CREATE_CONTRACT_RENEWAL_SUCCESSFUL, data: null};
+            }, 
+            error => {
+                return { type: types.CREATE_CONTRACT_RENEWAL_FAILED, errorMessage: error };
+            });
+    }
+}
+
 export function getAccountContracts(accountId: string){    
     return (dispatch: Dispatch<any>) => {
         let fetchPromise = ApiService.fetchAccountContracts(accountId);

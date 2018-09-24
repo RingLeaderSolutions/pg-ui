@@ -10,7 +10,7 @@ import { format } from 'currency-formatter';
 
 import { openModalDialog } from "../../actions/viewActions";
 import ModalDialog from "../common/ModalDialog";
-import { getAccountContracts, getTenderSuppliers, fetchAccountContractRates, deleteAccountContract } from "../../actions/tenderActions";
+import { getAccountContracts, getTenderSuppliers, fetchAccountContractRates, deleteAccountContract, createContractRenewal } from "../../actions/tenderActions";
 import { TenderContract, TenderSupplier } from "../../model/Tender";
 import { UtilityIcon, getWellFormattedUtilityName } from "../common/UtilityIcon";
 import UpdateContractDialog from "./UpdateContractDialog";
@@ -35,6 +35,7 @@ interface DispatchProps {
     getAccountContracts: (accountId: string) => void;
     fetchAccountContractRates: (contractId: string) => void;
     deleteContract: (contractId: string) => void;
+    renewContract: (contractId: string) => void;
     openModalDialog: (dialogId: string) => void;
     getSuppliers: () => void;
 }
@@ -54,6 +55,11 @@ class AccountContractsView extends React.Component<AccountContractsViewProps & S
     fetchRatesAndOpenDialog(contractId: string){
         this.props.fetchAccountContractRates(contractId);
         this.props.openModalDialog("view_account_rates");
+    }
+
+    renewContract(event: any, contract: TenderContract){
+        event.stopPropagation();
+        this.props.renewContract(contract.contractId);
     }
 
     deleteContract(event: any, contract: TenderContract){
@@ -100,12 +106,19 @@ class AccountContractsView extends React.Component<AccountContractsViewProps & S
             options.push(viewRates, divider(3));
         }
         
+        var renewContract = (
+            <li key="rc"><a href="#" onClick={(ev) => this.renewContract(ev, contract)}>
+                <i className="fas fa-redo uk-margin-small-right"></i>
+                Renew
+            </a></li>);
+
         var deleteContract = (
             <li key="dc"><a href="#" onClick={(ev) => this.deleteContract(ev, contract)}>
                 <i className="fas fa-trash uk-margin-small-right"></i>
                 Delete
             </a></li>);
-        options.push(deleteContract);
+            
+        options.push(renewContract, divider(4), deleteContract);
 
         return options;
     }
@@ -250,6 +263,7 @@ const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, AccountContr
         getAccountContracts: (accountId: string) => dispatch(getAccountContracts(accountId)),
         fetchAccountContractRates: (contractId: string) => dispatch(fetchAccountContractRates(contractId)),
         deleteContract: (contractId: string) => dispatch(deleteAccountContract(contractId)),
+        renewContract: (contractId: string) => dispatch(createContractRenewal(contractId)),
         openModalDialog: (dialogId: string) => dispatch(openModalDialog(dialogId)),
         getSuppliers: () => dispatch(getTenderSuppliers())
     };
