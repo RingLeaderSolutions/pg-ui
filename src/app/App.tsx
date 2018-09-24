@@ -1,10 +1,7 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
-import { Provider, connect, Store } from 'react-redux';
-import {
-    BrowserRouter as Router,
-    Route
-} from 'react-router-dom';
+import { Provider, Store } from 'react-redux';
+import { BrowserRouter, Route } from 'react-router-dom';
 
 import SignalRController from './helpers/SignalRController';
 
@@ -56,7 +53,7 @@ class App extends React.Component<{ store: Store<ApplicationState> }, {}> {
     render() {
         return (
             <Provider store={this.props.store}>
-                <Router>
+                <BrowserRouter>
                     <Switch>
                         <AuthenticatedRoute exact path="/" component={Home} />
                         
@@ -71,7 +68,7 @@ class App extends React.Component<{ store: Store<ApplicationState> }, {}> {
     
                         <Route component={NotFound} />
                     </Switch>
-                </Router>
+                </BrowserRouter>
             </Provider>
         )
     }
