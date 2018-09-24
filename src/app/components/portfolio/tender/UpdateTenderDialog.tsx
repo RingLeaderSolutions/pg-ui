@@ -52,7 +52,9 @@ class UpdateTenderDialog extends React.Component<UpdateTenderDialogProps & State
             title: props.tender.tenderTitle,
             commission: String(props.tender.commission),
             billingMethod: props.tender.billingMethod,
-            deadlineNotes: props.tender.deadlineNotes,
+            // We do this check to ensure null is never passed to a textarea:
+            // `value` prop on `textarea` should not be null. Consider using the empty string to clear the component or `undefined` for uncontrolled components.
+            deadlineNotes: props.tender.deadlineNotes == null ? '' : props.tender.deadlineNotes,
             ebInclusive: props.tender.allInclusive,
             paymentTerms: String(props.tender.requirements.paymentTerms),
             tariff: props.tender.requirements.tariffId || '',
