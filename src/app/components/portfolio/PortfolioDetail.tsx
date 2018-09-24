@@ -125,7 +125,7 @@ const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, PortfolioDet
     };
 };
   
-const mapStateToProps: MapStateToProps<StateProps, PortfolioDetailProps> = (state: ApplicationState) => {
+const mapStateToProps: MapStateToProps<StateProps, PortfolioDetailProps, ApplicationState> = (state: ApplicationState) => {
     return {
         portfolio: state.portfolio.selected.value,
         detail: state.portfolio.details.value,

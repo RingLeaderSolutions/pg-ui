@@ -163,7 +163,7 @@ const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, PortfolioUpl
     };
 };
   
-const mapStateToProps: MapStateToProps<StateProps, PortfolioUploadProps> = (state: ApplicationState) => {
+const mapStateToProps: MapStateToProps<StateProps, PortfolioUploadProps, ApplicationState> = (state: ApplicationState) => {
     return {
         reports: state.portfolio.uploads.value,
         working: state.portfolio.uploads.working,

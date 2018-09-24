@@ -160,7 +160,7 @@ const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, TenderRecomm
     };
 };
   
-const mapStateToProps: MapStateToProps<StateProps, TenderRecommendationsViewProps> = (state: ApplicationState) => {
+const mapStateToProps: MapStateToProps<StateProps, TenderRecommendationsViewProps, ApplicationState> = (state: ApplicationState) => {
     return {
         details: state.portfolio.details.value,
         recommendations: state.portfolio.tender.recommendations.value,

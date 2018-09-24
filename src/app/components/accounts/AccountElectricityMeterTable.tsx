@@ -327,7 +327,7 @@ const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, AccountElect
     };
 };
   
-const mapStateToProps: MapStateToProps<StateProps, AccountElectricityMeterTableProps> = (state: ApplicationState) => {
+const mapStateToProps: MapStateToProps<StateProps, AccountElectricityMeterTableProps, ApplicationState> = (state: ApplicationState) => {
     return {
         working: state.portfolio.tender.tariffs.working,
         error:  state.portfolio.tender.tariffs.error,

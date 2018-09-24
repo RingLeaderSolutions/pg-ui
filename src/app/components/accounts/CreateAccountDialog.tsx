@@ -276,7 +276,7 @@ const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, CreateAccoun
     };
 };
   
-const mapStateToProps: MapStateToProps<StateProps, CreateAccountDialogProps> = (state: ApplicationState) => {
+const mapStateToProps: MapStateToProps<StateProps, CreateAccountDialogProps, ApplicationState> = (state: ApplicationState) => {
     return {
         company: state.hierarchy.create_account.company.value
     };

@@ -88,7 +88,7 @@ const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, UploadReport
     };
 };
   
-const mapStateToProps: MapStateToProps<StateProps, UploadReportViewProps> = (state: ApplicationState) => {
+const mapStateToProps: MapStateToProps<StateProps, UploadReportViewProps, ApplicationState> = (state: ApplicationState) => {
     return {
         uploadReport: state.selected_upload_report.value as UploadReportDetail,
         working: state.selected_upload_report.working,

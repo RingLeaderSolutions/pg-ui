@@ -107,7 +107,7 @@ const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, TimelineProp
     };
 };
 
-const mapStateToProps: MapStateToProps<StateProps, TimelineProps> = (state: ApplicationState) => {
+const mapStateToProps: MapStateToProps<StateProps, TimelineProps, ApplicationState> = (state: ApplicationState) => {
     return {
         timeline: state.dashboard.timeline.value,
         working: state.dashboard.timeline.working,

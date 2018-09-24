@@ -164,7 +164,7 @@ const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, CreatePortfo
     };
 };
   
-const mapStateToProps: MapStateToProps<StateProps, CreatePortfolioFromAccountDialogProps> = (state: ApplicationState) => {
+const mapStateToProps: MapStateToProps<StateProps, CreatePortfolioFromAccountDialogProps, ApplicationState> = (state: ApplicationState) => {
     return {
         accounts: state.hierarchy.accounts.value,
         users: state.users.value,

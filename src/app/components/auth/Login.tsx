@@ -108,7 +108,7 @@ const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, {}> = (dispa
     }
 }
 
-const mapStateToProps: MapStateToProps<StateProps, {}> = (state: ApplicationState) => {
+const mapStateToProps: MapStateToProps<StateProps, {}, ApplicationState> = (state: ApplicationState) => {
     return {
         working: state.auth.login.working,
         error: state.auth.login.error,

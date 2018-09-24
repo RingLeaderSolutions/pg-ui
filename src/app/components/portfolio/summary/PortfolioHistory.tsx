@@ -94,7 +94,7 @@ const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, PortfolioHis
     };
 };
   
-const mapStateToProps: MapStateToProps<StateProps, PortfolioHistoryProps> = (state: ApplicationState) => {
+const mapStateToProps: MapStateToProps<StateProps, PortfolioHistoryProps, ApplicationState> = (state: ApplicationState) => {
     return {
         history: state.portfolio.history.value,
         working: state.portfolio.history.working

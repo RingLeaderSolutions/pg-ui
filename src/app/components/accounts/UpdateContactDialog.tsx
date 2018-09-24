@@ -5,6 +5,7 @@ import { updateContact } from '../../actions/hierarchyActions';
 import { AccountContact } from "../../model/HierarchyObjects";
 import { closeModalDialog } from "../../actions/viewActions";
 import { StringsAreNotNullOrEmpty } from "../../helpers/ValidationHelpers";
+import { ApplicationState } from "../../applicationState";
 
 interface UpdateContactDialogProps {    
     contact: AccountContact;
@@ -140,7 +141,7 @@ const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, UpdateContac
     };
 };
   
-const mapStateToProps: MapStateToProps<StateProps, UpdateContactDialogProps> = () => {
+const mapStateToProps: MapStateToProps<StateProps, UpdateContactDialogProps, ApplicationState> = () => {
     return {};
 };
   

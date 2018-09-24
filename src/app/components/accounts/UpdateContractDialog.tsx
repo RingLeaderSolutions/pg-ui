@@ -196,7 +196,7 @@ const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, UpdateContra
     };
 };
   
-const mapStateToProps: MapStateToProps<StateProps, UpdateContractDialogProps> = (state: ApplicationState) => {
+const mapStateToProps: MapStateToProps<StateProps, UpdateContractDialogProps, ApplicationState> = (state: ApplicationState) => {
     return {
         suppliers: state.suppliers.value,
         working: state.portfolio.tender.addExistingContract.working || state.suppliers.working,

@@ -108,7 +108,7 @@ const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, UploadAccoun
     };
 };
   
-const mapStateToProps: MapStateToProps<StateProps, UploadAccountDocumentDialogProps> = (state: ApplicationState) => {
+const mapStateToProps: MapStateToProps<StateProps, UploadAccountDocumentDialogProps, ApplicationState> = (state: ApplicationState) => {
     return {
         working: state.hierarchy.selected.working,
         error: state.hierarchy.selected.error,

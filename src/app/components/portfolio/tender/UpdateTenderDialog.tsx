@@ -377,7 +377,7 @@ const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, UpdateTender
     };
 };
   
-const mapStateToProps: MapStateToProps<StateProps, UpdateTenderDialogProps> = (state: ApplicationState) => {
+const mapStateToProps: MapStateToProps<StateProps, UpdateTenderDialogProps, ApplicationState> = (state: ApplicationState) => {
     return {
         working: state.portfolio.tender.update_tender.working || state.portfolio.tender.tariffs.working,
         error: state.portfolio.tender.update_tender.error  ||  state.portfolio.tender.tariffs.error,

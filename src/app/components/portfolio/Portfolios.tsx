@@ -272,7 +272,7 @@ const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, PortfoliosPr
   };
 };
 
-const mapStateToProps: MapStateToProps<StateProps, PortfoliosProps> = (state: ApplicationState) => {
+const mapStateToProps: MapStateToProps<StateProps, PortfoliosProps, ApplicationState> = (state: ApplicationState) => {
   return {
     portfolios: state.portfolios.all.value,
     working: state.portfolios.all.working,

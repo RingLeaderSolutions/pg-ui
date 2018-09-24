@@ -112,7 +112,7 @@ const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, UploadHistor
     };
 };
   
-const mapStateToProps: MapStateToProps<StateProps, UploadHistoricDialogProps> = (state: ApplicationState) => {
+const mapStateToProps: MapStateToProps<StateProps, UploadHistoricDialogProps, ApplicationState> = (state: ApplicationState) => {
     return {
         working: state.portfolio.details.working,
         error: state.portfolio.details.error,

@@ -132,7 +132,7 @@ const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, {}> = (dispa
     };
 };
   
-const mapStateToProps: MapStateToProps<StateProps, {}> = (state: ApplicationState) => {
+const mapStateToProps: MapStateToProps<StateProps, {}, ApplicationState> = (state: ApplicationState) => {
     return {
         backendVersion: state.backend_version.value,
         instance_detail: state.instance_detail.value,

@@ -82,7 +82,7 @@ const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, TenderBackin
     };
 };
   
-const mapStateToProps: MapStateToProps<StateProps, TenderBackingSheetsDialogProps> = (state: ApplicationState) => {
+const mapStateToProps: MapStateToProps<StateProps, TenderBackingSheetsDialogProps, ApplicationState> = (state: ApplicationState) => {
     return {
         contract_rates: state.portfolio.tender.backing_sheets.value,
         working: state.portfolio.tender.backing_sheets.working,

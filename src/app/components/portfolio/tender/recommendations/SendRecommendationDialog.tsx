@@ -228,7 +228,7 @@ const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, SendRecommen
     };
 };
   
-const mapStateToProps: MapStateToProps<StateProps, SendRecommendationDialogProps> = (state: ApplicationState) => {
+const mapStateToProps: MapStateToProps<StateProps, SendRecommendationDialogProps, ApplicationState> = (state: ApplicationState) => {
     return {
         portfolio_details: state.portfolio.details.value,
         portfolio: state.portfolio.selected.value,

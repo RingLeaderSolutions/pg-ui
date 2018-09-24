@@ -25,7 +25,7 @@ class NotificationContainer extends React.Component<StateProps, {}> {
 }
 
 
-const mapStateToProps: MapStateToProps<StateProps, {}> = (state: ApplicationState) => {
+const mapStateToProps: MapStateToProps<StateProps, {}, ApplicationState> = (state: ApplicationState) => {
   return {
     lastMessage: state.notifications.lastMessage
   };

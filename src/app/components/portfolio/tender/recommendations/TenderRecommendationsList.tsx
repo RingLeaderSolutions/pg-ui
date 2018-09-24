@@ -207,7 +207,7 @@ const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, TenderRecomm
     };
 };
   
-const mapStateToProps: MapStateToProps<StateProps, TenderRecommendationsListProps> = (state: ApplicationState) => {
+const mapStateToProps: MapStateToProps<StateProps, TenderRecommendationsListProps, ApplicationState> = (state: ApplicationState) => {
     return {
         suppliers: state.suppliers.value,
         working: state.portfolio.tender.issue_summary.working || state.portfolio.account.working,

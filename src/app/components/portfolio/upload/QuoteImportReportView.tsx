@@ -188,7 +188,7 @@ const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, QuoteImportR
     };
 };
   
-const mapStateToProps: MapStateToProps<StateProps, QuoteImportReportViewProps> = (state: ApplicationState) => {
+const mapStateToProps: MapStateToProps<StateProps, QuoteImportReportViewProps, ApplicationState> = (state: ApplicationState) => {
     return {
         uploadReport: state.selected_upload_report.value as ImportReportDetail,
         working: state.selected_upload_report.working,

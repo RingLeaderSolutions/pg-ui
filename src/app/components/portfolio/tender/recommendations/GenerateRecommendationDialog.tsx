@@ -170,7 +170,7 @@ const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, GenerateReco
     };
 };
   
-const mapStateToProps: MapStateToProps<StateProps, GenerateRecommendationDialogProps> = (state: ApplicationState) => {
+const mapStateToProps: MapStateToProps<StateProps, GenerateRecommendationDialogProps, ApplicationState> = (state: ApplicationState) => {
     return {
         suppliers: state.suppliers.value,
         working: state.portfolio.tender.generate_summary.working,

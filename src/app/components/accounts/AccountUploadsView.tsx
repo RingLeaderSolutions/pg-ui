@@ -114,7 +114,7 @@ const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, AccountUploa
     };
 };
   
-const mapStateToProps: MapStateToProps<StateProps, AccountUploadsViewProps> = (state: ApplicationState) => {
+const mapStateToProps: MapStateToProps<StateProps, AccountUploadsViewProps, ApplicationState> = (state: ApplicationState) => {
     return {
         reports: state.hierarchy.selected_uploads.value,
         working: state.hierarchy.selected_uploads.working,

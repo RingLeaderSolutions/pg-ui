@@ -269,7 +269,7 @@ const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, AccountContr
     };
 };
   
-const mapStateToProps: MapStateToProps<StateProps, AccountContractsViewProps> = (state: ApplicationState) => {
+const mapStateToProps: MapStateToProps<StateProps, AccountContractsViewProps, ApplicationState> = (state: ApplicationState) => {
     return {
         account: state.hierarchy.selected.value,
         working: state.hierarchy.selected.working || state.hierarchy.selected_contracts.working || state.suppliers.working,

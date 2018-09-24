@@ -271,7 +271,7 @@ const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, IncludeMeter
     };
 };
   
-const mapStateToProps: MapStateToProps<StateProps, IncludeMetersDialogProps> = (state: ApplicationState) => {
+const mapStateToProps: MapStateToProps<StateProps, IncludeMetersDialogProps, ApplicationState> = (state: ApplicationState) => {
     return {
         account: state.hierarchy.selected.value,
         working: state.hierarchy.selected.working,

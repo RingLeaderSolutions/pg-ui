@@ -126,7 +126,7 @@ const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, TenderContra
     };
 };
   
-const mapStateToProps: MapStateToProps<StateProps, TenderContractViewProps> = (state: ApplicationState) => {
+const mapStateToProps: MapStateToProps<StateProps, TenderContractViewProps, ApplicationState> = (state: ApplicationState) => {
     return {
         suppliers: state.suppliers.value,
         working: state.suppliers.working

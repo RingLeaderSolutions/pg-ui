@@ -256,7 +256,7 @@ const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, TenderSummar
     };
 };
   
-const mapStateToProps: MapStateToProps<StateProps, TenderSummaryProps> = (state: ApplicationState) => {
+const mapStateToProps: MapStateToProps<StateProps, TenderSummaryProps, ApplicationState> = (state: ApplicationState) => {
     return {
         details: state.portfolio.details.value,
         tenders: state.portfolio.tender.tenders.value,

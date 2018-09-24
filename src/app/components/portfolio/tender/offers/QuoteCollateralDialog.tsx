@@ -3,6 +3,7 @@ import { MapDispatchToPropsFunction, connect, MapStateToProps } from 'react-redu
 
 import { TenderQuoteCollateral } from "../../../../model/Tender";
 import { closeModalDialog } from "../../../../actions/viewActions";
+import { ApplicationState } from "../../../../applicationState";
 
 interface QuoteCollateralDialogProps {
     collateral: TenderQuoteCollateral[];
@@ -82,7 +83,7 @@ const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, QuoteCollate
     };
 };
   
-const mapStateToProps: MapStateToProps<StateProps, QuoteCollateralDialogProps> = () => {
+const mapStateToProps: MapStateToProps<StateProps, QuoteCollateralDialogProps, ApplicationState> = () => {
     return {};
 };
   

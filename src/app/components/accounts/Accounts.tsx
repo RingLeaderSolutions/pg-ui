@@ -234,7 +234,7 @@ const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, AccountsProp
   };
 };
 
-const mapStateToProps: MapStateToProps<StateProps, AccountsProps> = (state: ApplicationState) => {
+const mapStateToProps: MapStateToProps<StateProps, AccountsProps, ApplicationState> = (state: ApplicationState) => {
   return {
     accounts: state.hierarchy.accounts.value,
     working: state.hierarchy.accounts.working,

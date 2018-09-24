@@ -48,7 +48,7 @@ const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, ModalDialogP
     };
 };
   
-const mapStateToProps: MapStateToProps<StateProps, ModalDialogProps> = (state: ApplicationState) => {
+const mapStateToProps: MapStateToProps<StateProps, ModalDialogProps, ApplicationState> = (state: ApplicationState) => {
     return {
         openModal: state.view.modal.shown_dialog
     };

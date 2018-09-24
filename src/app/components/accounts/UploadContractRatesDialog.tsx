@@ -131,7 +131,7 @@ const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, UploadContra
     };
 };
   
-const mapStateToProps: MapStateToProps<StateProps, UploadContractRatesDialogProps> = (state: ApplicationState) => {
+const mapStateToProps: MapStateToProps<StateProps, UploadContractRatesDialogProps, ApplicationState> = (state: ApplicationState) => {
     return {
     };
 };

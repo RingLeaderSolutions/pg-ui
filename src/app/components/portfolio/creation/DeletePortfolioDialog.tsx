@@ -3,6 +3,7 @@ import { MapDispatchToPropsFunction, connect, MapStateToProps } from 'react-redu
 
 import { deletePortfolio } from '../../../actions/portfolioActions';
 import { closeModalDialog } from "../../../actions/viewActions";
+import { ApplicationState } from "../../../applicationState";
 
 interface DeletePortfolioDialogProps {    
     portfolioId: string;
@@ -58,7 +59,7 @@ const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, DeletePortfo
     };
 };
   
-const mapStateToProps: MapStateToProps<StateProps, DeletePortfolioDialogProps> = () => {
+const mapStateToProps: MapStateToProps<StateProps, DeletePortfolioDialogProps, ApplicationState> = () => {
     return {};
 };
   

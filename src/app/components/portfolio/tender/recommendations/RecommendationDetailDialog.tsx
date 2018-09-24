@@ -566,7 +566,7 @@ const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, Recommendati
     };
 };
   
-const mapStateToProps: MapStateToProps<StateProps, RecommendationDetailDialogProps> = (state: ApplicationState) => {
+const mapStateToProps: MapStateToProps<StateProps, RecommendationDetailDialogProps, ApplicationState> = (state: ApplicationState) => {
     return {
         selected_recommendation: state.portfolio.tender.selected_recommendation,
         recommendation_summary: state.portfolio.tender.selected_recommendation_summary.value,

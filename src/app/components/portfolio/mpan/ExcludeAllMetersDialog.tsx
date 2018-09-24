@@ -4,6 +4,7 @@ import { PortfolioDetails } from '../../../model/Models';
 
 import { excludeMeters } from '../../../actions/meterActions';
 import { closeModalDialog } from "../../../actions/viewActions";
+import { ApplicationState } from "../../../applicationState";
 
 interface ExcludeAllMetersDialogProps {    
     portfolio: PortfolioDetails;
@@ -60,7 +61,7 @@ const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, ExcludeAllMe
     };
 };
   
-const mapStateToProps: MapStateToProps<StateProps, ExcludeAllMetersDialogProps> = () => {
+const mapStateToProps: MapStateToProps<StateProps, ExcludeAllMetersDialogProps, ApplicationState> = () => {
     return {};
 };
   

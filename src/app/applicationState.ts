@@ -10,6 +10,7 @@ import { SelectedUploadReportState } from './reducers/selectedUploadReportReduce
 import { UsersState } from './reducers/fetchUsersReducer';
 import { ViewState } from './reducers/view/ViewState';
 import { TenderSuppliersState } from './reducers/tender/tenderSuppliersReducer';
+import { Router } from 'react-router';
 
 export interface ApplicationState {    
     portfolio: PortfolioState;
@@ -25,4 +26,5 @@ export interface ApplicationState {
     selected_upload_report: SelectedUploadReportState;
     users: UsersState;
     view: ViewState;
+    router: Router;
 }

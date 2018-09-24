@@ -159,7 +159,7 @@ const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, {}> = (dispa
     }
 }
 
-const mapStateToProps: MapStateToProps<StateProps, {}> = (state: ApplicationState) => {
+const mapStateToProps: MapStateToProps<StateProps, {}, ApplicationState> = (state: ApplicationState) => {
     return {
         working: state.hierarchy.create_account.company.working,
         error: state.hierarchy.create_account.company.error,

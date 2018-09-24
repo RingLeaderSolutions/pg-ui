@@ -148,7 +148,7 @@ const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, AccountConta
     };
 };
   
-const mapStateToProps: MapStateToProps<StateProps, AccountContactsViewProps> = (state: ApplicationState) => {
+const mapStateToProps: MapStateToProps<StateProps, AccountContactsViewProps, ApplicationState> = (state: ApplicationState) => {
     return {
         account: state.hierarchy.selected.value,
         working: state.hierarchy.selected.working,

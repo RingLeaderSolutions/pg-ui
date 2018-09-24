@@ -309,7 +309,7 @@ const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, PortfolioMet
     };
 };
   
-const mapStateToProps: MapStateToProps<StateProps, PortfolioMetersProps> = (state: ApplicationState) => {
+const mapStateToProps: MapStateToProps<StateProps, PortfolioMetersProps, ApplicationState> = (state: ApplicationState) => {
     return {
         details: state.portfolio.details.value,
         

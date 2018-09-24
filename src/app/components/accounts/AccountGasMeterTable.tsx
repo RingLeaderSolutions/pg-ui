@@ -280,7 +280,7 @@ const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, AccountGasMe
     };
 };
   
-const mapStateToProps: MapStateToProps<StateProps, AccountGasMeterTableProps> = (state: ApplicationState) => {
+const mapStateToProps: MapStateToProps<StateProps, AccountGasMeterTableProps, ApplicationState> = (state: ApplicationState) => {
     return {
         working: state.portfolio.tender.tariffs.working,
         error:  state.portfolio.tender.tariffs.error,

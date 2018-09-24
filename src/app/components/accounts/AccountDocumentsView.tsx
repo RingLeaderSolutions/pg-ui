@@ -119,7 +119,7 @@ const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, AccountDocum
     };
 };
   
-const mapStateToProps: MapStateToProps<StateProps, AccountDocumentsViewProps> = (state: ApplicationState) => {
+const mapStateToProps: MapStateToProps<StateProps, AccountDocumentsViewProps, ApplicationState> = (state: ApplicationState) => {
     return {
         documentation: state.hierarchy.selected_documentation.value,
         working: state.hierarchy.selected_documentation.working,

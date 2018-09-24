@@ -112,7 +112,7 @@ const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, TenderViewPr
     };
 };
   
-const mapStateToProps: MapStateToProps<StateProps, TenderViewProps> = (state: ApplicationState) => {
+const mapStateToProps: MapStateToProps<StateProps, TenderViewProps, ApplicationState> = (state: ApplicationState) => {
     return {
         working: state.portfolio.tender.delete_tender.working,
         error: state.portfolio.tender.delete_tender.error,

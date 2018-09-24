@@ -56,7 +56,6 @@ export class AuthService implements IAuthService {
         let parseOptions: ParseHashOptions = {
             hash
         };
-
         this.auth.parseHash(parseOptions, (error: Auth0Error, result: Auth0DecodedHash) => {
             if(error) {
                 console.log("Encountered error parsing authentication hash");

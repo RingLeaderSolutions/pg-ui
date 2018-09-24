@@ -1,17 +1,19 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 import { Provider, Store } from 'react-redux';
-import { BrowserRouter, Route } from 'react-router-dom';
+import { Route, Switch } from 'react-router-dom';
+import { History, createBrowserHistory } from 'history'
+import { ConnectedRouter } from 'connected-react-router';
+import configureStore from './store/configureStore'
 
 import SignalRController from './helpers/SignalRController';
 
-import configureStore from './store/configureStore'
 import Home from "./components/Home";
 import Login from "./components/auth/Login";
 import Logout from "./components/auth/Logout";
 import AuthenticatedRoute from "./components/auth/AuthenticatedRoute";
 import LoginComplete from "./components/auth/LoginComplete";
-import { Switch } from "react-router";
+import NotFound from "./components/NotFound";
 
 import * as moment from 'moment';
 moment.locale('en-GB');
@@ -22,24 +24,32 @@ UIkit.use(UIkitIcons);
 
 import 'react-table/react-table.css'
 import 'react-day-picker/lib/style.css';
-import NotFound from "./components/NotFound";
+
 import { ApplicationState } from "./applicationState";
 require('./styles/styles.scss');
 
-let store = configureStore();
+const history: History = createBrowserHistory();
+let store = configureStore(history);
 
 if (module.hot) {
     if(module.hot.data){
-        store = configureStore(module.hot.data.state);
+        console.log("[TPIFLOW-HMR]: Re-creating store with previous state");
+        store = configureStore(history, module.hot.data.state);
     }
     module.hot.accept();
     module.hot.addDisposeHandler((data) => {
+        console.log("[TPIFLOW-HMR]: Disposed, saving current state & unmounting");
         data.state = store.getState();
         ReactDOM.unmountComponentAtNode(document.getElementById("root"));
     })
 }
 
-class App extends React.Component<{ store: Store<ApplicationState> }, {}> {
+interface AppProps {
+    store: Store<ApplicationState>;
+    history: History;
+}
+
+class App extends React.Component<AppProps, {}> {
     notificationController: SignalRController;
     componentDidMount() {
         this.notificationController = new SignalRController(this.props.store);
@@ -53,7 +63,7 @@ class App extends React.Component<{ store: Store<ApplicationState> }, {}> {
     render() {
         return (
             <Provider store={this.props.store}>
-                <BrowserRouter>
+                <ConnectedRouter history={this.props.history}>
                     <Switch>
                         <AuthenticatedRoute exact path="/" component={Home} />
                         
@@ -68,13 +78,13 @@ class App extends React.Component<{ store: Store<ApplicationState> }, {}> {
     
                         <Route component={NotFound} />
                     </Switch>
-                </BrowserRouter>
+                </ConnectedRouter>
             </Provider>
         )
     }
 }
 
 ReactDOM.render(
-    <App store={store}/>,
+    <App store={store} history={history}/>,
     document.getElementById("root")
 );

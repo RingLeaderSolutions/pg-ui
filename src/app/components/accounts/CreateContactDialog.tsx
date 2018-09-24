@@ -5,6 +5,7 @@ import { createContact } from '../../actions/hierarchyActions';
 import { AccountContact } from "../../model/HierarchyObjects";
 import { closeModalDialog } from "../../actions/viewActions";
 import { StringsAreNotNullOrEmpty } from "../../helpers/ValidationHelpers";
+import { ApplicationState } from "../../applicationState";
 
 interface CreateContactDialogProps {    
     accountId: string;
@@ -139,7 +140,7 @@ const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, CreateContac
     };
 };
   
-const mapStateToProps: MapStateToProps<StateProps, CreateContactDialogProps> = () => {
+const mapStateToProps: MapStateToProps<StateProps, CreateContactDialogProps, ApplicationState> = () => {
     return {};
 };
   

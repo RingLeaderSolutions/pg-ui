@@ -147,7 +147,7 @@ const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, UpdatePortfo
     };
 };
   
-const mapStateToProps: MapStateToProps<StateProps, UpdatePortfolioDialogProps> = (state: ApplicationState) => {
+const mapStateToProps: MapStateToProps<StateProps, UpdatePortfolioDialogProps, ApplicationState> = (state: ApplicationState) => {
     return {
         users: state.users.value,
         working: state.users.working,

@@ -83,7 +83,7 @@ const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, UploadSupply
     };
 };
   
-const mapStateToProps: MapStateToProps<StateProps, UploadSupplyDataDialogProps> = (state: ApplicationState) => {
+const mapStateToProps: MapStateToProps<StateProps, UploadSupplyDataDialogProps, ApplicationState> = (state: ApplicationState) => {
     return {
         working: state.portfolio.details.working,
         error: state.portfolio.details.error,

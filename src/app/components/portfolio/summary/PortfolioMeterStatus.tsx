@@ -4,6 +4,7 @@ import { ApplicationState } from '../../../applicationState';
 import { Portfolio, PortfolioDetails } from '../../../model/Models';
 import Spinner from '../../common/Spinner';
 import { UtilityIcon } from "../../common/UtilityIcon";
+import { Router } from "react-router";
 
 interface PortfolioMeterStatusProps {
     portfolio: Portfolio;
@@ -12,6 +13,7 @@ interface PortfolioMeterStatusProps {
 interface StateProps {
   details: PortfolioDetails;
   working: boolean;
+  router: Router;
 }
 
 interface DispatchProps {
@@ -55,6 +57,7 @@ class PortfolioMeterStatus extends React.Component<PortfolioMeterStatusProps & S
     }
 
     render() {
+        console.log(this.props.router);
         var content = (<Spinner hasMargin={true}/>);
         if(!this.props.working && this.props.details.meterGroups != null){
             if(this.props.details.meterGroups.length == 0){
@@ -81,10 +84,11 @@ const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, PortfolioMet
     return {};
 };
   
-const mapStateToProps: MapStateToProps<StateProps, PortfolioMeterStatusProps> = (state: ApplicationState) => {
+const mapStateToProps: MapStateToProps<StateProps, PortfolioMeterStatusProps, ApplicationState> = (state: ApplicationState) => {
     return {
         details: state.portfolio.details.value,
-        working: state.portfolio.details.working
+        working: state.portfolio.details.working,
+        router: state.router
     };
 };
   

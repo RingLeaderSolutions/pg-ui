@@ -112,7 +112,7 @@ const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, AccountSumma
     };
 };
   
-const mapStateToProps: MapStateToProps<StateProps, AccountSummaryViewProps> = (state: ApplicationState) => {
+const mapStateToProps: MapStateToProps<StateProps, AccountSummaryViewProps, ApplicationState> = (state: ApplicationState) => {
     return {
         portfolios: state.hierarchy.selected_portfolios.value,
         account: state.hierarchy.selected.value,

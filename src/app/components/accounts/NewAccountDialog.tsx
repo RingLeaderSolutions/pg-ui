@@ -142,7 +142,7 @@ const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, NewAccountDi
     };
 };
   
-const mapStateToProps: MapStateToProps<StateProps, NewAccountDialogProps> = (state: ApplicationState) => {
+const mapStateToProps: MapStateToProps<StateProps, NewAccountDialogProps, ApplicationState> = (state: ApplicationState) => {
     return {
         stage: state.hierarchy.create_account.stage.stage,
     };

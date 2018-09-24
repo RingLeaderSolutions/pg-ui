@@ -253,7 +253,7 @@ const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, UpdateAccoun
     };
 };
   
-const mapStateToProps: MapStateToProps<StateProps, UpdateAccountDialogProps> = (state: ApplicationState) => {
+const mapStateToProps: MapStateToProps<StateProps, UpdateAccountDialogProps, ApplicationState> = (state: ApplicationState) => {
     return {
         working: state.portfolio.details.working,
         error: state.portfolio.details.error,

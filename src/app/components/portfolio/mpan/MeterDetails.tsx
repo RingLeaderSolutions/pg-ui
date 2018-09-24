@@ -380,7 +380,7 @@ const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, MeterDetails
     };
 };
   
-const mapStateToProps: MapStateToProps<StateProps, MeterDetailsProps> = (state: ApplicationState) => {
+const mapStateToProps: MapStateToProps<StateProps, MeterDetailsProps, ApplicationState> = (state: ApplicationState) => {
     return {
         meter: state.meters.editedMeter,
         details: state.portfolio.details.value
