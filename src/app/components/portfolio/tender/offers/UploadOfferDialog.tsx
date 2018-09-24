@@ -22,15 +22,14 @@ interface StateProps {
 }
 
 interface DispatchProps {
-    uploadElectricityOffer: (tenderId: string, supplierId: string, useGeneric: boolean, file: Blob) => void;
-    uploadGasOffer: (tenderId: string, supplierId: string, useGeneric: boolean, file: Blob) => void;
+    uploadElectricityOffer: (tenderId: string, supplierId: string, file: Blob) => void;
+    uploadGasOffer: (tenderId: string, supplierId: string, file: Blob) => void;
     closeModalDialog: () => void;
 }
 
 interface UploadOfferState {
     file: File;
     supplierId: string;
-    useGeneric: boolean;
 }
 
 class UploadOfferDialog extends React.Component<UploadOfferDialogProps & StateProps & DispatchProps, UploadOfferState> {
@@ -38,17 +37,16 @@ class UploadOfferDialog extends React.Component<UploadOfferDialogProps & StatePr
         super();
         this.state = {
             file: null,
-            supplierId: "",
-            useGeneric: false
+            supplierId: ""
         };
     }
 
     upload() {
         if(this.props.utilityType.toLowerCase() == "gas"){
-            this.props.uploadGasOffer(this.props.tenderId, this.state.supplierId, this.state.useGeneric, this.state.file);
+            this.props.uploadGasOffer(this.props.tenderId, this.state.supplierId, this.state.file);
         }
         else {
-            this.props.uploadElectricityOffer(this.props.tenderId, this.state.supplierId, this.state.useGeneric, this.state.file);
+            this.props.uploadElectricityOffer(this.props.tenderId, this.state.supplierId, this.state.file);
         }
         
         this.onFileCleared();
@@ -107,16 +105,6 @@ class UploadOfferDialog extends React.Component<UploadOfferDialogProps & StatePr
                                     <label className='uk-form-label'>Supplier</label>
                                     {this.renderSupplierSelect()}
                                 </div>
-                                <div className='uk-margin uk-margin-remove-bottom uk-grid-small uk-child-width-auto uk-grid'>
-                                    <label>
-                                        <input 
-                                            className='uk-checkbox'
-                                            type='checkbox' 
-                                            checked={this.state.useGeneric}
-                                            onChange={(e) => this.handleFormChange("useGeneric", e, true)}
-                                            /> Use Generic Template
-                                    </label>
-                                </div>
                             </fieldset>
                             <hr />
                             <UploadPanel 
@@ -136,8 +124,8 @@ class UploadOfferDialog extends React.Component<UploadOfferDialogProps & StatePr
 
 const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, UploadOfferDialogProps> = (dispatch) => {
     return {
-        uploadElectricityOffer: (tenderId: string, supplierId: string, useGeneric: boolean, file: Blob) => dispatch(uploadElectricityOffer(tenderId, supplierId, useGeneric, file)),
-        uploadGasOffer: (tenderId: string, supplierId: string, useGeneric: boolean,  file: Blob) => dispatch(uploadGasOffer(tenderId, supplierId, useGeneric, file)),
+        uploadElectricityOffer: (tenderId: string, supplierId: string, file: Blob) => dispatch(uploadElectricityOffer(tenderId, supplierId, file)),
+        uploadGasOffer: (tenderId: string, supplierId: string,  file: Blob) => dispatch(uploadGasOffer(tenderId, supplierId, file)),
         closeModalDialog: () => dispatch(closeModalDialog())
     };
 };

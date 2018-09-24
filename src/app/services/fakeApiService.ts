@@ -856,11 +856,11 @@ export class FakeApiService implements IApiService {
         return OK();
     }
 
-    reportSuccessfulBackingSheetUpload(contractId: string, useGeneric: boolean, files: string[], utility: UtilityType) {
+    reportSuccessfulBackingSheetUpload(contractId: string, files: string[], utility: UtilityType) {
         return OK();
     }
 
-    reportSuccessfulOfferUpload(tenderId: string, supplierId: string, useGeneric: boolean, files: string[], utility: UtilityType) {
+    reportSuccessfulOfferUpload(tenderId: string, supplierId: string, files: string[], utility: UtilityType) {
         return OK();
     }
 

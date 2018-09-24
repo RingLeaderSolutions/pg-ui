@@ -345,7 +345,7 @@ export function updateTenderSuppliers(tenderId: string, supplierIds: string[]){
     };
 }
 
-export function uploadGasBackingSheet(contractId: string, useGeneric: boolean, file: Blob){
+export function uploadGasBackingSheet(contractId: string, file: Blob){
     return (dispatch: Dispatch<any>) => {
         let uploadPromise = ApiService.uploadGasBackingSheet(contractId, file);
         dispatch({ type: types.UPLOAD_GAS_BACKING_SHEET_WORKING });
@@ -355,7 +355,7 @@ export function uploadGasBackingSheet(contractId: string, useGeneric: boolean, f
             200, 
             data => {
                 var uploadResponse = data as UploadResponse;
-                ApiService.reportSuccessfulBackingSheetUpload(contractId, useGeneric, uploadResponse.uploadedFiles, UtilityType.Gas);
+                ApiService.reportSuccessfulBackingSheetUpload(contractId, uploadResponse.uploadedFiles, UtilityType.Gas);
                 return { type: types.UPLOAD_GAS_BACKING_SHEET_SUCCESSFUL, data: null};
                 
             }, 
@@ -365,7 +365,7 @@ export function uploadGasBackingSheet(contractId: string, useGeneric: boolean, f
     };
 }
 
-export function uploadElectricityBackingSheet(contractId: string, useGeneric: boolean, file: Blob){
+export function uploadElectricityBackingSheet(contractId: string, file: Blob){
     return (dispatch: Dispatch<any>) => {
         let uploadPromise = ApiService.uploadElectricityBackingSheet(contractId, file);
         dispatch({ type: types.UPLOAD_ELECTRICITY_BACKING_SHEET_WORKING });
@@ -375,7 +375,7 @@ export function uploadElectricityBackingSheet(contractId: string, useGeneric: bo
             200, 
             data => {
                 var uploadResponse = data as UploadResponse;
-                ApiService.reportSuccessfulBackingSheetUpload(contractId, useGeneric, uploadResponse.uploadedFiles,  UtilityType.Electricity);
+                ApiService.reportSuccessfulBackingSheetUpload(contractId, uploadResponse.uploadedFiles,  UtilityType.Electricity);
                 return { type: types.UPLOAD_ELECTRICITY_BACKING_SHEET_SUCCESSFUL, data: null};
             }, 
             error => {
@@ -541,7 +541,7 @@ export function exportContractRates(tenderId: string, quoteId: string){
     }
 };
 
-export function uploadGasOffer(tenderId: string, supplierId: string, useGeneric: boolean, file: Blob){
+export function uploadGasOffer(tenderId: string, supplierId: string, file: Blob){
     return (dispatch: Dispatch<any>) => {
         let uploadPromise = ApiService.uploadOffer(tenderId, supplierId, file);
         dispatch({ type: types.UPLOAD_GAS_OFFER_WORKING });
@@ -551,7 +551,7 @@ export function uploadGasOffer(tenderId: string, supplierId: string, useGeneric:
             200, 
             data => {
                 var uploadResponse = data as UploadResponse;
-                ApiService.reportSuccessfulOfferUpload(tenderId, supplierId, useGeneric, uploadResponse.uploadedFiles, UtilityType.Gas);
+                ApiService.reportSuccessfulOfferUpload(tenderId, supplierId, uploadResponse.uploadedFiles, UtilityType.Gas);
                 return { type: types.UPLOAD_GAS_OFFER_SUCCESSFUL, data: null};
             }, 
             error => {
@@ -560,7 +560,7 @@ export function uploadGasOffer(tenderId: string, supplierId: string, useGeneric:
     };
 }
 
-export function uploadElectricityOffer(tenderId: string, supplierId: string, useGeneric: boolean, file: Blob){
+export function uploadElectricityOffer(tenderId: string, supplierId: string, file: Blob){
     return (dispatch: Dispatch<any>) => {
         let uploadPromise = ApiService.uploadOffer(tenderId, supplierId, file);
         dispatch({ type: types.UPLOAD_ELECTRICITY_OFFER_WORKING });
@@ -570,7 +570,7 @@ export function uploadElectricityOffer(tenderId: string, supplierId: string, use
             200, 
             data => {
                 var uploadResponse = data as UploadResponse;
-                ApiService.reportSuccessfulOfferUpload(tenderId, supplierId, useGeneric, uploadResponse.uploadedFiles, UtilityType.Electricity);
+                ApiService.reportSuccessfulOfferUpload(tenderId, supplierId, uploadResponse.uploadedFiles, UtilityType.Electricity);
                 return { type: types.UPLOAD_ELECTRICITY_OFFER_SUCCESSFUL, data: null};
             }, 
             error => {
