@@ -38,6 +38,7 @@ interface CreateAccountDialogState {
 }
 
 class CreateAccountDialog extends React.Component<CreateAccountDialogProps & StateProps & DispatchProps, CreateAccountDialogState> {
+    
     constructor(props: CreateAccountDialogProps & StateProps & DispatchProps){
         super(props);
         this.state = this.getStateFromCompany(props.company);
@@ -77,6 +78,10 @@ class CreateAccountDialog extends React.Component<CreateAccountDialogProps & Sta
         return defaults;
     }
 
+    tryMapStatus(status: string){
+        
+    }
+
     createAccount(){
         var account: Account = {
             id: null,
@@ -88,7 +93,7 @@ class CreateAccountDialog extends React.Component<CreateAccountDialogProps & Sta
             postcode: this.state.postcode,
             countryOfOrigin: this.state.country,
             incorporationDate: this.state.incorporationDate.format("YYYY-MM-DDTHH:mm:ss"),
-            companyStatus: this.state.status,
+            companyStatus: '',
             creditRating: this.state.creditRating,
             isVATEligible: this.state.vatEligible,
             isRegisteredCharity: this.state.registeredCharity,
