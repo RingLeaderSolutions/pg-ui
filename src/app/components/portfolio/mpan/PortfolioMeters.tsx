@@ -158,21 +158,51 @@ class PortfolioMeters extends React.Component<PortfolioMetersProps & StateProps 
             }
         );
     }
+    
+    renderActionList(hasAssignedMeters: boolean, utilityType: string){
+        var options = [];
+        var divider = (key: number) => (<li key={key} className="uk-nav-divider"></li>);
+        
+        var includeDialogId = `include_meters_${utilityType}`;
+        options.push(
+            (<li key="inc"><a href="#" onClick={() => this.props.openModalDialog(includeDialogId)}>
+                <i className="fas fa-folder-plus uk-margin-small-right"></i>
+                Include Meters
+            </a></li>));
+
+        if(!hasAssignedMeters){
+            return options;
+        }
+
+        var excludeDialogId = `exclude_meters_${utilityType}`;
+        options.push(
+            divider(0),
+            (<li key="exc"><a href="#" onClick={() => this.props.openModalDialog(excludeDialogId)}>
+                <i className="fas fa-minus-circle uk-margin-small-right"></i>
+                Exclude All Meters
+            </a></li>),
+            divider(1),
+            (<li key="exp"><a href="#" onClick={() => this.exportMeterConsumption()}>
+                <i className="fa fa-file-excel uk-margin-small-right"></i>
+                Export (.XLS)
+            </a></li>));
+
+        return options;
+    }
+
 
     renderDynamicTable(values: string[][], utilityType: UtilityType){
-        var decodedUtilityType = decodeUtilityType(utilityType);
-        var includeDialogId = `include_meters_${decodedUtilityType}`;
-        var excludeDialogId = `exclude_meters_${decodedUtilityType}`;
-
-        var hasData = this.state.tableData != null && this.state.tableData.length > 0;
-
+        // Immediate check to see if the server has returned any meters of this type to us at all
+        const hasAssignedMeters = values.length > 0;
+        
         var tableContent;
-        if(values.length == 0){
+        if(!hasAssignedMeters){
             tableContent = (
                 <div className="uk-alert-default uk-margin-small-top uk-margin-small-bottom" data-uk-alert>
                     <p><i className="fas fa-info-circle uk-margin-small-right"></i>No meters of this type have been included in this portfolio yet. Click on the menu above to include some.</p>
                 </div>);
         }
+        // Check to see if there is an active search
         else if(this.state.searchText != "" && this.state.tableData.length == 0){
             tableContent = (
                 <div className="uk-alert-default uk-margin-small-top uk-margin-small-bottom" data-uk-alert>
@@ -190,7 +220,8 @@ class PortfolioMeters extends React.Component<PortfolioMetersProps & StateProps 
             )
         }
 
-        var showHistoricUpload = hasData && values.filter(arr => arr[2] == "HH").length > 0;
+        var hasHHMeters = hasAssignedMeters && values.filter(arr => arr[2] == "HH").length > 0;
+        var decodedUtilityType = decodeUtilityType(utilityType);
         return (
             <div>
                 <div>
@@ -203,7 +234,7 @@ class PortfolioMeters extends React.Component<PortfolioMetersProps & StateProps 
                         </div>
                         { utilityType == UtilityType.Electricity ?
                             (<div className="uk-width-auto uk-flex uk-flex-middle">
-                                <button className='uk-button uk-button-primary uk-margin-small-left uk-margin-small-right' onClick={() => this.props.openModalDialog('upload_consumption')} disabled={!showHistoricUpload}><i className="fa fa-file-upload uk-margin-small-right fa-lg"></i>Upload Historic Consumption</button>
+                                <button className='uk-button uk-button-primary uk-margin-small-left uk-margin-small-right' onClick={() => this.props.openModalDialog('upload_consumption')} disabled={!hasHHMeters}><i className="fa fa-file-upload uk-margin-small-right fa-lg"></i>Upload Historic Consumption</button>
                             </div>) : null }
                         <div className="uk-width-auto uk-flex uk-flex-middle">
                             <div className="uk-inline">
@@ -212,20 +243,7 @@ class PortfolioMeters extends React.Component<PortfolioMetersProps & StateProps 
                                 </button>
                                 <div data-uk-dropdown="pos:bottom-justify;mode:click">
                                     <ul className="uk-nav uk-dropdown-nav">
-                                        <li><a href="#" onClick={() => this.props.openModalDialog(includeDialogId)}>
-                                            <i className="fas fa-folder-plus uk-margin-small-right"></i>
-                                            Include Meters
-                                        </a></li>
-                                        <li className="uk-nav-divider"></li>
-                                        <li><a href="#" onClick={() => this.props.openModalDialog(excludeDialogId)}>
-                                            <i className="fas fa-minus-circle uk-margin-small-right"></i>
-                                            Exclude All Meters
-                                        </a></li>
-                                        <li className="uk-nav-divider"></li>
-                                        <li><a href="#" onClick={() => this.exportMeterConsumption()}>
-                                            <i className="fa fa-file-excel uk-margin-small-right"></i>
-                                            Export (.XLS)
-                                        </a></li>
+                                        {this.renderActionList(hasAssignedMeters, decodedUtilityType)}
                                     </ul>
                                 </div>
                             </div>
