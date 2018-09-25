@@ -5,6 +5,7 @@ import { AccountUploadsState } from './fetchAccountUploadsReducer';
 import { CreateAccountState } from './createAccount/CreateAccountState';
 import { RequestState } from '../RequestState';
 import { AccountContractsState } from './fetchAccountContractsReducer';
+import { RenewContractState } from './renewContractReducer';
 
 export interface HierarchyState {
     accounts: AccountsState;
@@ -14,4 +15,5 @@ export interface HierarchyState {
     create_account: CreateAccountState;
     selected_portfolios: RequestState;
     selected_contracts: AccountContractsState;
+    renew_contract: RenewContractState;
 }

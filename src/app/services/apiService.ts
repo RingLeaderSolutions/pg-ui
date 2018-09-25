@@ -658,7 +658,7 @@ export class ApiService implements IApiService {
     }
 
     createContractRenewal(contractId: string){
-        return axios.get(`${this.baseApiUri}/portman-web/contract/trigger/renewal/${contractId}`, this.getRequestConfig());                        
+        return axios.post(`${this.baseApiUri}/portman-web/contract/trigger/renewal/${contractId}`, null, this.getRequestConfig());                        
     }
 
     getEndpointPrefix(utility: UtilityType) {

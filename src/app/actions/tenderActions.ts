@@ -1,12 +1,18 @@
 import ApiService from "../services/apiService";
 
-import { Tender, TenderContract, TenderSupplier, BackingSheet, TenderIssuanceEmail, TenderRequirements, ContractRatesResponse, RecommendationSite, RecommendationSupplier, RecommendationSummary, TenderRecommendation } from "../model/Tender";
+import { Tender, TenderContract, TenderSupplier, TenderIssuanceEmail, ContractRatesResponse, RecommendationSite, RecommendationSupplier, RecommendationSummary, TenderRecommendation, ContractRenewalResponse } from "../model/Tender";
 import { UploadResponse, UtilityType, ExportResponse } from "../model/Models";
 
 import * as types from "./actionTypes";
 import { Dispatch } from 'redux';
 
 import { makeApiRequest } from "./common";
+
+export function clearRenewalState(){
+    return (dispatch: Dispatch<any>) => {
+        dispatch({ type: types.CREATE_CONTRACT_RENEWAL_CLEAR })
+    }
+}
 
 export function createContractRenewal(contractId: string){
     return (dispatch: Dispatch<any>) => {
@@ -17,6 +23,11 @@ export function createContractRenewal(contractId: string){
             fetchPromise,
             200, 
             data => {
+                // HACK: Schedule a wait of 5 seconds before showing the user the completion, to let the backend do its thing
+                setTimeout(() => {
+                  dispatch({type: types.CREATE_CONTRACT_RENEWAL_WAIT_COMPLETED, data: data as ContractRenewalResponse })
+                }, 5000);
+
                 return { type: types.CREATE_CONTRACT_RENEWAL_SUCCESSFUL, data: null};
             }, 
             error => {
@@ -50,9 +61,8 @@ export function createAccountContract(accountId: string, contract: TenderContrac
         makeApiRequest(dispatch,
             createPromise,
             200, 
-            data => {
-                return { type: types.CREATE_ACCOUNT_CONTRACT_FAILED, data: null};
-                
+            () => {
+                return { type: types.CREATE_ACCOUNT_CONTRACT_FAILED, data: null };
             }, 
             error => {
                 return { type: types.CREATE_ACCOUNT_CONTRACT_SUCCESSFUL, errorMessage: error };
@@ -68,9 +78,8 @@ export function updateAccountContract(contract: TenderContract){
         makeApiRequest(dispatch,
             createPromise,
             200, 
-            data => {
-                return { type: types.UPDATE_ACCOUNT_CONTRACT_SUCCESSFUL, data: null};
-                
+            () => {
+                return { type: types.UPDATE_ACCOUNT_CONTRACT_SUCCESSFUL, data: null };
             }, 
             error => {
                 return { type: types.UPDATE_ACCOUNT_CONTRACT_FAILED, errorMessage: error };
@@ -86,9 +95,8 @@ export function deleteAccountContract(contractId: string){
         makeApiRequest(dispatch,
             createPromise,
             200, 
-            data => {
-                return { type: types.DELETE_ACCOUNT_CONTRACT_SUCCESSFUL, data: null};
-                
+            () => {
+                return { type: types.DELETE_ACCOUNT_CONTRACT_SUCCESSFUL, data: null };
             }, 
             error => {
                 return { type: types.DELETE_ACCOUNT_CONTRACT_FAILED, errorMessage: error };
@@ -229,10 +237,10 @@ export function deleteRecommendation(tenderId: string, recommendationId: string)
         makeApiRequest(dispatch,
             promise,
             200, 
-            data => {
+            () => {
                 return { type: types.DELETE_RECOMMENDATION_SUCCESSFUL };
             }, 
-            error => {
+            () => {
                 return { type: types.DELETE_RECOMMENDATION_FAILED };
             });
     }
@@ -263,9 +271,8 @@ export function addExistingContract(portfolioId: string, tenderId: string, contr
         makeApiRequest(dispatch,
             createPromise,
             200, 
-            data => {
-                return { type: types.TENDER_ADD_EXISTING_CONTRACT_SUCCESSFUL, data: null};
-                
+            () => {
+                return { type: types.TENDER_ADD_EXISTING_CONTRACT_SUCCESSFUL, data: null };
             }, 
             error => {
                 return { type: types.TENDER_ADD_EXISTING_CONTRACT_FAILED, errorMessage: error };
@@ -281,9 +288,8 @@ export function updateExistingContract(portfolioId: string, tenderId: string, co
         makeApiRequest(dispatch,
             createPromise,
             200, 
-            data => {
-                return { type: types.TENDER_UPDATE_EXISTING_CONTRACT_SUCCESSFUL, data: null};
-                
+            () => {
+                return { type: types.TENDER_UPDATE_EXISTING_CONTRACT_SUCCESSFUL, data: null };
             }, 
             error => {
                 return { type: types.TENDER_UPDATE_EXISTING_CONTRACT_FAILED, errorMessage: error };
@@ -299,9 +305,8 @@ export function deleteTender(portfolioId: string, tenderId: string){
         makeApiRequest(dispatch,
             createPromise,
             200, 
-            data => {
-                return { type: types.DELETE_TENDER_SUCCESSFUL, data: null};
-                
+            () => {
+                return { type: types.DELETE_TENDER_SUCCESSFUL, data: null };
             }, 
             error => {
                 return { type: types.DELETE_TENDER_FAILED, errorMessage: error };
@@ -317,9 +322,8 @@ export function createTender(portfolioId: string, tender: Tender, utilityType: U
         makeApiRequest(dispatch,
             createPromise,
             200, 
-            data => {
-                return { type: types.CREATE_TENDER_SUCCESSFUL, data: null};
-                
+            () => {
+                return { type: types.CREATE_TENDER_SUCCESSFUL, data: null };
             }, 
             error => {
                 return { type: types.CREATE_TENDER_FAILED, errorMessage: error };
@@ -335,9 +339,8 @@ export function updateTenderSuppliers(tenderId: string, supplierIds: string[]){
         makeApiRequest(dispatch,
             createPromise,
             200, 
-            data => {
-                return { type: types.UPDATE_TENDER_SUPPLIERS_SUCCESSFUL, data: null};
-                
+            () => {
+                return { type: types.UPDATE_TENDER_SUPPLIERS_SUCCESSFUL, data: null };
             }, 
             error => {
                 return { type: types.UPDATE_TENDER_SUPPLIERS_FAILED, errorMessage: error };
@@ -392,9 +395,8 @@ export function updateTender(tenderId: string, tender: Tender){
         makeApiRequest(dispatch,
             updateTenderPromise,
             200, 
-            data => {
-                return { type: types.UPDATE_TENDER_SUCCESSFUL, data: null};
-                
+            () => {
+                return { type: types.UPDATE_TENDER_SUCCESSFUL, data: null };
             }, 
             error => {
                 return { type: types.UPDATE_TENDER_FAILED, errorMessage: error };
@@ -410,9 +412,8 @@ export function generateTenderPack(portfolioId: string, tenderId: string){
         makeApiRequest(dispatch,
             generatePromise,
             200, 
-            data => {
-                return { type: types.GENERATE_TENDER_PACK_SUCCESSFUL, data: null};
-                
+            () => {
+                return { type: types.GENERATE_TENDER_PACK_SUCCESSFUL, data: null };
             }, 
             error => {
                 return { type: types.GENERATE_TENDER_PACK_FAILED, errorMessage: error };
@@ -462,7 +463,7 @@ export function issueTenderPack(tenderId: string, subject: string, body: string)
         makeApiRequest(dispatch,
             fetchPromise,
             200, 
-            data => {
+            () => {
                 return { type: types.ISSUE_TENDER_PACK_SUCCESSFUL, data: null };
             }, 
             error => {
@@ -479,7 +480,7 @@ export function generateSummaryReport(tenderId: string, quoteId: string, marketC
         makeApiRequest(dispatch,
             fetchPromise,
             200, 
-            data => {
+            () => {
                 return { type: types.GENERATE_SUMMARY_REPORT_SUCCESSFUL, data: null };
             }, 
             error => {
@@ -496,7 +497,7 @@ export function issueSummaryReport(tenderId: string, reportId: string, emails: s
         makeApiRequest(dispatch,
             fetchPromise,
             200, 
-            data => {
+            () => {
                 return { type: types.ISSUE_SUMMARY_REPORT_SUCCESSFUL, data: null };
             }, 
             error => {
@@ -588,9 +589,8 @@ export function deleteQuote(tenderId: string, quoteId: string){
         makeApiRequest(dispatch,
             createPromise,
             200, 
-            data => {
-                return { type: types.DELETE_QUOTE_SUCCESSFUL, data: null};
-                
+            () => {
+                return { type: types.DELETE_QUOTE_SUCCESSFUL, data: null };
             }, 
             error => {
                 return { type: types.DELETE_QUOTE_FAILED, errorMessage: error };
