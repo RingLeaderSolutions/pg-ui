@@ -11,6 +11,7 @@ import { format } from 'currency-formatter';
 import { Tender, TenderSupplier, TenderOfferType } from "../../../model/Tender";
 import { openModalDialog } from "../../../actions/viewActions";
 import CounterCard from "../../common/CounterCard";
+import TenderDeadlineWarning from "./TenderDeadlineWarning";
 
 interface TenderStatusProps {
     tender: Tender;
@@ -30,38 +31,6 @@ interface DispatchProps {
 }
 
 class TenderStatus extends React.Component<TenderStatusProps & StateProps & DispatchProps, {}> {
-
-    renderDeadlineWarning(initialText: JSX.Element){
-        return (
-            <div className="uk-alert uk-alert-warning" data-uk-alert>
-                <div className="uk-grid uk-grid-small" data-uk-grid>
-                    <div className="uk-width-auto uk-flex uk-flex-middle">
-                        <i className="fas fa-exclamation-triangle uk-margin-small-right"></i>
-                    </div>
-                    <div className="uk-width-expand uk-flex uk-flex-middle">
-                        <div>
-                            {initialText}
-                            <p>You won't be able to generate new or issue existing requirements packs to suppliers until this has been set to a date in the future.</p>
-                        </div>
-                    </div>
-                </div>
-            </div>);
-    }
-
-    checkAndDisplayDeadlineWarning(deadline: moment.Moment) : JSX.Element{
-        if(!deadline.isValid()){
-            let promptMessage = (<p>You haven't set a deadline for this tender yet.</p>);
-            return this.renderDeadlineWarning(promptMessage);
-        }
-        
-        if(moment().diff(deadline, 'hours') > 0){
-            let promptMessage = (<p>This tender's deadline ({deadline.format("DD/MM/YYYY")}) has now passed.</p>);
-            return this.renderDeadlineWarning(promptMessage)
-        }
-        
-        return null;
-    }
-
     getMeterCount(){
         var { meterGroups } = this.props.details;
         if (meterGroups == null || meterGroups.length == 0){
@@ -120,7 +89,7 @@ class TenderStatus extends React.Component<TenderStatusProps & StateProps & Disp
         var deadline = moment(this.props.tender.deadline);
         return (
         <div>
-            {this.checkAndDisplayDeadlineWarning(deadline)}
+            <TenderDeadlineWarning deadline={deadline} />
             
             <div className="uk-margin-top uk-margin-bottom">
                 <p style={{textAlign:"center"}}><strong>Status:</strong> {tender.packStatusMessage}</p>

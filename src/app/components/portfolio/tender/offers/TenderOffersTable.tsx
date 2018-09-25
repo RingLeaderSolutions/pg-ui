@@ -16,6 +16,7 @@ import IssueTenderPackDialog from "../IssueTenderPackDialog";
 import { openModalDialog } from "../../../../actions/viewActions";
 import ModalDialog from "../../../common/ModalDialog";
 import * as UIkit from 'uikit';
+import TenderDeadlineWarning from "../TenderDeadlineWarning";
 
 interface TenderOffersTableProps {
     tender: Tender;
@@ -226,12 +227,6 @@ class TenderOffersTable extends React.Component<TenderOffersTableProps & StatePr
                 return p.quotes.some(
                     (q:TenderQuote) => q.status != "PENDING") });
 
-        var hasValidQuotes = issuance.packs.some(
-            (p: TenderPack) => {
-                return p.quotes.some(
-                    (q:TenderQuote) => q.status == "SUBMITTED") });
-
-
         var pendingQuotes = issuance.packs.filter((p: TenderPack) => {
             return p.quotes.some((q:TenderQuote) => q.status == "PENDING")
         });
@@ -244,7 +239,7 @@ class TenderOffersTable extends React.Component<TenderOffersTableProps & StatePr
 
         return (
             <div key={issuance.issuanceId}>
-                {this.renderDeadlineWarning()}
+                <TenderDeadlineWarning deadline={moment(this.props.tender.deadline)} />
                 <div className="uk-grid uk-margin-small-left uk-margin-small-right uk-grid-match" data-uk-grid>
                     <div className="uk-card uk-card-default uk-card-small uk-card-body uk-width-1-4 uk-text-center">
                         <p className="uk-text-bold uk-margin-small">{created}</p>
@@ -318,20 +313,19 @@ class TenderOffersTable extends React.Component<TenderOffersTableProps & StatePr
     renderUnissued(){
         if(this.props.tender.unissuedPacks == null || this.props.tender.unissuedPacks.length == 0){
             return (
-                <div key="unissued-alert">
-                    {this.renderDeadlineWarning()}
-                    <div key="unissued-alert" className="uk-alert-primary uk-margin uk-alert" data-uk-alert>
+                <div>
+                    <TenderDeadlineWarning deadline={moment(this.props.tender.deadline)} className="uk-margin-top" />
+                    <div className="uk-alert-default uk-margin uk-margin-top uk-alert" data-uk-alert>
                         <div className="uk-grid uk-grid-small" data-uk-grid>
                             <div className="uk-width-auto uk-flex uk-flex-middle">
                                 <i className="fas fa-info-circle uk-margin-small-right"></i>
                             </div>
                             <div className="uk-width-expand uk-flex uk-flex-middle">
-                                <p>This tender has no unissued or pending requirements packs. Click above to generate a new pack for review.</p>    
+                                <p>No requirements packs have been generated yet. Click the Generate New button to get started.</p>    
                             </div>
                         </div>
                     </div>
-                </div>
-            )
+                </div>);
         }
 
         var tableContent = this.props.tender.unissuedPacks.map(p => {
@@ -364,7 +358,7 @@ class TenderOffersTable extends React.Component<TenderOffersTableProps & StatePr
                         </button>
                     </div>
                 </div>
-                {this.renderDeadlineWarning()}
+                <TenderDeadlineWarning deadline={moment(this.props.tender.deadline)} />
                 <div className="uk-alert-info uk-margin-small-top uk-margin-small-bottom" data-uk-alert>
                     <p><i className="fas fa-info-circle uk-margin-small-right"></i>These requirements packs have not yet been issued.</p>
                 </div>
@@ -390,24 +384,7 @@ class TenderOffersTable extends React.Component<TenderOffersTableProps & StatePr
     renderOffersContent(){
         if(this.props.tender.issuances == null || this.props.tender.issuances.length == 0)
         {
-            if(this.props.tender.unissuedPacks != null && this.props.tender.unissuedPacks.length > 0){
-                return this.renderUnissued();
-            }
-
-            return (
-                <div>
-                    {this.renderDeadlineWarning()}
-                    <div className="uk-alert-default uk-margin uk-margin-top uk-alert" data-uk-alert>
-                        <div className="uk-grid uk-grid-small" data-uk-grid>
-                            <div className="uk-width-auto uk-flex uk-flex-middle">
-                                <i className="fas fa-info-circle uk-margin-small-right"></i>
-                            </div>
-                            <div className="uk-width-expand uk-flex uk-flex-middle">
-                                <p>No requirements packs have been generated yet. Click the Generate New button to get started.</p>    
-                            </div>
-                        </div>
-                    </div>
-                </div>);
+            return this.renderUnissued();
         }
         
         var tabs: any = [];
@@ -454,29 +431,6 @@ class TenderOffersTable extends React.Component<TenderOffersTableProps & StatePr
                     {content}
                 </div>
             </div>)
-    }
-
-    renderDeadlineWarning(){
-        var deadline = moment(this.props.tender.deadline);
-        var deadlineHasPassed = moment().diff(deadline, 'hours') > 0;
-        if(deadlineHasPassed){
-            return (
-                <div className="uk-alert uk-alert-warning uk-margin-top" data-uk-alert>
-                    <div className="uk-grid uk-grid-small" data-uk-grid>
-                        <div className="uk-width-auto uk-flex uk-flex-middle">
-                            <i className="fas fa-exclamation-triangle uk-margin-small-right"></i>
-                        </div>
-                        <div className="uk-width-expand uk-flex uk-flex-middle">
-                            <div>
-                                <p>This tender's deadline ({deadline.format("DD/MM/YYYY")}) has now passed.</p>
-                                <p>You won't be able to generate new or issue existing requirements packs to suppliers until this has been set to a date in the future.</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>)
-        }
-        
-        return null;
     }
 
     render(){
