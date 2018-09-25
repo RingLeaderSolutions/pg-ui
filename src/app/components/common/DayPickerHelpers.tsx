@@ -6,7 +6,7 @@ import DayPickerInput from "react-day-picker/DayPickerInput";
 
 export const Today = new Date();
 const currentYear = Today.getFullYear();
-export const HundredthYearPast = new Date(currentYear - 100, 0);
+export const TwoHundredthYearPast = new Date(currentYear - 200, 0);
 export const TenthYearPast = new Date(currentYear - 10, 0);
 export const TenthYearFuture = new Date(currentYear + 10, 11);
 
@@ -14,6 +14,9 @@ export const DefaultDateFormat = "DD/MM/YYYY";
 const englishLocale = "en";
 
 export const formatDate = (date: Date, format?: string, locale?: string): string => {
+    if(date == null){
+        return '';
+    }
     var mo = moment(date);
     if(locale != null){
         mo.locale(locale);
@@ -95,7 +98,7 @@ export class DayPickerWithMonthYear extends React.Component<DayPickerWithMonthYe
     constructor(props: DayPickerWithMonthYearProps){
         super();
         this.state = {
-            month: props.selectedDay.toDate()
+            month: props.selectedDay && props.selectedDay.isValid() ? props.selectedDay.toDate() : moment().utc().toDate()
         }
     }
     
@@ -111,20 +114,23 @@ export class DayPickerWithMonthYear extends React.Component<DayPickerWithMonthYe
         var toMonth = this.props.toMonth ? this.props.toMonth : TenthYearFuture;
 
         var disabledDays = this.props.disableFuture ? disableFutureDaysModifier() : this.props.disablePast ? disablePastDaysModifier() : null;
+
+        var hasValidSelection = this.props.selectedDay && this.props.selectedDay.isValid();
+        var selectedDay = hasValidSelection ? this.props.selectedDay.toDate() : null;
         return (
             <DayPickerInput
-                // TODO: Reinstate. This seemed to mess with some of the onBlur() functionality.
-                // component={(inputProps: React.DetailedHTMLProps<React.InputHTMLAttributes<HTMLInputElement>, HTMLInputElement>) => (
-                //         <div className="uk-inline">
-                //             <span className="uk-form-icon" data-uk-icon="icon: calendar"></span>
-                //             <input {...inputProps}></input>
-                //         </div>
-                // )}
-                inputProps={{
-                    className: "uk-input"
-                }}
+                component={(inputProps: React.DetailedHTMLProps<React.InputHTMLAttributes<HTMLInputElement>, HTMLInputElement>) => (
+                    <div className="icon-input-container uk-grid uk-grid-collapse">
+                        <input {...inputProps} className="uk-width-expand uk-input"/>
+                        <div tabIndex={-1} className="clickable-icon-container uk-width-auto uk-flex uk-flex-middle" 
+                            onClick={() => inputProps.onClick(null)} 
+                            onBlur={() => inputProps.onBlur(null) }>
+                            <i className="far fa-calendar-alt"></i>
+                        </div>
+                    </div>
+                )}
                 dayPickerProps={{
-                    selectedDays: this.props.selectedDay.toDate(),
+                    selectedDays: selectedDay,
                     disabledDays: disabledDays,
                     month: this.state.month,
                     fromMonth: fromMonth,
@@ -140,8 +146,8 @@ export class DayPickerWithMonthYear extends React.Component<DayPickerWithMonthYe
                 format={DefaultDateFormat}
                 formatDate={formatDate}
                 parseDate={parseDate}
-                placeholder={null}
-                value={formatDate(this.props.selectedDay.toDate())}
+                placeholder='Select Date'
+                value={formatDate(selectedDay)}
                 onDayChange={(d: Date, modifiers: DayModifiers, dayPickerInput: DayPickerInput) => this.props.onDayChange(moment(d), modifiers, dayPickerInput)}/>
         )
     }

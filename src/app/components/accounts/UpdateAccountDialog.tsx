@@ -6,7 +6,7 @@ import * as moment from 'moment';
 
 import { updateAccount } from '../../actions/hierarchyActions';
 import { closeModalDialog } from "../../actions/viewActions";
-import { DayPickerWithMonthYear, HundredthYearPast, Today } from "../common/DayPickerHelpers";
+import { DayPickerWithMonthYear, TwoHundredthYearPast, Today } from "../common/DayPickerHelpers";
 import { StringsAreNotNullOrEmpty } from "../../helpers/ValidationHelpers";
 
 interface UpdateAccountDialogProps {    
@@ -166,7 +166,7 @@ class UpdateAccountDialog extends React.Component<UpdateAccountDialogProps & Sta
                                                 <div id="deadline-input">
                                                     <DayPickerWithMonthYear 
                                                         disableFuture={true} 
-                                                        fromMonth={HundredthYearPast} 
+                                                        fromMonth={TwoHundredthYearPast} 
                                                         toMonth={Today} 
                                                         onDayChange={(d: moment.Moment) => this.handleIncorporationDateChange(d)}
                                                         selectedDay={this.state.incorporationDate} />

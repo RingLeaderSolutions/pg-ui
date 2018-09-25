@@ -6,7 +6,7 @@ import * as moment from 'moment';
 
 import { createAccount, clearAccountCreation } from '../../actions/hierarchyActions';
 import { closeModalDialog } from "../../actions/viewActions";
-import { Today, HundredthYearPast, DayPickerWithMonthYear } from "../common/DayPickerHelpers";
+import { Today, TwoHundredthYearPast, DayPickerWithMonthYear } from "../common/DayPickerHelpers";
 import { StringsAreNotNullOrEmpty } from "../../helpers/ValidationHelpers";
 
 interface CreateAccountDialogProps {    
@@ -45,7 +45,7 @@ class CreateAccountDialog extends React.Component<CreateAccountDialogProps & Sta
 
     getStateFromCompany(company: CompanyInfo) : CreateAccountDialogState {
         var defaults: CreateAccountDialogState = {
-            incorporationDate:  moment(),
+            incorporationDate: null,
             companyName: '',
             companyReg: '',
             address: '',
@@ -62,7 +62,7 @@ class CreateAccountDialog extends React.Component<CreateAccountDialogProps & Sta
         if(company != null){
             return {
                 ...defaults,
-                incorporationDate: company.incorporationDate == null ? moment() : moment(company.incorporationDate, "DD-MM-YYYY"),
+                incorporationDate: company.incorporationDate ? moment(company.incorporationDate, "DD-MM-YYYY") : null,
                 companyName: company.companyName,
                 companyReg: company.companyNumber,
                 address: [company.addressLine1, company.addressLine2, company.postTown, company.county]
@@ -201,7 +201,7 @@ class CreateAccountDialog extends React.Component<CreateAccountDialogProps & Sta
                                                 <div id="deadline-input">
                                                     <DayPickerWithMonthYear 
                                                         disableFuture={true} 
-                                                        fromMonth={HundredthYearPast} 
+                                                        fromMonth={TwoHundredthYearPast} 
                                                         toMonth={Today} 
                                                         onDayChange={(d: moment.Moment) => this.handleIncorporationDateChange(d)}
                                                         selectedDay={this.state.incorporationDate} />

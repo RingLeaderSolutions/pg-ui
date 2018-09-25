@@ -49,7 +49,7 @@ class CreateTenderDialog extends React.Component<CreateTenderDialogProps & State
     constructor(props: CreateTenderDialogProps & StateProps & DispatchProps){
         super();
         this.state = {
-            deadline: moment(),
+            deadline: null,
             title: '',
             commission:'',
             billingMethod: '',

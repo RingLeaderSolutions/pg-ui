@@ -47,14 +47,13 @@ interface UpdateTenderState {
 class UpdateTenderDialog extends React.Component<UpdateTenderDialogProps & StateProps & DispatchProps, UpdateTenderState> {
     constructor(props: UpdateTenderDialogProps & StateProps & DispatchProps){
         super();
+        console.log('tender deadline:' + props.tender.deadline);
         this.state = {
-            deadline: props.tender.deadline ? moment(props.tender.deadline) : moment(),
-            title: props.tender.tenderTitle,
+            deadline: props.tender.deadline ? moment(props.tender.deadline) : null,
+            title: props.tender.tenderTitle || '',
             commission: String(props.tender.commission),
             billingMethod: props.tender.billingMethod,
-            // We do this check to ensure null is never passed to a textarea:
-            // `value` prop on `textarea` should not be null. Consider using the empty string to clear the component or `undefined` for uncontrolled components.
-            deadlineNotes: props.tender.deadlineNotes == null ? '' : props.tender.deadlineNotes,
+            deadlineNotes: props.tender.deadlineNotes || '',
             ebInclusive: props.tender.allInclusive,
             paymentTerms: String(props.tender.requirements.paymentTerms),
             tariff: props.tender.requirements.tariffId || '',
@@ -66,11 +65,11 @@ class UpdateTenderDialog extends React.Component<UpdateTenderDialogProps & State
     componentWillReceiveProps(nextProps: UpdateTenderDialogProps & StateProps & DispatchProps){
         if(nextProps.tender != null){
             this.setState({
-                deadline: nextProps.tender.deadline ? moment(nextProps.tender.deadline) : moment(),
-                title: nextProps.tender.tenderTitle,
+                deadline: nextProps.tender.deadline ? moment(nextProps.tender.deadline) : null,
+                title: nextProps.tender.tenderTitle || '',
                 commission: String(nextProps.tender.commission),
                 billingMethod: nextProps.tender.billingMethod,
-                deadlineNotes: nextProps.tender.deadlineNotes,
+                deadlineNotes: nextProps.tender.deadlineNotes || '',
                 ebInclusive: nextProps.tender.allInclusive,
                 paymentTerms: String(nextProps.tender.requirements.paymentTerms),
                 tariff: nextProps.tender.requirements.tariffId || '',

@@ -1,0 +1,45 @@
+
+// .icon-input-container {
+//     max-width: 100%;
+//     width: 100%;
+//     border: 0 none;
+//     padding: 0 10px;
+//     background: #fff;
+//     color: #666;
+//     border: 1px solid #e5e5e5;
+//     transition: 0.2s ease-in-out;
+//     transition-property: color, background-color, border;
+// }
+
+.icon-input-container {
+    border: 1px solid #e5e5e5;
+    transition: 0.2s ease-in-out;
+    transition-property: color, background-color, border;
+
+    input {
+        border: none;
+        height: 36px;
+        padding: 0 0 0 10px;
+        margin: 1px 0;
+    }
+    input::placeholder {
+        color: #666;
+    }
+
+    .clickable-icon-container {
+        cursor: pointer;
+    }
+    .clickable-icon-container:focus {
+        outline: none;
+    }
+
+    i {
+        margin: 0 10px 0 0;
+    }
+}
+.icon-input-container:focus-within {
+    outline: none;
+    background-color: #fff;
+    color: #666;
+    border-color: #1e87f0;
+}
