@@ -134,7 +134,7 @@ class TenderStatus extends React.Component<TenderStatusProps & StateProps & Disp
                     <p className="uk-text-meta uk-margin-small">Billing Method</p>
                 </div>
                 <div className="uk-card uk-card-default uk-card-small uk-card-body uk-width-1-4 uk-text-center">
-                    <p className="uk-text-bold uk-margin-small">{this.props.tender.deadline ? deadline.local().format("DD/MM/YYYY") : "Not set"}</p>
+                    <p className="uk-text-bold uk-margin-small">{this.props.tender.deadline ? deadline.local().format("DD/MM/YYYY") : "-"}</p>
                     <p className="uk-text-meta uk-margin-small">Deadline</p>
                 </div>
                 <div className="uk-card uk-card-default uk-card-small uk-card-body uk-width-1-4 uk-text-center">

@@ -100,7 +100,7 @@ class CreateAccountDialog extends React.Component<CreateAccountDialogProps & Sta
             address: this.state.address,
             postcode: this.state.postcode,
             countryOfOrigin: this.state.country,
-            incorporationDate: this.state.incorporationDate.format("YYYY-MM-DDTHH:mm:ss"),
+            incorporationDate: this.state.incorporationDate ? this.state.incorporationDate.format("YYYY-MM-DDTHH:mm:ss") : null,
             companyStatus: this.state.status,
             creditRating: this.state.creditRating,
             isVATEligible: this.state.vatEligible,

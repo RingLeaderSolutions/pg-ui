@@ -44,6 +44,8 @@ class AccountSummaryView extends React.Component<AccountSummaryViewProps & State
     }
 
     renderAddress(value: string){
+        // TODO: Extract this logic out to a common component - does UIKit do this for us?
+        // If so, use that, if not, find or build a thin wrapper that can resize text nicely
         var address = this.renderFriendlyValue(value);
         if(address.length >= 13){
             return <h6><strong>{address}</strong></h6>
@@ -67,7 +69,7 @@ class AccountSummaryView extends React.Component<AccountSummaryViewProps & State
         }
 
         var { account } = this.props;
-        var incorporationDate = moment(account.incorporationDate).format("DD/MM/YYYY");
+        var incorporationDate = account.incorporationDate ? moment(account.incorporationDate).format("DD/MM/YYYY") : "-";
         var totalMeters = this.calculateTotalMeters();
         var totalPortfolios = Object.keys(this.props.portfolios).length;
         return (
