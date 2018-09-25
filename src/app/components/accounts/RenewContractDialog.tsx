@@ -173,7 +173,7 @@ const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, RenewContrac
     };
 };
   
-const mapStateToProps: MapStateToProps<StateProps, RenewContractDialogProps> = (state: ApplicationState) => {
+const mapStateToProps: MapStateToProps<StateProps, RenewContractDialogProps, ApplicationState> = (state: ApplicationState) => {
     return {
         suppliers: state.suppliers.value,
         suppliers_working: state.suppliers.working,
