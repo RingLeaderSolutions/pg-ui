@@ -57,7 +57,6 @@ class PortfolioMeterStatus extends React.Component<PortfolioMeterStatusProps & S
     }
 
     render() {
-        console.log(this.props.router);
         var content = (<Spinner hasMargin={true}/>);
         if(!this.props.working && this.props.details.meterGroups != null){
             if(this.props.details.meterGroups.length == 0){
