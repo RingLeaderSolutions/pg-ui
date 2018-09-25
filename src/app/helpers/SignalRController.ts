@@ -1,4 +1,3 @@
-import * as types from "../actions/actionTypes";
 import { HubConnection } from "@aspnet/signalr-client";
 import { NotificationMessage } from '../model/NotificationMessage';
 import { getPortfolioDetails, fetchPortfolioUploads, getAllPortfolios, getSinglePortfolio } from '../actions/portfolioActions';
