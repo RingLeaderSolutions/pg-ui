@@ -30,8 +30,36 @@ interface DispatchProps {
 }
 
 class TenderStatus extends React.Component<TenderStatusProps & StateProps & DispatchProps, {}> {
-    constructor() {
-        super();
+
+    renderDeadlineWarning(initialText: JSX.Element){
+        return (
+            <div className="uk-alert uk-alert-warning" data-uk-alert>
+                <div className="uk-grid uk-grid-small" data-uk-grid>
+                    <div className="uk-width-auto uk-flex uk-flex-middle">
+                        <i className="fas fa-exclamation-triangle uk-margin-small-right"></i>
+                    </div>
+                    <div className="uk-width-expand uk-flex uk-flex-middle">
+                        <div>
+                            {initialText}
+                            <p>You won't be able to generate new or issue existing requirements packs to suppliers until this has been set to a date in the future.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>);
+    }
+
+    checkAndDisplayDeadlineWarning(deadline: moment.Moment) : JSX.Element{
+        if(!deadline.isValid()){
+            let promptMessage = (<p>You haven't set a deadline for this tender yet.</p>);
+            return this.renderDeadlineWarning(promptMessage);
+        }
+        
+        if(moment().diff(deadline, 'hours') > 0){
+            let promptMessage = (<p>This tender's deadline ({deadline.format("DD/MM/YYYY")}) has now passed.</p>);
+            return this.renderDeadlineWarning(promptMessage)
+        }
+        
+        return null;
     }
 
     getMeterCount(){
@@ -90,24 +118,9 @@ class TenderStatus extends React.Component<TenderStatusProps & StateProps & Disp
         .join(', ');
 
         var deadline = moment(this.props.tender.deadline);
-        var deadlineHasPassed = moment().diff(deadline, 'hours') > 0;
         return (
         <div>
-            {deadlineHasPassed ? (
-                <div className="uk-alert uk-alert-warning" data-uk-alert>
-                    <div className="uk-grid uk-grid-small" data-uk-grid>
-                        <div className="uk-width-auto uk-flex uk-flex-middle">
-                            <i className="fas fa-exclamation-triangle uk-margin-small-right"></i>
-                        </div>
-                        <div className="uk-width-expand uk-flex uk-flex-middle">
-                            <div>
-                                <p>This tender's deadline ({deadline.format("DD/MM/YYYY")}) has now passed.</p>
-                                <p>You won't be able to generate new or issue existing requirements packs to suppliers until this has been set to a date in the future.</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            ) : null}
+            {this.checkAndDisplayDeadlineWarning(deadline)}
             
             <div className="uk-margin-top uk-margin-bottom">
                 <p style={{textAlign:"center"}}><strong>Status:</strong> {tender.packStatusMessage}</p>
@@ -152,7 +165,7 @@ class TenderStatus extends React.Component<TenderStatusProps & StateProps & Disp
                     <p className="uk-text-meta uk-margin-small">Billing Method</p>
                 </div>
                 <div className="uk-card uk-card-default uk-card-small uk-card-body uk-width-1-4 uk-text-center">
-                    <p className="uk-text-bold uk-margin-small">{moment.utc(tender.deadline).local().format("DD/MM/YYYY")}</p>
+                    <p className="uk-text-bold uk-margin-small">{this.props.tender.deadline ? deadline.local().format("DD/MM/YYYY") : "Not set"}</p>
                     <p className="uk-text-meta uk-margin-small">Deadline</p>
                 </div>
                 <div className="uk-card uk-card-default uk-card-small uk-card-body uk-width-1-4 uk-text-center">
