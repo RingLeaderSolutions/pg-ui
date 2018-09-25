@@ -90,8 +90,6 @@ const portfolioStateReducer: Reducer<PortfolioState> = combineReducers<Portfolio
 
 var portfolioReducer = reduceReducers(portfolioStateReducer, clearPortfolioOnTabSwitchReducer)
 
-import notificationMessageReducer from './notifications/notificationMessageReducer';
-
 import { AuthState } from './auth/AuthState'
 import loginReducer from './auth/loginReducer';
 
@@ -178,7 +176,6 @@ const rootReducer: Reducer<ApplicationState> = combineReducers<ApplicationState>
     portfolio: portfolioReducer,
     dashboard: dashboardReducer,
     portfolios: portfoliosReducer,
-    notifications: notificationMessageReducer,    
     auth: authReducer,
     meters: completeMeterReducer,
     backend_version: fetchBackendVersionReducer,

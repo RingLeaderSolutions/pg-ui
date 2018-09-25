@@ -1,5 +1,4 @@
 import * as React from "react";
-import NotificationContainer from './NotificationContainer';
 
 import AuthService from '../../services/authService';
 
@@ -17,7 +16,6 @@ export default class Header extends React.Component<HeaderProps, {}> {
     var icon = this.props.icon ? (<i className={`${this.props.icon} uk-margin-right`}></i>) : null;
     return (
       <div className="header">
-        <NotificationContainer />
         <div className="header-content" data-uk-grid>
           <div className="uk-width-expand" data-uk-grid>
             <div className="uk-width-auto">

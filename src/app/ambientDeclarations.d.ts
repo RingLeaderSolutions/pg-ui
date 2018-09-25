@@ -103,14 +103,5 @@ declare module 'uikit'{
     }
 
     const modal: Modal;
-
-    interface NotificationOptions {
-        message: string;
-        status: string;
-        pos: string;
-        timeout: number;
-    }
-
-    const notification: (options: NotificationOptions) => void;
 }
 declare module 'uikit/dist/js/uikit-icons';
