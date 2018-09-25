@@ -38,7 +38,6 @@ interface CreateAccountDialogState {
 }
 
 class CreateAccountDialog extends React.Component<CreateAccountDialogProps & StateProps & DispatchProps, CreateAccountDialogState> {
-    
     constructor(props: CreateAccountDialogProps & StateProps & DispatchProps){
         super(props);
         this.state = this.getStateFromCompany(props.company);
@@ -63,18 +62,32 @@ class CreateAccountDialog extends React.Component<CreateAccountDialogProps & Sta
         if(company != null){
             return {
                 ...defaults,
-                incorporationDate: moment(company.incorporationDate, "DD-MM-YYYY"),
+                incorporationDate: company.incorporationDate == null ? moment() : moment(company.incorporationDate, "DD-MM-YYYY"),
                 companyName: company.companyName,
                 companyReg: company.companyNumber,
                 address: [company.addressLine1, company.addressLine2, company.postTown, company.county]
                         .filter(s => s != null && s != "")
                         .join(', '),
-                country: company.countryOfOrigin,
-                postcode: company.postcode
+                country: this.tryMapCountry(company.countryOfOrigin),
+                postcode: company.postcode || ''
             }
         }
 
         return defaults;
+    }
+
+    tryMapCountry(country: string){
+        switch(country.toLowerCase()){
+            case "uk":
+            case "united kingdom":
+            case "great britain":
+                return "United Kingdom";
+            case "ireland":
+            case "ie":
+                return "Ireland";
+            default:
+                return '';
+        }
     }
 
     createAccount(){
