@@ -306,7 +306,7 @@ class UpdateTenderDialog extends React.Component<UpdateTenderDialogProps & State
                         <label className='uk-form-label'>Deadline notes</label>
                         <textarea className='uk-textarea' 
                             rows={4}
-                            value={this.state.deadlineNotes}
+                            value={this.state.deadlineNotes || ''}
                             onChange={(e) => this.handleFormChange("deadlineNotes", e)}/>
                     </div>
                     
