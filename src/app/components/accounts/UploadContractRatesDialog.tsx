@@ -17,32 +17,30 @@ interface StateProps {
 }
 
 interface DispatchProps {
-    uploadElectricityBackingSheet: (contractId: string, useGeneric: boolean, file: Blob) => void;
-    uploadGasBackingSheet: (contractId: string, useGeneric: boolean, file: Blob) => void;
+    uploadElectricityBackingSheet: (contractId: string, file: Blob) => void;
+    uploadGasBackingSheet: (contractId: string, file: Blob) => void;
     closeModalDialog: () => void;
 }
 
 interface UploadContractRatesDialogState {
     file: File;
-    useGeneric: boolean;
 }
 
 class UploadContractRatesDialog extends React.Component<UploadContractRatesDialogProps & StateProps & DispatchProps, UploadContractRatesDialogState> {
     constructor(){
         super();
         this.state = {
-            file: null,
-            useGeneric: false
+            file: null
         };
     }
     
     upload() {
         var { contractId, utility } = this.props.contract;
         if(utility == "GAS"){
-            this.props.uploadGasBackingSheet(contractId, this.state.useGeneric, this.state.file);
+            this.props.uploadGasBackingSheet(contractId, this.state.file);
         }
         else {
-            this.props.uploadElectricityBackingSheet(contractId, this.state.useGeneric, this.state.file);
+            this.props.uploadElectricityBackingSheet(contractId, this.state.file);
         }
 
         this.onFileCleared();
@@ -55,15 +53,6 @@ class UploadContractRatesDialog extends React.Component<UploadContractRatesDialo
 
     onFileCleared(){
         this.setState({...this.state, file: null});
-    }
-
-    handleFormChange(attribute: string, event: React.ChangeEvent<any>, isCheck: boolean = false){
-        var value = isCheck ? event.target.checked : event.target.value;
-
-        this.setState({
-            ...this.state,
-            [attribute]: value
-        })
     }
 
     canSubmit() {
@@ -95,19 +84,7 @@ class UploadContractRatesDialog extends React.Component<UploadContractRatesDialo
                         <p>Please upload the file representing the existing <strong>{supplierName}</strong> {friendlyUtility} contract rates.</p> 
                         <p>Contract Reference: <i>{reference}</i>.</p>
                         <hr />
-                        <form>
-                            <fieldset className="uk-fieldset">
-                                <div className='uk-margin-bottom'>
-                                    <label>
-                                        <input 
-                                            className='uk-checkbox'
-                                            type='checkbox' 
-                                            checked={this.state.useGeneric}
-                                            onChange={(e) => this.handleFormChange("useGeneric", e, true)} /> Use Generic Template
-                                    </label>
-                                </div>
-                            </fieldset>
-                            
+                        <form>                            
                             <UploadPanel 
                                 file={this.state.file}
                                 onFileSelected={(file: File) => this.onFileSelected(file)}
@@ -125,8 +102,8 @@ class UploadContractRatesDialog extends React.Component<UploadContractRatesDialo
 
 const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, UploadContractRatesDialogProps> = (dispatch) => {
     return {
-        uploadElectricityBackingSheet: (contractId: string, useGeneric: boolean, file: Blob) => dispatch(uploadElectricityBackingSheet(contractId, useGeneric, file)),
-        uploadGasBackingSheet: (contractId: string, useGeneric: boolean, file: Blob) => dispatch(uploadGasBackingSheet(contractId, useGeneric, file)),
+        uploadElectricityBackingSheet: (contractId: string, file: Blob) => dispatch(uploadElectricityBackingSheet(contractId, file)),
+        uploadGasBackingSheet: (contractId: string, file: Blob) => dispatch(uploadGasBackingSheet(contractId, file)),
         closeModalDialog: () => dispatch(closeModalDialog())    
     };
 };

@@ -72,8 +72,8 @@ export interface IApiService {
   reportSuccessfulSupplyMeterDataUpload(accountId: string, files: string[], utility: UtilityType): Promise<AxiosResponse>;
   reportSuccessfulSiteListUpload(portfolioId: string, accountId: string, files: string[]): Promise<AxiosResponse>;
   reportSuccessfulHistoricalUpload(portfolioId: string, files: string[], historicalType: string): Promise<AxiosResponse>;
-  reportSuccessfulBackingSheetUpload(contractId: string, useGeneric: boolean, files: string[], utility: UtilityType): Promise<AxiosResponse>;
-  reportSuccessfulOfferUpload(tenderId: string, supplierId: string, useGeneric: boolean, files: string[], utility: UtilityType): Promise<AxiosResponse>;
+  reportSuccessfulBackingSheetUpload(contractId: string, files: string[], utility: UtilityType): Promise<AxiosResponse>;
+  reportSuccessfulOfferUpload(tenderId: string, supplierId: string, files: string[], utility: UtilityType): Promise<AxiosResponse>;
   reportSuccessfulAccountDocumentUpload(accountId: string, documentType: string, files: string[]): Promise<AxiosResponse>;
 
   getTenderSuppliers(): Promise<AxiosResponse>;
@@ -510,22 +510,20 @@ export class ApiService implements IApiService {
         return axios.post(`${this.baseApiUri}/portman-web/upload/historical/${portfolioId}`, payload, this.getRequestConfig());
     }
 
-    reportSuccessfulBackingSheetUpload(contractId: string, useGeneric: boolean, files: string[], utility: UtilityType) {
+    reportSuccessfulBackingSheetUpload(contractId: string, files: string[], utility: UtilityType) {
         var payload = {
             csvNames: files,
             uploadType: "CONTRACT_BACKINGSHEETS",
-            notes: `Uploaded ${moment().toISOString()}`,
-            useGeneric
+            notes: `Uploaded ${moment().toISOString()}`
         };
         
         var suffix = this.getEndpointPrefix(utility);
         return axios.post(`${this.baseApiUri}/portman-web/upload/backingsheets/contract/${contractId}/${suffix}`, payload, this.getRequestConfig());
     }
 
-    reportSuccessfulOfferUpload(tenderId: string, supplierId: string, useGeneric: boolean, files: string[], utility: UtilityType){
+    reportSuccessfulOfferUpload(tenderId: string, supplierId: string, files: string[], utility: UtilityType){
         var payload = {
             tenderId,
-            useGeneric,
             files
         };
         
