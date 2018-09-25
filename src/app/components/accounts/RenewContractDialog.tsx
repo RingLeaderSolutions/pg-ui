@@ -5,10 +5,9 @@ import Spinner from '../common/Spinner';
 
 import { createContractRenewal, getTenderSuppliers, clearRenewalState } from '../../actions/tenderActions';
 import { TenderContract, TenderSupplier, ContractRenewalResponse } from "../../model/Tender";
-import { closeModalDialog } from "../../actions/viewActions";
+import { closeModalDialog, redirectToPortfolio } from "../../actions/viewActions";
 import ErrorMessage from "../common/ErrorMessage";
 import { ContractRenewalStage } from "../../model/app/ContractRenewalStage";
-import { Link } from "react-router-dom";
 import ModalDialog from "../common/ModalDialog";
 
 interface RenewContractDialogProps {
@@ -31,6 +30,7 @@ interface DispatchProps {
     renewContract: (contractId: string) => void;
     clearRenewalState: () => void;
     closeModalDialog: () => void;
+    redirectToPortfolio: (portfolioId: string) => void;
 }
 
 class RenewContractDialog extends React.Component<RenewContractDialogProps & StateProps & DispatchProps, {}> {
@@ -38,6 +38,12 @@ class RenewContractDialog extends React.Component<RenewContractDialogProps & Sta
         if(this.props.suppliers == null){
             this.props.getSuppliers();
         }
+    }
+
+    redirectToPortfolio(portfolioId: string){
+        this.props.redirectToPortfolio(portfolioId);
+        this.props.clearRenewalState();
+        this.props.closeModalDialog();
     }
 
     renewContract(){
@@ -132,7 +138,7 @@ class RenewContractDialog extends React.Component<RenewContractDialogProps & Sta
             case ContractRenewalStage.Complete:
                 var result = this.props.renewal_result;
                 var successMessage = result.status.toLowerCase() == 'created' ? 
-                    (<p>A new portfolio, "{result.title}"" has been created.</p>) : (<p>The "{result.title} portfolio has been updated.</p>);
+                    (<p>A new portfolio, <i>"{result.title}"</i> has been created.</p>) : (<p>The <i>"{result.title}"</i> portfolio has been updated.</p>);
                 return (
                     <div>
                         <div className="uk-modal-header">
@@ -143,10 +149,8 @@ class RenewContractDialog extends React.Component<RenewContractDialogProps & Sta
                                 <h4>This contract was successfully renewed!</h4> 
                                 {successMessage}
                                 <p>Click on the button below to view the portfolio, or click OK to close this window.</p>
-                                <Link to={`/portfolio/${result.portfolioId}`}>
-                                    <button className='uk-button uk-button-default uk-button-small uk-margin-top' data-uk-tooltip="title: Jump to portfolio">
-                                    <i className="fa fa-external-link-alt uk-margin-small-right"></i>{result.title}</button>
-                                </Link>    
+                                <button className='uk-button uk-button-default uk-button-small uk-margin-top' data-uk-tooltip="title: Jump to portfolio" onClick={() => this.redirectToPortfolio(result.portfolioId)}>
+                                <i className="fa fa-external-link-alt uk-margin-small-right"></i>{result.title}</button>
                             </div>
                             
                         </div>
@@ -170,6 +174,7 @@ const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, RenewContrac
         renewContract: (contractId: string) => dispatch(createContractRenewal(contractId)),
         clearRenewalState: () => dispatch(clearRenewalState()),
         closeModalDialog: () => dispatch(closeModalDialog()),
+        redirectToPortfolio: (portfolioId: string) => dispatch(redirectToPortfolio(portfolioId))
     };
 };
   

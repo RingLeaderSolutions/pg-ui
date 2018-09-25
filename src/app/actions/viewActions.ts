@@ -3,6 +3,8 @@ import * as types from "./actionTypes";
 import { Dispatch } from 'redux';
 import { ApplicationTab } from "../model/Models";
 
+import { push } from 'connected-react-router';
+
 export function selectApplicationTab(tab: ApplicationTab){
     return (dispatch: Dispatch<any>) => {
         dispatch( { type: types.SELECT_APPLICATION_TAB, data: tab });
@@ -55,4 +57,20 @@ export function closeModalDialog(){
     return (dispatch: Dispatch<any>) => {
         dispatch( { type: types.CLOSE_MODAL_DIALOG, data: null });
     };
+}
+
+export function redirectToPortfolio(portfolioId: string){
+    let portfolioPath = `/portfolio/${portfolioId}`;
+    return redirect(portfolioPath);
+}
+
+export function redirectToAccount(accountId: string){
+    let portfolioPath = `/account/${accountId}`;
+    return redirect(portfolioPath);
+}
+
+function redirect(path: string){
+    return (dispatch: Dispatch<any>) => {
+        dispatch(push(path))
+    }
 }
