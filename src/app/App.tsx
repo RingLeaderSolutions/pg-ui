@@ -24,6 +24,7 @@ UIkit.use(UIkitIcons);
 
 import 'react-table/react-table.css'
 import 'react-day-picker/lib/style.css';
+import 'react-toastify/dist/ReactToastify.css';
 
 import { ApplicationState } from "./applicationState";
 require('./styles/styles.scss');

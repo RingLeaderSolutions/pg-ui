@@ -1,6 +1,7 @@
 import * as React from "react";
 import { MapDispatchToPropsFunction, connect, MapStateToProps } from 'react-redux';
 import { Route,Link} from 'react-router-dom';
+import { ToastContainer, ToastPosition } from 'react-toastify';
 
 import { ApplicationState } from '../applicationState';
 import { fetchBackendVersion, fetchInstanceDetails } from '../actions/authActions';
@@ -120,6 +121,11 @@ class Home extends React.Component<StateProps & DispatchProps, {}> {
                         <Route path="/portfolio" component={PortfolioDetail} />
                     </div>
                 </div>
+                <ToastContainer 
+                    newestOnTop={true}
+                    className="notification-container"
+                    closeButton={false}
+                    position={ToastPosition.BOTTOM_LEFT} />
             </div>
             );
     }

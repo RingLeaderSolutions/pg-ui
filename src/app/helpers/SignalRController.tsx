@@ -1,13 +1,15 @@
+import * as React from "react";
 import { HubConnection } from "@aspnet/signalr-client";
 import { NotificationMessage } from '../model/NotificationMessage';
+import Notification from '../components/common/Notification';
 import { getPortfolioDetails, fetchPortfolioUploads, getAllPortfolios, getSinglePortfolio } from '../actions/portfolioActions';
 import { getPortfolioTenders, fetchTenderOffers, fetchTenderRecommendations, getAccountContracts } from '../actions/tenderActions';
 import { retrieveAccountDetail, fetchAccountDocumentation, fetchAccountUploads, retrieveAccounts } from '../actions/hierarchyActions';
 import { fetchMeterConsumption } from '../actions/meterActions';
 import { ApplicationState } from "../applicationState";
-import * as UIkit from 'uikit';
 import { Store, Dispatch } from "redux";
 import { push } from 'connected-react-router';
+import { toast, ToastType } from 'react-toastify';
 
 const NotifyMethodName = 'Notify';
 
@@ -135,13 +137,13 @@ export default class SignalRController {
 }
 
 function showNotification(message: string, success: boolean){
-    var icon = success ? 'check' : 'close';
-    var iconMessage = `<span uk-icon='icon: ${icon}' class='uk-margin-small-right'></span>${message}`
-
-    UIkit.notification({
-        message: iconMessage,
-        status: success ? 'success' : 'danger',
-        pos: 'bottom-left',
-        timeout: success ? 5000 : 3600000
-    });
+    var icon = success ? 'check-circle' : 'times-circle';
+    toast(
+        <Notification message={message} icon={icon} />,
+        {
+            bodyClassName: "notification-body",
+            type: success ? ToastType.SUCCESS : ToastType.ERROR,
+            autoClose: success ? 5000 : 15000
+        }
+    );
 }
