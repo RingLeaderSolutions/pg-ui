@@ -21,7 +21,9 @@ export interface Tender {
     requirements: TenderRequirements;
     packStatusMessage?: string;
     meterCount?: number;
-    offerTypes: TenderOfferType[]
+    offerTypes: TenderOfferType[];
+    commissionPerMonth: number;
+    paymentMethod: string;
 }
 
 export interface TenderOfferType {

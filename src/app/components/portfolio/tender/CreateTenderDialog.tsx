@@ -43,6 +43,8 @@ interface CreateTenderState {
     tariff: string;
     greenPercentage: string;
     durations: number[];
+    paymentMethod: string;
+    commissionPerMonth: string;
 }
 
 class CreateTenderDialog extends React.Component<CreateTenderDialogProps & StateProps & DispatchProps, CreateTenderState> {
@@ -58,7 +60,9 @@ class CreateTenderDialog extends React.Component<CreateTenderDialogProps & State
             paymentTerms: "0",
             tariff: '',
             greenPercentage: '',
-            durations: [ 12 ]
+            durations: [ 12 ],
+            paymentMethod: '',
+            commissionPerMonth: ''
         };
 
         this.stateHasDuration = this.stateHasDuration.bind(this);
@@ -123,7 +127,7 @@ class CreateTenderDialog extends React.Component<CreateTenderDialogProps & State
     renderDurationOptions(...durations: number[]){
         return durations.map(d => {
             return (
-                <div className="uk-width-1-2 uk-margin-small" key={d}>
+                <div className="uk-width-1-3 uk-margin-small" key={d}>
                     <label>
                         <input 
                             className='uk-checkbox'
@@ -165,9 +169,11 @@ class CreateTenderDialog extends React.Component<CreateTenderDialogProps & State
 
             tenderTitle: this.state.title,
             billingMethod: this.state.billingMethod,
-            deadline: this.state.deadline.format("YYYY-MM-DDTHH:mm:ss"),
+            deadline: this.state.deadline ? this.state.deadline.format("YYYY-MM-DDTHH:mm:ss") : null,
             deadlineNotes: this.state.deadlineNotes,
             commission: Number(this.state.commission),
+            commissionPerMonth: Number(this.state.commissionPerMonth),
+            paymentMethod: this.state.paymentMethod,
             halfHourly: this.props.isHalfHourly,
             allInclusive: this.state.ebInclusive,
             offerTypes,
@@ -242,7 +248,7 @@ class CreateTenderDialog extends React.Component<CreateTenderDialogProps & State
                         : null}
                         <label className="uk-form-label">Requested Offer Durations</label>
                         <div className="uk-grid uk-margin" data-uk-grid>
-                            <div className='uk-width-1-2 uk-margin-small uk-margin-small-top'>
+                            <div className='uk-width-1-3 uk-margin-small uk-margin-small-top'>
                                 <label>
                                     <input 
                                         className='uk-checkbox'
@@ -252,7 +258,7 @@ class CreateTenderDialog extends React.Component<CreateTenderDialogProps & State
                                         /> 0 (Flexi)
                                 </label>
                             </div>
-                            {this.renderDurationOptions(6, 12, 18, 24, 36)}
+                            {this.renderDurationOptions(6, 12, 18, 24, 36, 48, 60)}
                         </div>
 
                     </div>
@@ -272,7 +278,7 @@ class CreateTenderDialog extends React.Component<CreateTenderDialogProps & State
                             onChange={(e) => this.handleFormChange("title", e)}/>
                     </div>
                     
-                    <div className="uk-margin">
+                    <div className="uk-margin uk-width-1-2">
                         <label className="uk-form-label" data-for="deadline-input">Deadline</label>
                         <div className="uk-form-controls">
                             <DayPickerWithMonthYear 
@@ -292,30 +298,61 @@ class CreateTenderDialog extends React.Component<CreateTenderDialogProps & State
                             onChange={(e) => this.handleFormChange("deadlineNotes", e)}/>
                     </div>
 
-                    <div className='uk-margin'>
+                    <div className="uk-margin">
                         <label className='uk-form-label'>Commission</label>
-                        <div className="uk-grid" data-uk-grid>
-                            <div className="uk-width-expand@s">
-                                <input className='uk-input' 
-                                    placeholder="e.g. 0.1"
-                                    value={this.state.commission}
-                                    onChange={(e) => this.handleFormChange("commission", e)}/>
+                        <div className="uk-grid">
+                            <div className="uk-grid uk-grid-collapse uk-width-1-2">
+                                <div className="uk-width-expand uk-flex uk-flex-middle">
+                                    <input className='uk-input' 
+                                        placeholder="e.g. 0.1"
+                                        value={this.state.commission}
+                                        onChange={(e) => this.handleFormChange("commission", e)}/>
+                                </div>
+                                <div className="uk-width-auto uk-flex uk-flex-middle">
+                                    <p className="uk-margin-small-left">p/kWh</p>
+                                </div>
                             </div>
-                            <div className="uk-width-auto@s">
-                                <p className="uk-margin-small-top">p/kWh</p>
+
+                            <div className="uk-grid uk-grid-collapse uk-width-1-2">
+                                <div className="uk-width-expand uk-flex uk-flex-middle">
+                                    <input className='uk-input' 
+                                        placeholder="e.g. 11.50"
+                                        value={this.state.commissionPerMonth}
+                                        onChange={(e) => this.handleFormChange("commissionPerMonth", e)}/>
+                                </div>
+                                <div className="uk-width-auto uk-flex uk-flex-middle">
+                                    <p className="uk-margin-small-left">£/month</p>
+                                </div>
                             </div>
                         </div>
                     </div>
-
-                    <div className='uk-margin'>
-                        <label className='uk-form-label'>Billing Method</label>
-                        <select className='uk-select'
-                            value={this.state.billingMethod}
-                            onChange={(e) => this.handleFormChange("billingMethod", e)}>
-                            <option value="" disabled>Select</option>
-                            <option>Paper</option>
-                            <option>Electronic</option>
-                        </select>
+                    
+                    <div className="uk-grid">
+                        <div className="uk-width-1-2">
+                            <div className="uk-margin">
+                                <label className='uk-form-label'>Billing Method</label>
+                                <select className='uk-select'
+                                    value={this.state.billingMethod}
+                                    onChange={(e) => this.handleFormChange("billingMethod", e)}>
+                                    <option value="" disabled>Select</option>
+                                    <option>Paper</option>
+                                    <option>Electronic</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div className="uk-width-1-2">
+                            <div className="uk-margin">
+                                <label className='uk-form-label'>Payment Method</label>
+                                <select className='uk-select'
+                                    value={this.state.paymentMethod}
+                                    onChange={(e) => this.handleFormChange("paymentMethod", e)}>
+                                    <option value="" disabled>Select</option>
+                                    <option>BACS</option>
+                                    <option>Direct Debit</option>
+                                    <option>Cheque</option>
+                                </select>
+                            </div>
+                        </div>
                     </div>
                 </fieldset>        
             </form>

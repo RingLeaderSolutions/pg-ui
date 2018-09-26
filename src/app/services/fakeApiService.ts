@@ -457,6 +457,8 @@ export class FakeApiService implements IApiService {
                 deadline: null,
                 deadlineNotes: null,
                 commission: 1,
+                paymentMethod: "BACS",
+                commissionPerMonth: 1.21,
                 status: "CREATED",
                 offerTypes: [],
                 issuances: [{

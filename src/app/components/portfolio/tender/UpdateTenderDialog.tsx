@@ -42,12 +42,13 @@ interface UpdateTenderState {
     tariff: string;
     greenPercentage: string;
     durations: number[];
+    paymentMethod: string;
+    commissionPerMonth: string;
 }
 
 class UpdateTenderDialog extends React.Component<UpdateTenderDialogProps & StateProps & DispatchProps, UpdateTenderState> {
     constructor(props: UpdateTenderDialogProps & StateProps & DispatchProps){
         super();
-        console.log('tender deadline:' + props.tender.deadline);
         this.state = {
             deadline: props.tender.deadline ? moment(props.tender.deadline) : null,
             title: props.tender.tenderTitle || '',
@@ -58,7 +59,9 @@ class UpdateTenderDialog extends React.Component<UpdateTenderDialogProps & State
             paymentTerms: String(props.tender.requirements.paymentTerms),
             tariff: props.tender.requirements.tariffId || '',
             greenPercentage: String(props.tender.requirements.greenPercentage),
-            durations: props.tender.offerTypes.map(ot => ot.duration)
+            durations: props.tender.offerTypes.map(ot => ot.duration),
+            paymentMethod: props.tender.paymentMethod || '',
+            commissionPerMonth: props.tender.commissionPerMonth ? String(props.tender.commissionPerMonth) : ''
         };
     }
 
@@ -74,7 +77,9 @@ class UpdateTenderDialog extends React.Component<UpdateTenderDialogProps & State
                 paymentTerms: String(nextProps.tender.requirements.paymentTerms),
                 tariff: nextProps.tender.requirements.tariffId || '',
                 greenPercentage: String(nextProps.tender.requirements.greenPercentage),
-                durations: nextProps.tender.offerTypes.map(ot => ot.duration)
+                durations: nextProps.tender.offerTypes.map(ot => ot.duration),
+                paymentMethod: nextProps.tender.paymentMethod || '',
+                commissionPerMonth: nextProps.tender.commissionPerMonth ? String(nextProps.tender.commissionPerMonth) : ''
             })
         }
     }
@@ -132,7 +137,7 @@ class UpdateTenderDialog extends React.Component<UpdateTenderDialogProps & State
     renderDurationOptions(...durations: number[]){
         return durations.map(d => {
             return (
-                <div className="uk-width-1-2 uk-margin-small" key={d}>
+                <div className="uk-width-1-3 uk-margin-small" key={d}>
                     <label>
                         <input 
                             className='uk-checkbox'
@@ -180,11 +185,13 @@ class UpdateTenderDialog extends React.Component<UpdateTenderDialogProps & State
             ...tender,
             tenderTitle: this.state.title,
             billingMethod: this.state.billingMethod,
-            deadline: this.state.deadline.format("YYYY-MM-DDTHH:mm:ss"),
+            deadline: this.state.deadline ? this.state.deadline.format("YYYY-MM-DDTHH:mm:ss") : null,
             deadlineNotes: this.state.deadlineNotes,
             commission: Number(this.state.commission),
             halfHourly: this.props.tender.halfHourly,
             allInclusive: this.state.ebInclusive,
+            paymentMethod: this.state.paymentMethod,
+            commissionPerMonth: Number(this.state.commissionPerMonth),
             requirements,
             offerTypes
         }
@@ -259,7 +266,7 @@ class UpdateTenderDialog extends React.Component<UpdateTenderDialogProps & State
                         : null}
                         <label className="uk-form-label">Requested Offer Durations</label>
                         <div className="uk-grid uk-margin" data-uk-grid>
-                            <div className='uk-width-1-2 uk-margin-small uk-margin-small-top'>
+                            <div className='uk-width-1-3 uk-margin-small uk-margin-small-top'>
                                 <label>
                                     <input 
                                         className='uk-checkbox'
@@ -269,7 +276,7 @@ class UpdateTenderDialog extends React.Component<UpdateTenderDialogProps & State
                                         /> 0 (Flexi)
                                 </label>
                             </div>
-                            {this.renderDurationOptions(6, 12, 18, 24, 36)}
+                            {this.renderDurationOptions(6, 12, 18, 24, 36, 48, 60)}
                         </div>
 
                     </div>
@@ -289,7 +296,7 @@ class UpdateTenderDialog extends React.Component<UpdateTenderDialogProps & State
                             onChange={(e) => this.handleFormChange("title", e)}/>
                     </div>
 
-                    <div className="uk-margin">
+                    <div className="uk-margin uk-width-1-2">
                         <label className="uk-form-label" data-for="deadline-input">Deadline</label>
                         <div className="uk-form-controls">
                             <DayPickerWithMonthYear 
@@ -309,30 +316,61 @@ class UpdateTenderDialog extends React.Component<UpdateTenderDialogProps & State
                             onChange={(e) => this.handleFormChange("deadlineNotes", e)}/>
                     </div>
                     
-                    <div className='uk-margin'>
+                    <div className="uk-margin">
                         <label className='uk-form-label'>Commission</label>
-                        <div className="uk-grid" data-uk-grid>
-                            <div className="uk-width-expand@s">
-                                <input className='uk-input' 
-                                    placeholder="e.g. 0.1"
-                                    value={this.state.commission}
-                                    onChange={(e) => this.handleFormChange("commission", e)}/>
+                        <div className="uk-grid">
+                            <div className="uk-grid uk-grid-collapse uk-width-1-2">
+                                <div className="uk-width-expand uk-flex uk-flex-middle">
+                                    <input className='uk-input' 
+                                        placeholder="e.g. 0.1"
+                                        value={this.state.commission}
+                                        onChange={(e) => this.handleFormChange("commission", e)}/>
+                                </div>
+                                <div className="uk-width-auto uk-flex uk-flex-middle">
+                                    <p className="uk-margin-small-left">p/kWh</p>
+                                </div>
                             </div>
-                            <div className="uk-width-auto@s">
-                                <p className="uk-margin-small-top">p/kWh</p>
+
+                            <div className="uk-grid uk-grid-collapse uk-width-1-2">
+                                <div className="uk-width-expand uk-flex uk-flex-middle">
+                                    <input className='uk-input' 
+                                        placeholder="e.g. 11.50"
+                                        value={this.state.commissionPerMonth}
+                                        onChange={(e) => this.handleFormChange("commissionPerMonth", e)}/>
+                                </div>
+                                <div className="uk-width-auto uk-flex uk-flex-middle">
+                                    <p className="uk-margin-small-left">£/month</p>
+                                </div>
                             </div>
                         </div>
                     </div>
-
-                    <div className='uk-margin'>
-                        <label className='uk-form-label'>Billing Method</label>
-                        <select className='uk-select'
-                            value={this.state.billingMethod}
-                            onChange={(e) => this.handleFormChange("billingMethod", e)}>
-                            <option value="" disabled>Select</option>
-                            <option>Paper</option>
-                            <option>Electronic</option>
-                        </select>
+                    
+                    <div className="uk-grid">
+                        <div className="uk-width-1-2">
+                            <div className="uk-margin">
+                                <label className='uk-form-label'>Billing Method</label>
+                                <select className='uk-select'
+                                    value={this.state.billingMethod}
+                                    onChange={(e) => this.handleFormChange("billingMethod", e)}>
+                                    <option value="" disabled>Select</option>
+                                    <option>Paper</option>
+                                    <option>Electronic</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div className="uk-width-1-2">
+                            <div className="uk-margin">
+                                <label className='uk-form-label'>Payment Method</label>
+                                <select className='uk-select'
+                                    value={this.state.paymentMethod}
+                                    onChange={(e) => this.handleFormChange("paymentMethod", e)}>
+                                    <option value="" disabled>Select</option>
+                                    <option>BACS</option>
+                                    <option>Direct Debit</option>
+                                    <option>Cheque</option>
+                                </select>
+                            </div>
+                        </div>
                     </div>
                 </fieldset>        
             </form>
@@ -340,7 +378,6 @@ class UpdateTenderDialog extends React.Component<UpdateTenderDialogProps & State
     }
     render() {
         if(this.props.working || this.props.tariffs == null){
-            var spinner = (<Spinner hasMargin={true}/>);
             return (<div> <Spinner /> </div>);
         }
         return (
