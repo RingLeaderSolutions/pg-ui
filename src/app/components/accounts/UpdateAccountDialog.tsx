@@ -43,7 +43,7 @@ class UpdateAccountDialog extends React.Component<UpdateAccountDialogProps & Sta
     constructor(props: UpdateAccountDialogProps & StateProps & DispatchProps){
         super();
         this.state = {
-            incorporationDate:  props.account.incorporationDate ? moment(props.account.incorporationDate) : moment(),
+            incorporationDate:  props.account.incorporationDate ? moment(props.account.incorporationDate) : null,
             companyName: props.account.companyName,
             companyReg: props.account.companyRegistrationNumber,
             address: props.account.address,
@@ -68,7 +68,7 @@ class UpdateAccountDialog extends React.Component<UpdateAccountDialogProps & Sta
             address: this.state.address,
             postcode: this.state.postcode,
             countryOfOrigin: this.state.country,
-            incorporationDate: this.state.incorporationDate.format("YYYY-MM-DDTHH:mm:ss"),
+            incorporationDate: this.state.incorporationDate ? this.state.incorporationDate.format("YYYY-MM-DDTHH:mm:ss") : null,
             companyStatus: this.state.status,
             creditRating: this.state.creditRating,
             isVATEligible: this.state.vatEligible,
