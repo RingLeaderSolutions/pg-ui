@@ -13,6 +13,8 @@ import Portfolios from "./portfolio/Portfolios";
 import Accounts from "./accounts/Accounts";
 import PortfolioDetail from "./portfolio/PortfolioDetail";
 import AccountDetailView from "./accounts/AccountDetailView";
+import { NotificationService } from "../App";
+import { SignalRConnectionState } from "../services/SignalRService";
 
 interface StateProps {
     backendVersion: string;
@@ -22,16 +24,56 @@ interface StateProps {
     error: boolean;
     errorMessage: string;
 }
+
+interface HomeState {
+    connectionState: SignalRConnectionState;
+}
   
 interface DispatchProps {
     fetchBackendVersion: () => void;
     fetchInstanceDetails: () => void;
 }
 
-class Home extends React.Component<StateProps & DispatchProps, {}> {
+class Home extends React.Component<StateProps & DispatchProps, HomeState> {
+    constructor() {
+        super();
+        this.state = {
+            connectionState: SignalRConnectionState.Idle
+        };
+    }
+
     componentDidMount(){
         this.props.fetchBackendVersion();
         this.props.fetchInstanceDetails();
+        
+        NotificationService.onStateChanged = (state) => {
+            this.setState({
+                connectionState: state
+            });
+        };
+    }
+
+    renderConnectionState(){
+        let span: JSX.Element = null;
+        let tooltip: string = null;
+        switch(this.state.connectionState){
+            case SignalRConnectionState.Active:
+                span = (<span className="uk-label label-connected"><i className="fas fa-check-circle"></i><span>Connected</span></span>);
+                break;
+            case SignalRConnectionState.Connecting:
+                span = (<span className="uk-label label-connecting"><i className="fas fa-sync-alt"></i><span>Connecting...</span></span>);
+                break;
+            case SignalRConnectionState.Recovering:
+                tooltip = "We are attempting to recover your connection to TPI Flow services.";
+                span = (<span className="uk-label label-recovering" data-uk-tooltip={`title:${tooltip};pos:bottom;delay:1000`}><i className="fas fa-sync-alt"></i><span>Reconnecting...</span></span>);
+                break;
+            case SignalRConnectionState.Errored:
+                tooltip = "We couldn't successfully connect to TPI Flow services.<br/>Please get in touch with support to resolve this issue.";
+                span = (<span className="uk-label label-error" data-uk-tooltip={`title:${tooltip};pos:bottom;delay:1000`}><i className="fas fa-exclamation-triangle"></i><span>Disconnected</span></span>);
+                break;
+        }
+
+        return (<div className="label-connection">{span}</div>);
     }
 
     renderSelectedTriangle(tab: ApplicationTab){
@@ -41,6 +83,7 @@ class Home extends React.Component<StateProps & DispatchProps, {}> {
         
         return null;
     }
+
     render(){
         if(this.props.working){
             return (
@@ -91,11 +134,12 @@ class Home extends React.Component<StateProps & DispatchProps, {}> {
                         <img src={this.props.instance_detail.logoUri} alt={this.props.instance_detail.name} /> 
                     </div>
                     <div className="uk-text-center">
+                        {this.renderConnectionState()}
                         <div>
-                            <span className="uk-label label-grey">{appConfig.environment_name} v{appConfig.version}</span>
+                            <span className="uk-label label-small label-grey">{appConfig.environment_name} v{appConfig.version}</span>
                         </div>
                         <div>
-                            <span className="uk-label label-grey">Server v{this.props.backendVersion}</span>
+                            <span className="uk-label label-small label-grey">Server v{this.props.backendVersion}</span>
                         </div>
                     </div>
                     <ul className="uk-margin-large-top uk-nav-default uk-nav-parent-icon" data-uk-nav>

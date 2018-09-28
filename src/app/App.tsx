@@ -66,6 +66,7 @@ class App extends React.Component<AppProps, {}> {
 
     /* Despite us never explicitly unmounting <App /> in code, it's done for a hot reload */
     componentWillUnmount() {
+        notificationService.onStateChanged = null;
         notificationService.unsubscribe('Notify');
         notificationService.stop();
     }
