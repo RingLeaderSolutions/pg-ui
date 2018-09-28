@@ -171,5 +171,5 @@ export class SignalRService {
 }
 
 export function createNotificationService(): SignalRService{
-    return new SignalRService(appConfig.signalRUri, true);
+    return new SignalRService(appConfig.signalRUri, false);
 }
