@@ -1,7 +1,7 @@
 import { AxiosResponse } from 'axios';
 import axios from 'axios';
 import { CompanyInfo, PortfolioContact, PortfolioRequirements, Account, AccountCompanyStatusFlags, UtilityType, User } from "../model/Models";
-import { FakeApiService } from './fakeApiService';
+import { FakeApiService } from './fake/fakeApiService';
 import StorageService from './storageService';
 import { Mpan } from '../model/Meter';
 import { Tender, TenderContract } from '../model/Tender';

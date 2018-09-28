@@ -1,7 +1,7 @@
 import { AxiosResponse } from 'axios';
 
-import { CompanyInfo } from '../model/CompanyInfo';
-import { MeterPortfolio, Mpan, MeterConsumptionSummary } from '../model/Meter';
+import { CompanyInfo } from '../../model/CompanyInfo';
+import { MeterPortfolio, Mpan, MeterConsumptionSummary } from '../../model/Meter';
 import {
     Account,
     AccountCompanyStatusFlags,
@@ -18,12 +18,12 @@ import {
     SiteDetail,
     AccountDocument,
     InstanceDetail
-} from '../model/Models';
-import { PortfolioDetails } from '../model/PortfolioDetails';
-import { BackingSheet, Tender, TenderContract, TenderSupplier, TenderIssuanceEmail, Tariff, TenderRequirements } from '../model/Tender';
-import { IApiService } from './apiService';
-import { AccountContact } from '../model/HierarchyObjects';
-import { PortfolioCreationRequest } from '../model/Portfolio';
+} from '../../model/Models';
+import { PortfolioDetails } from '../../model/PortfolioDetails';
+import { BackingSheet, Tender, TenderContract, TenderSupplier, TenderIssuanceEmail, Tariff, TenderRequirements } from '../../model/Tender';
+import { IApiService } from '../apiService';
+import { AccountContact } from '../../model/HierarchyObjects';
+import { PortfolioCreationRequest } from '../../model/Portfolio';
 
 const responseDelay = 1000;
 const defer = (callback: () => void) => new Promise((resolve, reject) => setTimeout(() => callback(), responseDelay));
