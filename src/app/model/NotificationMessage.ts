@@ -1,7 +1,7 @@
 export interface NotificationMessage {
-    Category: string;
-    Description: string;
-    EntityType: string;
-    EntityId: string;
-    PortfolioId: string;
+    category: string;
+    description: string;
+    entityType: string;
+    entityId: string;
+    portfolioId: string;
 }

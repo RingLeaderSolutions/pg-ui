@@ -48,7 +48,7 @@
     "webpack-merge": "^4.1.4"
   },
   "dependencies": {
-    "@aspnet/signalr-client": "^1.0.0-alpha1-final",
+    "@aspnet/signalr": "^1.0.3",
     "@fortawesome/fontawesome-free": "^5.3.1",
     "@types/react-table": "^6.7.11",
     "auth0-js": "^9.3.0",

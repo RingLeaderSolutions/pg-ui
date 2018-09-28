@@ -6,8 +6,6 @@ import { History, createBrowserHistory } from 'history'
 import { ConnectedRouter } from 'connected-react-router';
 import configureStore from './store/configureStore'
 
-import SignalRController from './helpers/SignalRController';
-
 import Home from "./components/Home";
 import Login from "./components/auth/Login";
 import Logout from "./components/auth/Logout";
@@ -27,6 +25,8 @@ import 'react-day-picker/lib/style.css';
 import 'react-toastify/dist/ReactToastify.css';
 
 import { ApplicationState } from "./applicationState";
+import { SignalRService } from "./services/SignalRService";
+import { NotificationListener } from "./services/NotificationListener";
 require('./styles/styles.scss');
 
 const history: History = createBrowserHistory();
@@ -51,14 +51,20 @@ interface AppProps {
 }
 
 class App extends React.Component<AppProps, {}> {
-    notificationController: SignalRController;
-    componentDidMount() {
-        this.notificationController = new SignalRController(this.props.store);
-        this.notificationController.start();
+    private signalRService: SignalRService;
+    private notificationListener: NotificationListener;
+
+    async componentDidMount() {
+        this.notificationListener = new NotificationListener(this.props.store);    
+
+        this.signalRService = new SignalRService(appConfig.signalRUri, false);    
+        this.signalRService.subscribe('Notify', (message) => this.notificationListener.onNotification(message));
+        await this.signalRService.start();
     }
 
-    componentWillUnmount() {
-        this.notificationController.stop();
+    async componentWillUnmount() {
+        this.signalRService.unsubscribe('Notify');
+        await this.signalRService.stop();
     }
 
     render() {
