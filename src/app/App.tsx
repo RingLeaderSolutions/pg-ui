@@ -57,7 +57,7 @@ class App extends React.Component<AppProps, {}> {
     async componentDidMount() {
         this.notificationListener = new NotificationListener(this.props.store);    
 
-        this.signalRService = new SignalRService(appConfig.signalRUri, false);    
+        this.signalRService = new SignalRService(appConfig.signalRUri, true);    
         this.signalRService.subscribe('Notify', (message) => this.notificationListener.onNotification(message));
         await this.signalRService.start();
     }
