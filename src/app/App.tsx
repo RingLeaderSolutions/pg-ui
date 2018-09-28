@@ -25,17 +25,21 @@ import 'react-day-picker/lib/style.css';
 import 'react-toastify/dist/ReactToastify.css';
 
 import { ApplicationState } from "./applicationState";
-import { SignalRService } from "./services/SignalRService";
+import { createNotificationService, SignalRService } from "./services/SignalRService";
 import { NotificationListener } from "./services/NotificationListener";
 require('./styles/styles.scss');
 
 const history: History = createBrowserHistory();
+
+/* Both the store and the SignalR connection are recreated on hot-reload, but should exist as const singletons otherwise */
+let notificationService = createNotificationService();
 let store = configureStore(history);
 
 if (module.hot) {
     if(module.hot.data){
-        console.log("[TPIFLOW-HMR]: Re-creating store with previous state");
+        console.log("[TPIFLOW-HMR]: Re-creating store with previous state, and reinitializing SignalRService");
         store = configureStore(history, module.hot.data.state);
+        notificationService = createNotificationService();
     }
     module.hot.accept();
     module.hot.addDisposeHandler((data) => {
@@ -51,20 +55,19 @@ interface AppProps {
 }
 
 class App extends React.Component<AppProps, {}> {
-    private signalRService: SignalRService;
     private notificationListener: NotificationListener;
 
     async componentDidMount() {
         this.notificationListener = new NotificationListener(this.props.store);    
 
-        this.signalRService = new SignalRService(appConfig.signalRUri, true);    
-        this.signalRService.subscribe('Notify', (message) => this.notificationListener.onNotification(message));
-        await this.signalRService.start();
+        notificationService.subscribe('Notify', (message) => this.notificationListener.onNotification(message));
+        await notificationService.start();
     }
 
-    async componentWillUnmount() {
-        this.signalRService.unsubscribe('Notify');
-        await this.signalRService.stop();
+    /* Despite us never explicitly unmounting <App /> in code, it's done for a hot reload */
+    componentWillUnmount() {
+        notificationService.unsubscribe('Notify');
+        notificationService.stop();
     }
 
     render() {
@@ -90,6 +93,10 @@ class App extends React.Component<AppProps, {}> {
         )
     }
 }
+
+/* Export the notificationService as a singleton to be used by other app services. */
+/* TODO: Move this elsewhere? Being here results in `import { NotificationService } from './App'` - a smell? */
+export const NotificationService = notificationService;
 
 ReactDOM.render(
     <App store={store} history={history}/>,

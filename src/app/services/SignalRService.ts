@@ -1,4 +1,4 @@
-import { HubConnectionBuilder, HubConnection, LogLevel, HttpTransportType } from "@aspnet/signalr";
+import { HubConnectionBuilder, HubConnection, LogLevel } from "@aspnet/signalr";
 import { PrefixedConsoleLogger, ILogger } from "./Logger";
 import { Arg, Wait } from "../helpers/Utils";
 
@@ -7,7 +7,8 @@ export enum SignalRConnectionState {
     Active = 1,
     Connecting = 2,
     Recovering = 3,
-    Errored = 4
+    Errored = 4,
+    Stopping = 5
 }
 
 export class SignalRService {
@@ -59,43 +60,41 @@ export class SignalRService {
     /* Initialise the underlying HubConnection. Will retry if the initial connection fails. */
     public async start(): Promise<void>{
         if(this.state !== SignalRConnectionState.Idle){
-            this.logger.warning(`Ignoring attempt to start already-initialized connection`);
-            return Promise.reject('Unable to start an already-initialized connection. Call stop() first.');
+            throw new Error(`Unable to start an already-initialized connection [${SignalRConnectionState[this.state]}]. Call stop() first.`);
         }
 
         this.logger.info("Attempting to start SignalR hub connection.");
         this.updateState(SignalRConnectionState.Connecting);
 
         try {
-            return await this.connection.start()
-                .then(
-                    () => {
-                        this.logger.info("Successfully established connection.");
-                        this.updateState(SignalRConnectionState.Active);
-                        return Promise.resolve();
-                    },
-                    async (error: any) => {
-                        return await this.handleInitialStartFailure(error)
-                    });
+            await this.connection.start();
+            this.logger.info("Successfully established connection on first attempt.");
+            this.updateState(SignalRConnectionState.Active);
         }
         catch(error){
             return await this.handleInitialStartFailure(error)
         }
     }
 
-    /* Stop the underlying HubConnection. No retry capabilities. */
+    /* Stop the underlying HubConnection. No retry capabilities, but may throw if the stop fails. */
     public async stop(): Promise<void>{
         if(this.state === SignalRConnectionState.Idle){
-            this.logger.warning(`Ignoring attempt to stop an uninitialized connection`);
-            return Promise.reject('Unable to stop an uninitialized connection. Call start() first.');
+            throw new Error('Unable to stop an uninitialized connection. Call start() first.');
         }
 
-        this.logger.info("Attempting to stop SignalR hub connection");
-        return await this.connection.stop()
-            .then(() => {
-                this.logger.info("Successfully stopped connection.");
-                this.updateState(SignalRConnectionState.Idle);
-            });
+        this.updateState(SignalRConnectionState.Stopping);
+        this.logger.info("Attempting to stop SignalR HubConnection.");
+        try {
+            await this.connection.stop();
+            this.logger.info("Successfully stopped connection.");
+            this.updateState(SignalRConnectionState.Idle);
+        }
+        catch(ex)
+        {
+            this.updateState(SignalRConnectionState.Errored);
+            this.logger.error(`Failed to stop the underlying HubConnection: ${ex}`)
+            throw ex;
+        }
     }
 
     private async handleInitialStartFailure(error: any): Promise<void>{
@@ -106,15 +105,16 @@ export class SignalRService {
 
         this.logger.error("Failed to establish initial connection.");
         
-        return await this.attemptReconnect(
-            () => this.connection.start(), this.MaximumReconnectAttempts, this.ReconnectIntervalMilliseconds)
-            .then(
-                () => this.successfullyReconnected("Successfully established initial connection to SignalR hub."),
-                () => {
-                    let message = `Unable to establish initial SignalR connection after [${this.MaximumReconnectAttempts + 1}] attempts.`;
-                    return this.maxReconnectAttemptsReached(message);
-                }
-            );
+        try {
+            await this.attemptReconnect(() => this.connection.start(), 1, this.ReconnectIntervalMilliseconds);
+            this.logger.warning("Successfully established initial connection to SignalR hub.");
+            this.updateState(SignalRConnectionState.Active);
+        }
+        catch(ex){
+            this.logger.critical(`Unable to re-establish initial SignalR connection after [${this.MaximumReconnectAttempts}] attempts.`);
+            this.updateState(SignalRConnectionState.Errored);
+            throw ex;
+        }
     }
 
     private async onConnectionClosed(error?: Error): Promise<void>{
@@ -126,49 +126,34 @@ export class SignalRService {
         this.logger.warning(`Connection was closed unexpectedly: ${error.message}`);
         this.updateState(SignalRConnectionState.Recovering);
 
-        return await this.attemptReconnect(
-            () => this.connection.start(), this.MaximumReconnectAttempts, this.ReconnectIntervalMilliseconds)
-            .then(
-                () => this.successfullyReconnected("Successfully recovered connection to SignalR hub."),
-                () => {
-                    let message = `Unable to re-establish SignalR connection after [${this.MaximumReconnectAttempts}] attempts.`;
-                    return this.maxReconnectAttemptsReached(message);
-                }
-            );
+        try {
+            await this.attemptReconnect(() => this.connection.start(), 1, this.ReconnectIntervalMilliseconds)
+            this.logger.warning("Successfully recovered connection to SignalR hub.");
+            this.updateState(SignalRConnectionState.Active);
+        }
+        catch(ex){
+            this.logger.critical(`Unable to re-establish SignalR connection after [${this.MaximumReconnectAttempts}] attempts.`);
+            this.updateState(SignalRConnectionState.Errored);
+            throw ex;
+        }
     }
 
     /* Attempts to reconnect the underlying HubConnection using an exponential backoff retry policy. */
-    private async attemptReconnect(connectPromise: () => Promise<void>, maximumAttempts: number, delay: number): Promise<void>{
-        this.logger.warning(`Retrying connection: [${maximumAttempts}] attempts remaining.`);
-
-        await connectPromise()
-            .then(
-                () => {
-                    return Promise.resolve();
-                },
-                async (error) => {
-                    if(maximumAttempts == 0){
-                        this.updateState(SignalRConnectionState.Errored);
-                        return Promise.reject("Final attempt to reconnect failed.")
-                    }
-                    this.logger.warning(`Waiting ${delay}ms before next retry.`);
-                    await Wait(delay);
-                    return await this.attemptReconnect(connectPromise, maximumAttempts - 1, delay * 2);
-                }
-            );
-    }
-
-    private successfullyReconnected(message: string): Promise<void>{
-        this.logger.warning(message);
-        this.updateState(SignalRConnectionState.Active);
-        return Promise.resolve();
-    }
-
-    private maxReconnectAttemptsReached(message: string): Promise<void>{
-        this.logger.critical(message);
-        this.updateState(SignalRConnectionState.Errored);
-
-        return Promise.reject(message);
+    private async attemptReconnect(connectPromise: () => Promise<void>, attemptNumber: number = 1, delay: number): Promise<void>{
+        let attemptCount = `[${attemptNumber}/${this.MaximumReconnectAttempts}]`
+        try {
+            this.logger.warning(`Attempting retry ${attemptCount}...`);
+            await connectPromise();
+        }
+        catch(ex){
+            if(attemptNumber === this.MaximumReconnectAttempts){
+                this.updateState(SignalRConnectionState.Errored);
+                throw new Error(`Final attempt ${attemptCount} to reconnect failed.`)
+            }
+            this.logger.warning(`Retry attempt ${attemptCount} failed: waiting [${delay}]ms before next retry.`);
+            await Wait(delay);
+            await this.attemptReconnect(connectPromise, attemptNumber + 1, delay * 2);
+        }
     }
 
     private updateState(state: SignalRConnectionState, detail?: string): void{
@@ -176,11 +161,15 @@ export class SignalRService {
             return;
         }
 
-        this.logger.info(`Connection state updated to [${SignalRConnectionState[state]}]`);
         this.state = state;
-
+        this.logger.debug(`Connection state updated to [${SignalRConnectionState[state]}]`);
+        
         if(this.onStateChanged){
             this.onStateChanged(state, detail);
         }
     }
+}
+
+export function createNotificationService(): SignalRService{
+    return new SignalRService(appConfig.signalRUri, true);
 }
