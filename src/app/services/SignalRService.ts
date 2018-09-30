@@ -18,7 +18,7 @@ export class SignalRService {
     public state: SignalRConnectionState;
     public onStateChanged: (state: SignalRConnectionState, detail?: string) => void;
 
-    public MaximumReconnectAttempts: number = 10;
+    public MaximumReconnectAttempts: number = 5;
     public ReconnectIntervalMilliseconds: number = 10000;
 
     constructor(hubUrl: string, logVerbose: boolean = false){
