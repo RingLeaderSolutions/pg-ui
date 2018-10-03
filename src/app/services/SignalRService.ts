@@ -1,6 +1,7 @@
-import { HubConnectionBuilder, HubConnection, LogLevel } from "@aspnet/signalr";
+import { HubConnectionBuilder, HubConnection, LogLevel, IHttpConnectionOptions, HttpError, TimeoutError } from "@aspnet/signalr";
 import { PrefixedConsoleLogger, ILogger } from "./Logger";
 import { Arg, Wait } from "../helpers/Utils";
+import StorageService from './storageService';
 
 export enum SignalRConnectionState {
     Idle = 0,
@@ -25,9 +26,10 @@ export class SignalRService {
         Arg.isRequiredNotEmpty(hubUrl, "hubUrl");
 
         let logLevel = logVerbose ? LogLevel.Trace : LogLevel.Information;
-        let connectionOptions = {
+        let connectionOptions: IHttpConnectionOptions = {
             logger: new PrefixedConsoleLogger(logLevel, 'SignalR'),
-            logMessageContent: logVerbose
+            logMessageContent: logVerbose,
+            accessTokenFactory: () => new StorageService().getToken()
         };
         
         this.logger = new PrefixedConsoleLogger(logLevel, 'SignalRService');
@@ -97,13 +99,21 @@ export class SignalRService {
         }
     }
 
-    private async handleInitialStartFailure(error: any): Promise<void>{
+    private async handleInitialStartFailure(error: Error): Promise<void>{
         // If we've already failed an initial start, don't go for it again
         if(this.state == SignalRConnectionState.Errored){
             return;
         }
+        
+        if(error instanceof HttpError && error.statusCode === 401){
+            this.logger.error(`Received [401 Unauthorized] response from hub, stopping connection and not retrying while we wait for reauthentication.`);
+            await this.connection.stop();
+            this.updateState(SignalRConnectionState.Errored);
 
-        this.logger.error("Failed to establish initial connection.");
+            return;
+        }
+
+        this.logger.error(`Failed to establish initial connection: ${error.message}`);
         
         try {
             await this.attemptReconnect(() => this.connection.start(), 1, this.ReconnectIntervalMilliseconds);

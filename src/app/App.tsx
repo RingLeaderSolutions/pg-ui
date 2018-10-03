@@ -25,7 +25,7 @@ import 'react-day-picker/lib/style.css';
 import 'react-toastify/dist/ReactToastify.css';
 
 import { ApplicationState } from "./applicationState";
-import { createNotificationService, SignalRService } from "./services/SignalRService";
+import { createNotificationService } from "./services/SignalRService";
 import { NotificationListener } from "./services/NotificationListener";
 require('./styles/styles.scss');
 
