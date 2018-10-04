@@ -118,6 +118,16 @@ class AccountContractsView extends React.Component<AccountContractsViewProps & S
         return options;
     }
 
+    getStatusRowColor(status: string) : string {
+        switch(status.toLowerCase()){
+            case "active":
+                return "#f0fcf0";
+            case "pending":
+                return "#fcf6f0"
+            default:
+                return "#ffffff";
+        }
+    }
     renderStatusIcon(status: string){
         switch(status.toLowerCase()){
             case "expired":
@@ -138,23 +148,24 @@ class AccountContractsView extends React.Component<AccountContractsViewProps & S
             var supplierImage = supplier == null ? "Unknown" : (<img data-uk-tooltip={`title:${supplier.name}`} src={supplier.logoUri} style={{ maxWidth: "70px", maxHeight: "40px"}}/>);
             var created = moment.utc(c.uploaded).local();
             
+            var rowBackground = this.getStatusRowColor(c.status);
             return (
-                <tr key={c.contractId} className="uk-table-middle">
-                    <td>{c.reference}</td>
+                <tr key={c.contractId} className="uk-table-middle" style={{background: rowBackground}}>
                     <td>
                         <div className="uk-grid uk-grid-collapse">
                             <div className="uk-grid-auto uk-flex uk-flex-middle">
-                                {!hasContractRates ? 
-                                        (<i style={{color: '#ffa500'}} data-uk-tooltip="title:This existing contract's rates have not yet been uploaded and processed." className="fas fa-exclamation-triangle uk-margin-right"></i>) : 
-                                        (<i style={{color: '#006400'}} data-uk-tooltip={`title:This existing contract's rates have been successfully processed.`} className="fas fa-pound-sign uk-margin-right"></i>)}
+                                {this.renderStatusIcon(c.status)}
                             </div>
                             <div className="uk-grid-auto uk-flex uk-flex-middle">
-                                {this.renderStatusIcon(c.status)}
+                                {!hasContractRates ? 
+                                        (<i style={{color: '#ffa500'}} data-uk-tooltip="title:This existing contract's rates have not yet been uploaded and processed." className="fas fa-exclamation-triangle uk-margin-left"></i>) : 
+                                        (<i style={{color: '#006400'}} data-uk-tooltip={`title:This existing contract's rates have been successfully processed.`} className="fas fa-pound-sign uk-margin-left"></i>)}
                             </div>
                         </div>
                     </td>
+                    <td>{c.reference}</td>
                     <td>{supplierImage}</td>
-                    <td><UtilityIcon utility={c.utility} iconClass="uk-margin-small-right">{getWellFormattedUtilityName(c.utility)}</UtilityIcon></td>
+                    <td className="uk-text-center"><UtilityIcon utility={c.utility} /></td>
                     <td>{c.product}</td>
                     <td>{c.contractStart != null ? moment(c.contractStart).format("DD/MM/YYYY") : "-"}</td>
                     <td>{c.contractEnd != null ? moment(c.contractEnd).format("DD/MM/YYYY") : "-"}</td>
@@ -195,8 +206,8 @@ class AccountContractsView extends React.Component<AccountContractsViewProps & S
             <table className="uk-table uk-table-divider">
             <thead>
                 <tr>
-                    <th>Reference</th>
                     <th>Status</th>
+                    <th>Reference</th>
                     <th>Supplier</th>
                     <th>Utility</th>
                     <th>Product</th>
