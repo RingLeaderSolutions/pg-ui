@@ -73,20 +73,24 @@ class Login extends React.Component<RouteComponentProps<void> & StateProps & Dis
                             <fieldset className="uk-fieldset">
                                 {error}
                                 <div className="uk-margin">
-                                    <div className="uk-inline">
-                                        <span className="uk-form-icon" data-uk-icon="icon: user"></span>
-                                        <input id="email" className="uk-input" type="email" placeholder="Email"
-                                        value={this.state.email}
-                                        onChange={(e) => this.handleFormChange("email", e)} />
+                                    <div className="icon-input-container uk-grid uk-grid-collapse icon-left">
+                                        <div tabIndex={-1} className="uk-width-auto uk-flex uk-flex-middle" style={{background: "#f7f7f7"}}>
+                                            <i className="fas fa-at"></i>
+                                        </div>
+                                        <input id="email" className="uk-input uk-width-expand" type="email" placeholder="Email"
+                                            value={this.state.email}
+                                            onChange={(e) => this.handleFormChange("email", e)} />
                                     </div>
                                 </div>
 
                                 <div className="uk-margin">
-                                    <div className="uk-margin uk-inline">
-                                        <span className="uk-form-icon" data-uk-icon="icon: lock"></span>
-                                        <input id="password" className="uk-input" type="password" placeholder="Password" 
-                                        value={this.state.password}
-                                        onChange={(e) => this.handleFormChange("password", e)}/>
+                                    <div className="icon-input-container uk-grid uk-grid-collapse icon-left" style={{background: "#f7f7f7"}}>
+                                        <div tabIndex={-1} className="uk-width-auto uk-flex uk-flex-middle">
+                                            <i className="fas fa-lock"></i>
+                                        </div>
+                                        <input id="password" className="uk-input uk-width-expand" type="password" placeholder="Password" 
+                                            value={this.state.password}
+                                            onChange={(e) => this.handleFormChange("password", e)}/>
                                     </div>
                                 </div>
 

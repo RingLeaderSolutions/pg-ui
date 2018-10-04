@@ -245,7 +245,7 @@ class AccountElectricityMeterTable extends React.Component<AccountElectricityMet
         }
         
         var actions = (
-            <div className="actions-accounts">
+            <div>
                 <button className='uk-button uk-button-primary uk-margin-small-right' onClick={() => this.props.openModalDialog('upload-supply-data-electricity')}><i className="fa fa-file-upload uk-margin-small-right fa-lg"></i> Upload Supply Data</button>    
             </div>
         );
@@ -259,12 +259,18 @@ class AccountElectricityMeterTable extends React.Component<AccountElectricityMet
 
             return (
                 <div>
-                    <div className="search-accounts">
-                        <form className="uk-search uk-search-default">
-                            <span data-uk-search-icon="search"></span>
-                            <input className="uk-search-input" type="search" placeholder="Search..." disabled/>
-                        </form>
-                        {actions}
+                    <div className="uk-grid uk-grid-collapse">
+                        <div className="uk-width-expand">
+                            <div className="icon-input-container uk-grid uk-grid-collapse icon-left disabled">
+                                <div tabIndex={-1} className="uk-width-auto uk-flex uk-flex-middle">
+                                    <i className="fas fa-search"></i>
+                                </div>
+                                <input className="uk-input uk-width-expand" type="search" placeholder="Search..." disabled/>
+                            </div> 
+                        </div>
+                        <div className="uk-width-auto uk-margin-left uk-margin-right">
+                            {actions}
+                        </div>
                     </div>
                     <hr />
                     <div className="uk-alert-default uk-margin-right uk-alert" data-uk-alert>
@@ -286,12 +292,18 @@ class AccountElectricityMeterTable extends React.Component<AccountElectricityMet
                 <p className="uk-text-right">
                     {portfolioButtons}
                 </p>
-                <div className="search-accounts">
-                    <form className="uk-search uk-search-default">
-                        <span data-uk-search-icon="search"></span>
-                        <input className="uk-search-input" type="search" placeholder="Search..." value={this.state.searchText} onChange={(e) => this.handleSearch(e)}/>
-                    </form>
-                    {actions}
+                <div className="uk-grid uk-grid-collapse">
+                    <div className="uk-width-expand">
+                        <div className="icon-input-container uk-grid uk-grid-collapse icon-left">
+                            <div tabIndex={-1} className="uk-width-auto uk-flex uk-flex-middle">
+                                <i className="fas fa-search"></i>
+                            </div>
+                            <input className="uk-input uk-width-expand" type="search" placeholder="Search..." value={this.state.searchText} onChange={(e) => this.handleSearch(e)}/>
+                        </div> 
+                    </div>
+                    <div className="uk-width-auto uk-margin-left uk-margin-right">
+                        {actions}
+                    </div>
                 </div>
                 <hr />
                 <div>

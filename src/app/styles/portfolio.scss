@@ -8,20 +8,6 @@
     }
 
     .table-uploads {
-        .search-uploads {
-            margin: $margin-medium $margin-medium;
-            display: flex;
-            .uk-search {
-                flex-grow: 1;
-            }
-            .actions-uploads {
-                margin-left: $margin-medium;
-                button {
-                    margin-left: $margin-small;
-                }
-            }
-        }
-
         table {
             td {
                 vertical-align: middle;
@@ -31,15 +17,6 @@
 
     .view-consumption {
         width: 100%;
-    }
-    .table-mpans {
-        .search-mpans {
-            margin: $margin-medium $margin-medium;
-            display: flex;
-            .uk-search {
-                flex-grow: 1;
-            }
-        }
     }
 }
 

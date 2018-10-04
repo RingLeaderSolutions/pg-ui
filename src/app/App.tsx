@@ -16,10 +16,6 @@ import NotFound from "./components/NotFound";
 import * as moment from 'moment';
 moment.locale('en-GB');
 
-import * as UIkit from 'uikit';
-import * as UIkitIcons from 'uikit/dist/js/uikit-icons';
-UIkit.use(UIkitIcons);
-
 import 'react-table/react-table.css'
 import 'react-day-picker/lib/style.css';
 import 'react-toastify/dist/ReactToastify.css';

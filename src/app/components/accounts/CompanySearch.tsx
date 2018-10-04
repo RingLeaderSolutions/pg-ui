@@ -129,9 +129,11 @@ class CompanySearch extends React.Component<DispatchProps & StateProps, CompanyS
 
                         <div className="uk-grid-small" data-uk-grid>
                             <div className="uk-width-expand@s">
-                                <div className="uk-inline">
-                                    <span className="uk-form-icon" data-uk-icon="icon: world"></span>
-                                    <input id="registrationNumber" className="uk-input" type="input" placeholder="Registration Number" value={this.state.registrationNumber} onChange={e => this.updateRegistrationNumber(e)} />
+                                <div className="icon-input-container uk-grid uk-grid-collapse icon-left">
+                                    <div tabIndex={-1} className="uk-width-auto uk-flex uk-flex-middle">
+                                        <i className="far fa-building"></i>
+                                    </div>
+                                    <input id="registrationNumber" className="uk-input uk-width-expand" type="input" placeholder="Registration Number" value={this.state.registrationNumber} onChange={e => this.updateRegistrationNumber(e)} />
                                 </div>
                             </div>
                             <div className="uk-width-auto@s">
@@ -143,7 +145,7 @@ class CompanySearch extends React.Component<DispatchProps & StateProps, CompanyS
                         </div>
 
                         <hr />
-                            {frameContent}
+                        {frameContent}
                     </div>
                 </div>
                 {actionContent}

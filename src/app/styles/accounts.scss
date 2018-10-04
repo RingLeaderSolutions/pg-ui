@@ -20,18 +20,6 @@
     }
 }
 
-.search-accounts {
-    flex: none;
-    margin: $margin-medium $margin-medium;
-    display: flex;
-    .uk-search {
-        flex-grow: 1;
-    }
-    .actions-accounts {
-        margin-left: $margin-medium;
-    }
-}
-
 .create-account-dialog {
     .uk-card {
         cursor: pointer;

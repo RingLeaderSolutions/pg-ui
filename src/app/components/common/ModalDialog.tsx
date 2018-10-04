@@ -33,7 +33,7 @@ class ModalDialog extends React.Component<ModalDialogProps & StateProps & Dispat
             <div className={modalClass}>
                 <div className={dialogClass}>
                     <button className="uk-modal-close-default uk-close uk-icon" type="button" onClick={() => this.close()}>
-                    <i className="fas fa-times-circle"></i>
+                        <i className="fas fa-times-circle"></i>
                     </button>
                     {this.props.children}
                 </div>

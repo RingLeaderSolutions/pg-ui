@@ -26,20 +26,43 @@
         color: #666;
     }
 
+    div {
+        margin: 1px;
+    }
+
     .clickable-icon-container {
         cursor: pointer;
     }
-    .clickable-icon-container:focus {
+    .clickable-icon-container:focus, div {
         outline: none;
     }
 
     i {
         margin: 0 10px 0 0;
+        outline: none;
     }
 }
+
+.icon-input-container.disabled {
+    background-color: #f8f8f8;
+    color: #999;
+    border-color: #e5e5e5
+}
+
+.icon-input-container.icon-left {
+    i {
+        margin: 0 10px;
+    }
+}
+
 .icon-input-container:focus-within {
     outline: none;
     background-color: #fff;
     color: #666;
     border-color: #1e87f0;
+}
+.icon-input-container.disabled:focus-within {
+    background-color: #f8f8f8;
+    color: #999;
+    border-color: #e5e5e5
 }

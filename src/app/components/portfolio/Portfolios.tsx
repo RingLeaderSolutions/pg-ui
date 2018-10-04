@@ -239,18 +239,23 @@ class Portfolios extends React.Component<PortfoliosProps & StateProps & Dispatch
                 <Header title="Portfolios" icon="fas fa-layer-group"/>
                 <div className="content-portfolios">
                     <div className="table-portfolios">
-                        <div className="search-portfolios">
-                            <form className="uk-search uk-search-default">
-                                <span data-uk-search-icon="search"></span>
-                                <input className="uk-search-input" type="search" placeholder="Search..." value={this.state.searchText} onChange={(e) => this.handleSearch(e)}/>
-                            </form>
-                            <div className="actions-portfolios">
+                        <div className="uk-grid uk-grid-collapse">
+                            <div className="uk-width-expand">
+                                <div className="icon-input-container uk-grid uk-grid-collapse icon-left">
+                                    <div tabIndex={-1} className="uk-width-auto uk-flex uk-flex-middle">
+                                        <i className="fas fa-search"></i>
+                                    </div>
+                                    <input className="uk-input uk-width-expand" type="search" placeholder="Search..." value={this.state.searchText} onChange={(e) => this.handleSearch(e)}/>
+                                </div> 
+                            </div>
+                            <div className="uk-width-auto uk-margin-left uk-margin-right">
                                 <button className="uk-button uk-button-primary" onClick={() => this.props.openModalDialog('create_portfolio')}>
                                     <i className="fa fa-plus-circle uk-margin-small-right fa-lg"></i>
                                     New portfolio
                                 </button>
                             </div>
                         </div>
+                        <hr />
                         <div className="container-table-portfolios">
                             {tableContent}
                         </div>

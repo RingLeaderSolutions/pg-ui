@@ -228,8 +228,12 @@ class PortfolioMeters extends React.Component<PortfolioMetersProps & StateProps 
                     <div className="uk-grid uk-grid-small" data-uk-grid>
                         <div className="uk-width-expand uk-flex uk-flex-middle">
                             <div className="uk-inline uk-width-1-1">
-                                <span className="uk-form-icon" data-uk-icon="icon: search"></span>
-                                <input className="uk-input" placeholder="Search..." value={this.state.searchText} onChange={(e) => this.handleSearch(e)}/>
+                                <div className="icon-input-container uk-grid uk-grid-collapse icon-left">
+                                    <div tabIndex={-1} className="uk-width-auto uk-flex uk-flex-middle">
+                                        <i className="fas fa-search"></i>
+                                    </div>
+                                    <input className="uk-input uk-width-expand" placeholder="Search..." value={this.state.searchText} onChange={(e) => this.handleSearch(e)}/>
+                                </div>                                
                             </div>
                         </div>
                         { utilityType == UtilityType.Electricity ?

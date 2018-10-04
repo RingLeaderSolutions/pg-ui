@@ -38,16 +38,5 @@
         .table-warning {
             text-align: center;
         }
-        .search-portfolios {
-            flex: none;
-            margin: $margin-medium $margin-medium;
-            display: flex;
-            .uk-search {
-                flex-grow: 1;
-            }
-            .actions-portfolios {
-                margin-left: $margin-medium;
-            }
-        }
     }
 }

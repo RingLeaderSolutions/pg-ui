@@ -322,7 +322,7 @@ class RecommendationDetailDialog extends React.Component<RecommendationDetailDia
                 </div>
                 <div data-uk-grid>
                     <div className="uk-grid-width-1-10">
-                        <button className="uk-button uk-button-small uk-button-default" type="button" onClick={() => this.getPreviousSites()} disabled={previousIsDisabled}><span className={previousIsDisabled ? "icon-standard-cursor" : null} data-uk-icon="icon: chevron-left" /></button>
+                        <button className="uk-button uk-button-small uk-button-default" type="button" onClick={() => this.getPreviousSites()} disabled={previousIsDisabled}><i className="fas fa-chevron-left"></i></button>
                     </div>
                     <div className="uk-width-expand">
                         <ul data-uk-switcher="connect: #sites-tab-switcher" className="uk-tab">
@@ -330,7 +330,7 @@ class RecommendationDetailDialog extends React.Component<RecommendationDetailDia
                         </ul>
                     </div>
                     <div className="uk-grid-width-1-10">
-                        <button className="uk-button uk-button-small uk-button-default" type="button" onClick={() => this.getNextSites()}  disabled={nextIsDisabled}><span className={nextIsDisabled ? "icon-standard-cursor" : null} data-uk-icon="icon: chevron-right"/></button>
+                        <button className="uk-button uk-button-small uk-button-default" type="button" onClick={() => this.getNextSites()} disabled={nextIsDisabled}><i className="fas fa-chevron-right"></i></button>
                     </div>
                 </div>
                 <hr />
@@ -421,9 +421,9 @@ class RecommendationDetailDialog extends React.Component<RecommendationDetailDia
             return (<h4><strong>{formattedValue}</strong></h4>)
         }
         if(value < 0){
-            return <h4 style={{color: "darkgreen"}}>{formattedValue} <span data-uk-icon="icon: triangle-down" style={{color: 'green'}}/></h4>
+            return <h4 style={{color: "darkgreen"}}>{formattedValue} <i className="fas fa-caret-down" style={{color: 'green'}}></i></h4>
         }
-        return <h4 style={{color: "darkred"}}>{formattedValue} <span data-uk-icon="icon: triangle-up" style={{color: 'red'}}/></h4>
+        return <h4 style={{color: "darkred"}}>{formattedValue} <i className="fas fa-caret-up" style={{color: 'red'}}></i></h4>
     }
 
     renderCostCell(value: number, formattedValue: string){
@@ -431,9 +431,9 @@ class RecommendationDetailDialog extends React.Component<RecommendationDetailDia
             return <td style={{backgroundColor: "#fffef0", color: "burlywood"}}>{formattedValue}</td>
         }
         if(value < 0){
-            return <td style={{backgroundColor: "#f0fff0", color: "darkgreen"}}>{formattedValue} <span className="uk-margin-small-left" data-uk-icon="icon: triangle-down" style={{color: 'green'}}/></td>
+            return <td style={{backgroundColor: "#f0fff0", color: "darkgreen"}}>{formattedValue} <i className="fas fa-caret-down" style={{color: 'green'}}></i></td>
         }
-        return <td style={{backgroundColor: "#fff0f4", color: "darkred"}}>{formattedValue} <span className="uk-margin-small-left" data-uk-icon="icon: triangle-up" style={{color: 'red'}}/></td>
+        return <td style={{backgroundColor: "#fff0f4", color: "darkred"}}>{formattedValue} <i className="fas fa-caret-up" style={{color: 'red'}}></i></td>
     }
 
     renderSummaryTab(){
