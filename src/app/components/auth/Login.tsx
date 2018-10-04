@@ -4,6 +4,7 @@ import { ApplicationState } from '../../applicationState';
 
 import { login } from '../../actions/authActions';
 import { StringsAreNotNullOrEmpty } from "../../helpers/ValidationHelpers";
+import { RouteComponentProps } from "react-router-dom";
 
 interface StateProps {
   working: boolean;
@@ -12,7 +13,7 @@ interface StateProps {
 }
 
 interface DispatchProps {
-    login: (email: string, password:string, redirectRoute?: string) => void;
+    login: (email: string, password:string, intendedPath?: string) => void;
 }
 
 interface LoginState {
@@ -20,9 +21,9 @@ interface LoginState {
     password: string;
 }
 
-class Login extends React.Component<StateProps & DispatchProps, LoginState> {
+class Login extends React.Component<RouteComponentProps<void> & StateProps & DispatchProps, LoginState> {
     loginButton: HTMLButtonElement;
-    constructor(props: StateProps & DispatchProps) {
+    constructor(props:RouteComponentProps<void> &  StateProps & DispatchProps) {
         super(props);
 
         this.state = {
@@ -36,7 +37,8 @@ class Login extends React.Component<StateProps & DispatchProps, LoginState> {
     }
 
     handleSubmit() {
-        this.props.login(this.state.email, this.state.password, null);
+        var { intendedPath } = this.props.location.state || { intendedPath: '/' };
+        this.props.login(this.state.email, this.state.password, intendedPath);
     }
 
     handleFormChange(attribute: string, event: React.ChangeEvent<any>, isCheck: boolean = false){
@@ -104,7 +106,7 @@ class Login extends React.Component<StateProps & DispatchProps, LoginState> {
 
 const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, {}> = (dispatch) => {
     return {
-        login: (email: string, password: string) => dispatch(login(email, password))
+        login: (email: string, password: string, intendedPath: string) => dispatch(login(email, password, intendedPath))
     }
 }
 

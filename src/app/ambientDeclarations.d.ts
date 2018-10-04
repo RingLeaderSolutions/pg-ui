@@ -11,7 +11,7 @@ declare var appConfig: {
     environment_name: string;
   };
 
-declare module 'uikit'{
+declare module 'uikit' {
     const use: (what: any) => void;
 
     interface ModalOptions {

@@ -1,16 +1,24 @@
 import * as React from "react";
-import { Route, RouteProps, Redirect } from 'react-router';
+import { RouteComponentProps, RouteProps, Redirect, Route } from "react-router-dom";
+import { History } from 'history';
+import { LocalStorageRepository } from "../../services/LocalStorageRepository";
 
-import AuthService from '../../services/authService';
+class LoginRedirect extends React.Component<RouteComponentProps, {}> {
+    render() {
+        var location: History.LocationDescriptor = {
+            pathname: `/login`,
+            state: { intendedPath: this.props.location.pathname }
+        }
 
-const RedirectRoute : React.SFC<{}> = () => {
-    return <Redirect to="/login" />
+        return (<Redirect to={location} />);
+    }
 }
 
 class AuthenticatedRoute extends React.Component<RouteProps, {}> {
     render() {
-        let canAccess = AuthService.isLoggedIn();
-        return canAccess ? (<Route {...this.props} />) : (<Route component={RedirectRoute} />);
+        var token = new LocalStorageRepository().fetchIdToken();
+        let canAccess = token && token != '';
+        return canAccess ? (<Route {...this.props} />) : (<Route component={LoginRedirect} />);
     }
 }
 

@@ -1,6 +1,6 @@
 import * as React from "react";
 
-import AuthService from '../../services/authService';
+import AuthenticationService from '../../services/AuthenticationService';
 
 interface HeaderProps {
   title: string;
@@ -10,7 +10,7 @@ interface HeaderProps {
 
 export default class Header extends React.Component<HeaderProps, {}> {
   logOut() {
-    AuthService.logout();
+    AuthenticationService.logout();
   }
   render() {
     var icon = this.props.icon ? (<i className={`${this.props.icon} uk-margin-right`}></i>) : null;

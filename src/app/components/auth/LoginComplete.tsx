@@ -1,13 +1,20 @@
 import * as React from "react";
-import { RouteComponentProps, Redirect } from 'react-router';
+import { RouteComponentProps } from 'react-router-dom';
 import Spinner from '../common/Spinner';
+import { completeLogin } from "../../actions/authActions";
+import { MapDispatchToPropsFunction, connect } from "react-redux";
 
-import AuthService from '../../services/authService';
+interface DispatchProps { 
+    completeLogin: (hash: string) => void;
+}
 
-class LoginComplete extends React.Component<RouteComponentProps<void>, {}> {
-    render() {
+class LoginComplete extends React.Component<RouteComponentProps<void> & DispatchProps, {}> {
+    componentDidMount(){
         var hash = this.props.location.hash;
-        AuthService.parseHash(hash);
+        this.props.completeLogin(hash);
+    }
+
+    render() {    
         return (
             <div>
                 <Spinner hasMargin={true}/>
@@ -16,4 +23,11 @@ class LoginComplete extends React.Component<RouteComponentProps<void>, {}> {
     }
 }
 
-export default LoginComplete;
+const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, {}> = (dispatch) => {
+    return {
+        completeLogin: (hash: string) => dispatch(completeLogin(hash))
+    }
+}
+
+  
+export default connect(null, mapDispatchToProps)(LoginComplete);

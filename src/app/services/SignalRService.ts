@@ -1,7 +1,7 @@
 import { HubConnectionBuilder, HubConnection, LogLevel, IHttpConnectionOptions, HttpError, TimeoutError } from "@aspnet/signalr";
 import { PrefixedConsoleLogger, ILogger } from "./Logger";
 import { Arg, Wait } from "../helpers/Utils";
-import StorageService from './storageService';
+import { LocalStorageRepository } from "./LocalStorageRepository";
 
 export enum SignalRConnectionState {
     Idle = 0,
@@ -13,9 +13,11 @@ export enum SignalRConnectionState {
 }
 
 export class SignalRService {
-    private readonly connection: HubConnection;
     private readonly logger: ILogger;
+    private readonly storage: LocalStorageRepository;
 
+    private readonly connection: HubConnection;
+    
     public state: SignalRConnectionState;
     public onStateChanged: (state: SignalRConnectionState, detail?: string) => void;
 
@@ -26,14 +28,16 @@ export class SignalRService {
         Arg.isRequiredNotEmpty(hubUrl, "hubUrl");
 
         let logLevel = logVerbose ? LogLevel.Trace : LogLevel.Information;
+        this.logger = new PrefixedConsoleLogger(logLevel, 'SignalRService');
+
+        this.storage = new LocalStorageRepository();
+        this.state = SignalRConnectionState.Idle;
+
         let connectionOptions: IHttpConnectionOptions = {
             logger: new PrefixedConsoleLogger(logLevel, 'SignalR'),
             logMessageContent: logVerbose,
-            accessTokenFactory: () => new StorageService().getToken()
+            accessTokenFactory: () => this.storage.fetchIdToken()
         };
-        
-        this.logger = new PrefixedConsoleLogger(logLevel, 'SignalRService');
-        this.state = SignalRConnectionState.Idle;
 
         this.connection = new HubConnectionBuilder()
             .withUrl(appConfig.signalRUri, connectionOptions)
@@ -180,6 +184,6 @@ export class SignalRService {
     }
 }
 
-export function createNotificationService(): SignalRService{
+export function createNotificationService(): SignalRService {
     return new SignalRService(appConfig.signalRUri, false);
 }

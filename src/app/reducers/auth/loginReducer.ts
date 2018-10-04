@@ -14,13 +14,23 @@ export default function loginReducer(state = initialRequestState, action: any) {
             errorMessage: null
         }
       case types.USER_LOGIN_FAILED:
+        
         return {
             ...state,
             working: false,
             error: true,
-            errorMessage: action.error.error_description
+            errorMessage: mapErrorTypeToMessage(action.ex.errorType)
         }
       default:
         return state;
     }
   }
+
+function mapErrorTypeToMessage(errorType: string): string {
+    switch(errorType.toLowerCase()){
+        case "access_denied":
+            return "Sorry! You provided an invalid email address or password.";
+        default:
+            return "Sorry, we seem to be having a problem logging you in. Please contact TPI Flow support."
+    }
+}

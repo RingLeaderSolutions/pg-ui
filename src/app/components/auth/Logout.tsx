@@ -1,12 +1,9 @@
 import * as React from "react";
 import { RouteComponentProps } from 'react-router';
-
-import AuthService from '../../services/authService';
 import { Link } from "react-router-dom";
 
 class Logout extends React.Component<RouteComponentProps<void>, {}> {
     render() {
-        AuthService.clearSession();
         return (
             <div className="uk-cover-container uk-height-viewport">
                 <img src={require('../../images/powerline.png')} alt="" data-uk-cover />

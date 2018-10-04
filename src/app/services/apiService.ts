@@ -2,12 +2,12 @@ import { AxiosResponse } from 'axios';
 import axios from 'axios';
 import { CompanyInfo, PortfolioContact, PortfolioRequirements, Account, AccountCompanyStatusFlags, UtilityType, User } from "../model/Models";
 import { FakeApiService } from './fake/fakeApiService';
-import StorageService from './storageService';
 import { Mpan } from '../model/Meter';
 import { Tender, TenderContract } from '../model/Tender';
 import * as moment from 'moment';
 import { AccountContact } from '../model/HierarchyObjects';
 import { PortfolioCreationRequest } from '../model/Portfolio';
+import { LocalStorageRepository } from './LocalStorageRepository';
 
 export interface IApiService {
   getAllPortfolios(): Promise<AxiosResponse>;
@@ -111,22 +111,15 @@ export interface IApiService {
 }
 
 export class ApiService implements IApiService {
-    baseApiUri: string;
-    hierarchyApiUri: string;
-    uploadApiUri: string;
-    contextQuery: string;
-    teamId: string;
-    storage: StorageService;
+    private readonly baseApiUri: string = appConfig.baseApiUri;
+    private readonly hierarchyApiUri: string = appConfig.hierarchyApiUri;
+    private readonly uploadApiUri: string = appConfig.uploadApiUri;
+
+    private readonly teamId: string = "989";
+    private readonly contextQuery: string = "?context=team&value=989";
+    private readonly storage: LocalStorageRepository = new LocalStorageRepository();
 
     constructor(){
-        this.baseApiUri = appConfig.baseApiUri;
-        this.hierarchyApiUri = appConfig.hierarchyApiUri;
-        this.uploadApiUri = appConfig.uploadApiUri;
-        this.storage = new StorageService(); 
-
-        this.teamId = "989";
-        this.contextQuery = `?context=team&value=${this.teamId}`;
-
         axios.interceptors.response.use(config => {
             return config;
         },
@@ -137,7 +130,7 @@ export class ApiService implements IApiService {
                   case 403:
                     console.log(`Error (1/2): Received [${error.status}] from API @ [${error.config.url}]:\r\n${error.data}`);
                     console.log(`Error (2/2): Clearing local storage and redirecting to the login page.`);
-                    this.storage.clear();
+                    this.storage.clearTokens();
                     window.location.replace('/login');
                     break;
                   default:
@@ -155,7 +148,7 @@ export class ApiService implements IApiService {
 
     getRequestConfig() {
         let authorisation = "";
-        let token = this.storage.getToken();
+        let token = this.storage.fetchIdToken();
         if (token) {
             authorisation = `Bearer ${token}`;
         }
@@ -584,8 +577,7 @@ export class ApiService implements IApiService {
     }
 
     reportLogin(){
-        //return axios.post(`${this.baseApiUri}/portman-web/admin/logon`, null, this.getRequestConfig());
-        return new FakeApiService().reportLogin();
+        return axios.post(`${this.baseApiUri}/portman-web/admin/logon`, null, this.getRequestConfig());
     }
 
     createContact(contact: AccountContact){
