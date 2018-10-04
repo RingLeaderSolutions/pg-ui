@@ -41,9 +41,9 @@ class UpdateContractDialog extends React.Component<UpdateContractDialogProps & S
         var selectedSupplier = this.getSelectedSupplierFromEligible(props.contract.supplierId, eligibleSuppliers);
 
         this.state = {
-            contractRef: props.contract.reference,
+            contractRef: props.contract.reference || '',
             supplier: selectedSupplier,
-            product: props.contract.product,
+            product: props.contract.product || '',
             eligibleSuppliers
         }
     }
