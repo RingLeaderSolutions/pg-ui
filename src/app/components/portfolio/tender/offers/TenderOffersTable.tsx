@@ -348,7 +348,7 @@ class TenderOffersTable extends React.Component<TenderOffersTableProps & StatePr
         });
 
         return (
-            <div key="unissued-content">
+            <div>
                 <div className="uk-grid-small" data-uk-grid>
                     <div className="uk-width-expand" />
                     <div className="uk-width-auto">
@@ -409,16 +409,15 @@ class TenderOffersTable extends React.Component<TenderOffersTableProps & StatePr
                 tabContent[index] = content;
             });
 
-        tabs.push((<li key="unissued"><a href="#">Unissued</a></li>));
-        tabContent.push(this.renderUnissued());
-
         return (
             <div className="uk-margin-top">
                 <ul className="uk-tab" data-uk-switcher="connect: +.uk-switcher">
                     {tabs}
+                    <li key="unissued"><a href="#">Unissued</a></li>
                 </ul>
                 <ul className="uk-switcher">
                     {tabContent}
+                    {this.renderUnissued()}
                 </ul>
             </div>
         )
@@ -438,6 +437,7 @@ class TenderOffersTable extends React.Component<TenderOffersTableProps & StatePr
             let content = (<Spinner hasMargin={true} />);
             return this.renderCardContent(content);
         }
+        
         if(this.props.tender.existingContract == null || this.props.tender.existingContract.sheetCount == 0){
             let content = (
                 <div className="uk-alert-warning uk-margin-small-bottom uk-alert" data-uk-alert>
@@ -454,10 +454,6 @@ class TenderOffersTable extends React.Component<TenderOffersTableProps & StatePr
             return this.renderCardContent(content);
         }
         
-        var viewQuoteRatesDialogName = `view_quote_rates_${this.props.tender.tenderId}`;
-
-        var offersContent = this.renderOffersContent();
-
         let content = (
             <div>
                 <div className="uk-grid" data-uk-grid>
@@ -472,9 +468,9 @@ class TenderOffersTable extends React.Component<TenderOffersTableProps & StatePr
                     </div>
                 </div>
                 <div>
-                    {offersContent}
+                    {this.renderOffersContent()}
                 </div>
-                <ModalDialog dialogId={viewQuoteRatesDialogName} dialogClass="backing-sheet-modal">
+                <ModalDialog dialogId={`view_quote_rates_${this.props.tender.tenderId}`} dialogClass="backing-sheet-modal">
                     <TenderBackingSheetsDialog />
                 </ModalDialog>
         </div>);
