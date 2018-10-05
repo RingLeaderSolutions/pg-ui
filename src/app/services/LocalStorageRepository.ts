@@ -3,30 +3,31 @@ import { Profile } from "../model/app/Profile";
 
 export class LocalStorageRepository {
     public saveProfile(auth0Profile: Auth0.Auth0UserProfile): void {
-        let role = auth0Profile.app_metadata && auth0Profile.app_metadata.role;
+        let roles = auth0Profile.app_metadata && auth0Profile.app_metadata.roles;
 
         localStorage.setItem(PersistedDataKeys.UserId, auth0Profile.user_id);
         localStorage.setItem(PersistedDataKeys.Email, auth0Profile.email);
-        localStorage.setItem(PersistedDataKeys.Role, role);
-        localStorage.setItem(PersistedDataKeys.LastPasswordReset, auth0Profile.last_password_reset);
+        localStorage.setItem(PersistedDataKeys.Roles, JSON.stringify(roles));
+        localStorage.setItem(PersistedDataKeys.LastPasswordReset, auth0Profile.last_password_reset || '');
         localStorage.setItem(PersistedDataKeys.Picture, auth0Profile.picture);
         localStorage.setItem(PersistedDataKeys.IsVerified, String(auth0Profile.email_verified));
     }
 
     public saveTokens(idToken: string, accessToken: string, refreshToken: string): void {
-        localStorage.setItem(PersistedDataKeys.IdToken, idToken);
-        localStorage.setItem(PersistedDataKeys.AccessToken, accessToken);
-        localStorage.setItem(PersistedDataKeys.RefreshToken, refreshToken);
+        localStorage.setItem(PersistedDataKeys.IdToken, idToken || '');
+        localStorage.setItem(PersistedDataKeys.AccessToken, accessToken || '');
+        localStorage.setItem(PersistedDataKeys.RefreshToken, refreshToken || '');
     }
 
     public fetchProfile(): Profile {
         let lastPasswordReset = localStorage.getItem(PersistedDataKeys.LastPasswordReset);
         let isVerified = localStorage.getItem(PersistedDataKeys.IsVerified);
-        
+        let roles = localStorage.getItem(PersistedDataKeys.Roles);
+
         return {
             userId: localStorage.getItem(PersistedDataKeys.UserId),
             email: localStorage.getItem(PersistedDataKeys.Email),
-            role: localStorage.getItem(PersistedDataKeys.Role),
+            roles: JSON.parse(roles),
             lastPasswordReset: new Date(lastPasswordReset),
             picture: localStorage.getItem(PersistedDataKeys.Picture),
             isVerified: Boolean(isVerified)
@@ -41,6 +42,10 @@ export class LocalStorageRepository {
         return localStorage.getItem(PersistedDataKeys.AccessToken);
     }
 
+    fetchRefreshToken(): string {
+        return localStorage.getItem(PersistedDataKeys.RefreshToken);
+    }
+
     public clearTokens(){
         localStorage.removeItem(PersistedDataKeys.IdToken);
         localStorage.removeItem(PersistedDataKeys.AccessToken);
@@ -49,7 +54,7 @@ export class LocalStorageRepository {
     public clearProfile(){
         localStorage.removeItem(PersistedDataKeys.UserId);
         localStorage.removeItem(PersistedDataKeys.Email);
-        localStorage.removeItem(PersistedDataKeys.Role);
+        localStorage.removeItem(PersistedDataKeys.Roles);
         localStorage.removeItem(PersistedDataKeys.Picture);
         localStorage.removeItem(PersistedDataKeys.IsVerified);
         localStorage.removeItem(PersistedDataKeys.LastPasswordReset);
@@ -67,7 +72,7 @@ class PersistedDataKeys {
     public static readonly ProfileSection = `${PersistedDataKeys.Namespace}.profile`;
     public static readonly UserId = `${PersistedDataKeys.ProfileSection}.id`;
     public static readonly Email = `${PersistedDataKeys.ProfileSection}.email`;
-    public static readonly Role = `${PersistedDataKeys.ProfileSection}.role`;
+    public static readonly Roles = `${PersistedDataKeys.ProfileSection}.roles`;
     public static readonly Picture = `${PersistedDataKeys.ProfileSection}.picture`;
     public static readonly IsVerified = `${PersistedDataKeys.ProfileSection}.isVerified`;
     public static readonly LastPasswordReset = `${PersistedDataKeys.ProfileSection}.lastPasswordReset`;
