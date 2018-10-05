@@ -1,7 +1,7 @@
 import { AxiosResponse } from 'axios';
 
 import { CompanyInfo } from '../../model/CompanyInfo';
-import { MeterPortfolio, Mpan, MeterConsumptionSummary } from '../../model/Meter';
+import { MeterConsumptionSummary } from '../../model/Meter';
 import {
     Account,
     AccountCompanyStatusFlags,
@@ -20,7 +20,7 @@ import {
     InstanceDetail
 } from '../../model/Models';
 import { PortfolioDetails } from '../../model/PortfolioDetails';
-import { BackingSheet, Tender, TenderContract, TenderSupplier, TenderIssuanceEmail, Tariff, TenderRequirements } from '../../model/Tender';
+import { BackingSheet, Tender, TenderContract, TenderSupplier, TenderIssuanceEmail, Tariff } from '../../model/Tender';
 import { IApiService } from '../apiService';
 import { AccountContact } from '../../model/HierarchyObjects';
 import { PortfolioCreationRequest } from '../../model/Portfolio';
@@ -342,84 +342,6 @@ export class FakeApiService implements IApiService {
     uploadLoa(portfolioId: string, file: Blob){
         return OK();
     }
-
-    getAllMeters(portfolioId: string){
-        var data: MeterPortfolio = {
-            portfolioId: "1",
-            sites: [{
-                siteCode: "test site",
-                mpans: [
-                    {
-                        meterSupplyData: {
-                            address: null,
-                            capacity: 0,
-                            connection: "Network",
-                            currentContractEnd: null,
-                            daAgent: null,
-                            dcAgent: "UKDC",
-                            eac: 0,
-                            energized: true,
-                            gspGroup: "_A",
-                            id: "30f83b25-304c-4903-9924-3de29a295b60",
-                            llf: "973",
-                            measurementClass: "D",
-                            meterTimeSwitchCode: "845",
-                            meterType: "HH",
-                            moAgent: "EELC",
-                            mpanCore: "1001110011154",
-                            newConnection: false,
-                            periodConsumption: null,
-                            postcode: null,
-                            profileClass: "00",
-                            rec: 0,
-                            retrievalMethod: "R",
-                            serialNumber: "LKD007",
-                            siteCode: null,
-                            totalConsumption: 0,
-                            utility: "ELECTRICITY",
-                            voltage: null,
-                            cclEligible: true,
-                            vatPercentage: 0.2,
-                        },
-                        halfHourly: {
-                            forecast: null,
-                            historical: {
-                                created: "2018-01-08T10:32:23.197",
-                                docId: "5a5348b2c3ae3643b9b19c19"
-                            }
-                        }
-                }],
-                mprns: [
-                    {
-                        meterSupplyData: {
-                            aQ: 0,
-                            address: null,
-                            changeOfUse: false,
-                            currentContractEnd: null,
-                            id: null,
-                            imperial: false,
-                            make: null,
-                            model: null,
-                            mprnCore: "612345",
-                            postcode: null,
-                            serialNumber: null,
-                            siteCode: null,
-                            size: 0,
-                            utility: "GAS",
-                            cclEligible: true,
-                            vatPercentage: 0.2,
-                            emergencyContactName: "Joe Bloggs",
-                            emergencyContactAddress: "1 Hampton Court, Hampton, London, W1A X21",
-                            emergencyContactTelephone: "01292 191191"
-                        },
-                        halfHourly: null
-                    }
-                ]
-            }]
-        };
-        
-        return OK(data);
-    }
         
     uploadSupplyMeterData(accountId: string, file: Blob, utility: UtilityType){
         return OK();
@@ -430,10 +352,6 @@ export class FakeApiService implements IApiService {
     }
 
     uploadSiteList(portfolioId: string, file: Blob){
-        return OK();
-    }
-
-    updateMeter(portfolioId: string, meter: Mpan){
         return OK();
     }
 
@@ -594,7 +512,8 @@ export class FakeApiService implements IApiService {
                         supplierCount : 0,
                         supplierId : "4",
                         tenderId : "c2edf658-4f75-401a-b2d0-3b330ab4e833",
-                        winningDuration: 6
+                        winningDuration: 6,
+                        winningQuoteId: "c2edf658-4f75-401a-b2d0-3b330ab4e833"
                     }
                 ],
                 halfHourly: false,
@@ -1155,6 +1074,10 @@ export class FakeApiService implements IApiService {
     }
 
     fetchAccountContractRates(contractId: string){
+        return OK();
+    }
+
+    acceptQuote(tenderId: string, quoteId: string){
         return OK();
     }
 

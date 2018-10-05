@@ -2,7 +2,6 @@ import { AxiosResponse } from 'axios';
 import axios from 'axios';
 import { CompanyInfo, PortfolioContact, PortfolioRequirements, Account, AccountCompanyStatusFlags, UtilityType, User } from "../model/Models";
 import { FakeApiService } from './fake/fakeApiService';
-import { Mpan } from '../model/Meter';
 import { Tender, TenderContract } from '../model/Tender';
 import * as moment from 'moment';
 import { AccountContact } from '../model/HierarchyObjects';
@@ -49,9 +48,7 @@ export interface IApiService {
 
   getPortfolioHistory(portfolioId: string): Promise<AxiosResponse>;
 
-  getAllMeters(portfolioId: string): Promise<AxiosResponse>;
   fetchMeterConsumption(portfolioId: string): Promise<AxiosResponse>;
-  updateMeter(portfolioId: string, meter: Mpan): Promise<AxiosResponse>;
   excludeMeters(portfolioId: string, meters: string[]): Promise<AxiosResponse>;
   includeMeters(portfolioId: string, meters: string[]): Promise<AxiosResponse>;
   exportMeterConsumption(portfolioID: string): Promise<AxiosResponse>;
@@ -93,6 +90,7 @@ export interface IApiService {
   fetchTenderIssuanceEmail(tenderId: string): Promise<AxiosResponse>;
   exportContractRates(tenderId: string, quoteId: string): Promise<AxiosResponse>;
   deleteQuote(tenderId: string, quoteId: string): Promise<AxiosResponse>;
+  acceptQuote(tenderId: string, quoteId: string): Promise<AxiosResponse>;
 
   fetchTenderOffers(portfolioId: string): Promise<AxiosResponse>;
   fetchTenderRecommendations(portfolioId: string): Promise<AxiosResponse>;
@@ -337,14 +335,6 @@ export class ApiService implements IApiService {
         return axios.post(`${this.uploadApiUri}/api/upload/offer/${tenderId}`, formData, this.getUploadFileConfig());
     }
 
-    getAllMeters(portfolioId: string){
-        return axios.get(`${this.baseApiUri}/portman-web/meters/portfolio/${portfolioId}`, this.getRequestConfig());
-    }
-
-    updateMeter(portfolioId: string, meter: Mpan){
-        return axios.put(`${this.baseApiUri}/portman-web/meters/electricity/portfolio/${portfolioId}`, meter.meterSupplyData, this.getRequestConfig());
-    }
-
     getPortfolioTenders(portfolioId: string){
         return axios.get(`${this.baseApiUri}/portman-web/tender/portfolio/${portfolioId}/basic`, this.getRequestConfig());        
     }
@@ -577,7 +567,7 @@ export class ApiService implements IApiService {
     }
 
     reportLogin(){
-        return axios.post(`${this.baseApiUri}/portman-web/admin/logon`, null, this.getRequestConfig());
+       return axios.post(`${this.baseApiUri}/portman-web/admin/logon`, null, this.getRequestConfig());
     }
 
     createContact(contact: AccountContact){
@@ -649,6 +639,10 @@ export class ApiService implements IApiService {
 
     createContractRenewal(contractId: string){
         return axios.post(`${this.baseApiUri}/portman-web/contract/trigger/renewal/${contractId}`, null, this.getRequestConfig());                        
+    }
+
+    acceptQuote(tenderId: string, quoteId: string){
+        return axios.put(`${this.baseApiUri}/portman-web/tender/${tenderId}/quote/accept/${quoteId}`, null, this.getRequestConfig());        
     }
 
     getEndpointPrefix(utility: UtilityType) {

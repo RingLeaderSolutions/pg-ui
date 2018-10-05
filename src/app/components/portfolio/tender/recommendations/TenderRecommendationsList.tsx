@@ -6,7 +6,7 @@ import Spinner from '../../../common/Spinner';
 import ErrorMessage from "../../../common/ErrorMessage";
 import * as moment from 'moment';
 
-import { fetchRecommendationsSuppliers, fetchRecommendationsSites, fetchRecommendationSummary, selectRecommendationReport } from '../../../../actions/tenderActions';
+import { fetchRecommendationsSuppliers, fetchRecommendationsSites, fetchRecommendationSummary, selectRecommendationReport, acceptQuote } from '../../../../actions/tenderActions';
 import { Tender, TenderSupplier, TenderRecommendation, TenderIssuance } from "../../../../model/Tender";
 import { AccountDetail, PortfolioDetails } from "../../../../model/Models";
 import { retrieveAccount } from "../../../../actions/portfolioActions";
@@ -36,6 +36,7 @@ interface DispatchProps {
     getRecommendationSuppliers: (tenderId: string, summaryId: string) => void;
     getRecommendationSites: (tenderId: string, summaryId: string, siteStart: number, siteEnd: number) => void;
     selectRecommendationReport: (recommendation: TenderRecommendation) => void;
+    acceptQuote: (tenderId: string, quoteId: string) => void;
 }
 
 class TenderRecommendationsList extends React.Component<TenderRecommendationsListProps & StateProps & DispatchProps, {}> {
@@ -49,6 +50,32 @@ class TenderRecommendationsList extends React.Component<TenderRecommendationsLis
 
         this.props.selectRecommendationReport(recommendation);
         this.props.openModalDialog("view_recommendation");
+    }
+
+
+    renderRecommendationActions(recommendation: TenderRecommendation, sendEnabled: boolean){
+        let { tenderId, winningQuoteId, summaryId } = recommendation;
+        if(recommendation.communicated){
+            return (
+                <div className="uk-button-group">
+                    <button className="uk-button uk-button-primary"><i className="fas fa-check-circle uk-margin-small-right"></i>Accept</button>
+                    <div className="uk-inline">
+                        <button className="uk-button uk-button-primary dropdown-button" type="button" onClick={() => this.props.acceptQuote(tenderId, winningQuoteId)}><i className="fas fa-chevron-down"></i></button>
+                        <div data-uk-dropdown="mode: click; boundary: ! .uk-button-group; boundary-align: true;">
+                            <ul className="uk-nav uk-dropdown-nav">
+                                <li className="uk-active" ><a href="#" onClick={() => this.props.openModalDialog(`send_recommendation_${summaryId}`)}><i className="fas fa-envelope uk-margin-small-right"></i>Resend</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>);
+        }
+
+        return (
+            <button className="uk-button uk-button-primary uk-button-small" type="button" onClick={() => this.props.openModalDialog(`send_recommendation_${summaryId}`)} disabled={!sendEnabled}>
+                <i className="fas fa-envelope uk-margin-small-right"></i>
+                Send
+            </button>   
+        )
     }
 
     renderSummaryTableContent(enableSend: boolean){
@@ -65,7 +92,7 @@ class TenderRecommendationsList extends React.Component<TenderRecommendationsLis
             var created = moment.utc(s.created).local();
             var communicated = s.communicated != null ? moment.utc(s.communicated).local().fromNow() : "Never";
             return (
-                <tr key={s.summaryId}>
+                <tr key={s.summaryId} className="uk-table-middle">
                     <td>
                         <button className="uk-button uk-button-default uk-button-small" type="button" onClick={() => this.viewRecommendationReport(s)}>
                             <i className="far fa-eye fa-lg"></i>
@@ -79,10 +106,7 @@ class TenderRecommendationsList extends React.Component<TenderRecommendationsLis
                     <td data-uk-tooltip={s.communicated ? `title:${moment.utc(s.communicated).local().format("DD/MM/YYYY HH:mm:ss")}` : "title:This recommendation report has not yet been sent."}>{communicated}</td>
                     <td>
                         <div>
-                            <button className="uk-button uk-button-primary uk-button-small" type="button" onClick={() => this.props.openModalDialog(`send_recommendation_${s.summaryId}`)} disabled={!enableSend}>
-                                <i className="fas fa-envelope uk-margin-small-right"></i>
-                                Send
-                            </button>   
+                            {this.renderRecommendationActions(s, enableSend)}
                             <ModalDialog dialogId={`send_recommendation_${s.summaryId}`}>
                                 <SendRecommendationDialog tender={this.props.tender} recommendation={s} />
                             </ModalDialog>
@@ -203,7 +227,8 @@ const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, TenderRecomm
         getRecommendationSummary:  (tenderId: string, summaryId: string)  => dispatch(fetchRecommendationSummary(tenderId, summaryId)),
         getRecommendationSuppliers:  (tenderId: string, summaryId: string)  => dispatch(fetchRecommendationsSuppliers(tenderId, summaryId)),
         getRecommendationSites: (tenderId: string, summaryId: string, siteStart: number, siteEnd: number) => dispatch(fetchRecommendationsSites(tenderId, summaryId, siteStart, siteEnd)),
-        selectRecommendationReport: (recommendation: TenderRecommendation) => dispatch(selectRecommendationReport(recommendation))
+        selectRecommendationReport: (recommendation: TenderRecommendation) => dispatch(selectRecommendationReport(recommendation)),
+        acceptQuote: (tenderId: string, quoteId: string) => dispatch(acceptQuote(tenderId, quoteId))
     };
 };
   

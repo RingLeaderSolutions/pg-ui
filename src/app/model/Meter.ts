@@ -1,93 +1,3 @@
-export interface MeterPortfolio {
-    portfolioId: string;
-    sites: MeterSite[];
-}
-
-export interface MeterSite {
-    siteCode: string;
-    mpans: Mpan[];
-    mprns: Mprn[];
-}
-
-export interface Mpan {
-    meterSupplyData: MpanSupplyData;
-    halfHourly: HalfHourlyData;
-}
-
-export interface Mprn {
-    meterSupplyData: MprnSupplyData;
-    halfHourly: HalfHourlyData;
-}
-
-export interface HalfHourlyData {
-    forecast: DocumentData;
-    historical: DocumentData;
-}
-
-export interface DocumentData {
-    created: string;
-    docId: string;
-}
-
-export interface MprnSupplyData {
-    aQ: number;
-    address: string;
-    changeOfUse: boolean;
-    currentContractEnd: string;
-    id: string;
-    imperial: boolean;
-    make: string;
-    model: string;
-    mprnCore: string;
-    postcode: string;
-    serialNumber: string;
-    siteCode: string;
-    size: number;
-    utility: string;
-    vatPercentage: number;
-    cclEligible: boolean;
-    emergencyContactAddress: string;
-    emergencyContactName: string;
-    emergencyContactTelephone: string;
-}
-
-export interface MpanSupplyData {
-    address: string;
-    currentContractEnd: string;
-    id: string;
-    mpanCore: string;    
-    meterType: string;
-    meterTimeSwitchCode: string;
-    llf: string;
-    profileClass: string;
-    retrievalMethod: string;
-    gspGroup: string;
-    measurementClass: string;
-    serialNumber: string;
-    daAgent: string;
-    dcAgent: string;
-    moAgent: string;
-    voltage: string;
-    connection: string;
-    postcode: string;
-    rec: number;
-    eac: number;
-    capacity: number;
-    utility: string;
-    energized: boolean;
-    newConnection: boolean;
-    periodConsumption: string;
-    siteCode: string;
-    totalConsumption: number;
-    vatPercentage: number;
-    cclEligible: boolean;    
-}
-
-export enum MeterType{
-    Gas,
-    Electricity
-}
-
 export interface MeterConsumptionSummary {
     summaryFields: string[],
     summaryValues: string[],
@@ -163,7 +73,6 @@ export const MeterOperators = [
     'Yorkshire Electricity Dist PLC UMSO'
 ];
 
-
 export const MeterTimeSwitchCodes = [
     '000-399 Specific to Distribution Networks',
     '400-499 Not in use',
@@ -172,11 +81,8 @@ export const MeterTimeSwitchCodes = [
     '800 -999 Common Codes'
 ];
 
-
 export const RetrievalMethods = ['Remote', 'Visual', 'Manual', 'Unknown', 'Unmetered'];
 
-
 export const GspGroups = ['_A', '_B', '_C', '_D', '_E', '_F', '_G', '_H', '_I', '_J', '_K', '_L', '_M', '_N', '_P'];
-
 
 export const MeasurementClasses = [ 'A','B','C','D','E']

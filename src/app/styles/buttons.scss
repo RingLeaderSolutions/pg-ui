@@ -3,3 +3,12 @@
 .uk-button {
     border-radius: 10px;
 }
+
+.uk-button-group{
+    .uk-button {
+        border-radius: 0px;
+    }
+    .dropdown-button {
+        padding: 0 10px;
+    }
+}

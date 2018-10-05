@@ -8,6 +8,23 @@ import { Dispatch } from 'redux';
 
 import { makeApiRequest } from "./common";
 
+export function acceptQuote (tenderId: string, quoteId: string){
+    return (dispatch: Dispatch<any>) => {
+        let fetchPromise = ApiService.acceptQuote(tenderId, quoteId);
+        dispatch({ type: types.ACCEPT_QUOTE_WORKING });
+
+        makeApiRequest(dispatch,
+            fetchPromise,
+            200, 
+            data => {
+                return { type: types.ACCEPT_QUOTE_SUCCESSFUL, data: null};
+            }, 
+            error => {
+                return { type: types.ACCEPT_QUOTE_FAILED, errorMessage: error };
+            });
+    }
+}
+
 export function clearRenewalState(){
     return (dispatch: Dispatch<any>) => {
         dispatch({ type: types.CREATE_CONTRACT_RENEWAL_CLEAR })
