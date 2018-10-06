@@ -69,6 +69,11 @@ export class SignalRService {
             throw new Error(`Unable to start an already-initialized connection [${SignalRConnectionState[this.state]}]. Call stop() first.`);
         }
 
+        if(!this.storage.fetchIdToken()){
+            this.logger.warning(`Not starting SignalR connection as user is unauthenticated.`);
+            return;
+        }
+
         this.logger.info("Attempting to start SignalR hub connection.");
         this.updateState(SignalRConnectionState.Connecting);
 
@@ -112,7 +117,6 @@ export class SignalRService {
         if(error instanceof HttpError && error.statusCode === 401){
             this.logger.error(`Received [401 Unauthorized] response from hub, stopping connection and not retrying while we wait for reauthentication.`);
             await this.connection.stop();
-            this.updateState(SignalRConnectionState.Errored);
 
             return;
         }
@@ -160,6 +164,10 @@ export class SignalRService {
             await connectPromise();
         }
         catch(ex){
+            if(ex instanceof HttpError && ex.statusCode === 401){
+                this.logger.error(`Received [401 Unauthorized] response from hub, disabling retry policy while we wait for reauthentication.`);    
+                return;
+            }
             if(attemptNumber === this.MaximumReconnectAttempts){
                 this.updateState(SignalRConnectionState.Errored);
                 throw new Error(`Final attempt ${attemptCount} to reconnect failed.`)

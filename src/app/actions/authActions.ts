@@ -7,6 +7,7 @@ import { makeApiRequest } from "./common";
 import ApiService from "../services/apiService";
 import AuthenticationService from "../services/AuthenticationService";
 import { push } from 'connected-react-router';
+import { NotificationService } from "../App";
 
 export function completeLogin(urlHash: string) {
     return async (dispatch: Dispatch<any>) => {
@@ -17,6 +18,7 @@ export function completeLogin(urlHash: string) {
             let nextLocation = preservedState.intendedPath || '/';
             console.log(`Login complete, redirecting user to [${nextLocation}]`)
             dispatch(push(nextLocation));
+            NotificationService.start();
         }
         catch(ex){
             console.error('Encountered error parsing redirect hash and reporting login:', ex);
