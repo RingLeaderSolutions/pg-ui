@@ -113,7 +113,7 @@ class TenderSupplierSelectDialog extends React.Component<TenderSupplierSelectDia
         });
 
         return (
-            <div className="uk-panel-scrollable uk-height-large">
+            <div className="uk-panel-scrollable" style={{height: '450px'}}>
                 <table className="uk-table uk-table-divider">
                     <thead>
                         <tr>
