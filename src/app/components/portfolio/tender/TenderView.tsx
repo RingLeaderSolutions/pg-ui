@@ -7,13 +7,16 @@ import ErrorMessage from "../../common/ErrorMessage";
 
 import { deleteTender } from '../../../actions/tenderActions';
 
-import { Tender } from "../../../model/Tender";
+import { Tender, isComplete } from "../../../model/Tender";
 import TenderStatus from "./TenderStatus";
 import TenderContractView from "./TenderContractView";
 import UpdateTenderDialog from "./UpdateTenderDialog";
 import TenderSupplierSelectDialog from "./TenderSupplierSelectDialog";
 import ModalDialog from "../../common/ModalDialog";
 import { openModalDialog } from "../../../actions/viewActions";
+import { TenderCompleteWarning } from "./warnings/TenderCompleteWarning";
+import * as moment from 'moment';
+import TenderDeadlineWarning from "./warnings/TenderDeadlineWarning";
 
 interface TenderViewProps {
     tender: Tender;
@@ -57,13 +60,16 @@ class TenderView extends React.Component<TenderViewProps & StateProps & Dispatch
         }
 
         var utilityDescription = this.props.utility == UtilityType.Gas ? "Gas" : "Electricity";
-
         var updateTenderDialogName = `update_tender_${this.props.tender.tenderId}`;
 
         let { tenderTitle } = this.props.tender;
 
+        let tenderComplete = isComplete(this.props.tender);
+        var deadline = moment(this.props.tender.deadline);
+
         var hasTitle = tenderTitle != null && tenderTitle.length > 0;
         var title = hasTitle ? (<h2>{tenderTitle}</h2>) : (<h2>{utilityDescription} Tender</h2>);
+
         var content = (
             <div>
                 <div className="uk-grid" data-uk-grid>
@@ -71,11 +77,14 @@ class TenderView extends React.Component<TenderViewProps & StateProps & Dispatch
                         {title}
                     </div>
                     <div className="uk-width-expand@s uk-flex uk-flex-middle">
-                        <button className="uk-button uk-button-default uk-button-small borderless-button" type="button" onClick={() => this.props.openModalDialog(updateTenderDialogName)}>
+                        <button className="uk-button uk-button-default uk-button-small borderless-button" type="button" onClick={() => this.props.openModalDialog(updateTenderDialogName)} disabled={tenderComplete}>
                             <i className="fas fa-edit"></i>
                         </button>
                     </div>
                 </div>
+
+                <TenderDeadlineWarning deadline={deadline} />
+                {tenderComplete && (<TenderCompleteWarning />)}
 
                 <div className="uk-margin">
                     <TenderStatus tender={this.props.tender} utility={this.props.utility} details={this.props.details} />

@@ -45,9 +45,17 @@ export interface MeterGroup {
     consumption: number
 }
 
+export interface PortfolioTenderDetail {
+    headline: string,
+    tenderId: string,
+    type: string,
+    utility: string;
+}
+
 export interface PortfolioDetails {
     portfolio: PortfolioSummary;
     meterGroups: MeterGroup[];
     requirements?: PortfolioRequirements;
     siteCount: number;
+    tenderHeadlines: PortfolioTenderDetail[];
 }

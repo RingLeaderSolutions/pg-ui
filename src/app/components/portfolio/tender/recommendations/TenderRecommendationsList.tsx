@@ -7,7 +7,7 @@ import ErrorMessage from "../../../common/ErrorMessage";
 import * as moment from 'moment';
 
 import { fetchRecommendationsSuppliers, fetchRecommendationsSites, fetchRecommendationSummary, selectRecommendationReport, acceptQuote } from '../../../../actions/tenderActions';
-import { Tender, TenderSupplier, TenderRecommendation, TenderIssuance } from "../../../../model/Tender";
+import { Tender, TenderSupplier, TenderRecommendation, TenderIssuance, isComplete } from "../../../../model/Tender";
 import { AccountDetail, PortfolioDetails } from "../../../../model/Models";
 import { retrieveAccount } from "../../../../actions/portfolioActions";
 import { openModalDialog } from "../../../../actions/viewActions";
@@ -15,6 +15,7 @@ import ModalDialog from "../../../common/ModalDialog";
 import GenerateRecommendationDialog from "./GenerateRecommendationDialog";
 import RecommendationDetailDialog from "./RecommendationDetailDialog";
 import SendRecommendationDialog from "./SendRecommendationDialog";
+import { TenderCompleteWarning } from "../warnings/TenderCompleteWarning";
 
 interface TenderRecommendationsListProps {
     tender: Tender;
@@ -53,17 +54,17 @@ class TenderRecommendationsList extends React.Component<TenderRecommendationsLis
     }
 
 
-    renderRecommendationActions(recommendation: TenderRecommendation, sendEnabled: boolean){
+    renderRecommendationActions(recommendation: TenderRecommendation, enableAction: boolean){
         let { tenderId, winningQuoteId, summaryId } = recommendation;
         if(recommendation.communicated){
             return (
                 <div className="uk-button-group">
-                    <button className="uk-button uk-button-primary"><i className="fas fa-check-circle uk-margin-small-right"></i>Accept</button>
+                    <button className="uk-button uk-button-primary" disabled={!enableAction}><i className="fas fa-check-circle uk-margin-small-right"></i>Accept</button>
                     <div className="uk-inline">
-                        <button className="uk-button uk-button-primary dropdown-button" type="button" onClick={() => this.props.acceptQuote(tenderId, winningQuoteId)}><i className="fas fa-chevron-down"></i></button>
+                        <button className="uk-button uk-button-primary dropdown-button" type="button" onClick={() => this.props.acceptQuote(tenderId, winningQuoteId)} disabled={!enableAction}><i className="fas fa-chevron-down"></i></button>
                         <div data-uk-dropdown="mode: click; boundary: ! .uk-button-group; boundary-align: true;">
                             <ul className="uk-nav uk-dropdown-nav">
-                                <li className="uk-active" ><a href="#" onClick={() => this.props.openModalDialog(`send_recommendation_${summaryId}`)}><i className="fas fa-envelope uk-margin-small-right"></i>Resend</a></li>
+                                <li className="uk-active"><a href="#" onClick={() => this.props.openModalDialog(`send_recommendation_${summaryId}`)}><i className="fas fa-envelope uk-margin-small-right"></i>Resend</a></li>
                             </ul>
                         </div>
                     </div>
@@ -71,14 +72,14 @@ class TenderRecommendationsList extends React.Component<TenderRecommendationsLis
         }
 
         return (
-            <button className="uk-button uk-button-primary uk-button-small" type="button" onClick={() => this.props.openModalDialog(`send_recommendation_${summaryId}`)} disabled={!sendEnabled}>
+            <button className="uk-button uk-button-primary uk-button-small" type="button" onClick={() => this.props.openModalDialog(`send_recommendation_${summaryId}`)} disabled={!enableAction}>
                 <i className="fas fa-envelope uk-margin-small-right"></i>
                 Send
             </button>   
         )
     }
 
-    renderSummaryTableContent(enableSend: boolean){
+    renderSummaryTableContent(enableAction: boolean){
         return this.props.tender.summaries
         .sort((q1: TenderRecommendation, q2: TenderRecommendation) => {        
             if (q1.created < q2.created) return 1;
@@ -106,7 +107,7 @@ class TenderRecommendationsList extends React.Component<TenderRecommendationsLis
                     <td data-uk-tooltip={s.communicated ? `title:${moment.utc(s.communicated).local().format("DD/MM/YYYY HH:mm:ss")}` : "title:This recommendation report has not yet been sent."}>{communicated}</td>
                     <td>
                         <div>
-                            {this.renderRecommendationActions(s, enableSend)}
+                            {this.renderRecommendationActions(s, enableAction)}
                             <ModalDialog dialogId={`send_recommendation_${s.summaryId}`}>
                                 <SendRecommendationDialog tender={this.props.tender} recommendation={s} />
                             </ModalDialog>
@@ -117,7 +118,7 @@ class TenderRecommendationsList extends React.Component<TenderRecommendationsLis
         });
     }
 
-    renderSummaryTable(){
+    renderSummaryTable(tenderComplete: boolean){
         var hasContact = this.props.account.contacts != null && this.props.account.contacts.length > 0;
         var warning = null;
         if(!hasContact){
@@ -127,7 +128,8 @@ class TenderRecommendationsList extends React.Component<TenderRecommendationsLis
                 </div>);
         }
 
-        var tableContent = this.renderSummaryTableContent(hasContact);
+        let enableAction = !tenderComplete && hasContact;
+        var tableContent = this.renderSummaryTableContent(enableAction);
         return (
             <div>
                 {warning}
@@ -165,13 +167,14 @@ class TenderRecommendationsList extends React.Component<TenderRecommendationsLis
     }
 
     render() {
+        let { tender } = this.props;
         if(this.props.suppliers == null || this.props.working){
             return (<div className="uk-margin"><Spinner hasMargin={true} /></div>);
         }
         else if(this.props.error){
             return (<div className="uk-margin"><ErrorMessage content={this.props.errorMessage}/></div>);
         }
-        else if(this.props.tender.issuances == null || this.props.tender.issuances.length == 0){
+        else if(tender.issuances == null || tender.issuances.length == 0){
             return (
                 <div className="uk-margin">
                     <div className="uk-alert-info uk-margin-small-top uk-margin-small-bottom" data-uk-alert>
@@ -180,28 +183,29 @@ class TenderRecommendationsList extends React.Component<TenderRecommendationsLis
                 </div>);
         }
 
-        let content;
-        if(this.props.tender.summaries == null || this.props.tender.summaries.length == 0){
-            content = (
+        let tenderComplete = isComplete(tender);
+
+        let content = (
             <div className="uk-margin">
                 <div className="uk-alert-info uk-margin-small-top uk-margin-small-bottom" data-uk-alert>
                     <p><i className="fas fa-info-circle uk-margin-small-right"></i>No recommendations have been generated for this tender yet. Click on the button above to get started!</p>
                 </div>
             </div>);
-        }
-        else {
-            content = this.renderSummaryTable();
+        
+        if(tender.summaries && tender.summaries.length > 0){
+            content = this.renderSummaryTable(tenderComplete);
         }
         
         var packIssuance = this.getLatestPackIssuance();
 
         return (
             <div>
+                { tenderComplete && (<div className="uk-margin-bottom"><TenderCompleteWarning /></div>)}
                 <div className="uk-grid">
                     <div className="uk-width-expand">
                     </div>
                     <div className="uk-width-auto uk-margin-right">
-                        <button className="uk-button uk-button-primary uk-button-small" type="button"onClick={() => this.props.openModalDialog("create_recommendation")}>
+                        <button className="uk-button uk-button-primary uk-button-small" type="button"onClick={() => this.props.openModalDialog("create_recommendation")} disabled={tenderComplete}>
                             <i className="fa fa-plus-circle uk-margin-small-right fa-lg"></i>
                             Create Recommendation
                         </button>

@@ -1,4 +1,4 @@
-export interface Tender {
+export class Tender {
     tenderId?: string;
     tenderTitle: string;
     billingMethod: string;
@@ -24,6 +24,14 @@ export interface Tender {
     offerTypes: TenderOfferType[];
     commissionPerMonth: number;
     paymentMethod: string;
+}
+
+export function isComplete(tender: Tender): boolean {
+    return tender.status && tender.status === TenderStatus.Complete;
+}
+
+export class TenderStatus {
+    public static readonly Complete: string = "COMPLETE";
 }
 
 export interface TenderOfferType {

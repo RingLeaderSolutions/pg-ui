@@ -91,7 +91,7 @@ export interface IApiService {
   exportContractRates(tenderId: string, quoteId: string): Promise<AxiosResponse>;
   deleteQuote(tenderId: string, quoteId: string): Promise<AxiosResponse>;
   acceptQuote(tenderId: string, quoteId: string): Promise<AxiosResponse>;
-
+  
   fetchTenderOffers(portfolioId: string): Promise<AxiosResponse>;
   fetchTenderRecommendations(portfolioId: string): Promise<AxiosResponse>;
 
@@ -567,7 +567,8 @@ export class ApiService implements IApiService {
     }
 
     reportLogin(){
-       return axios.post(`${this.baseApiUri}/portman-web/admin/logon`, null, this.getRequestConfig());
+     //   return axios.post(`${this.baseApiUri}/portman-web/admin/logon`, null, this.getRequestConfig());
+     return new FakeApiService().reportLogin();
     }
 
     createContact(contact: AccountContact){

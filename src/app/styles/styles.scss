@@ -117,7 +117,7 @@ html, body, .root, .app-container {
     border: 1px solid transparent;
 }
 
-.borderless-button:hover {
+.borderless-button:hover:enabled {
     border: 1px solid #b2b2b2;
     color: #333;
     background-color: transparent;

@@ -8,10 +8,8 @@ import * as moment from 'moment';
 
 import { format } from 'currency-formatter';
 
-import { Tender, TenderSupplier, TenderOfferType } from "../../../model/Tender";
+import { Tender, TenderSupplier, TenderOfferType, isComplete } from "../../../model/Tender";
 import { openModalDialog } from "../../../actions/viewActions";
-import CounterCard from "../../common/CounterCard";
-import TenderDeadlineWarning from "./TenderDeadlineWarning";
 
 interface TenderStatusProps {
     tender: Tender;
@@ -67,6 +65,7 @@ class TenderStatus extends React.Component<TenderStatusProps & StateProps & Disp
         }
         
         var { tender } = this.props;
+        let tenderComplete = isComplete(tender);
         
         var eligibleSupplierCount = this.getSupplierCount();
         var totalCommission = (tender.commission / 100) * tender.annualConsumption;
@@ -89,7 +88,6 @@ class TenderStatus extends React.Component<TenderStatusProps & StateProps & Disp
         var deadline = moment(this.props.tender.deadline);
         return (
         <div>
-            <TenderDeadlineWarning deadline={deadline} />
             
             <div className="uk-margin-top uk-margin-bottom">
                 <p style={{textAlign:"center"}}><strong>Status:</strong> {tender.packStatusMessage}</p>
@@ -103,7 +101,7 @@ class TenderStatus extends React.Component<TenderStatusProps & StateProps & Disp
                             <p className="uk-text-bold">{tender.assignedSuppliers.length}/{eligibleSupplierCount}</p>
                         </div>
                         <div className="uk-width-expand uk-flex uk-flex-middle">
-                            <button className="uk-button uk-button-default borderless-button uk-button-small uk-margin-left" type="button"  onClick={() => this.props.openModalDialog("select_tender_suppliers")}>
+                            <button className="uk-button uk-button-default borderless-button uk-button-small uk-margin-left" type="button"  onClick={() => this.props.openModalDialog("select_tender_suppliers")} disabled={tenderComplete}>
                                 <i className="fas fa-edit"></i>
                             </button>
                         </div>

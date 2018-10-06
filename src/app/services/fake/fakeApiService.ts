@@ -296,7 +296,7 @@ export class FakeApiService implements IApiService {
                 accountId: "493e1708-2457-48ba-8925-09856d6e9732",
                 contact: null,
                 contractStart: "2017-09-01T00:00:00",
-                contractEnd: "2019-01-30T00:00:00"
+                contractEnd: "2019-01-30T00:00:00",
             },
             requirements: {
                 id: "6ae3c008-5541-48a4-b514-be36b1a613bd",
@@ -325,7 +325,15 @@ export class FakeApiService implements IApiService {
                 historicalCount: 24,
                 forecastCount: 0
             }],
-            siteCount: 0
+            siteCount: 0,
+            tenderHeadlines: [
+                {
+                    headline: "CREATED",
+                    tenderId: "8498e746-cc23-4625-84eb-7f1a4381a1a8",
+                    type: "NHH",
+                    utility: "ELECTRICITY"
+                }
+            ]
         }
 
         return OK(portfolioDetails);

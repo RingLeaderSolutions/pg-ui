@@ -9,14 +9,15 @@ import TenderBackingSheetsDialog from '../TenderBackingSheetsDialog';
 import QuoteCollateralDialog from './QuoteCollateralDialog';
 
 import { fetchQuoteBackingSheets, exportContractRates, deleteQuote, generateTenderPack } from '../../../../actions/tenderActions';
-import { Tender, TenderSupplier, TenderQuote, TenderIssuance, TenderPack, QuoteIndicator, QuoteBestCategoryEntry } from "../../../../model/Tender";
+import { Tender, TenderSupplier, TenderQuote, TenderIssuance, TenderPack, QuoteIndicator, QuoteBestCategoryEntry, isComplete } from "../../../../model/Tender";
 import { format } from 'currency-formatter';
 import UploadOfferDialog from "./UploadOfferDialog";
 import IssueTenderPackDialog from "../IssueTenderPackDialog";
 import { openModalDialog } from "../../../../actions/viewActions";
 import ModalDialog from "../../../common/ModalDialog";
 import * as UIkit from 'uikit';
-import TenderDeadlineWarning from "../TenderDeadlineWarning";
+import TenderDeadlineWarning from "../warnings/TenderDeadlineWarning";
+import { TenderCompleteWarning } from "../warnings/TenderCompleteWarning";
 
 interface TenderOffersTableProps {
     tender: Tender;
@@ -121,7 +122,7 @@ class TenderOffersTable extends React.Component<TenderOffersTableProps & StatePr
         )
     }
 
-    renderReceivedOffers(packs: TenderPack[]){
+    renderReceivedOffers(tenderComplete: boolean, packs: TenderPack[]){
         var quotes = packs
         .map((p) => {
             return p.quotes
@@ -170,7 +171,7 @@ class TenderOffersTable extends React.Component<TenderOffersTableProps & StatePr
                                             View Collateral
                                         </a></li>
                                         <li className="uk-nav-divider"></li>
-                                        <li><a href="#" onClick={() => this.deleteQuote(quote.quoteId)}>
+                                        <li className={tenderComplete ? 'uk-disabled' : ''} ><a href="#" onClick={() => this.deleteQuote(quote.quoteId)}>
                                             <i className="fas fa-trash uk-margin-small-right"></i>                              
                                             Delete
                                         </a></li>
@@ -214,13 +215,13 @@ class TenderOffersTable extends React.Component<TenderOffersTableProps & StatePr
         return moment.utc(dateTime).local().format("MMMM Do, HH:mm");
     }
 
-    renderIssuanceContent(issuance: TenderIssuance){
+    renderIssuanceContent(tenderComplete: boolean, issuance: TenderIssuance){
         var supplierCount = issuance.packs.length;
         var lastIssued = this.getFormattedDateTime(issuance.packs[issuance.packs.length - 1].lastIssued);
         var created = this.getFormattedDateTime(issuance.created);
         var expiry = this.getFormattedDateTime(issuance.expiry);
 
-        var uploadOfferName = `upload_offer_${this.props.tender.tenderId}`;
+        var uploadOfferName = `upload_offer_${issuance.tenderId}`;
 
         var hasReceivedQuotes = issuance.packs.some(
             (p: TenderPack) => {
@@ -264,7 +265,7 @@ class TenderOffersTable extends React.Component<TenderOffersTableProps & StatePr
                             {hasReceivedQuotes ? (<h3><i className="fas fa-handshake uk-margin-right"></i>Offers</h3>) : (<h3><i className="fas fa-hourglass-half uk-margin-right"></i>Pending Supplier Responses</h3>)}
                         </div>
                         <div className="uk-width-1-2">
-                            <button className="uk-button uk-button-primary uk-button-small uk-align-right" type="button"onClick={() => this.props.openModalDialog(uploadOfferName)}>
+                            <button className="uk-button uk-button-primary uk-button-small uk-align-right" type="button"onClick={() => this.props.openModalDialog(uploadOfferName)} disabled={tenderComplete}>
                                 <i className="fa fa-file-upload uk-margin-small-right fa-lg"></i>
                                 Upload Offer
                             </button>
@@ -278,7 +279,7 @@ class TenderOffersTable extends React.Component<TenderOffersTableProps & StatePr
                                 <li><a href="#"><i className="fas fa-hourglass-half uk-margin-small-right fa-lg" style={{color: "#FFA500"}}></i>Pending Responses ({pendingQuotes.length})</a></li>
                             </ul>
                             <ul className='uk-switcher'>
-                                <li>{this.renderReceivedOffers(receivedQuotes)}</li>
+                                <li>{this.renderReceivedOffers(tenderComplete, receivedQuotes)}</li>
                                 <li>{this.renderPendingSuppliers(pendingQuotes)}</li>
                             </ul>
                         </div>) : this.renderPendingSuppliers(pendingQuotes)}
@@ -321,7 +322,7 @@ class TenderOffersTable extends React.Component<TenderOffersTableProps & StatePr
                                 <i className="fas fa-info-circle uk-margin-small-right"></i>
                             </div>
                             <div className="uk-width-expand uk-flex uk-flex-middle">
-                                <p>No requirements packs have been generated yet. Click the Generate New button to get started.</p>    
+                                <p>This tender doesn't have any unissued requirements packs.</p>    
                             </div>
                         </div>
                     </div>
@@ -381,8 +382,8 @@ class TenderOffersTable extends React.Component<TenderOffersTableProps & StatePr
             </div>)
     }
 
-    renderOffersContent(){
-        if(this.props.tender.issuances == null || this.props.tender.issuances.length == 0)
+    renderOffersContent(tenderComplete: boolean, issuances: TenderIssuance[]){
+        if(issuances == null || issuances.length == 0)
         {
             return this.renderUnissued();
         }
@@ -390,7 +391,7 @@ class TenderOffersTable extends React.Component<TenderOffersTableProps & StatePr
         var tabs: any = [];
         var tabContent: any = [];
 
-        this.props.tender.issuances
+        issuances
             .sort(
                 (i1: TenderIssuance, i2: TenderIssuance) => {
                     var firstDate = moment.utc(i1.created).unix();
@@ -405,7 +406,7 @@ class TenderOffersTable extends React.Component<TenderOffersTableProps & StatePr
                 var tab = (<li key={index}><a href="#">{tabName}</a></li>);
                 tabs[index] = tab;
 
-                var content = this.renderIssuanceContent(issuance);
+                var content = this.renderIssuanceContent(tenderComplete, issuance);
                 tabContent[index] = content;
             });
 
@@ -438,7 +439,8 @@ class TenderOffersTable extends React.Component<TenderOffersTableProps & StatePr
             return this.renderCardContent(content);
         }
         
-        if(this.props.tender.existingContract == null || this.props.tender.existingContract.sheetCount == 0){
+        let { tender } = this.props;
+        if(tender.existingContract == null || tender.existingContract.sheetCount == 0){
             let content = (
                 <div className="uk-alert-warning uk-margin-small-bottom uk-alert" data-uk-alert>
                     <div className="uk-grid uk-grid-small" data-uk-grid>
@@ -454,6 +456,7 @@ class TenderOffersTable extends React.Component<TenderOffersTableProps & StatePr
             return this.renderCardContent(content);
         }
         
+        let tenderComplete = isComplete(tender);
         let content = (
             <div>
                 <div className="uk-grid" data-uk-grid>
@@ -461,16 +464,17 @@ class TenderOffersTable extends React.Component<TenderOffersTableProps & StatePr
                         <h3><i className="fas fa-archive uk-margin-right"></i>Requirements Packs</h3>
                     </div>
                     <div className="uk-width-1-2">
-                        <button className="uk-button uk-button-primary uk-button-small uk-align-right" type="button" onClick={() => this.generateNewPack()}>
+                        <button className="uk-button uk-button-primary uk-button-small uk-align-right" type="button" onClick={() => this.generateNewPack()} disabled={tenderComplete}>
                             <i className="fas fa-plus-circle uk-margin-small-right fa-lg"></i>
                             Generate New
                         </button>
                     </div>
                 </div>
                 <div>
-                    {this.renderOffersContent()}
+                    {tenderComplete && <div className="uk-margin-top"><TenderCompleteWarning /></div>}
+                    {this.renderOffersContent(tenderComplete, tender.issuances)}
                 </div>
-                <ModalDialog dialogId={`view_quote_rates_${this.props.tender.tenderId}`} dialogClass="backing-sheet-modal">
+                <ModalDialog dialogId={`view_quote_rates_${tender.tenderId}`} dialogClass="backing-sheet-modal">
                     <TenderBackingSheetsDialog />
                 </ModalDialog>
         </div>);
