@@ -59,9 +59,9 @@ class TenderRecommendationsList extends React.Component<TenderRecommendationsLis
         if(recommendation.communicated){
             return (
                 <div className="uk-button-group">
-                    <button className="uk-button uk-button-primary" disabled={!enableAction}><i className="fas fa-check-circle uk-margin-small-right"></i>Accept</button>
+                    <button className="uk-button uk-button-primary" disabled={!enableAction} onClick={() => this.props.acceptQuote(tenderId, winningQuoteId)}><i className="fas fa-check-circle uk-margin-small-right"></i>Accept</button>
                     <div className="uk-inline">
-                        <button className="uk-button uk-button-primary dropdown-button" type="button" onClick={() => this.props.acceptQuote(tenderId, winningQuoteId)} disabled={!enableAction}><i className="fas fa-chevron-down"></i></button>
+                        <button className="uk-button uk-button-primary dropdown-button" type="button"  disabled={!enableAction}><i className="fas fa-chevron-down"></i></button>
                         <div data-uk-dropdown="mode: click; boundary: ! .uk-button-group; boundary-align: true;">
                             <ul className="uk-nav uk-dropdown-nav">
                                 <li className="uk-active"><a href="#" onClick={() => this.props.openModalDialog(`send_recommendation_${summaryId}`)}><i className="fas fa-envelope uk-margin-small-right"></i>Resend</a></li>
