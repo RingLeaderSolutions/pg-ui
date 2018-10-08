@@ -7,7 +7,7 @@ import * as moment from 'moment';
 import { createAccount, clearAccountCreation } from '../../../actions/hierarchyActions';
 import { closeModalDialog } from "../../../actions/viewActions";
 import { Today, TwoHundredthYearPast, DayPickerWithMonthYear } from "../../common/DayPickerHelpers";
-import { StringsAreNotNullOrEmpty } from "../../../helpers/ValidationHelpers";
+import { Strings } from "../../../helpers/Utils";
 
 interface CreateAccountDialogProps {    
 }
@@ -129,7 +129,7 @@ class CreateAccountDialog extends React.Component<CreateAccountDialogProps & Sta
     }
 
     canSubmit(){
-        return StringsAreNotNullOrEmpty(
+        return Strings.AreNotNullOrEmpty(
             this.state.companyName,
             this.state.status);
     }

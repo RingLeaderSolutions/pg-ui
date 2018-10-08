@@ -7,7 +7,6 @@ import { uploadElectricityOffer, uploadGasOffer } from '../../../../actions/tend
 import { closeModalDialog } from "../../../../actions/viewActions";
 import { UploadPanel } from "../../../common/UploadPanel";
 import { getWellFormattedUtilityName } from "../../../common/UtilityIcon";
-import { StringIsNotNullOrEmpty } from "../../../../helpers/ValidationHelpers";
 
 interface UploadOfferDialogProps {
     tenderId: string;
@@ -86,7 +85,7 @@ class UploadOfferDialog extends React.Component<UploadOfferDialogProps & StatePr
     }
 
     canSubmit(){
-        return this.state.file != null && StringIsNotNullOrEmpty(this.state.supplierId);
+        return this.state.file != null && !this.state.supplierId.IsNullOrEmpty();
     }
     render() {  
         var friendlyUtility = getWellFormattedUtilityName(this.props.utilityType);

@@ -9,7 +9,7 @@ import { retrieveAccounts } from '../../../actions/hierarchyActions';
 import { fetchUsers, createPortfolio } from '../../../actions/portfolioActions';
 import { PortfolioCreationRequest } from "../../../model/Portfolio";
 import { closeModalDialog } from "../../../actions/viewActions";
-import { StringsAreNotNullOrEmpty } from "../../../helpers/ValidationHelpers";
+import { Strings } from "../../../helpers/Utils";
 
 interface CreatePortfolioFromAccountDialogProps {    
 }
@@ -76,7 +76,7 @@ class CreatePortfolioFromAccountDialog extends React.Component<CreatePortfolioFr
     }
 
     canSubmit(){
-        return StringsAreNotNullOrEmpty(
+        return Strings.AreNotNullOrEmpty(
             this.state.title,
             this.state.selectedAccountId,
             this.state.salesLeadId,

@@ -7,7 +7,7 @@ import { updateAccountContract } from '../../../actions/tenderActions';
 import { TenderContract, TenderSupplier } from "../../../model/Tender";
 import { closeModalDialog } from "../../../actions/viewActions";
 import { UtilityType } from "../../../model/Models";
-import { StringsAreNotNullOrEmpty } from "../../../helpers/ValidationHelpers";
+import { Strings } from "../../../helpers/Utils";
 
 interface UpdateContractDialogProps {
     contract: TenderContract;
@@ -130,7 +130,7 @@ class UpdateContractDialog extends React.Component<UpdateContractDialogProps & S
     }
 
     canSubmit(): boolean {
-        return StringsAreNotNullOrEmpty(this.state.contractRef,
+        return Strings.AreNotNullOrEmpty(this.state.contractRef,
             this.state.supplier,
              this.state.product);
     }

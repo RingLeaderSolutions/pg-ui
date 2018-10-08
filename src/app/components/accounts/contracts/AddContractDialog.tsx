@@ -6,9 +6,9 @@ import Spinner from '../../common/Spinner';
 import { createAccountContract } from '../../../actions/tenderActions';
 import { TenderContract, TenderSupplier } from "../../../model/Tender";
 import { closeModalDialog } from "../../../actions/viewActions";
-import { UtilityIcon, getWellFormattedUtilityType } from "../../common/UtilityIcon";
+import { getWellFormattedUtilityType } from "../../common/UtilityIcon";
 import { UtilityType } from "../../../model/Models";
-import { StringsAreNotNullOrEmpty } from "../../../helpers/ValidationHelpers";
+import { Strings } from "../../../helpers/Utils";
 
 interface AddExistingContractDialogProps {
     accountId: string;
@@ -168,7 +168,7 @@ class AddExistingContractDialog extends React.Component<AddExistingContractDialo
     }
 
     canSubmit(): boolean {
-        return StringsAreNotNullOrEmpty(this.state.contractRef,
+        return Strings.AreNotNullOrEmpty(this.state.contractRef,
              this.state.supplier,
               this.state.product) 
             && this.state.utility != null;

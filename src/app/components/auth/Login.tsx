@@ -3,8 +3,8 @@ import { MapDispatchToPropsFunction, connect, MapStateToProps } from 'react-redu
 import { ApplicationState } from '../../applicationState';
 
 import { login } from '../../actions/authActions';
-import { StringsAreNotNullOrEmpty } from "../../helpers/ValidationHelpers";
 import { RouteComponentProps } from "react-router-dom";
+import { Strings } from "../../helpers/Utils";
 
 interface StateProps {
   working: boolean;
@@ -51,7 +51,7 @@ class Login extends React.Component<RouteComponentProps<void> & StateProps & Dis
     }
 
     canSubmit(){
-        return StringsAreNotNullOrEmpty(this.state.email, this.state.password);
+        return Strings.AreNotNullOrEmpty(this.state.email, this.state.password);
     }
 
     render() {

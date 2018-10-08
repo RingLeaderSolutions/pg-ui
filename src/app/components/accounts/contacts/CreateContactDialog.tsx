@@ -4,7 +4,7 @@ import { MapDispatchToPropsFunction, connect, MapStateToProps } from 'react-redu
 import { createContact } from '../../../actions/hierarchyActions';
 import { AccountContact } from "../../../model/HierarchyObjects";
 import { closeModalDialog } from "../../../actions/viewActions";
-import { StringsAreNotNullOrEmpty } from "../../../helpers/ValidationHelpers";
+import { Strings } from "../../../helpers/Utils";
 import { ApplicationState } from "../../../applicationState";
 
 interface CreateContactDialogProps {    
@@ -64,7 +64,7 @@ class CreateContactDialog extends React.Component<CreateContactDialogProps & Sta
     }
 
     canSubmit(){
-        return StringsAreNotNullOrEmpty(
+        return Strings.AreNotNullOrEmpty(
             this.state.firstName,
             this.state.lastName,
             this.state.email,

@@ -6,7 +6,6 @@ import { PortfolioDetails } from '../../../model/Models';
 import { uploadHistoric } from '../../../actions/portfolioActions';
 import { closeModalDialog } from "../../../actions/viewActions";
 import { MultiUploadPanel } from "../../common/UploadPanel";
-import { StringIsNotNullOrEmpty } from "../../../helpers/ValidationHelpers";
 
 interface UploadHistoricDialogProps {
     details: PortfolioDetails;
@@ -66,7 +65,7 @@ class UploadHistoricDialog extends React.Component<UploadHistoricDialogProps & S
     }
 
     canSubmit(){
-        return this.state.files != null && StringIsNotNullOrEmpty(this.state.historicalType);
+        return this.state.files != null && !this.state.historicalType.IsNullOrEmpty();
     }
 
     render() {

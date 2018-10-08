@@ -1,3 +1,6 @@
+/* Global extension methods */
+import './helpers/GlobalExtensions';
+
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 import { Provider, Store } from 'react-redux';

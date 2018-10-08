@@ -5,7 +5,6 @@ import { ApplicationState } from '../../../applicationState';
 import { uploadAccountDocument } from '../../../actions/hierarchyActions';
 import { closeModalDialog } from "../../../actions/viewActions";
 import { UploadPanel } from "../../common/UploadPanel";
-import { StringIsNotNullOrEmpty } from "../../../helpers/ValidationHelpers";
 
 interface UploadAccountDocumentDialogProps {
     accountId: string;
@@ -60,7 +59,7 @@ class UploadAccountDocumentDialog extends React.Component<UploadAccountDocumentD
     }
 
     canSubmit(){
-        return this.state.file != null && StringIsNotNullOrEmpty(this.state.documentType);
+        return this.state.file != null && !this.state.documentType.IsNullOrEmpty();
     }
 
     render() {

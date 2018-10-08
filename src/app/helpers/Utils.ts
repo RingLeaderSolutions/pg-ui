@@ -5,9 +5,9 @@ export class Arg {
         }
     }
 
-    public static isRequiredNotEmpty(val:string, name: string) : void {
+    public static isRequiredNotEmpty(val: string, name: string) : void {
         this.isRequired(val, name);
-        if(val === '' || !val.trim()){
+        if(val.IsNullOrWhitespace()){
             throw new Error(`The '${name}' argument cannot be empty or whitespace.`);
         }
     }
@@ -20,4 +20,12 @@ export class Arg {
     }
 }
 
-export const Wait = (ms: number) => new Promise(resolve => setTimeout(resolve, ms))
+export class Strings {
+    public static AreNotNullOrEmpty(...values: string[]): boolean {
+        return values.every(s => {
+            return !s.IsNullOrEmpty();
+        });
+    }
+}
+
+export const Wait = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));

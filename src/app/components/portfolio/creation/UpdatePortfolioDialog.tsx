@@ -7,7 +7,7 @@ import Spinner from '../../common/Spinner';
 import { fetchUsers, editPortfolio } from '../../../actions/portfolioActions';
 import { PortfolioCreationRequest, Portfolio } from "../../../model/Portfolio";
 import { closeModalDialog } from "../../../actions/viewActions";
-import { StringsAreNotNullOrEmpty } from "../../../helpers/ValidationHelpers";
+import { Strings } from "../../../helpers/Utils";
 
 interface UpdatePortfolioDialogProps { 
     portfolio: Portfolio;   
@@ -74,7 +74,7 @@ class UpdatePortfolioDialog extends React.Component<UpdatePortfolioDialogProps &
 
     
     canSubmit(){
-        return StringsAreNotNullOrEmpty(
+        return Strings.AreNotNullOrEmpty(
             this.state.title,
             this.state.salesLeadId,
             this.state.supportExecId);

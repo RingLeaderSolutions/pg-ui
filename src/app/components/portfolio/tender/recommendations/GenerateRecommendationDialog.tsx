@@ -8,9 +8,8 @@ import * as moment from 'moment';
 import { generateSummaryReport } from '../../../../actions/tenderActions';
 import { Tender, TenderSupplier, TenderQuote, TenderIssuance } from "../../../../model/Tender";
 import { format } from 'currency-formatter';
-import { selectMany } from "../../../../helpers/listHelpers";
 import { closeModalDialog } from "../../../../actions/viewActions";
-import { StringsAreNotNullOrEmpty } from "../../../../helpers/ValidationHelpers";
+import { Strings } from "../../../../helpers/Utils";
 
 interface GenerateRecommendationDialogProps {
     tender: Tender;
@@ -67,7 +66,7 @@ class GenerateRecommendationDialog extends React.Component<GenerateRecommendatio
     }
 
     renderPackDialogContent(){
-        var quotes = selectMany(this.props.issuance.packs, (p) => p.quotes);
+        var quotes = this.props.issuance.packs.SelectMany((p) => p.quotes);
 
         let quoteOptions = quotes
             .filter((q: TenderQuote) => q.status == "SUBMITTED")
@@ -135,7 +134,7 @@ class GenerateRecommendationDialog extends React.Component<GenerateRecommendatio
     }
 
     canSubmit(){
-        return StringsAreNotNullOrEmpty(
+        return Strings.AreNotNullOrEmpty(
             this.state.selectedQuoteId,
              this.state.marketCommentary,
               this.state.selectionCommentary);
