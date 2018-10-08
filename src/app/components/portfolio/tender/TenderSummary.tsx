@@ -10,7 +10,7 @@ import { Tender } from "../../../model/Tender";
 import TenderView from "./TenderView";
 import { selectPortfolioTenderTab, openModalDialog } from "../../../actions/viewActions";
 import ModalDialog from "../../common/ModalDialog";
-import CreateTenderDialog from "./CreateTenderDialog";
+import CreateTenderDialog from "./creation/CreateTenderDialog";
 import { TenderUtilityIconTabHeader, UtilityIcon } from "../../common/UtilityIcon";
 import { fetchMeterConsumption } from "../../../actions/meterActions";
 import { MeterConsumptionSummary } from "../../../model/Meter";

@@ -10,7 +10,7 @@ import { selectAccountTab, openModalDialog, selectApplicationTab } from "../../a
 
 import { retrieveAccountDetail, fetchAccountPortfolios } from '../../actions/hierarchyActions';
 import UploadSupplyDataDialog from "../portfolio/mpan/UploadSupplyDataDialog";
-import UpdateAccountDialog from "./UpdateAccountDialog";
+import UpdateAccountDialog from "./creation/UpdateAccountDialog";
 import AccountContactsView from "./contacts/AccountContactsView";
 import AccountDocumentsView from "./documents/AccountDocumentsView";
 import AccountGasMeterTable from "./meters/AccountGasMeterTable";

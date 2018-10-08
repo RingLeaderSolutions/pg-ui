@@ -10,7 +10,7 @@ import { deleteTender } from '../../../actions/tenderActions';
 import { Tender, isComplete } from "../../../model/Tender";
 import TenderStatus from "./TenderStatus";
 import TenderContractView from "./TenderContractView";
-import UpdateTenderDialog from "./UpdateTenderDialog";
+import UpdateTenderDialog from "./creation/UpdateTenderDialog";
 import TenderSupplierSelectDialog from "./TenderSupplierSelectDialog";
 import ModalDialog from "../../common/ModalDialog";
 import { openModalDialog } from "../../../actions/viewActions";

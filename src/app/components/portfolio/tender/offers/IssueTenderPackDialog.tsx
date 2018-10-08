@@ -1,13 +1,13 @@
 import * as React from "react";
 import { MapDispatchToPropsFunction, connect, MapStateToProps } from 'react-redux';
-import { ApplicationState } from '../../../applicationState';
-import Spinner from '../../common/Spinner';
-import ErrorMessage from "../../common/ErrorMessage";
+import { ApplicationState } from '../../../../applicationState';
+import Spinner from '../../../common/Spinner';
+import ErrorMessage from "../../../common/ErrorMessage";
 import * as moment from 'moment';
 
-import { issueTenderPack, fetchTenderIssuanceEmail } from '../../../actions/tenderActions';
-import { Tender, TenderSupplier, TenderIssuanceEmail } from "../../../model/Tender";
-import { closeModalDialog } from "../../../actions/viewActions";
+import { issueTenderPack, fetchTenderIssuanceEmail } from '../../../../actions/tenderActions';
+import { Tender, TenderSupplier, TenderIssuanceEmail } from "../../../../model/Tender";
+import { closeModalDialog } from "../../../../actions/viewActions";
 
 interface IssueTenderPackDialogProps {
     tender: Tender;

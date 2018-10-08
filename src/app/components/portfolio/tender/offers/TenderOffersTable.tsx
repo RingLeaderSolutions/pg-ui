@@ -12,7 +12,7 @@ import { fetchQuoteBackingSheets, exportContractRates, deleteQuote, generateTend
 import { Tender, TenderSupplier, TenderQuote, TenderIssuance, TenderPack, QuoteIndicator, QuoteBestCategoryEntry, isComplete } from "../../../../model/Tender";
 import { format } from 'currency-formatter';
 import UploadOfferDialog from "./UploadOfferDialog";
-import IssueTenderPackDialog from "../IssueTenderPackDialog";
+import IssueTenderPackDialog from "./IssueTenderPackDialog";
 import { openModalDialog } from "../../../../actions/viewActions";
 import ModalDialog from "../../../common/ModalDialog";
 import * as UIkit from 'uikit';

@@ -1,13 +1,13 @@
 import * as React from "react";
 import { MapDispatchToPropsFunction, connect, MapStateToProps } from 'react-redux';
-import { ApplicationState } from '../../applicationState';
-import { Account } from '../../model/Models';
+import { ApplicationState } from '../../../applicationState';
+import { Account } from '../../../model/Models';
 import * as moment from 'moment';
 
-import { updateAccount } from '../../actions/hierarchyActions';
-import { closeModalDialog } from "../../actions/viewActions";
-import { DayPickerWithMonthYear, TwoHundredthYearPast, Today } from "../common/DayPickerHelpers";
-import { StringsAreNotNullOrEmpty } from "../../helpers/ValidationHelpers";
+import { updateAccount } from '../../../actions/hierarchyActions';
+import { closeModalDialog } from "../../../actions/viewActions";
+import { DayPickerWithMonthYear, TwoHundredthYearPast, Today } from "../../common/DayPickerHelpers";
+import { StringsAreNotNullOrEmpty } from "../../../helpers/ValidationHelpers";
 
 interface UpdateAccountDialogProps {    
     account: Account;

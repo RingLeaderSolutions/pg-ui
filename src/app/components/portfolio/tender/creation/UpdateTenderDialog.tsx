@@ -1,22 +1,21 @@
 import * as React from "react";
-import { UtilityType } from '../../../model/Models';
+import { UtilityType } from '../../../../model/Models';
 import { MapDispatchToPropsFunction, connect, MapStateToProps } from 'react-redux';
-import { ApplicationState } from '../../../applicationState';
-import Spinner from '../../common/Spinner';
+import { ApplicationState } from '../../../../applicationState';
+import Spinner from '../../../common/Spinner';
 import * as moment from 'moment';
 
-import { fetchTariffs } from '../../../actions/portfolioActions';
-import { createTender } from '../../../actions/tenderActions';
-import { Tender, TenderRequirements, Tariff, TenderOfferType } from "../../../model/Tender";
-import { closeModalDialog } from "../../../actions/viewActions";
-import { TenthYearFuture, DayPickerWithMonthYear, Today } from "../../common/DayPickerHelpers";
+import { fetchTariffs } from '../../../../actions/portfolioActions';
+import { updateTender } from '../../../../actions/tenderActions';
+import { Tender, TenderRequirements, Tariff, TenderOfferType } from "../../../../model/Tender";
+import { closeModalDialog } from "../../../../actions/viewActions";
+import { DayPickerWithMonthYear, Today, TenthYearFuture } from "../../../common/DayPickerHelpers";
 
 
-interface CreateTenderDialogProps {
-    portfolioId: string;
+interface UpdateTenderDialogProps {
+    tender: Tender;
     utilityDescription: string;
     utility: UtilityType;
-    isHalfHourly: boolean;
 }
 
 interface StateProps {
@@ -27,13 +26,13 @@ interface StateProps {
 }
   
 interface DispatchProps {
-    createTender: (portfolioId: string, tender: Tender, utilityTypE: UtilityType, isHalfHourly: boolean) => void;
+    updateTender: (tenderId: string, details: Tender) => void;
     fetchTariffs: () => void;    
     closeModalDialog: () => void;
 }
 
-interface CreateTenderState {
-    deadline: moment.Moment;   
+interface UpdateTenderState {
+    deadline: moment.Moment;
     title: string;
     commission: string;
     billingMethod: string;
@@ -47,25 +46,46 @@ interface CreateTenderState {
     commissionPerMonth: string;
 }
 
-class CreateTenderDialog extends React.Component<CreateTenderDialogProps & StateProps & DispatchProps, CreateTenderState> {
-    constructor(props: CreateTenderDialogProps & StateProps & DispatchProps){
+class UpdateTenderDialog extends React.Component<UpdateTenderDialogProps & StateProps & DispatchProps, UpdateTenderState> {
+    constructor(props: UpdateTenderDialogProps & StateProps & DispatchProps){
         super();
         this.state = {
-            deadline: null,
-            title: '',
-            commission:'',
-            billingMethod: '',
-            deadlineNotes: '',
-            ebInclusive: true,
-            paymentTerms: "0",
-            tariff: '',
-            greenPercentage: '',
-            durations: [ 12 ],
-            paymentMethod: '',
-            commissionPerMonth: ''
+            deadline: props.tender.deadline ? moment(props.tender.deadline) : null,
+            title: props.tender.tenderTitle || '',
+            commission: String(props.tender.commission),
+            billingMethod: props.tender.billingMethod,
+            deadlineNotes: props.tender.deadlineNotes || '',
+            ebInclusive: props.tender.allInclusive,
+            paymentTerms: String(props.tender.requirements.paymentTerms),
+            tariff: props.tender.requirements.tariffId || '',
+            greenPercentage: String(props.tender.requirements.greenPercentage),
+            durations: props.tender.offerTypes.map(ot => ot.duration),
+            paymentMethod: props.tender.paymentMethod || '',
+            commissionPerMonth: props.tender.commissionPerMonth ? String(props.tender.commissionPerMonth) : ''
         };
+    }
 
-        this.stateHasDuration = this.stateHasDuration.bind(this);
+    componentWillReceiveProps(nextProps: UpdateTenderDialogProps & StateProps & DispatchProps){
+        if(nextProps.tender != null){
+            this.setState({
+                deadline: nextProps.tender.deadline ? moment(nextProps.tender.deadline) : null,
+                title: nextProps.tender.tenderTitle || '',
+                commission: String(nextProps.tender.commission),
+                billingMethod: nextProps.tender.billingMethod,
+                deadlineNotes: nextProps.tender.deadlineNotes || '',
+                ebInclusive: nextProps.tender.allInclusive,
+                paymentTerms: String(nextProps.tender.requirements.paymentTerms),
+                tariff: nextProps.tender.requirements.tariffId || '',
+                greenPercentage: String(nextProps.tender.requirements.greenPercentage),
+                durations: nextProps.tender.offerTypes.map(ot => ot.duration),
+                paymentMethod: nextProps.tender.paymentMethod || '',
+                commissionPerMonth: nextProps.tender.commissionPerMonth ? String(nextProps.tender.commissionPerMonth) : ''
+            })
+        }
+    }
+
+    componentDidMount(){
+        this.props.fetchTariffs();
     }
 
     handleFormChange(attribute: string, event: React.ChangeEvent<any>){
@@ -75,10 +95,6 @@ class CreateTenderDialog extends React.Component<CreateTenderDialogProps & State
             ...this.state,
             [attribute]: value
         })
-    }
-
-    componentDidMount(){
-        this.props.fetchTariffs();
     }
 
     handleDeadlineChange(date: moment.Moment){
@@ -118,12 +134,6 @@ class CreateTenderDialog extends React.Component<CreateTenderDialogProps & State
         return this.state.durations.findIndex(d => d == duration) != -1;
     }
 
-    renderTariffOptions(){
-        return this.props.tariffs.map(t => {
-            return (<option key={t.id} value={t.id}>{t.name}</option>)
-        });
-    }
-
     renderDurationOptions(...durations: number[]){
         return durations.map(d => {
             return (
@@ -140,23 +150,31 @@ class CreateTenderDialog extends React.Component<CreateTenderDialogProps & State
             )
         })
     }
+    
+    renderTariffOptions(){
+        return this.props.tariffs.map(t => {
+            return (<option key={t.id} value={t.id}>{t.name}</option>)
+        });
+    }
 
-    createTender(){
+    updateTender(e: any){
+        var { tender } = this.props;
+
         let requirements: TenderRequirements = {
             id: "",
-            portfolioId: this.props.portfolioId,
-            tenderId: "",
+            portfolioId: tender.portfolioId,
+            tenderId: tender.tenderId,
 
             paymentTerms: Number(this.state.paymentTerms),
             greenPercentage: Number(this.state.greenPercentage),
-
+            
             tariffId: this.state.tariff ? this.state.tariff : null
         };
 
         var offerTypes : TenderOfferType[] = this.state.durations.map(d => {
             return {
                 id: null,
-                tenderId: null,
+                tenderId: tender.tenderId,
 
                 product: this.state.ebInclusive ? "inclusive" : "pass-thru",
                 duration: d
@@ -164,29 +182,29 @@ class CreateTenderDialog extends React.Component<CreateTenderDialogProps & State
         });
 
         var tender: Tender = {
-            portfolioId: this.props.portfolioId,
-            utility: this.props.utility == UtilityType.Electricity ? "ELECTRICITY" : "GAS",
-
+            ...tender,
             tenderTitle: this.state.title,
             billingMethod: this.state.billingMethod,
             deadline: this.state.deadline ? this.state.deadline.format("YYYY-MM-DDTHH:mm:ss") : null,
             deadlineNotes: this.state.deadlineNotes,
             commission: Number(this.state.commission),
-            commissionPerMonth: Number(this.state.commissionPerMonth),
-            paymentMethod: this.state.paymentMethod,
-            halfHourly: this.props.isHalfHourly,
+            halfHourly: this.props.tender.halfHourly,
             allInclusive: this.state.ebInclusive,
-            offerTypes,
-            requirements
+            paymentMethod: this.state.paymentMethod,
+            commissionPerMonth: Number(this.state.commissionPerMonth),
+            requirements,
+            offerTypes
         }
 
-        this.props.createTender(this.props.portfolioId, tender, this.props.utility, this.props.isHalfHourly);
+        this.props.updateTender(tender.tenderId, tender);
         this.props.closeModalDialog();
     }
 
     renderRequirementsEditForm(){
-        var isGasTender = this.props.utility == UtilityType.Gas;
-        var isHalfhourly = this.props.isHalfHourly;
+        var { tender } = this.props;
+        var isGasTender = tender.utility == "GAS";
+        var isHalfhourly = tender.halfHourly;
+
         return (
             <form>
                 <fieldset className='uk-fieldset'>
@@ -267,7 +285,7 @@ class CreateTenderDialog extends React.Component<CreateTenderDialogProps & State
         );
     }
 
-    renderGeneralEditForm(){ 
+    renderGeneralEditForm(){   
         return (
             <form>
                 <fieldset className='uk-fieldset'>
@@ -277,16 +295,16 @@ class CreateTenderDialog extends React.Component<CreateTenderDialogProps & State
                             value={this.state.title}
                             onChange={(e) => this.handleFormChange("title", e)}/>
                     </div>
-                    
+
                     <div className="uk-margin uk-width-1-2">
                         <label className="uk-form-label" data-for="deadline-input">Deadline</label>
                         <div className="uk-form-controls">
                             <DayPickerWithMonthYear 
-                                disablePast={true} 
-                                fromMonth={Today} 
-                                toMonth={TenthYearFuture} 
-                                onDayChange={(d: moment.Moment) => this.handleDeadlineChange(d)}
-                                selectedDay={this.state.deadline} />
+                                    disablePast={true} 
+                                    fromMonth={Today} 
+                                    toMonth={TenthYearFuture} 
+                                    onDayChange={(d: moment.Moment) => this.handleDeadlineChange(d)}
+                                    selectedDay={this.state.deadline} />
                         </div>
                     </div>
 
@@ -294,10 +312,10 @@ class CreateTenderDialog extends React.Component<CreateTenderDialogProps & State
                         <label className='uk-form-label'>Deadline notes</label>
                         <textarea className='uk-textarea' 
                             rows={4}
-                            value={this.state.deadlineNotes}
+                            value={this.state.deadlineNotes || ''}
                             onChange={(e) => this.handleFormChange("deadlineNotes", e)}/>
                     </div>
-
+                    
                     <div className="uk-margin">
                         <label className='uk-form-label'>Commission</label>
                         <div className="uk-grid">
@@ -360,45 +378,42 @@ class CreateTenderDialog extends React.Component<CreateTenderDialogProps & State
     }
     render() {
         if(this.props.working || this.props.tariffs == null){
-            return (<div> <Spinner hasMargin={true}/> </div>);
+            return (<div> <Spinner /> </div>);
         }
         return (
             <div>
                 <div className="uk-modal-header">
-                    <h2 className="uk-modal-title"><i className="fas fa-shopping-cart uk-margin-right"></i>Add {this.props.utilityDescription} Tender</h2>
+                    <h2 className="uk-modal-title"><i className="fas fa-shopping-cart uk-margin-right"></i>Edit {this.props.utilityDescription} Tender</h2>
                 </div>
                 <div className="uk-modal-body">
                     <div>
-                        <ul data-uk-switcher="connect: +.uk-switcher" className="uk-tab">
-                            <li><a href="#">General</a></li>
-                            <li><a href="#">Requirements</a></li>
-                        </ul>
-                        <ul className='uk-switcher'>
-                            {this.renderGeneralEditForm()}
-                            {this.renderRequirementsEditForm()}
-                        </ul>
-                    </div>
-                    <div>
-                                       
+                    <ul data-uk-switcher="connect: +.uk-switcher" className="uk-tab">
+                        <li><a href="#">General</a></li>
+                        <li><a href="#">Requirements</a></li>
+                    </ul>
+                    <ul className='uk-switcher'>
+                        <li>{this.renderGeneralEditForm()}</li>
+                        <li>{this.renderRequirementsEditForm()}</li>
+                    </ul>
                     </div>
                 </div>
                 <div className="uk-modal-footer uk-text-right">
                     <button className="uk-button uk-button-default uk-margin-right" type="button" onClick={() => this.props.closeModalDialog()}><i className="fas fa-times uk-margin-small-right"></i>Cancel</button>
-                    <button className="uk-button uk-button-primary" type="button" onClick={() => this.createTender()}><i className="fas fa-plus-circle uk-margin-small-right"></i>Add</button>
+                    <button className="uk-button uk-button-primary" type="button" onClick={(e) => this.updateTender(e)}><i className="fas fa-edit uk-margin-small-right"></i>Save</button>
                 </div>
             </div>)
     }
 }
 
-const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, CreateTenderDialogProps> = (dispatch) => {
+const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, UpdateTenderDialogProps> = (dispatch) => {
     return {
-        createTender: (portfolioId, tender, utilityType, isHalfHourly) => dispatch(createTender(portfolioId, tender, utilityType, isHalfHourly)),
+        updateTender: (portfolioId, tender) => dispatch(updateTender(portfolioId, tender)),
         fetchTariffs: () => dispatch(fetchTariffs()),
         closeModalDialog: () => dispatch(closeModalDialog()) 
     };
 };
   
-const mapStateToProps: MapStateToProps<StateProps, CreateTenderDialogProps, ApplicationState> = (state: ApplicationState) => {
+const mapStateToProps: MapStateToProps<StateProps, UpdateTenderDialogProps, ApplicationState> = (state: ApplicationState) => {
     return {
         working: state.portfolio.tender.update_tender.working || state.portfolio.tender.tariffs.working,
         error: state.portfolio.tender.update_tender.error  ||  state.portfolio.tender.tariffs.error,
@@ -407,4 +422,4 @@ const mapStateToProps: MapStateToProps<StateProps, CreateTenderDialogProps, Appl
     };
 };
   
-export default connect(mapStateToProps, mapDispatchToProps)(CreateTenderDialog);
+export default connect(mapStateToProps, mapDispatchToProps)(UpdateTenderDialog);
