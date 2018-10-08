@@ -166,7 +166,7 @@ class AccountContractsView extends React.Component<AccountContractsViewProps & S
                     </td>
                     <td>{c.reference}</td>
                     <td>{supplierImage}</td>
-                    <td className="uk-text-center"><UtilityIcon utility={c.utility} isHalfHourlyElectricity={c.isHalfHourly} /></td>
+                    <td className="uk-text-center"><UtilityIcon utility={c.utility} isHalfHourlyElectricity={c.halfHourly} /></td>
                     <td>{c.product}</td>
                     <td>{c.contractStart != null ? moment(c.contractStart).format("DD/MM/YYYY") : "-"}</td>
                     <td>{c.contractEnd != null ? moment(c.contractEnd).format("DD/MM/YYYY") : "-"}</td>

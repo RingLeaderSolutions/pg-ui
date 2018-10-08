@@ -81,7 +81,7 @@ class AddExistingContractDialog extends React.Component<AddExistingContractDialo
     }
 
     addExistingContract(){
-        let isHalfHourly = this.state.utility == UtilityType.Electricity ? this.state.isHalfHourly : false;
+        let halfHourly = this.state.utility == UtilityType.Electricity ? this.state.isHalfHourly : false;
         var utilityString = getWellFormattedUtilityType(this.state.utility).toLowerCase();
         var contract: TenderContract = {
             contractId: null,
@@ -97,7 +97,7 @@ class AddExistingContractDialog extends React.Component<AddExistingContractDialo
             status: null,
             activeTenderCount: 0,
             sheetCount: 0,
-            isHalfHourly
+            halfHourly
         };
         this.props.addExistingContract(this.props.accountId, contract);
         this.props.closeModalDialog();
