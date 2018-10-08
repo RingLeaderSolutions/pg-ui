@@ -1,12 +1,12 @@
 import * as React from "react";
 import { MapDispatchToPropsFunction, connect, MapStateToProps } from 'react-redux';
-import { ApplicationState } from '../../applicationState';
+import { ApplicationState } from '../../../applicationState';
 
-import { uploadElectricityBackingSheet, uploadGasBackingSheet } from '../../actions/tenderActions';
-import { closeModalDialog } from "../../actions/viewActions";
-import { UploadPanel } from "../common/UploadPanel";
-import { TenderSupplier, TenderContract } from "../../model/Tender";
-import { getWellFormattedUtilityName } from "../common/UtilityIcon";
+import { uploadElectricityBackingSheet, uploadGasBackingSheet } from '../../../actions/tenderActions';
+import { closeModalDialog } from "../../../actions/viewActions";
+import { UploadPanel } from "../../common/UploadPanel";
+import { TenderSupplier, TenderContract } from "../../../model/Tender";
+import { getWellFormattedUtilityName } from "../../common/UtilityIcon";
 
 interface UploadContractRatesDialogProps {
     contract: TenderContract;   

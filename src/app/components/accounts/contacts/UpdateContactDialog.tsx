@@ -1,25 +1,25 @@
 import * as React from "react";
 import { MapDispatchToPropsFunction, connect, MapStateToProps } from 'react-redux';
 
-import { createContact } from '../../actions/hierarchyActions';
-import { AccountContact } from "../../model/HierarchyObjects";
-import { closeModalDialog } from "../../actions/viewActions";
-import { StringsAreNotNullOrEmpty } from "../../helpers/ValidationHelpers";
-import { ApplicationState } from "../../applicationState";
+import { updateContact } from '../../../actions/hierarchyActions';
+import { AccountContact } from "../../../model/HierarchyObjects";
+import { closeModalDialog } from "../../../actions/viewActions";
+import { StringsAreNotNullOrEmpty } from "../../../helpers/ValidationHelpers";
+import { ApplicationState } from "../../../applicationState";
 
-interface CreateContactDialogProps {    
-    accountId: string;
+interface UpdateContactDialogProps {    
+    contact: AccountContact;
 }
 
 interface StateProps {
 }
 
 interface DispatchProps {
-    createContact: (contact: AccountContact) => void;
+    updateContact: (contact: AccountContact) => void;
     closeModalDialog: () => void;
 }
 
-interface CreateAccountDialogState {
+interface UpdateContactDialogState {
     firstName: string;
     lastName: string;
     email: string;
@@ -27,22 +27,23 @@ interface CreateAccountDialogState {
     role: string;
 }
 
-class CreateContactDialog extends React.Component<CreateContactDialogProps & StateProps & DispatchProps, CreateAccountDialogState> {
-    constructor(props: CreateContactDialogProps & StateProps & DispatchProps){
+class UpdateContactDialog extends React.Component<UpdateContactDialogProps & StateProps & DispatchProps, UpdateContactDialogState> {
+    constructor(props: UpdateContactDialogProps & StateProps & DispatchProps){
         super(props);
+        var { contact } = props;
         this.state = {
-            firstName: '',
-            lastName: '',
-            email: '',
-            phoneNumber: '',
-            role: ''
+            firstName: contact.firstName,
+            lastName: contact.lastName,
+            email: contact.email,
+            phoneNumber: contact.phoneNumber,
+            role: contact.role
         };
     }
 
-    createContact(){
+    updateContact(){
         var contact: AccountContact = {
-            id: "",
-            accountId: this.props.accountId,
+            id: this.props.contact.id,
+            accountId: this.props.contact.accountId,
             firstName: this.state.firstName,
             lastName: this.state.lastName,
             email: this.state.email,
@@ -50,7 +51,7 @@ class CreateContactDialog extends React.Component<CreateContactDialogProps & Sta
             role: this.state.role,
         }
         
-        this.props.createContact(contact);
+        this.props.updateContact(contact);
         this.props.closeModalDialog();
     }
 
@@ -70,17 +71,17 @@ class CreateContactDialog extends React.Component<CreateContactDialogProps & Sta
             this.state.email,
             this.state.phoneNumber);
     }
-    
+
     render() {
         return (
             <div>
                 <div className="uk-modal-header">
-                    <h2 className="uk-modal-title"><i className="fas fa-user-plus uk-margin-right"></i>Add Contact</h2>
+                    <h2 className="uk-modal-title"><i className="fas fa-user-edit uk-margin-right"></i>Update Contact: {this.props.contact.firstName} {this.props.contact.lastName}</h2>
                 </div>
                 <div className="uk-modal-body">
                     <div className="uk-margin">
                         <form>
-                            <fieldset className="uk-fieldset">
+                        <fieldset className="uk-fieldset">
                                 <div className='uk-margin'>
                                     <label className='uk-form-label'>First Name</label>
                                     <input 
@@ -127,21 +128,21 @@ class CreateContactDialog extends React.Component<CreateContactDialogProps & Sta
                 </div>
                 <div className="uk-modal-footer uk-text-right">
                     <button className="uk-button uk-button-default uk-margin-right" type="button" onClick={() => this.props.closeModalDialog()}><i className="fas fa-times uk-margin-small-right"></i>Cancel</button>
-                    <button className="uk-button uk-button-primary" type="button" onClick={() => this.createContact()} disabled={!this.canSubmit()}><i className="fas fa-user-plus uk-margin-small-right"></i>Create</button>
+                    <button className="uk-button uk-button-primary" type="button" disabled={!this.canSubmit()} onClick={() => this.updateContact()}><i className="fas fa-user-plus uk-margin-right"></i>Update</button>
                 </div>
             </div>)
     }
 }
 
-const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, CreateContactDialogProps> = (dispatch) => {
+const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, UpdateContactDialogProps> = (dispatch) => {
     return {
-        createContact: (contact: AccountContact) =>  dispatch(createContact(contact)),
-        closeModalDialog: () => dispatch(closeModalDialog()) 
+        updateContact: (contact: AccountContact) =>  dispatch(updateContact(contact)),
+        closeModalDialog: () => dispatch(closeModalDialog())
     };
 };
   
-const mapStateToProps: MapStateToProps<StateProps, CreateContactDialogProps, ApplicationState> = () => {
+const mapStateToProps: MapStateToProps<StateProps, UpdateContactDialogProps, ApplicationState> = () => {
     return {};
 };
   
-export default connect(mapStateToProps, mapDispatchToProps)(CreateContactDialog);
+export default connect(mapStateToProps, mapDispatchToProps)(UpdateContactDialog);

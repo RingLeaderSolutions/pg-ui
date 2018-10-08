@@ -1,14 +1,14 @@
 import * as React from "react";
 import { MapDispatchToPropsFunction, connect, MapStateToProps } from 'react-redux';
-import { ApplicationState } from '../../applicationState';
-import Spinner from '../common/Spinner';
+import { ApplicationState } from '../../../applicationState';
+import Spinner from '../../common/Spinner';
 
-import { createAccountContract } from '../../actions/tenderActions';
-import { TenderContract, TenderSupplier } from "../../model/Tender";
-import { closeModalDialog } from "../../actions/viewActions";
-import { UtilityIcon, getWellFormattedUtilityType } from "../common/UtilityIcon";
-import { UtilityType } from "../../model/Models";
-import { StringsAreNotNullOrEmpty } from "../../helpers/ValidationHelpers";
+import { createAccountContract } from '../../../actions/tenderActions';
+import { TenderContract, TenderSupplier } from "../../../model/Tender";
+import { closeModalDialog } from "../../../actions/viewActions";
+import { UtilityIcon, getWellFormattedUtilityType } from "../../common/UtilityIcon";
+import { UtilityType } from "../../../model/Models";
+import { StringsAreNotNullOrEmpty } from "../../../helpers/ValidationHelpers";
 
 interface AddExistingContractDialogProps {
     accountId: string;

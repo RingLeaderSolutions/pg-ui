@@ -1,14 +1,14 @@
 import * as React from "react";
 import { MapDispatchToPropsFunction, connect, MapStateToProps } from 'react-redux';
-import { ApplicationState } from '../../applicationState';
-import Spinner from '../common/Spinner';
+import { ApplicationState } from '../../../applicationState';
+import Spinner from '../../common/Spinner';
 
-import { createContractRenewal, getTenderSuppliers, clearRenewalState } from '../../actions/tenderActions';
-import { TenderContract, TenderSupplier, ContractRenewalResponse } from "../../model/Tender";
-import { closeModalDialog, redirectToPortfolio } from "../../actions/viewActions";
-import ErrorMessage from "../common/ErrorMessage";
-import { ContractRenewalStage } from "../../model/app/ContractRenewalStage";
-import ModalDialog from "../common/ModalDialog";
+import { createContractRenewal, getTenderSuppliers, clearRenewalState } from '../../../actions/tenderActions';
+import { TenderContract, TenderSupplier, ContractRenewalResponse } from "../../../model/Tender";
+import { closeModalDialog, redirectToPortfolio } from "../../../actions/viewActions";
+import ErrorMessage from "../../common/ErrorMessage";
+import { ContractRenewalStage } from "../../../model/app/ContractRenewalStage";
+import ModalDialog from "../../common/ModalDialog";
 
 interface RenewContractDialogProps {
     contract: TenderContract;

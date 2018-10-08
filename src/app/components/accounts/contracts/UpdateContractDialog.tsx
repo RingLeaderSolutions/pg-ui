@@ -1,13 +1,13 @@
 import * as React from "react";
 import { MapDispatchToPropsFunction, connect, MapStateToProps } from 'react-redux';
-import { ApplicationState } from '../../applicationState';
-import Spinner from '../common/Spinner';
+import { ApplicationState } from '../../../applicationState';
+import Spinner from '../../common/Spinner';
 
-import { updateAccountContract } from '../../actions/tenderActions';
-import { TenderContract, TenderSupplier } from "../../model/Tender";
-import { closeModalDialog } from "../../actions/viewActions";
-import { UtilityType } from "../../model/Models";
-import { StringsAreNotNullOrEmpty } from "../../helpers/ValidationHelpers";
+import { updateAccountContract } from '../../../actions/tenderActions';
+import { TenderContract, TenderSupplier } from "../../../model/Tender";
+import { closeModalDialog } from "../../../actions/viewActions";
+import { UtilityType } from "../../../model/Models";
+import { StringsAreNotNullOrEmpty } from "../../../helpers/ValidationHelpers";
 
 interface UpdateContractDialogProps {
     contract: TenderContract;

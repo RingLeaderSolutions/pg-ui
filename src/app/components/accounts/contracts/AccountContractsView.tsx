@@ -1,20 +1,20 @@
 import * as React from "react";
-import ErrorMessage from "../common/ErrorMessage";
+import ErrorMessage from "../../common/ErrorMessage";
 import { MapDispatchToPropsFunction, connect, MapStateToProps } from 'react-redux';
-import { ApplicationState } from '../../applicationState';
-import { AccountDetail } from '../../model/Models';
-import Spinner from '../common/Spinner';
+import { ApplicationState } from '../../../applicationState';
+import { AccountDetail } from '../../../model/Models';
+import Spinner from '../../common/Spinner';
 import * as moment from 'moment';
 
 import { format } from 'currency-formatter';
 
-import { openModalDialog } from "../../actions/viewActions";
-import ModalDialog from "../common/ModalDialog";
-import { getAccountContracts, getTenderSuppliers, fetchAccountContractRates, deleteAccountContract, createContractRenewal } from "../../actions/tenderActions";
-import { TenderContract, TenderSupplier } from "../../model/Tender";
-import { UtilityIcon, getWellFormattedUtilityName } from "../common/UtilityIcon";
+import { openModalDialog } from "../../../actions/viewActions";
+import ModalDialog from "../../common/ModalDialog";
+import { getAccountContracts, getTenderSuppliers, fetchAccountContractRates, deleteAccountContract, createContractRenewal } from "../../../actions/tenderActions";
+import { TenderContract, TenderSupplier } from "../../../model/Tender";
+import { UtilityIcon, getWellFormattedUtilityName } from "../../common/UtilityIcon";
 import UpdateContractDialog from "./UpdateContractDialog";
-import TenderBackingSheetsDialog from "../portfolio/tender/TenderBackingSheetsDialog";
+import TenderBackingSheetsDialog from "../../portfolio/tender/TenderBackingSheetsDialog";
 import AddContractDialog from "./AddContractDialog";
 import UploadContractRatesDialog from "./UploadContractRatesDialog";
 import * as UIkit from 'uikit'; 

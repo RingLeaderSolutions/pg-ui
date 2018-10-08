@@ -1,13 +1,13 @@
 import * as React from "react";
 import { MapDispatchToPropsFunction, connect, MapStateToProps } from 'react-redux';
-import { ApplicationState } from '../../applicationState';
-import Spinner from '../common/Spinner';
+import { ApplicationState } from '../../../applicationState';
+import Spinner from '../../common/Spinner';
 
-import { selectCompanySearchMethod, selectManualMethod, clearAccountCreation } from '../../actions/hierarchyActions';
-import { AccountCreationStage } from "../../model/app/AccountCreationStage";
+import { selectCompanySearchMethod, selectManualMethod, clearAccountCreation } from '../../../actions/hierarchyActions';
+import { AccountCreationStage } from "../../../model/app/AccountCreationStage";
 import CompanySearch from "./CompanySearch";
 import CreateAccountDialog from "./CreateAccountDialog";
-import { closeModalDialog } from "../../actions/viewActions";
+import { closeModalDialog } from "../../../actions/viewActions";
 
 
 interface NewAccountDialogProps {    
@@ -98,7 +98,7 @@ class NewAccountDialog extends React.Component<NewAccountDialogProps & StateProp
                             <div className="uk-card-header">
                                 <div className="uk-grid-small uk-flex-middle" data-uk-grid>
                                     <div className="uk-width-auto">
-                                        <img className="uk-border-circle" width="40" height="40" src={require('../../images/companies-house.jpg')} />
+                                        <img className="uk-border-circle" width="40" height="40" src={require('../../../images/companies-house.jpg')} />
                                     </div>
                                     <div className="uk-width-expand">
                                         <h3 className="uk-card-title">Company Search</h3>
@@ -113,7 +113,7 @@ class NewAccountDialog extends React.Component<NewAccountDialogProps & StateProp
                             <div className="uk-card-header">
                                 <div className="uk-grid-small uk-flex-middle" data-uk-grid>
                                     <div className="uk-width-auto">
-                                        <img className="uk-border-circle" width="40" height="40" src={require('../../images/manual-icon.png')} />
+                                        <img className="uk-border-circle" width="40" height="40" src={require('../../../images/manual-icon.png')} />
                                     </div>
                                     <div className="uk-width-expand">
                                         <h3 className="uk-card-title">Manual</h3>

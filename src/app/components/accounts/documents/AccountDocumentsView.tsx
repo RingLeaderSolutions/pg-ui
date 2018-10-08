@@ -1,16 +1,16 @@
 import * as React from "react";
-import ErrorMessage from "../common/ErrorMessage";
+import ErrorMessage from "../../common/ErrorMessage";
 import { MapDispatchToPropsFunction, connect, MapStateToProps } from 'react-redux';
-import { ApplicationState } from '../../applicationState';
-import { AccountDetail, AccountDocument } from '../../model/Models';
-import Spinner from '../common/Spinner';
+import { ApplicationState } from '../../../applicationState';
+import { AccountDetail, AccountDocument } from '../../../model/Models';
+import Spinner from '../../common/Spinner';
 import * as moment from 'moment';
 
 
-import { fetchAccountDocumentation } from '../../actions/hierarchyActions';
+import { fetchAccountDocumentation } from '../../../actions/hierarchyActions';
 import UploadAccountDocumentDialog from "./UploadAccountDocumentDialog";
-import { openModalDialog } from "../../actions/viewActions";
-import ModalDialog from "../common/ModalDialog";
+import { openModalDialog } from "../../../actions/viewActions";
+import ModalDialog from "../../common/ModalDialog";
 
 interface AccountDocumentsViewProps {
     account: AccountDetail;

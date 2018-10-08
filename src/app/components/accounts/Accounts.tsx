@@ -7,7 +7,7 @@ import Header from "../common/Header";
 import ErrorMessage from "../common/ErrorMessage";
 import { Account, ApplicationTab } from '../../model/Models';
 import Spinner from '../common/Spinner';
-import NewAccountDialog from "./NewAccountDialog";
+import NewAccountDialog from "./create/NewAccountDialog";
 import ReactTable, { Column } from "react-table";
 import { BooleanCellRenderer } from "../common/TableHelpers";
 import { openModalDialog, selectApplicationTab } from "../../actions/viewActions";

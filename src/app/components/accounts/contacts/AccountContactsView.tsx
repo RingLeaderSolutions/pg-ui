@@ -1,17 +1,17 @@
 import * as React from "react";
-import ErrorMessage from "../common/ErrorMessage";
+import ErrorMessage from "../../common/ErrorMessage";
 import { MapDispatchToPropsFunction, connect, MapStateToProps } from 'react-redux';
-import { ApplicationState } from '../../applicationState';
-import { AccountDetail } from '../../model/Models';
-import { AccountContact } from '../../model/HierarchyObjects';
-import Spinner from '../common/Spinner';
+import { ApplicationState } from '../../../applicationState';
+import { AccountDetail } from '../../../model/Models';
+import { AccountContact } from '../../../model/HierarchyObjects';
+import Spinner from '../../common/Spinner';
 
 
-import { deleteContact } from '../../actions/hierarchyActions';
+import { deleteContact } from '../../../actions/hierarchyActions';
 import CreateContactDialog from "./CreateContactDialog";
 import UpdateContactDialog from "./UpdateContactDialog";
-import { openModalDialog } from "../../actions/viewActions";
-import ModalDialog from "../common/ModalDialog";
+import { openModalDialog } from "../../../actions/viewActions";
+import ModalDialog from "../../common/ModalDialog";
 
 interface AccountContactsViewProps {
 }

@@ -1,17 +1,17 @@
 import * as React from "react";
 import { MapDispatchToPropsFunction, connect, MapStateToProps } from 'react-redux';
-import { ApplicationState } from '../../applicationState';
-import { SiteDetail } from '../../model/HierarchyObjects';
+import { ApplicationState } from '../../../applicationState';
+import { SiteDetail } from '../../../model/HierarchyObjects';
 import { Link } from "react-router-dom";
 import ReactTable, { Column } from "react-table";
-import { BooleanCellRenderer } from "../common/TableHelpers";
-import { openModalDialog } from "../../actions/viewActions";
-import { Tariff } from "../../model/Tender";
-import { fetchTariffs } from "../../actions/portfolioActions";
-import Spinner from "../common/Spinner";
-import ErrorMessage from "../common/ErrorMessage";
+import { BooleanCellRenderer } from "../../common/TableHelpers";
+import { openModalDialog } from "../../../actions/viewActions";
+import { fetchTariffs } from "../../../actions/portfolioActions";
+import { Tariff } from "../../../model/Tender";
+import ErrorMessage from "../../common/ErrorMessage";
+import Spinner from "../../common/Spinner";
 
-interface AccountElectricityMeterTableProps {
+interface AccountGasMeterTableProps {
     sites: SiteDetail[];
     portfolios: any;
 }
@@ -28,32 +28,25 @@ interface DispatchProps {
     fetchTariffs: () => void;
 }
 
-interface AccountElectricityMeterTableState {
+interface AccountGasMeterTableState {
     searchText: string;
-    tableData: AccountElectricityMeterTableEntry[];
+    tableData: AccountGasMeterTableEntry[];
 }
 
-interface AccountElectricityMeterTableEntry {
+interface AccountGasMeterTableEntry {
     [key: string]: any;
     site: string;
     meter: string;
-    type: string;
-    topline: string;
     serialNumber: string;
-    da: string;
-    dc: string;
-    mo: string;
-    voltage: string;
-    connection: string;
-    postcode: string;
-    rec: number;
-    eac: number;
-    capacity: number;
-    energised: boolean;
-    newConnection: boolean;
+    make: string;
+    model: string;
+    size: number;
+    aq: number;
+    changeOfUse: boolean;
+    isImperial: boolean;
 }
 
-class AccountElectricityMeterTable extends React.Component<AccountElectricityMeterTableProps & StateProps & DispatchProps, AccountElectricityMeterTableState> {
+class AccountGasMeterTable extends React.Component<AccountGasMeterTableProps & StateProps & DispatchProps, AccountGasMeterTableState> {
     columns: Column[] = [{
         Header: 'Site',
         accessor: 'site'
@@ -61,59 +54,37 @@ class AccountElectricityMeterTable extends React.Component<AccountElectricityMet
         Header: 'Meter',
         accessor: 'meter'
     },{
-        Header: 'Type',
-        accessor: 'type'
-    },{
         Header: 'Tariff',
-        accessor: "tariff",
+        accessor: 'tariff'
     },{
-        Header: 'Topline',
-        accessor: "topline",
-    },{
-        Header: 'S/N',
+        Header: 'Serial Number',
         accessor: 'serialNumber'
     },{
-        Header: 'DA',
-        accessor: 'da'
+        Header: 'Make',
+        accessor: "make",
     },{
-        Header: 'DC',
-        accessor: 'dc'
+        Header: 'Model',
+        accessor: 'model'
     },{
-        Header: 'MO',
-        accessor: 'mo'
+        Header: 'Size',
+        accessor: 'size'
     },{
-        Header: 'Voltage',
-        accessor: 'voltage'
+        Header: 'AQ',
+        accessor: 'aq'
     },{
-        Header: 'Connection',
-        accessor: 'connection'
-    },{
-        Header: 'Postcode',
-        accessor: 'postcode'
-    },{
-        Header: 'REC',
-        accessor: 'rec'
-    },{
-        Header: 'EAC',
-        accessor: 'eac'
-    },{
-        Header: 'Capacity',
-        accessor: 'capacity'
-    },{
-        Header: 'Energised',
-        accessor: 'energised',
+        Header: 'Change of Use',
+        accessor: 'changeOfUse',
         Cell: BooleanCellRenderer
     },{
-        Header: 'New Connection',
-        accessor: 'newConnection',
+        Header: 'Is Imperial',
+        accessor: 'isImperial',
         Cell: BooleanCellRenderer
     }];
-    stringProperties: string[] = ["siteId", "site", "meter", "type", "topline", "tariff", "serialNumber", "da", "dc", "mo", "voltage", "connection", "postcode" ];
-    numberProperties: string[] = ["rec", "eac", "capacity"];
+    stringProperties: string[] = ["siteId", "site", "meter", "serialNumber", "tariff", "make", "model"];
+    numberProperties: string[] = ["size", "aq"];
     
     constructor() {
         super();
-
         this.state = {
             searchText: '',
             tableData: []
@@ -124,12 +95,12 @@ class AccountElectricityMeterTable extends React.Component<AccountElectricityMet
         this.props.fetchTariffs();
     }
 
-    componentWillReceiveProps(nextProps: AccountElectricityMeterTableProps & StateProps & DispatchProps){
+    componentWillReceiveProps(nextProps: AccountGasMeterTableProps & StateProps & DispatchProps){
         if(nextProps.sites == null || nextProps.tariffs == null){
             return;
         }
 
-        var tableData: AccountElectricityMeterTableEntry[] = this.filterElectricityMeters(nextProps.sites, nextProps.tariffs, this.state.searchText);
+        var tableData: AccountGasMeterTableEntry[] = this.filterGasMeters(nextProps.sites, nextProps.tariffs, this.state.searchText);
         this.setState({
             ...this.state,
             tableData
@@ -142,7 +113,7 @@ class AccountElectricityMeterTable extends React.Component<AccountElectricityMet
             return;
         }
 
-        var tableData: AccountElectricityMeterTableEntry[] = this.filterElectricityMeters(this.props.sites, this.props.tariffs, raw);
+        var tableData: AccountGasMeterTableEntry[] = this.filterGasMeters(this.props.sites, this.props.tariffs, raw);
 
         this.setState({
             ...this.state,
@@ -151,24 +122,24 @@ class AccountElectricityMeterTable extends React.Component<AccountElectricityMet
         });
     }
 
-    filterElectricityMeters(sites: SiteDetail[], tariffs: Tariff[], searchText: string): AccountElectricityMeterTableEntry[] {
-        var tableData : AccountElectricityMeterTableEntry[] = this.createTableData(sites, tariffs);
+    filterGasMeters(sites: SiteDetail[], tariffs: Tariff[], searchText: string): AccountGasMeterTableEntry[] {
+        var tableData : AccountGasMeterTableEntry[] = this.createTableData(sites, tariffs);
         if(searchText == null || searchText == ""){
             return tableData;
         }
         
         var lowerSearchText = searchText.trim().toLocaleLowerCase();
-        var filtered = tableData.filter(electricityMeter => {
+        var filtered = tableData.filter(gasMeter => {
             var match = false;
             this.stringProperties.forEach(property => {
-                var value: string = electricityMeter[property] as string;
+                var value: string = gasMeter[property] as string;
                 if(value && value.toLocaleLowerCase().includes(lowerSearchText)){
                     match = true;
                 }
             });
 
             this.numberProperties.forEach(property => {
-                var value: string = String(electricityMeter[property] as number);
+                var value: string = String(gasMeter[property] as number);
                 if(value && value.includes(lowerSearchText)){
                     match = true;
                 }
@@ -179,15 +150,7 @@ class AccountElectricityMeterTable extends React.Component<AccountElectricityMet
         return filtered;
     }
 
-    parseValue(value: string){
-        if(value == null){
-            return "-";
-        }
-
-        return value;
-    }
-
-    createTableData(sites: SiteDetail[], tariffs: Tariff[]): AccountElectricityMeterTableEntry[]{
+    createTableData(sites: SiteDetail[], tariffs: Tariff[]): AccountGasMeterTableEntry[]{
         var metersBySites = sites
             .sort(
                 (site1: SiteDetail, site2: SiteDetail) => {
@@ -201,27 +164,20 @@ class AccountElectricityMeterTable extends React.Component<AccountElectricityMet
             .map(site => {
                     var siteId = site.id;
                     var siteCode = site.siteCode;
-                    return site.mpans.map(electricityMeter => {
-                        var tariff = tariffs.find(t => t.id == electricityMeter.tariffId);
+                    return site.mprns.map(gasMeter => {
+                        var tariff = tariffs.find(t => t.id == gasMeter.tariffId);
                         return {
                             siteId,
                             site: siteCode,
-                            meter: electricityMeter.mpanCore,
-                            type: electricityMeter.meterType,
+                            meter: gasMeter.mprnCore,
                             tariff: tariff == null ? "Unknown" : tariff.name,
-                            topline: `${this.parseValue(electricityMeter.profileClass)} ${this.parseValue(electricityMeter.meterTimeSwitchCode)} ${this.parseValue(electricityMeter.llf)}`,
-                            serialNumber: electricityMeter.serialNumber,
-                            da: electricityMeter.daAgent,
-                            dc: electricityMeter.dcAgent,
-                            mo: electricityMeter.moAgent,
-                            voltage: electricityMeter.voltage,
-                            connection: electricityMeter.connection,
-                            postcode: electricityMeter.postcode,
-                            rec: electricityMeter.rec,
-                            eac: electricityMeter.eac,
-                            capacity: electricityMeter.capacity,
-                            energised: electricityMeter.isEnergized,
-                            newConnection: electricityMeter.isNewConnection
+                            serialNumber: gasMeter.serialNumber,
+                            make: gasMeter.make,
+                            model: gasMeter.model,
+                            size: gasMeter.size,
+                            aq: gasMeter.aq,
+                            changeOfUse: gasMeter.changeOfUse,
+                            isImperial: gasMeter.isImperial
                         }
                     })
                 });
@@ -232,7 +188,7 @@ class AccountElectricityMeterTable extends React.Component<AccountElectricityMet
         return Object.keys(this.props.portfolios).map(p => {
             var portfolioId = this.props.portfolios[p];
             var portfolioLink = `/portfolio/${portfolioId}`;
-            return (<Link to={portfolioLink} key={portfolioId}><button className='uk-button uk-button-default uk-button-small uk-margin-small-right' data-uk-tooltip="title: Jump to portfolio"><i className="fa fa-external-link-alt uk-margin-small-right"></i> {p}</button></Link>)
+            return (<Link to={portfolioLink} key={portfolioId}><button className='uk-button uk-button-default uk-button-small uk-margin-small-right' data-uk-tooltip="title: Jump to portfolio"><i className="fa fa-external-link-alt uk-margin-small-right"></i>  {p}</button></Link>)
         })
     }
 
@@ -243,16 +199,16 @@ class AccountElectricityMeterTable extends React.Component<AccountElectricityMet
         if(this.props.error){
             return (<ErrorMessage content={this.props.errorMessage}/>);
         }
-        
+
         var actions = (
             <div>
-                <button className='uk-button uk-button-primary uk-margin-small-right' onClick={() => this.props.openModalDialog('upload-supply-data-electricity')}><i className="fa fa-file-upload uk-margin-small-right fa-lg"></i> Upload Supply Data</button>    
+                <button className='uk-button uk-button-primary uk-margin-small-right' onClick={() => this.props.openModalDialog('upload-supply-data-gas')}><i className="fa fa-file-upload uk-margin-small-right fa-lg"></i> Upload Supply Data</button>    
             </div>
         );
 
         var hasData = this.state.tableData.length > 0;
         if(!hasData && this.state.searchText == ""){
-            var missingDataMessage = "No electricity meters have been uploaded to this account yet.";
+            var missingDataMessage = "No gas meters have been uploaded to this account yet.";
             if(this.props.sites.length == 0){
                 missingDataMessage = "No site or meter data has been uploaded to this account yet."
             }
@@ -307,8 +263,6 @@ class AccountElectricityMeterTable extends React.Component<AccountElectricityMet
                 </div>
                 <hr />
                 <div>
-
-                    <div >
                 {!hasData ? (
                     <div className="uk-alert-default uk-margin-right uk-alert" data-uk-alert>
                         <div className="uk-grid uk-grid-small" data-uk-grid>
@@ -323,23 +277,22 @@ class AccountElectricityMeterTable extends React.Component<AccountElectricityMet
                 : (<ReactTable 
                     showPagination={false}
                     columns={this.columns}
-                    data={this.state.tableData}                    
+                    data={this.state.tableData}
                     style={{maxHeight: `${window.innerHeight - 320}px`}}
                     minRows={0}/>)}
-                    </div>
                 </div>
             </div>)
     }
 }
 
-const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, AccountElectricityMeterTableProps> = (dispatch) => {
+const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, AccountGasMeterTableProps> = (dispatch) => {
     return {
         openModalDialog: (dialogId: string) => dispatch(openModalDialog(dialogId)),
         fetchTariffs: () => dispatch(fetchTariffs())
     };
 };
   
-const mapStateToProps: MapStateToProps<StateProps, AccountElectricityMeterTableProps, ApplicationState> = (state: ApplicationState) => {
+const mapStateToProps: MapStateToProps<StateProps, AccountGasMeterTableProps, ApplicationState> = (state: ApplicationState) => {
     return {
         working: state.portfolio.tender.tariffs.working,
         error:  state.portfolio.tender.tariffs.error,
@@ -348,4 +301,4 @@ const mapStateToProps: MapStateToProps<StateProps, AccountElectricityMeterTableP
     };
 };
   
-export default connect(mapStateToProps, mapDispatchToProps)(AccountElectricityMeterTable);
+export default connect(mapStateToProps, mapDispatchToProps)(AccountGasMeterTable);

@@ -1,11 +1,11 @@
 import * as React from "react";
 import { MapDispatchToPropsFunction, connect, MapStateToProps } from 'react-redux';
-import { ApplicationState } from '../../applicationState';
+import { ApplicationState } from '../../../applicationState';
 
-import { uploadAccountDocument } from '../../actions/hierarchyActions';
-import { closeModalDialog } from "../../actions/viewActions";
-import { UploadPanel } from "../common/UploadPanel";
-import { StringIsNotNullOrEmpty } from "../../helpers/ValidationHelpers";
+import { uploadAccountDocument } from '../../../actions/hierarchyActions';
+import { closeModalDialog } from "../../../actions/viewActions";
+import { UploadPanel } from "../../common/UploadPanel";
+import { StringIsNotNullOrEmpty } from "../../../helpers/ValidationHelpers";
 
 interface UploadAccountDocumentDialogProps {
     accountId: string;

@@ -1,11 +1,11 @@
 import * as React from "react";
 import { MapDispatchToPropsFunction, connect, MapStateToProps } from 'react-redux';
-import { ApplicationState } from '../../applicationState';
-import ErrorMessage from '../common/ErrorMessage';
-import Spinner from '../common/Spinner';
-import { CompanyInfo } from '../../model/Models';
+import { ApplicationState } from '../../../applicationState';
+import ErrorMessage from '../../common/ErrorMessage';
+import Spinner from '../../common/Spinner';
+import { CompanyInfo } from '../../../model/Models';
 
-import { searchCompany, clearCompany, selectCompany } from '../../actions/hierarchyActions';
+import { searchCompany, clearCompany, selectCompany } from '../../../actions/hierarchyActions';
 
 interface StateProps {
     working: boolean;

@@ -11,12 +11,12 @@ import { selectAccountTab, openModalDialog, selectApplicationTab } from "../../a
 import { retrieveAccountDetail, fetchAccountPortfolios } from '../../actions/hierarchyActions';
 import UploadSupplyDataDialog from "../portfolio/mpan/UploadSupplyDataDialog";
 import UpdateAccountDialog from "./UpdateAccountDialog";
-import AccountContactsView from "./AccountContactsView";
-import AccountDocumentsView from "./AccountDocumentsView";
-import AccountGasMeterTable from "./AccountGasMeterTable";
-import AccountElectricityMeterTable from "./AccountElectricityMeterTable";
+import AccountContactsView from "./contacts/AccountContactsView";
+import AccountDocumentsView from "./documents/AccountDocumentsView";
+import AccountGasMeterTable from "./meters/AccountGasMeterTable";
+import AccountElectricityMeterTable from "./meters/AccountElectricityMeterTable";
 import ModalDialog from "../common/ModalDialog";
-import AccountContractsView from "./AccountContractsView";
+import AccountContractsView from "./contracts/AccountContractsView";
 import AccountSummaryView from "./AccountSummaryView";
 
 interface AccountDetailViewProps extends RouteComponentProps<void> {
