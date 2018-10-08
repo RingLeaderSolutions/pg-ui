@@ -92,7 +92,7 @@ class UpdateContractDialog extends React.Component<UpdateContractDialogProps & S
         return existsInEligible == null ? "" : selectedSupplierId;
     }
 
-    addExistingContract(){
+    updateExistingContract(){
         var contract: TenderContract = {
             ...this.props.contract,
             
@@ -183,7 +183,7 @@ class UpdateContractDialog extends React.Component<UpdateContractDialogProps & S
                 </div>
                 <div className="uk-modal-footer uk-text-right">
                     <button className="uk-button uk-button-default uk-margin-right" type="button" onClick={() => this.props.closeModalDialog()}><i className="fas fa-times uk-margin-small-right"></i>Cancel</button>
-                    <button className="uk-button uk-button-primary" type="button" onClick={() => this.addExistingContract()} disabled={!this.canSubmit()}><i className="fas fa-edit uk-margin-small-right"></i>Save</button>
+                    <button className="uk-button uk-button-primary" type="button" onClick={() => this.updateExistingContract()} disabled={!this.canSubmit()}><i className="fas fa-edit uk-margin-small-right"></i>Save</button>
                 </div>
             </div>)
     }

@@ -4,6 +4,7 @@ import { UtilityType } from "../../model/Models";
 
 interface UtilityIconProps{
     utility: string;
+    isHalfHourlyElectricity?: boolean;
     centerText?: boolean;
     iconClass?: string;
     children?: any;
@@ -11,10 +12,10 @@ interface UtilityIconProps{
 
 export class UtilityIcon extends React.Component<UtilityIconProps, {}> {
     readonly tooltipMap = new Map<string, string>([
-        ["electricity", "Electricity"],
-        ["gas", "Gas"],
-        ["nhh", "Non half-hourly electricity"],
-        ["hh", "Half-hourly electricity"],
+        [KnownUtilityStrings.Electricity, "Electricity"],
+        [KnownUtilityStrings.Gas, "Gas"],
+        [KnownUtilityStrings.NonHalfHourlyElectricity, "Non half-hourly electricity"],
+        [KnownUtilityStrings.HalfHourlyElectricity, "Half-hourly electricity"],
     ]);
 
     renderContained(...icons: any[]){
@@ -23,12 +24,17 @@ export class UtilityIcon extends React.Component<UtilityIconProps, {}> {
 
     render() {
         var { utility } = this.props;
-        
         var lowerUtility = utility.toLowerCase();
+
         var tooltip = `title:${this.tooltipMap.get(lowerUtility)}`
         
+        // Handle the case where the utility given is `UtilityType.Electricity`, but we've also been passed an isHalfHourly flag
+        if(lowerUtility == KnownUtilityStrings.Electricity && this.props.isHalfHourlyElectricity != null){
+            lowerUtility = this.props.isHalfHourlyElectricity ? KnownUtilityStrings.HalfHourlyElectricity : KnownUtilityStrings.NonHalfHourlyElectricity;
+        }
+
         switch(lowerUtility){
-            case "gas":
+            case KnownUtilityStrings.Gas:
                 return this.renderContained(<i key="g" className={`fas fa-fire ${this.props.iconClass}`} data-uk-tooltip={tooltip}></i>);
 
             case "electricity":
@@ -46,6 +52,13 @@ export class UtilityIcon extends React.Component<UtilityIconProps, {}> {
                 return this.renderContained(utility);
         }
     }
+}
+
+class KnownUtilityStrings {
+    public static readonly Gas = "gas";
+    public static readonly Electricity = "electricity";
+    public static readonly HalfHourlyElectricity = "hh";
+    public static readonly NonHalfHourlyElectricity = "nhh";
 }
 
 interface TenderUtilityIconTabHeaderProps {

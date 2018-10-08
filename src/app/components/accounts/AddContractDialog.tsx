@@ -32,6 +32,7 @@ interface AddExistingContractDialogState {
     eligibleSuppliers: TenderSupplier[];
     product: string;
     utility: UtilityType;
+    isHalfHourly: boolean;
 }
 
 class AddExistingContractDialog extends React.Component<AddExistingContractDialogProps & StateProps & DispatchProps, AddExistingContractDialogState> {
@@ -44,7 +45,8 @@ class AddExistingContractDialog extends React.Component<AddExistingContractDialo
             supplier: "",
             product: "",
             utility: UtilityType.Electricity,
-            eligibleSuppliers
+            eligibleSuppliers,
+            isHalfHourly: true
         }
     }
 
@@ -79,6 +81,7 @@ class AddExistingContractDialog extends React.Component<AddExistingContractDialo
     }
 
     addExistingContract(){
+        let isHalfHourly = this.state.utility == UtilityType.Electricity ? this.state.isHalfHourly : false;
         var utilityString = getWellFormattedUtilityType(this.state.utility).toLowerCase();
         var contract: TenderContract = {
             contractId: null,
@@ -93,7 +96,8 @@ class AddExistingContractDialog extends React.Component<AddExistingContractDialo
             uploaded: null,
             status: null,
             activeTenderCount: 0,
-            sheetCount: 0
+            sheetCount: 0,
+            isHalfHourly
         };
         this.props.addExistingContract(this.props.accountId, contract);
         this.props.closeModalDialog();
@@ -122,7 +126,6 @@ class AddExistingContractDialog extends React.Component<AddExistingContractDialo
         var eligibleSuppliers = this.getEligibleSuppliers(utility, this.props.suppliers);
         var newSelected = this.getSelectedSupplierFromEligible(this.state.supplier, eligibleSuppliers);
 
-        
         this.setState({
             ...this.state,
             utility,
@@ -139,9 +142,25 @@ class AddExistingContractDialog extends React.Component<AddExistingContractDialo
         return "uk-card-default";
     }
 
-    handleFormChange(attribute: string, event: React.ChangeEvent<any>){
-        var value = event.target.value;
+    renderCheckIfMatches<T>(checkedValue: T, actualValue: T, useLargeIcon: boolean = true): JSX.Element {
+        if(checkedValue == actualValue) {
+            return (<i className={`fas fa-check-circle${useLargeIcon ? ' fa-lg' : ''}`} style={{color: '#ffffff'}}/>);
+        }
+        return null;
+    }
 
+    getSelectedClassIfMatches<T>(activeValue: T, actualValue: T): string {
+        if(actualValue == activeValue){
+            return "uk-card-primary";
+        }
+        return "uk-card-default";
+    }
+
+    handleFormChange(attribute: string, event: React.ChangeEvent<any>){
+        this.handleChange(attribute, event.target.value);
+    }
+
+    handleChange(attribute: string, value: any): void {
         this.setState({
             ...this.state,
             [attribute]: value
@@ -170,30 +189,61 @@ class AddExistingContractDialog extends React.Component<AddExistingContractDialo
                             <p>Please choose which utility that the existing contract covers:</p>
                             <div className="uk-grid uk-grid-small">
                                 <div className="uk-width-1-2">
-                                    <div className={`uk-card uk-card-small ${this.getSelectedUtilityCardClass(UtilityType.Electricity)} uk-card-hover uk-card-body`} onClick={() => this.toggleUtility(UtilityType.Electricity)} style={{cursor: 'pointer'}}>
+                                    <div className={`uk-card uk-card-small ${this.getSelectedClassIfMatches(UtilityType.Electricity, this.state.utility)} uk-card-hover uk-card-body`} onClick={() => this.toggleUtility(UtilityType.Electricity)} style={{cursor: 'pointer'}}>
                                         <div className="uk-grid uk-grid-collapse">
                                             <div className="uk-width-expand uk-flex uk-flex-middle">
                                                 <h4><i className="fas fa-bolt uk-margin-right fa-lg"></i>Electricity</h4>
                                             </div>
                                             <div className="uk-width-auto uk-flex uk-flex-middle">
-                                                {this.state.utility == UtilityType.Electricity ? <i className="fas fa-check-circle fa-lg" style={{color: '#ffffff'}}/> : null}
+                                                {this.renderCheckIfMatches(UtilityType.Electricity, this.state.utility)}
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                                 <div className="uk-width-1-2">
-                                    <div className={`uk-card uk-card-small ${this.getSelectedUtilityCardClass(UtilityType.Gas)} uk-card-hover uk-card-body`} onClick={() => this.toggleUtility(UtilityType.Gas)} style={{cursor: 'pointer'}}>
+                                    <div className={`uk-card uk-card-small ${this.getSelectedClassIfMatches(UtilityType.Gas, this.state.utility)} uk-card-hover uk-card-body`} onClick={() => this.toggleUtility(UtilityType.Gas)} style={{cursor: 'pointer'}}>
                                         <div className="uk-grid uk-grid-collapse">
                                             <div className="uk-width-expand uk-flex uk-flex-middle">
                                                 <h4><i className="fas fa-fire uk-margin-right fa-lg"></i>Gas</h4>
                                             </div>
                                             <div className="uk-width-auto uk-flex uk-flex-middle">
-                                                {this.state.utility == UtilityType.Gas ? <i className="fas fa-check-circle fa-lg" style={{color: '#ffffff'}}/> : null}
+                                            {this.renderCheckIfMatches(UtilityType.Gas, this.state.utility)}
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
+
+                            { this.state.utility == UtilityType.Electricity && 
+                            <div className="uk-margin">
+                                <label className='uk-form-label'>Meter Type</label>
+                                <div className="uk-grid uk-grid-small">
+                                    <div className="uk-width-1-2">
+                                        <div className={`uk-card uk-card-small ${this.getSelectedClassIfMatches(true, this.state.isHalfHourly)} uk-card-body`} onClick={() => this.handleChange("isHalfHourly", true)} style={{cursor: 'pointer', padding: '10px 20px'}}>
+                                            <div className="uk-grid uk-grid-collapse">
+                                                <div className="uk-width-expand uk-flex uk-flex-middle">
+                                                    <h5><i className="fas fa-clock uk-margin-right"></i>Half-Hourly</h5>
+                                                </div>
+                                                <div className="uk-width-auto uk-flex uk-flex-middle">
+                                                    {this.renderCheckIfMatches(true, this.state.isHalfHourly, false)}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className="uk-width-1-2">
+                                        <div className={`uk-card uk-card-small ${this.getSelectedClassIfMatches(false, this.state.isHalfHourly)} uk-card-body`} onClick={() => this.handleChange("isHalfHourly", false)} style={{cursor: 'pointer', padding: '10px 20px'}}>
+                                            <div className="uk-grid uk-grid-collapse">
+                                                <div className="uk-width-expand uk-flex uk-flex-middle">
+                                                    <h5><i className="fas fa-times uk-margin-right"></i>Non Half-hourly</h5>
+                                                </div>
+                                                <div className="uk-width-auto uk-flex uk-flex-middle">
+                                                    {this.renderCheckIfMatches(false, this.state.isHalfHourly, false)}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div> }
 
                             <div className='uk-margin'>
                                 <label className='uk-form-label'>Contract Reference</label>

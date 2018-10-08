@@ -147,6 +147,7 @@ export interface TenderContract {
     contractStart: string;
     contractEnd: string;
     activeTenderCount: number;
+    isHalfHourly?: boolean;
 }
 
 export interface ContractRenewalResponse {
