@@ -15,6 +15,7 @@ import PortfolioDetail from "./portfolio/PortfolioDetail";
 import AccountDetailView from "./accounts/AccountDetailView";
 import { NotificationService } from "../App";
 import { SignalRConnectionState } from "../services/SignalRService";
+import { LocalStorageRepository } from "../services/LocalStorageRepository";
 
 interface StateProps {
     backendVersion: string;
@@ -58,7 +59,7 @@ class Home extends React.Component<StateProps & DispatchProps, HomeState> {
         let tooltip: string = null;
         switch(this.state.connectionState){
             case SignalRConnectionState.Active:
-                span = (<span className="uk-label label-connected"><i className="fas fa-check-circle"></i><span>Connected</span></span>);
+                span = (<span className="uk-label label-connected"><i className="fas fa-dot-circle"></i><span>Connected</span></span>);
                 break;
             case SignalRConnectionState.Connecting:
                 span = (<span className="uk-label label-connecting"><i className="fas fa-sync-alt"></i><span>Connecting...</span></span>);
@@ -82,6 +83,10 @@ class Home extends React.Component<StateProps & DispatchProps, HomeState> {
         }
         
         return null;
+    }
+
+    isSelected(tab: ApplicationTab){
+        return this.props.selectedTab == tab;
     }
 
     render(){
@@ -128,35 +133,89 @@ class Home extends React.Component<StateProps & DispatchProps, HomeState> {
                 </div>);
         }
         return (
-            <div className="app-container uk-grid uk-grid-collapse uk-height-1-1">
-                <div className="sidebar uk-width-1-6 uk-height-1-1">
-                    <div className="app-title">
-                        <img src={this.props.instance_detail.logoUri} alt={this.props.instance_detail.name} /> 
-                    </div>
-                    <div className="uk-text-center">
-                        {this.renderConnectionState()}
-                        <div>
-                            <span className="uk-label label-small label-grey">{appConfig.environment_name} v{appConfig.version}</span>
+            <div className="app-container">
+                <div className="app-header">
+                    <div className="app-header-container uk-grid uk-grid-collapse">
+                        <div className="app-header-logo uk-width-auto">
+                            <Link to="/" >
+                                <img src={require('../images/tpi-flow-logo-white.png')} alt="TPI Flow" />
+                                {/* <img src={this.props.instance_detail.logoUri} alt={this.props.instance_detail.name} />  */}
+                            </Link>
                         </div>
-                        <div>
-                            <span className="uk-label label-small label-grey">Server v{this.props.backendVersion}</span>
+                        <div className="uk-width-expand" />
+                        <div className="app-header-user uk-width-auto uk-flex uk-flex-middle">
+                            <button className="uk-button uk-button-default" type="button">
+                                <div className="uk-flex">
+                                    {/* <img src={new LocalStorageRepository().fetchProfile().picture}  /> */}
+                                    <div>
+                                        <img src='https://cdn.auth0.com/avatars/dm.png' />
+                                        <span className="connection-icon"><i className="fas fa-circle"></i></span>
+                                    </div>
+
+                                    <div className="uk-flex uk-flex-middle">
+                                        <p>
+                                            <span className="user-name uk-margin-small-right">Daniel May</span>
+                                            <i className="fas fa-chevron-down fa-xs"></i>
+                                        </p>
+                                    </div>
+                                </div>
+                            </button>
+                            <div data-uk-dropdown="mode: click; animation: uk-animation-slide-top-small; duration: 500">
+                                <ul className="uk-nav uk-dropdown-nav">
+                                    <li>
+                                        <a href="#">
+                                            <i className="far fa-user uk-margin-small-right"></i>
+                                            Profile
+                                        </a>
+                                    </li>
+                                    <li className="uk-nav-divider"></li>
+                                    <li>
+                                        <a href="#">
+                                            <i className="fas fa-cog uk-margin-small-right"></i>
+                                            Settings
+                                        </a>
+                                    </li>
+                                    <li className="uk-nav-divider"></li>
+                                    <li>
+                                        <a href="#">
+                                            <i className="fas fa-question-circle uk-margin-small-right"></i>
+                                            Help
+                                        </a>
+                                    </li>
+                                    <li className="uk-nav-divider"></li>
+                                    <li>
+                                        <a href="#">
+                                            <i className="fas fa-sign-out-alt uk-margin-small-right"></i>
+                                            Log out
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
                         </div>
                     </div>
-                    <ul className="uk-margin-large-top uk-nav-default uk-nav-parent-icon" data-uk-nav>
-                        <li>
-                            <Link to="/">{this.renderSelectedTriangle(ApplicationTab.Dashboard)}<i className="fas fa-chart-line uk-margin-small-right fa-lg"></i>Dashboard</Link>
-                        </li>
-                        <li className="uk-nav-divider"></li>                    
-                        <li>
-                            <Link to="/portfolios">{this.renderSelectedTriangle(ApplicationTab.Portfolios)}<i className="fas fa-layer-group uk-margin-small-right fa-lg"></i>Portfolios</Link>
-                        </li>
-                        <li className="uk-nav-divider"></li>
-                        <li>
-                            <Link to="/accounts">{this.renderSelectedTriangle(ApplicationTab.Accounts)}<i className="fa fa-building uk-margin-small-right fa-lg"></i>Accounts</Link>
-                        </li>
-                    </ul>
+
+                    <div className="app-nav-bar uk-grid uk-grid-collapse uk-flex-center uk-flex-bottom">
+                        <h5>
+                            <Link to="/" className={`nav-link ${this.isSelected(ApplicationTab.Dashboard) ? 'selected' : ''}`}>
+                                <i className="fas fa-chart-line"></i>
+                                <span className="nav-link-text">Dashboard</span>
+                            </Link>
+                        </h5>
+                        <h5>
+                            <Link to="/portfolios" className={`nav-link ${this.isSelected(ApplicationTab.Portfolios) ? 'selected' : ''}`}>
+                                <i className="fas fa-layer-group"></i>
+                                <span className="nav-link-text">Portfolios</span>
+                            </Link>
+                        </h5>
+                        <h5>
+                            <Link to="/accounts" className={`nav-link ${this.isSelected(ApplicationTab.Accounts) ? 'selected' : ''}`}>
+                                <i className="fa fa-building"></i>
+                                <span className="nav-link-text">Accounts</span>
+                            </Link>
+                        </h5>
+                    </div>
                 </div>
-                <div className="uk-height-1-1 uk-width-5-6">
+                <div className="app-content">
                     <div className="content-container">
                         <Route exact path="/" component={Dashboard} />
                         <Route path="/portfolios" component={Portfolios} />

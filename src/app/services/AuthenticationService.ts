@@ -65,7 +65,7 @@ export class AuthenticationService {
                     this.logger.error(`Error parsing hash from Auth0: [${error.error}: ${error.errorDescription}]`);
                     throw new TokenError(error.error)
                 }
-
+                console.log(decodedHash);
                 this.logger.info(`Successfully validated tokens and retrieved user profile.`);
                 
                 let profile = decodedHash.idTokenPayload as Auth0.Auth0UserProfile;

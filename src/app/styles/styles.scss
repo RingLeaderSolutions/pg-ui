@@ -1,3 +1,6 @@
+@import url('https://fonts.googleapis.com/css?family=Libre+Franklin:300,400,400i,600,600i,700');
+
+$global-font-family: 'Libre Franklin', sans-serif;
 @import 'uikit/src/scss/variables-theme.scss';
 @import 'uikit/src/scss/mixins-theme.scss';
 @import 'uikit/src/scss/uikit-theme.scss';
@@ -18,6 +21,7 @@
 @import "forms";
 @import "notifications";
 @import "buttons";
+@import "navpanel";
 
 $fa-font-path: '~@fortawesome/fontawesome-free/webfonts'; 
 @import '~@fortawesome/fontawesome-free/scss/fontawesome'; 
@@ -28,7 +32,7 @@ $fa-font-path: '~@fortawesome/fontawesome-free/webfonts';
 html, body, .root, .app-container {
   min-height: 100%;
   height: 100%;
-  background-color: $app-background;
+  background-color: $app-background; 
 }
 
 @keyframes slideInFromLeft {
@@ -67,9 +71,184 @@ html, body, .root, .app-container {
     animation: 0.5s ease-out 0s 1 fadeIn;
 }
 
-.content-container {
-    padding: $margin-large 0px 20px 20px;
+.app-container {
+    height: 100%;
+    width: 100%;
+
+    display: flex;
+    flex-flow: column;
+
+    .app-header {
+        flex-grow: 0;
+        flex-shrink: 1;
+        flex-basis: auto;
+
+        // height: 16.25em;
+        max-height: 6em;
+        padding: 0 8em;
+
+        @media screen and (max-width: 1000px) { 
+            padding: 0 2em;
+        }
+
+        @media screen and (max-width: 800px) { 
+            padding: 0 0.5em;
+        }
+
+        background: rgb(11,33,69); /* Old browsers */
+        background: -moz-linear-gradient(top, rgba(11,33,69,1) 0%, rgba(38,54,82,1) 100%); /* FF3.6-15 */
+        background: -webkit-linear-gradient(top, rgba(11,33,69,1) 0%,rgba(38,54,82,1) 100%); /* Chrome10-25,Safari5.1-6 */
+        background: linear-gradient(to bottom, rgba(11,33,69,1) 0%,rgba(38,54,82,1) 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+
+        .app-header-container {
+            max-height: inherit;
+        }
+
+        .app-header-logo > a > img {
+            height: 100%;
+            width: auto;
+        }
+
+        .app-header-user {
+            img {
+                display: inline-block;
+                width: 2.5em;
+                height: 2.5em;
+                border-radius: 50%;
+                object-fit: cover;
+            }
+
+            .connection-icon {
+                position: absolute;
+                margin-left: -2.75em;
+                margin-top: 1.5em;
+                color: lime;
+            }
+
+            button {
+                background: #ffffff11;
+                border: none;
+                padding: 0.5em 1em;
+                color: #ffffffd1;
+                line-height: initial;
+                text-transform: none;
+                z-index: 100;
+
+                p {
+                    margin: 0 0.75em;
+                    font-size: 1.125em;
+
+                    .user-name {
+                        @media screen and (max-width: 1200px) { 
+                            display: none;
+                        }
+                    }
+                }
+            }
+        }
+
+        .app-nav-bar {
+            padding-bottom: 1em;
+            margin-top: -3em;
+            z-index: 99;
+
+            h5:not(:first-child) {
+                margin-left: 4em;
+
+                @media screen and (max-width: 800px) { 
+                    margin-left: 1.5em;
+                }
+            }
+
+            h5 > .nav-link {
+                position: relative;
+                color: #ffffffba;
+                text-decoration: none;
+                letter-spacing: 0.05em;
+    
+                i {
+                    margin-right: 10px;
+
+                    @media screen and (max-width: 800px) { 
+                        margin-right: 0px;
+                    }
+                }
+
+                .nav-link-text {
+                    @media screen and (max-width: 800px) { 
+                        display: none;
+                    }
+                }
+
+                &.selected {
+                    color: #fff;
+                }
+    
+                &.selected:before {
+                    width: 100%;
+                }
+    
+                &:hover {
+                    color: #fff;
+                }
+    
+                &:before {
+                    content: '';
+                    position: absolute;
+                    width: 0;
+                    height: 1px;
+                    bottom: -5px;
+                    right: 0;
+                    background-color: #ffffffba;
+                    transition-property: width;
+                    transition-duration: 0.2s;
+                    transition-timing-function: ease-in-out;
+                    pointer-events: none;
+                }
+        
+                &:hover:before {
+                    width: 100%;
+                    left: 0;
+                    right: auto;
+                }
+            }
+        }
+
+
+    }
+
+    .app-content {
+        flex-grow: 1;
+        flex-shrink: 1;
+        flex-basis: auto;
+
+        padding: 3em 8em;
+
+        @media screen and (max-width: 1000px) { 
+            padding-right: 2em;
+            padding-left: 2em;
+        }
+
+        @media screen and (max-width: 800px) { 
+            padding-right: 0.5em;
+            padding-left: 0.5em;
+        }
+
+        background: #f8f8f8;
+
+        .content-container {
+            margin: 15px;
+            padding: 20px;
+            background: #ffffff;
+            border-radius: 20px;
+            box-shadow: 0px 0px 7px rgba(0, 0, 0, 0.1);
+        }
+    }
+
+
 }
+
+
 
 
 // UIKit Table hover override (yellow->grey)

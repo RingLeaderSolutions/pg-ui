@@ -46,10 +46,9 @@
     
     .uk-label {
         text-transform: none;
-        margin-bottom: 20px;
-        padding: 5px 20px;
+        padding: 5px 10px;
         border-radius: 8px;
-        background: #f4f4f5;
+        background: none;
         
         max-width: 14px;
         transition: max-width 0.5s ease;
@@ -84,7 +83,7 @@
 
     .label-connected {
         color: #16ac16;
-        background: #cff7ce;
+        //background: #cff7ce;
     }
     
     .label-connecting {

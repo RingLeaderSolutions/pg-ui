@@ -567,7 +567,8 @@ export class ApiService implements IApiService {
     }
 
     reportLogin(){
-       return axios.post(`${this.baseApiUri}/portman-web/admin/logon`, null, this.getRequestConfig());
+       //return axios.post(`${this.baseApiUri}/portman-web/admin/logon`, null, this.getRequestConfig());
+       return new FakeApiService().reportLogin();
     }
 
     createContact(contact: AccountContact){
