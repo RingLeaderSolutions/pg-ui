@@ -1,9 +1,10 @@
 import * as React from "react";
-import CounterCard from "../common/CounterCard";
 import { MapDispatchToPropsFunction, connect, MapStateToProps } from 'react-redux';
 import { getDashboardSummary } from '../../actions/dashboardActions';
 import { ApplicationState } from '../../applicationState';
 import { DashboardPortfolioSummary } from '../../model/Models';
+import { CardBody, Row, Col, Card } from "reactstrap";
+import { Line } from "react-chartjs-2";
 
 interface SummaryProps {
 }
@@ -24,36 +25,109 @@ class DashboardSummary extends React.Component<SummaryProps & StateProps & Dispa
         this.props.getSummary();
     }
     render() {
-        var portfolioCount, siteCount, mpanCount = "";
+        let portfolioCount, siteCount, meterCount = "";
+        // TODO: Loading & error handling
         if(!this.props.working && !this.props.error){
             portfolioCount = String(this.props.summary.portfolioCount);
             siteCount = String(this.props.summary.siteCount);
-            mpanCount = String(this.props.summary.mpanCount);
+            meterCount = String(this.props.summary.mpanCount);
         }
         
         return (
-            <div className="uk-child-width-expand@s uk-text-center uk-grid" data-uk-grid data-uk-height-match="target: > div > .uk-card">
-                <CounterCard title={portfolioCount}
-                             error={this.props.error} 
-                             errorMessage={this.props.errorMessage}
-                             loaded={!this.props.working} 
-                             label="Total Portfolios" />
-
-                <CounterCard title={siteCount} 
-                             error={this.props.error} 
-                             errorMessage={this.props.errorMessage}
-                             loaded={!this.props.working} 
-                             label="Total Sites" />
-
-                <CounterCard title={mpanCount} 
-                             error={this.props.error} 
-                             errorMessage={this.props.errorMessage}
-                             loaded={!this.props.working} 
-                             label="Total Meters" />
-                             
-                <CounterCard title="TPI" 
-                             label="Your Team" />
-            </div>)
+            <Row>
+                <Col lg md={6} sm={6} className="mb-4">
+                    <Card className="stats-small stats-small--1 card-small">
+                        <CardBody className="p-0 d-flex">
+                            <div className="d-flex flex-column m-auto">
+                                <div className="stats-small__data text-center">
+                                    <span className="stats-small__label text-uppercase"><i className="fas fa-layer-group mr-1"></i>Portfolios</span>
+                                    <h6 className="stats-small__value count my-3">{portfolioCount}</h6>
+                                </div>
+                            </div>
+                        </CardBody>
+                    </Card>
+                </Col>
+                <Col lg md={6} sm={6} className="mb-4">
+                    <Card className="stats-small stats-small--1 card-small">
+                        <CardBody className="p-0 d-flex">
+                            <div className="d-flex flex-column m-auto">
+                                <div className="stats-small__data text-center">
+                                    <span className="stats-small__label text-uppercase"><i className="fas fa-store mr-1"></i>Sites</span>
+                                    <h6 className="stats-small__value count my-3">{siteCount}</h6>
+                                </div>
+                            </div>
+                        </CardBody>
+                    </Card>
+                </Col>
+                <Col lg md={6} sm={6} className="mb-4">
+                    <Card className="stats-small stats-small--1 card-small">
+                        <CardBody className="p-0 d-flex">
+                            <div className="d-flex flex-column m-auto">
+                                <div className="stats-small__data text-center">
+                                    <span className="stats-small__label text-uppercase"><i className="fas fa-tachometer-alt mr-1"></i>Meters</span>
+                                    <h6 className="stats-small__value count my-3">{meterCount}</h6>
+                                </div>
+                            </div>
+                        </CardBody>
+                    </Card>
+                </Col>
+                <Col lg md={6} sm={6} className="mb-4">
+                    <Card className="stats-small stats-small--1 card-small">
+                        <CardBody className="p-0 d-flex">
+                            <div className="d-flex flex-column m-auto">
+                                <div className="stats-small__data text-center">
+                                    <span className="stats-small__label text-uppercase"><i className="fas fa-user-friends mr-1"></i>Team</span>
+                                    <h6 className="stats-small__value count my-3">TPI</h6>
+                                </div>
+                            </div>
+                            <Line data={{
+            labels: ["Label 1", "Label 2", "Label 3", "Label 4", "Label 5", "Label 6", "Label 7"],
+            datasets: [{
+                label: 'Today',
+                fill: 'start',
+                data: [1, 2, 1, 3, 5, 4, 7],
+                backgroundColor: 'rgba(0, 184, 216, 0.1)',
+                borderColor: 'rgb(0, 184, 216)',
+                borderWidth: 1.5
+            }]
+        }} options={{
+            maintainAspectRatio: true,
+            responsive: true,
+            legend: {
+                display: false
+            },
+            tooltips: {
+            enabled: false
+            },
+            elements: {
+            point: {
+                radius: 0
+            },
+            line: {
+                tension: 0.3
+            }
+            },
+            scales: {
+                ticks: {
+                    display: false,
+                    // Avoid getting the graph line cut of at the top of the canvas.
+                    // Chart.js bug link: https://github.com/chartjs/Chart.js/issues/4790
+                    lineHeight: 1
+                },
+            xAxes: [{
+                display: false,
+            }],
+            yAxes: [{
+                display: false,
+            }],
+            }
+        }} 
+        height={120}/>
+                        </CardBody>
+                    </Card>
+                </Col>
+            </Row>
+        )
         }
     }
 

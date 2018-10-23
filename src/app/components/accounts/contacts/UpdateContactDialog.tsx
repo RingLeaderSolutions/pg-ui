@@ -1,22 +1,21 @@
 import * as React from "react";
-import { MapDispatchToPropsFunction, connect, MapStateToProps } from 'react-redux';
+import { MapDispatchToPropsFunction } from 'react-redux';
 
 import { updateContact } from '../../../actions/hierarchyActions';
 import { AccountContact } from "../../../model/HierarchyObjects";
-import { closeModalDialog } from "../../../actions/viewActions";
-import { ApplicationState } from "../../../applicationState";
 import { Strings } from "../../../helpers/Utils";
+import { FormGroup, ModalHeader, ModalBody, Form, Label, Input, ModalFooter, Button } from "reactstrap";
+import asModalDialog, { ModalDialogProps } from "../../common/modal/AsModalDialog";
+import { ModalDialogNames } from "../../common/modal/ModalDialogNames";
 
-interface UpdateContactDialogProps {    
+export interface UpdateContactDialogData {
     contact: AccountContact;
 }
 
-interface StateProps {
-}
+interface UpdateContactDialogProps extends ModalDialogProps<UpdateContactDialogData> { }
 
 interface DispatchProps {
     updateContact: (contact: AccountContact) => void;
-    closeModalDialog: () => void;
 }
 
 interface UpdateContactDialogState {
@@ -27,10 +26,10 @@ interface UpdateContactDialogState {
     role: string;
 }
 
-class UpdateContactDialog extends React.Component<UpdateContactDialogProps & StateProps & DispatchProps, UpdateContactDialogState> {
-    constructor(props: UpdateContactDialogProps & StateProps & DispatchProps){
+class UpdateContactDialog extends React.Component<UpdateContactDialogProps & DispatchProps, UpdateContactDialogState> {
+    constructor(props: UpdateContactDialogProps & DispatchProps){
         super(props);
-        var { contact } = props;
+        var { contact } = props.data;
         this.state = {
             firstName: contact.firstName,
             lastName: contact.lastName,
@@ -42,8 +41,8 @@ class UpdateContactDialog extends React.Component<UpdateContactDialogProps & Sta
 
     updateContact(){
         var contact: AccountContact = {
-            id: this.props.contact.id,
-            accountId: this.props.contact.accountId,
+            id: this.props.data.contact.id,
+            accountId: this.props.data.contact.accountId,
             firstName: this.state.firstName,
             lastName: this.state.lastName,
             email: this.state.email,
@@ -52,7 +51,7 @@ class UpdateContactDialog extends React.Component<UpdateContactDialogProps & Sta
         }
         
         this.props.updateContact(contact);
-        this.props.closeModalDialog();
+        this.props.toggle();
     }
 
     handleFormChange(attribute: string, event: React.ChangeEvent<any>){
@@ -74,75 +73,65 @@ class UpdateContactDialog extends React.Component<UpdateContactDialogProps & Sta
 
     render() {
         return (
-            <div>
-                <div className="uk-modal-header">
-                    <h2 className="uk-modal-title"><i className="fas fa-user-edit uk-margin-right"></i>Update Contact: {this.props.contact.firstName} {this.props.contact.lastName}</h2>
-                </div>
-                <div className="uk-modal-body">
-                    <div className="uk-margin">
-                        <form>
-                        <fieldset className="uk-fieldset">
-                                <div className='uk-margin'>
-                                    <label className='uk-form-label'>First Name</label>
-                                    <input 
-                                        className='uk-input' 
-                                        type='text' 
-                                        value={this.state.firstName}
-                                        onChange={(e) => this.handleFormChange("firstName", e)} />
-                                </div>
-                                <div className='uk-margin'>
-                                    <label className='uk-form-label'>Last Name</label>
-                                    <input 
-                                        className='uk-input' 
-                                        type='text' 
-                                        value={this.state.lastName}
-                                        onChange={(e) => this.handleFormChange("lastName", e)} />
-                                </div>
-                                <div className='uk-margin'>
-                                    <label className='uk-form-label'>Email</label>
-                                    <input 
-                                        className='uk-input' 
-                                        type='text' 
-                                        value={this.state.email}
-                                        onChange={(e) => this.handleFormChange("email", e)} />
-                                </div>
-                                <div className='uk-margin'>
-                                    <label className='uk-form-label'>Phone Number</label>
-                                    <input 
-                                        className='uk-input' 
-                                        type='text' 
-                                        value={this.state.phoneNumber}
-                                        onChange={(e) => this.handleFormChange("phoneNumber", e)} />
-                                </div>
-                                <div className='uk-margin'>
-                                    <label className='uk-form-label'>Role</label>
-                                    <input 
-                                        className='uk-input' 
-                                        type='text' 
-                                        value={this.state.role}
-                                        onChange={(e) => this.handleFormChange("role", e)} />
-                                </div>
-                            </fieldset>
-                        </form>
-                    </div>
-                </div>
-                <div className="uk-modal-footer uk-text-right">
-                    <button className="uk-button uk-button-default uk-margin-right" type="button" onClick={() => this.props.closeModalDialog()}><i className="fas fa-times uk-margin-small-right"></i>Cancel</button>
-                    <button className="uk-button uk-button-primary" type="button" disabled={!this.canSubmit()} onClick={() => this.updateContact()}><i className="fas fa-user-plus uk-margin-right"></i>Update</button>
-                </div>
-            </div>)
+            <div className="modal-content">
+                <ModalHeader toggle={this.props.toggle}><i className="fas fa-user-edit mr-2"></i>Update Contact: {this.props.data.contact.firstName} {this.props.data.contact.lastName}</ModalHeader>
+                <ModalBody>
+                    <Form>
+                        <FormGroup>
+                            <Label for="update-contact-firstname">First Name</Label>
+                            <Input id="update-contact-firstname"
+                                    value={this.state.firstName}
+                                    onChange={(e) => this.handleFormChange("firstName", e)} />
+                        </FormGroup>
+                        <FormGroup>
+                            <Label for="update-contact-lastname">Last Name</Label>
+                            <Input id="update-contact-lastname"
+                                    value={this.state.lastName}
+                                    onChange={(e) => this.handleFormChange("lastName", e)} />
+                        </FormGroup>
+                        <FormGroup>
+                            <Label for="update-contact-email">Email</Label>
+                            <Input id="update-contact-email"
+                                    value={this.state.email}
+                                    onChange={(e) => this.handleFormChange("email", e)} />
+                        </FormGroup>
+                        <FormGroup>
+                            <Label for="update-contact-phone">Phone</Label>
+                            <Input id="update-contact-phone"
+                                    value={this.state.phoneNumber}
+                                    onChange={(e) => this.handleFormChange("phoneNumber", e)} />
+                        </FormGroup>
+                        <FormGroup>
+                            <Label for="update-contact-role">Role</Label>
+                            <Input id="update-contact-role"
+                                    value={this.state.role}
+                                    onChange={(e) => this.handleFormChange("role", e)} />
+                        </FormGroup>
+                    </Form>
+                </ModalBody>
+                <ModalFooter>
+                    <Button onClick={this.props.toggle}>
+                        <i className="fas fa-times mr-1"></i>Cancel
+                    </Button>
+                    <Button color="accent" 
+                            disabled={!this.canSubmit()}
+                            onClick={() => this.updateContact()}>
+                        <i className="fas fa-user-edit mr-1"></i>Save
+                    </Button>
+                </ModalFooter>
+            </div>);
     }
 }
 
 const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, UpdateContactDialogProps> = (dispatch) => {
     return {
-        updateContact: (contact: AccountContact) =>  dispatch(updateContact(contact)),
-        closeModalDialog: () => dispatch(closeModalDialog())
+        updateContact: (contact: AccountContact) =>  dispatch(updateContact(contact))
     };
 };
-  
-const mapStateToProps: MapStateToProps<StateProps, UpdateContactDialogProps, ApplicationState> = () => {
-    return {};
-};
-  
-export default connect(mapStateToProps, mapDispatchToProps)(UpdateContactDialog);
+
+export default asModalDialog(
+{ 
+    name: ModalDialogNames.UpdateAccountContact, 
+    centered: true, 
+    backdrop: true,
+}, null, mapDispatchToProps)(UpdateContactDialog)

@@ -44,13 +44,11 @@ import fetchTenderRecommendationsReducer from './tender/fetchTenderRecommendatio
 import fetchRecommendationSuppliersReducer from './tender/fetchRecommendationSuppliersReducer';
 import fetchRecommendationSitesReducer from './tender/fetchRecommendationSitesReducer';
 import fetchRecommendationSummaryReducer from './tender/fetchRecommendationSummaryReducer';
-import selectedRecommendationReportReducer from './tender/selectedRecommendationReportReducer';
 
 const tenderReducer: Reducer<TenderState> = combineReducers<TenderState>({
     tenders: tendersReducer,
     offers: fetchTenderOffersReducer,
     recommendations: fetchTenderRecommendationsReducer,
-    selected_recommendation: selectedRecommendationReportReducer,
     selected_recommendation_summary: fetchRecommendationSummaryReducer,
     selected_recommendation_suppliers: fetchRecommendationSuppliersReducer,
     selected_recommendation_sites: fetchRecommendationSitesReducer,

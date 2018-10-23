@@ -5,6 +5,8 @@ import { ApplicationState } from '../../applicationState';
 import { login } from '../../actions/authActions';
 import { RouteComponentProps } from "react-router-dom";
 import { Strings } from "../../helpers/Utils";
+import PreAuthAppContainer from "../common/PreAuthAppContainer";
+import { Form, FormGroup, Label, Input, Button, Alert } from "reactstrap";
 
 interface StateProps {
   working: boolean;
@@ -22,7 +24,6 @@ interface LoginState {
 }
 
 class Login extends React.Component<RouteComponentProps<void> & StateProps & DispatchProps, LoginState> {
-    loginButton: HTMLButtonElement;
     constructor(props:RouteComponentProps<void> &  StateProps & DispatchProps) {
         super(props);
 
@@ -32,11 +33,8 @@ class Login extends React.Component<RouteComponentProps<void> & StateProps & Dis
         };
     }
 
-    componentDidMount(){
-        this.loginButton.focus();
-    }
-
-    handleSubmit() {
+    handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+        e.preventDefault();
         var { intendedPath } = this.props.location.state || { intendedPath: '/' };
         this.props.login(this.state.email, this.state.password, intendedPath);
     }
@@ -55,56 +53,33 @@ class Login extends React.Component<RouteComponentProps<void> & StateProps & Dis
     }
 
     render() {
-        let error = null;
-        if (this.props.error) {
-            error = (
-                <div className="uk-alert-danger" data-uk-alert>
-                    <p>{this.props.errorMessage}</p>
-                </div>);
-        }
         return (
-            <div className="uk-cover-container uk-height-viewport">
-                <img src={require('../../images/panels.png')} alt="" data-uk-cover />
-                <div className="uk-position-center">
-                    <div className="uk-card uk-card-body uk-card-default">
-                        <img src={require('../../images/tpi-flow-logo.png')} alt="TPI Flow" />
-                        <h4>Log in with your account details below.</h4>
-                        <form>
-                            <fieldset className="uk-fieldset">
-                                {error}
-                                <div className="uk-margin">
-                                    <div className="icon-input-container uk-grid uk-grid-collapse icon-left">
-                                        <div tabIndex={-1} className="uk-width-auto uk-flex uk-flex-middle" style={{background: "#f7f7f7"}}>
-                                            <i className="fas fa-at"></i>
-                                        </div>
-                                        <input id="email" className="uk-input uk-width-expand" type="email" placeholder="Email"
-                                            value={this.state.email}
-                                            onChange={(e) => this.handleFormChange("email", e)} />
-                                    </div>
-                                </div>
-
-                                <div className="uk-margin">
-                                    <div className="icon-input-container uk-grid uk-grid-collapse icon-left" style={{background: "#f7f7f7"}}>
-                                        <div tabIndex={-1} className="uk-width-auto uk-flex uk-flex-middle">
-                                            <i className="fas fa-lock"></i>
-                                        </div>
-                                        <input id="password" className="uk-input uk-width-expand" type="password" placeholder="Password" 
-                                            value={this.state.password}
-                                            onChange={(e) => this.handleFormChange("password", e)}/>
-                                    </div>
-                                </div>
-
-                                {/* <Link to="/password_reset">Forgotten your password?</Link> */}
-                            </fieldset>
-                        </form>
-                        <button className="uk-button uk-button-primary" ref={(button) => this.loginButton = button}onClick={() => this.handleSubmit()} disabled={!this.canSubmit()}>
-                            <i className="fas fa-sign-in-alt uk-margin-small-right"></i>
+            <PreAuthAppContainer>
+                {this.props.error &&  (
+                    <Alert color="danger"><i className="fas fa-exclamation-triangle mr-2"></i>{this.props.errorMessage}</Alert>
+                )}
+                <Form onSubmit={(e) => this.handleSubmit(e)}>
+                    <FormGroup>
+                        <Label for="userEmail" className="text-left">Email address</Label>
+                        <Input type="email" name="email" id="userEmail" placeholder="Enter email"
+                            value={this.state.email}
+                            onChange={(e) => this.handleFormChange("email", e)} />
+                    </FormGroup>
+                    <FormGroup>
+                        <Label for="userPassword" className="text-left">Password</Label>
+                        <Input type="password" name="password" id="userPassword" placeholder="Password" 
+                            value={this.state.password}
+                            onChange={(e) => this.handleFormChange("password", e)} />
+                    </FormGroup>
+                    <Button color="primary" 
+                            type="submit"
+                            className="btn-pill d-table mx-auto"
+                            disabled={!this.canSubmit()}>
+                            <i className="fas fa-sign-in-alt mr-2"></i>
                             Log in
-                        </button>
-                        </div>
-                </div>
-            </div>
-        )
+                    </Button>
+                </Form>
+            </PreAuthAppContainer>)
     }
 }
 

@@ -1,7 +1,7 @@
 import * as types from '../../actions/actionTypes';
 import { reduceReducers, requestResponseReducer } from '../common';
 import { UploadReportsResponse } from '../../model/Models';
-import { RequestState, initialRequestState } from '../RequestState';
+import { RequestState, idleInitialRequestState } from '../RequestState';
 
 export interface PortfolioUploadsState extends RequestState {
     value: UploadReportsResponse;
@@ -21,4 +21,4 @@ const portfolioUploadsReducer = requestResponseReducer(
     }
 );
 
-export default reduceReducers((state = initialRequestState) => state, portfolioUploadsReducer);
+export default reduceReducers((state = idleInitialRequestState) => state, portfolioUploadsReducer);

@@ -4,13 +4,14 @@ import { ApplicationState } from '../../../applicationState';
 
 import { fetchContractBackingSheets } from '../../../actions/tenderActions';
 import { Tender, TenderSupplier } from "../../../model/Tender";
-import TenderBackingSheetsDialog from './TenderBackingSheetsDialog';
+import ContractRatesDialog from './ContractRatesDialog';
 import Spinner from "../../common/Spinner";
 import { format } from 'currency-formatter';
-import ModalDialog from "../../common/ModalDialog";
-import { openModalDialog } from "../../../actions/viewActions";
 import { Link } from "react-router-dom";
 import { PortfolioSummary } from "../../../model/PortfolioDetails";
+import { Col, Row, Card, CardBody, CardHeader, Button, Alert } from "reactstrap";
+import { ModalDialogNames } from "../../common/modal/ModalDialogNames";
+import { openDialog } from "../../../actions/viewActions";
 
 interface TenderContractViewProps {
     tender: Tender;
@@ -24,46 +25,46 @@ interface StateProps {
 
 interface DispatchProps {
     fetchContractBackingSheets: (tenderId: string, contractId: string) => void;
-    openModalDialog: (dialogId: string) => void;
+    openContractRatesDialog: () => void;
 }
 
 class TenderContractView extends React.Component<TenderContractViewProps & DispatchProps & StateProps, {}> { 
     renderContractInfo(){
         var { existingContract } = this.props.tender;
         var existingSupplier = this.props.suppliers.find(s => s.supplierId == existingContract.supplierId);
-        var supplierLogo = existingSupplier == null ? "Unknown" : (<img src={existingSupplier.logoUri} style={{ maxWidth: "70px", maxHeight: "40px"}}/>);
+        var supplierLogo = existingSupplier == null ? "Unknown" : (<img src={existingSupplier.logoUri} style={{ maxWidth: "88px", maxHeight: "50px"}}/>);
 
         var appu = `${existingContract.averagePPU.toFixed(4)}p`;
         return (
-            <div className="uk-grid uk-margin-small-left uk-margin-small-right uk-grid-match" data-uk-grid>
-                <div className="uk-card uk-card-default uk-card-small uk-card-body uk-width-1-5 uk-text-center">
-                    <p className="uk-text-bold uk-margin-small">{existingContract.reference}</p>
-                    <p className="uk-text-meta uk-margin-small">Reference</p>
-                </div>
-                <div className="uk-card uk-card-default uk-card-small uk-card-body uk-width-1-5 uk-text-center">
-                    <p className="uk-text-bold uk-margin-small">{supplierLogo}</p>
-                    <p className="uk-text-meta uk-margin-small">Supplier</p>
-                </div>
-                <div className="uk-card uk-card-default uk-card-small uk-card-body uk-width-1-5 uk-text-center">
-                    <p className="uk-text-bold uk-margin-small">{existingContract.product}</p>
-                    <p className="uk-text-meta uk-margin-small">Product</p>
-                </div>
-                <div className="uk-card uk-card-default uk-card-small uk-card-body uk-width-1-5 uk-text-center">
-                    <p className="uk-text-bold uk-margin-small">{format(existingContract.totalIncCCL, { locale: 'en-GB'})}</p>
-                    <p className="uk-text-meta uk-margin-small">Contract Value</p>
-                </div>
-                <div className="uk-card uk-card-default uk-card-small uk-card-body uk-width-1-5 uk-text-center">
-                    <p className="uk-text-bold uk-margin-small">{appu}</p>
-                    <p className="uk-text-meta uk-margin-small">Avg Pence Per Unit</p>
-                </div>
-            </div>
+            <Row className="p-2 d-flex align-items-stretch flex-grow-1" noGutters>
+                <Col lg xs={4} className="d-flex flex-column justify-content-center text-center px-1 mt-md-0 mt-sm-3">
+                    <h4 className="m-0">{existingContract.reference}</h4>
+                    <div className="text-light pt-1"><i className="fas fa-tag text-accent mr-1"></i>Reference</div>
+                </Col>
+                <Col lg xs={4} className="d-flex flex-column justify-content-center text-center border-left px-1 mt-md-0 mt-sm-3">
+                    <h4 className="m-0">{supplierLogo}</h4>
+                    <div className="text-light pt-1"><i className="fas fa-industry mr-1"></i>Supplier</div>
+                </Col>
+                <Col lg xs={4} className="d-flex flex-column justify-content-center text-center border-left px-1 mt-md-0 mt-sm-3">
+                    <h4 className="m-0">{existingContract.product}</h4>
+                    <div className="text-light pt-1"><i className="fas fa-cube mr-1 text-primary"></i>Product</div>
+                </Col>
+                <Col lg xs={6} className="d-flex flex-column justify-content-center text-center border-left px-1 mt-md-0 mt-sm-3">
+                    <h4 className="m-0">{format(existingContract.totalIncCCL, { locale: 'en-GB'})}</h4>
+                    <div className="text-light pt-1"><i className="fas fa-money-check-alt mr-1 text-indigo"></i>Contract Value</div>
+                </Col>
+                <Col lg xs={6} className="d-flex flex-column justify-content-center text-center border-left px-1 mt-md-0 mt-sm-3">
+                    <h5 className="m-0">{appu}</h5>
+                    <div className="text-light pt-1"><i className="fas fa-coins mr-1 text-warning mr-2"></i>Avg. Pence Per Unit</div>
+                </Col>
+            </Row>
         )
     }
 
     fetchRatesAndOpenDialog(){
         let contractId = this.props.tender.existingContract.contractId;
         this.props.fetchContractBackingSheets(this.props.tender.tenderId, contractId);
-        this.props.openModalDialog("view_tender_contract_rates");
+        this.props.openContractRatesDialog();
     }
    
     render() {
@@ -72,13 +73,22 @@ class TenderContractView extends React.Component<TenderContractViewProps & Dispa
         }
 
         var cardContent = null;
-        var titleContent = null;
+        var viewRatesButton = null;
         if(this.props.tender.existingContract == null){
             cardContent = (
-                <div className="uk-alert-warning uk-margin-small-top uk-margin-small-bottom uk-text-center" data-uk-alert>
-                    <p><i className="fas fa-exclamation-triangle uk-margin-small-right"></i>We couldn't match this portfolio's included meters to a valid existing contract on its account.</p>
-                    <p><Link to={`/account/${this.props.portfolio.accountId}`}>Click here</Link> to visit the account where you can add a valid contract.</p>
-                </div>
+                <Alert color="orange" className="mb-0">
+                    <div className="d-flex align-items-center">
+                        <i className="fas fa-exclamation-triangle mr-2"></i>
+                        <div>
+                            <p className="m-0 pl-3">
+                                We couldn't match this portfolio's included meters to a valid existing contract on its account.
+                            </p>
+                            <p className="mt-1 mb-0 pl-3">
+                                <Link to={`/account/${this.props.portfolio.accountId}`}><Button color="secondary"><i className="fas fa-building mr-1"></i>Click here</Button></Link> to visit the account and add one.
+                            </p>
+                        </div>
+                    </div>
+                </Alert>
             );
         }
         else {
@@ -87,42 +97,55 @@ class TenderContractView extends React.Component<TenderContractViewProps & Dispa
             
             if(!hasContractRates){
                 warningMessage = (
-                    <div className="uk-alert-warning uk-margin-small-top uk-margin-small-bottom uk-text-center" data-uk-alert>
-                        <p><i className="fas fa-exclamation-triangle uk-margin-small-right"></i>This contract does not yet have any rates associated with it.</p>
-                        <p><Link to={`/account/${this.props.tender.existingContract.accountId}`}>Click here</Link> to visit the account where you can upload some.</p>
-                    </div>);
+                    <Alert color="orange" className="mb-0">
+                    <div className="d-flex align-items-center">
+                        <i className="fas fa-exclamation-triangle mr-2"></i>
+                        <div>
+                            <p className="m-0 pl-3">
+                            This contract does not yet have any rates associated with it.
+                            </p>
+                            <p className="mt-1 mb-0 pl-3">
+                                <Link to={`/account/${this.props.portfolio.accountId}`}><Button color="secondary"><i className="fas fa-building mr-2"></i>Click here</Button></Link> to visit the account where you can upload some.
+                            </p>
+                        </div>
+                    </div>
+                </Alert>);
             }
             else {
-                titleContent = (<button className='uk-button uk-button-default uk-button-small' onClick={() => this.fetchRatesAndOpenDialog()}><i className="fa fa-pound-sign uk-margin-small-right"></i>View Contract Rates</button>);
+                viewRatesButton = (<Button color="accent" outline className="btn-grey-outline" size="small" onClick={() => this.fetchRatesAndOpenDialog()}><i className="fa fa-pound-sign mr-2"></i>View Contract Rates</Button>);
             }
 
-            cardContent = (<div>{this.renderContractInfo()}{warningMessage}</div>);
+            cardContent = (<div>{warningMessage}{this.renderContractInfo()}</div>);
         }
 
         return (
-            <div className="uk-card uk-card-small uk-card-default uk-card-body">
-                <div className="uk-grid uk-grid-small">
-                    <div className="uk-width-expand">
-                        <h3 className="uk-margin-left"><i className="fas fa-file-signature uk-margin-small-right"></i>Existing Contract</h3>
-                    </div>
-                    <div className="uk-width-auto">
-                        {titleContent}
-                    </div>
-                </div>
-                <div className="uk-margin">
-                    {cardContent}
-                </div>
-                <ModalDialog dialogId="view_tender_contract_rates" dialogClass="backing-sheet-modal">
-                    <TenderBackingSheetsDialog />
-                </ModalDialog>
-            </div>);
+            <div className="px-3">
+                <Row>
+                <Col sm={12} className="mb-3">
+                    <Card className="card-small h-100">
+                        <CardHeader className="border-bottom pl-3 pr-2 py-2">
+                            <div className="d-flex align-items-center">
+                                <div className="flex-grow-1">
+                                        <h6 className="m-0"><i className="fas fa-file-signature mr-1"></i>Existing Contract</h6>
+                                    </div>
+                                    {viewRatesButton}
+                                </div>
+                        </CardHeader>
+                        <CardBody className="p-0 d-flex flex-column">
+                            {cardContent}
+                        </CardBody>
+                    </Card>
+                </Col>
+            </Row>
+            <ContractRatesDialog />
+        </div>);
     }
 }
 
 const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, TenderContractViewProps> = (dispatch) => {
     return {
         fetchContractBackingSheets: (tenderId: string, contractId: string) => dispatch(fetchContractBackingSheets(tenderId, contractId)),
-        openModalDialog: (dialogId: string) => dispatch(openModalDialog(dialogId))
+        openContractRatesDialog: () => dispatch(openDialog(ModalDialogNames.ContractRates))
     };
 };
   

@@ -1,29 +1,22 @@
 import * as React from "react";
-import { Link, RouteComponentProps } from "react-router-dom";
+import { RouteComponentProps, Link } from "react-router-dom";
+import PreAuthAppContainer from "./common/PreAuthAppContainer";
+import { Alert, Button } from "reactstrap";
 
-class NotFound extends React.Component<RouteComponentProps<void>, {}> {
+export default class NotFound extends React.Component<RouteComponentProps<void>, {}> {
     render() {
         return (
-            <div className="uk-cover-container uk-height-viewport">
-            <img src={require('../images/panels.png')} alt="" data-uk-cover />
-            <div className="app-loading-container uk-position-center">
-                <div className="uk-card uk-card-body uk-card-default">
-                    <img src={require('../images/tpi-flow-logo.png')} alt="TPI Flow" />
-                    <div className="uk-alert uk-alert-warning uk-text-center" data-uk-alert>
-                        <div><i className="fas fa-exclamation-triangle fa-2x"></i></div>
-                        <h3 className="uk-margin-top">Sorry, we couldn't find the page you were looking for.</h3>                    
-                        <p><Link to='/'>Click here</Link> to go back to TPI Flow.</p>
-
-                        <hr />
-                        <p>If you continue to receive this message, please contact us using the button below.</p>
-                    </div>
-                    <p className="uk-text-center"><a className="uk-button uk-button-default uk-button-small uk-margin-small-top" href={`mailto:support@tpiflow.com?subject=HTTP%20404at%20${window.location.href}`}><i className="fas fa-envelope uk-margin-small-right"></i>Get in touch</a></p>
-                </div>
-                
-            </div>
-        </div>
-        )
+            <PreAuthAppContainer centerText>
+                <Alert color="danger">
+                    <i className="fas fa-info mr-2"></i>Sorry! We couldn't find the page you were looking for.
+                </Alert>
+                <p><Link to='/'><i className="fas fa-link mx-1"></i>Click here</Link> to go back to TPI Flow.</p>
+                <hr />
+                <p>If you continue to receive this message, please contact our support team using the button below.</p>
+                <Button color="accent" href={`mailto:support@tpiflow.com?subject=HTTP%20404at%20${window.location.href}`}>
+                    <i className="fas fa-envelope mx-1"></i>
+                    Contact us
+                </Button>
+            </PreAuthAppContainer>)
     }
 }
-
-export default NotFound;

@@ -1,0 +1,23 @@
+@import "globals";
+
+.text-meta {
+    //font-size: 0.75rem;
+    color: $gray-700;
+}
+
+.text-small {
+    font-size: 0.925rem;
+    font-weight: $font-weight-normal;
+}
+
+.text-lightweight {
+    font-weight: $font-weight-normal;
+}
+
+.text-midweight {
+    font-weight: 400;
+}
+
+.alert-danger, .alert-warning, .alert-orange {
+    color: #fff;
+}

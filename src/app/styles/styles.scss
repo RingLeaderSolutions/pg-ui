@@ -1,124 +1,146 @@
-@import 'uikit/src/scss/variables-theme.scss';
-@import 'uikit/src/scss/mixins-theme.scss';
-@import 'uikit/src/scss/uikit-theme.scss';
+// This file contains imports for all of the required UI dependencies:
+// core: bootstrap, shards-ui, shards-dashboard, font-awesome
+// additional: react-datepicker, react-table, react-toastify
 
-@import "sidebar";
-@import "portfolios";
-@import "accounts";
-@import "portfolio";
-@import "graphics";
-@import "header";
-@import "spinner";
-@import "dashboard";
-@import "auth";
-@import "datepicker";
-@import "tender";
-@import "tables";
-@import "scrollbars";
-@import "forms";
-@import "notifications";
-@import "buttons";
+// Import application variables to override variables set by the incoming dependencies:
+@import "variables";
 
+// The ordering of the below dependencies is critical:
+@import "shards/overrides";
+
+@import "~bootstrap/scss/functions";
+@import "~shards-ui/src/scss/variables";
+
+@import "~bootstrap/scss/variables";
+@import "~bootstrap/scss/mixins";
+@import "~bootstrap/scss/utilities";
+
+//-------------------------------------- bootstrap
+@import "~bootstrap/scss/root";
+@import "~bootstrap/scss/reboot";
+@import "~bootstrap/scss/type";
+@import "~bootstrap/scss/images";
+@import "~bootstrap/scss/code";
+@import "~bootstrap/scss/grid";
+@import "~bootstrap/scss/tables";
+@import "~bootstrap/scss/forms";
+@import "~bootstrap/scss/buttons";
+@import "~bootstrap/scss/transitions";
+@import "~bootstrap/scss/dropdown";
+@import "~bootstrap/scss/button-group";
+@import "~bootstrap/scss/input-group";
+@import "~bootstrap/scss/custom-forms";
+@import "~bootstrap/scss/nav";
+@import "~bootstrap/scss/navbar";
+@import "~bootstrap/scss/card";
+@import "~bootstrap/scss/breadcrumb";
+@import "~bootstrap/scss/pagination";
+@import "~bootstrap/scss/badge";
+@import "~bootstrap/scss/jumbotron";
+@import "~bootstrap/scss/alert";
+@import "~bootstrap/scss/progress";
+@import "~bootstrap/scss/media";
+@import "~bootstrap/scss/list-group";
+@import "~bootstrap/scss/close";
+@import "~bootstrap/scss/modal";
+@import "~bootstrap/scss/tooltip";
+@import "~bootstrap/scss/popover";
+@import "~bootstrap/scss/carousel";
+@import "~bootstrap/scss/print";
+
+//-------------------------------------- shards-ui
+@import "~shards-ui/src/scss/mixins";
+@import "~shards-ui/src/scss/root";
+@import "~shards-ui/src/scss/reboot";
+@import "~shards-ui/src/scss/type";
+@import "~shards-ui/src/scss/images";
+@import "~shards-ui/src/scss/code";
+@import "~shards-ui/src/scss/tables";
+@import "~shards-ui/src/scss/forms";
+@import "~shards-ui/src/scss/buttons";
+@import "~shards-ui/src/scss/transitions";
+@import "~shards-ui/src/scss/icons";
+@import "~shards-ui/src/scss/dropdown";
+@import "~shards-ui/src/scss/button-group";
+@import "~shards-ui/src/scss/input-group";
+@import "~shards-ui/src/scss/custom-forms";
+@import "~shards-ui/src/scss/nav";
+@import "~shards-ui/src/scss/navbar";
+@import "~shards-ui/src/scss/card";
+@import "~shards-ui/src/scss/pagination";
+@import "~shards-ui/src/scss/badge";
+@import "~shards-ui/src/scss/jumbotron";
+@import "~shards-ui/src/scss/alert";
+@import "~shards-ui/src/scss/progress";
+@import "~shards-ui/src/scss/list-group";
+@import "~shards-ui/src/scss/close";
+@import "~shards-ui/src/scss/modal";
+@import "~shards-ui/src/scss/tooltip";
+@import "~shards-ui/src/scss/popover";
+@import "~shards-ui/src/scss/carousel";
+@import "~shards-ui/src/scss/custom-sliders";
+@import "~shards-ui/src/scss/custom-datepicker";
+@import "~shards-ui/src/scss/utilities";
+
+//-------------------------------------- shards-dashboards:
+@import "shards/variables";
+
+@import "/shards/reboot";
+@import "/shards/buttons";
+@import "/shards/button-group";
+@import "/shards/navbar";
+@import "/shards/badge";
+@import "/shards/alert";
+@import "/shards/input-group";
+@import "/shards/custom-forms";
+@import "/shards/custom-sliders";
+@import "/shards/images";
+@import "/shards/icons";
+@import "/shards/dropdown";
+@import "/shards/card";
+@import "/shards/utilities";
+
+@import "/shards/blocks/main-navbar";
+@import "/shards/blocks/main-sidebar";
+@import "/shards/blocks/main-content";
+@import "/shards/blocks/main-footer";
+@import "/shards/blocks/page-header";
+
+@import "/shards/templates/common"; 
+@import "/shards/templates/blog-overview";
+@import "/shards/templates/blog-add-new-post";
+
+@import "/shards/components/card-post";
+@import "/shards/components/error";
+
+//-------------------------------------- font-awesome
 $fa-font-path: '~@fortawesome/fontawesome-free/webfonts'; 
 @import '~@fortawesome/fontawesome-free/scss/fontawesome'; 
 @import '~@fortawesome/fontawesome-free/scss/solid'; 
 @import '~@fortawesome/fontawesome-free/scss/regular'; 
 @import '~@fortawesome/fontawesome-free/scss/brands'; 
 
-html, body, .root, .app-container {
-  min-height: 100%;
-  height: 100%;
-  background-color: $app-background;
-}
+//-------------------------------------- various react component styles
+@import '~react-table/react-table.css';
+@import '~react-day-picker/lib/style.css';
+@import '~react-toastify/dist/ReactToastify.css';
 
-@keyframes slideInFromLeft {
-    0% {
-        transform: translateX(-100%);
-    }
-    100% {
-        transform: translateX(0);
-    }
-}
-
-@keyframes slideInFromTop {
-    0% {
-        transform: translateY(-100%);
-    }
-    100% {
-        transform: translateY(0);
-    }
-}
-
-@keyframes fadeIn {
-    0% {
-        opacity: 0;
-    }
-    100% {
-        opacity: 1;
-    }
-}
-
-
-.app-loading-container {
-    max-width: 500px;
-}
-
-.app-container, .app-loading-container, .content-inner {
-    animation: 0.5s ease-out 0s 1 fadeIn;
-}
-
-.content-container {
-    padding: $margin-large 0px 20px 20px;
-}
-
-
-// UIKit Table hover override (yellow->grey)
-.uk-table-hover > tr:hover, .uk-table-hover tbody tr:hover {
-    background: #eeeeee !important;
-}
-
-.file-upload-pane {
-    padding: 10px;
-    outline: $text-color dashed 2px;
-    outline-offset:5px;
-    background: #f1f1f1;
-}
-
-.portfolio-meters {
-    .buttons {
-        button {
-            margin-right: 10px;
-        }
-    }
-
-    .meter-table,
-    .meter-table th {
-        font-size: 0.7rem !important;
-        //max-width: 1100px;
-      }
-    
-    .meter-table {
-        tr:hover {
-        background-color: #f4f4f4;
-        cursor: pointer;
-        }
-    }
-}
-
-.meter-details-modal{
-    min-width: 1000px;
-}
-
-.uk-alert { 
-    color: #000000;
-}
-
-.borderless-button {
-    border: 1px solid transparent;
-}
-
-.borderless-button:hover:enabled {
-    border: 1px solid #b2b2b2;
-    color: #333;
-    background-color: transparent;
-}
+//-------------------------------------- global application styles
+@import "text";
+@import "sidebar";
+@import "main";
+@import "loading";
+@import "tables";
+@import "tabs";
+@import "scrollbars";
+@import "buttons";
+@import "dropdown";  
+@import "card";  
+@import "list-group";  
+@import "modal";  
+@import "uploads";  
+@import "datepicker";  
+@import "notifications";  
+@import "borders";  
+@import "images";  
+@import "general";

@@ -1,22 +1,28 @@
 import * as React from "react";
 import ErrorMessage from "../../../common/ErrorMessage";
-import { MapDispatchToPropsFunction, connect, MapStateToProps } from 'react-redux';
+import { MapDispatchToPropsFunction, MapStateToProps } from 'react-redux';
 import { ApplicationState } from '../../../../applicationState';
-import Spinner from '../../../common/Spinner';
 import { format } from 'currency-formatter';
 import * as moment from 'moment';
-import { fetchRecommendationsSites, deleteRecommendation } from '../../../../actions/tenderActions';
+import { fetchRecommendationsSites, deleteRecommendation, fetchRecommendationsSuppliers, fetchRecommendationSummary } from '../../../../actions/tenderActions';
 
+import * as cn from "classnames";
 import { Tender, RecommendationSite, RecommendationSupplier, RecommendationSummary, TenderRecommendation, TenderSupplier } from "../../../../model/Tender";
-import { closeModalDialog } from "../../../../actions/viewActions";
-import CounterCard from "../../../common/CounterCard";
+import asModalDialog, { ModalDialogProps } from "../../../common/modal/AsModalDialog";
+import { ModalDialogNames } from "../../../common/modal/ModalDialogNames";
+import { LoadingIndicator } from "../../../common/LoadingIndicator";
+import { ModalHeader, Navbar, Nav, NavItem, NavLink, ModalBody, ModalFooter, Button, Col, Row, Card, CardHeader, CardBody } from "reactstrap";
+import { AlertConfirmDialogData } from "../../../common/modal/AlertConfirmDialog";
+import { openAlertConfirmDialog } from "../../../../actions/viewActions";
 
-interface RecommendationDetailDialogProps {
+export interface RecommendationDetailDialogData {
     tender: Tender;
+    recommendation: TenderRecommendation;
 }
 
+interface RecommendationDetailDialogProps extends ModalDialogProps<RecommendationDetailDialogData> { }
+
 interface StateProps {
-    selected_recommendation: TenderRecommendation;
     recommendation_summary: RecommendationSummary;
     recommendation_sites: RecommendationSite[];
     recommendation_suppliers: RecommendationSupplier[];
@@ -28,12 +34,18 @@ interface StateProps {
 }
 
 interface DispatchProps {
-    closeModalDialog: () => void;
+    getRecommendationSummary: (tenderId: string, summaryId: string) => void;
+    getRecommendationSuppliers: (tenderId: string, summaryId: string) => void;
     getRecommendationSites: (tenderId: string, summaryId: string, siteStart: number, siteEnd: number) => void;
     deleteRecommendation: (tenderId: string, recommendationId: string) => void;
+    openAlertConfirmDialog: (data: AlertConfirmDialogData) => void;
 }
 
 interface RecommendationDetailDialogState {
+    selectedTabIndex: number;
+    selectedOfferIndex: number;
+    selectedSiteIndex: number;
+
     currentSiteStart: number;
     currentSiteEnd: number;
 }
@@ -42,44 +54,49 @@ class RecommendationDetailDialog extends React.Component<RecommendationDetailDia
     constructor(props: RecommendationDetailDialogProps & StateProps & DispatchProps){
         super(props);
         this.state = {
+            selectedTabIndex: 0,
+            selectedSiteIndex: 0,
+            selectedOfferIndex: 0,
             currentSiteStart: 0,
             currentSiteEnd: 4
         }
     }
 
-    componentWillReceiveProps(nextProps: RecommendationDetailDialogProps & StateProps & DispatchProps){
-        var currentRecommendation = this.props.selected_recommendation;
-        var newRecommendation = nextProps.selected_recommendation;
+    componentDidMount(){
+        let { recommendation, tender } = this.props.data;
 
-        if(newRecommendation == null){
-            this.setState({
-                currentSiteStart: 0,
-                currentSiteEnd: 4
-            });
-            return;
+        var siteEnd = 4;
+        if(recommendation.meterCount - 1 < siteEnd){
+            siteEnd = recommendation.meterCount;
         }
 
-        if(currentRecommendation == null || currentRecommendation.summaryId != newRecommendation.summaryId){
-            var siteEnd = 4;
-            if(newRecommendation.meterCount - 1 < siteEnd){
-                siteEnd = newRecommendation.meterCount;
-            }
-
-            this.setState({
-                currentSiteStart: 0,
-                currentSiteEnd: siteEnd
-            });
-            this.props.getRecommendationSites(nextProps.tender.tenderId, newRecommendation.summaryId, 0, siteEnd);
-        }
+        this.setState({
+            ...this.state,
+            currentSiteStart: 0,
+            currentSiteEnd: siteEnd
+        });
+        
+        this.props.getRecommendationSummary(tender.tenderId, recommendation.summaryId);
+        this.props.getRecommendationSuppliers(tender.tenderId, recommendation.summaryId);
+        this.props.getRecommendationSites(tender.tenderId, recommendation.summaryId, 0, siteEnd);   
     }
 
     deleteRecommendation(){
-        this.props.deleteRecommendation(this.props.tender.tenderId, this.props.selected_recommendation.summaryId);
-        this.props.closeModalDialog();
+        let { recommendation, tender } = this.props.data;
+
+        this.props.openAlertConfirmDialog({
+            body: "Are you sure you want to delete this recommendation report?",
+            title: "Confirm Report Deletion",
+            confirmIcon: "trash-alt",
+            confirmText: "Delete",
+            headerClass: "modal-header-danger",
+            confirmButtonColor: "danger",
+            onConfirm: () => this.props.deleteRecommendation(tender.tenderId, recommendation.summaryId)
+         });
     }
 
     canGetNextSites() : boolean{
-        var maxSitePosition = this.props.selected_recommendation.meterCount - 1;
+        var maxSitePosition = this.props.data.recommendation.meterCount - 1;
         // If we're already at the end, we can't go any further forward
         if(this.state.currentSiteEnd == maxSitePosition){
             return false;
@@ -103,9 +120,10 @@ class RecommendationDetailDialog extends React.Component<RecommendationDetailDia
             siteStart = 0;
         }
 
-        this.props.getRecommendationSites(this.props.tender.tenderId, this.props.recommendation_summary.summaryId, siteStart, siteEnd);
+        this.props.getRecommendationSites(this.props.data.tender.tenderId, this.props.recommendation_summary.summaryId, siteStart, siteEnd);
         
         this.setState({
+            ...this.state,
             currentSiteStart: siteStart,
             currentSiteEnd: siteEnd,
         });
@@ -115,7 +133,7 @@ class RecommendationDetailDialog extends React.Component<RecommendationDetailDia
         var siteStart = this.state.currentSiteEnd + 1;
         var siteEnd = this.state.currentSiteEnd + 5;
 
-        var maxSitePosition = this.props.selected_recommendation.meterCount - 1;
+        var maxSitePosition = this.props.data.recommendation.meterCount - 1;
         if(siteStart > maxSitePosition){
             siteStart = this.state.currentSiteEnd + 1;
         }
@@ -123,37 +141,13 @@ class RecommendationDetailDialog extends React.Component<RecommendationDetailDia
             siteEnd = maxSitePosition;
         }
 
-        this.props.getRecommendationSites(this.props.tender.tenderId, this.props.recommendation_summary.summaryId, siteStart, siteEnd);
+        this.props.getRecommendationSites(this.props.data.tender.tenderId, this.props.recommendation_summary.summaryId, siteStart, siteEnd);
         
         this.setState({
+            ...this.state,
             currentSiteStart: siteStart,
             currentSiteEnd: siteEnd,
         });
-    }
-
-    renderContent(content: any, title: any){
-        return (<div>
-            <div className="uk-modal-header">
-                <h2 className="uk-modal-title"><i className="fas fa-bullhorn uk-margin-right"></i>{title}</h2>
-            </div>
-            <div className="uk-modal-body">
-                {content}
-            </div>
-            <div className="uk-modal-footer">
-                <div className="uk-grid uk-grid-small">
-                    {this.props.selected_recommendation != null ? (
-                        <div className="uk-width-expand uk-margin-small-left">
-                            <a className="uk-button uk-button-default" href={this.props.selected_recommendation.summaryFileName} data-uk-tooltip="title: Download this report as .XLS">
-                                <i className="fa fa-file-download uk-margin-small-right"></i>
-                                Download
-                            </a> 
-                        </div>) : null}
-                    <div className="uk-width-auto">
-                        <button className="uk-button uk-button-default uk-margin-right" type="button"  onClick={() => this.props.closeModalDialog()}><i className="fas fa-check-circle uk-margin-small-right"></i>OK</button>
-                    </div>
-                </div>
-            </div>
-        </div>);
     }
 
     renderSiteTabContent(recommendationSite: RecommendationSite){
@@ -169,7 +163,7 @@ class RecommendationDetailDialog extends React.Component<RecommendationDetailDia
                     {isWinningOffer ? 
                         (
                             <td>
-                                <i className="fa fa-trophy uk-margin-small-right fa-xs" style={{color: 'goldenrod'}}></i>#{ru.ranking + 1}
+                                <i className="fa fa-trophy mr-1 fa-xs" style={{color: 'goldenrod'}}></i>#{ru.ranking + 1}
                             </td>
                         )
                         : (<td>{`#${ru.ranking + 1}`}</td>)}
@@ -214,206 +208,259 @@ class RecommendationDetailDialog extends React.Component<RecommendationDetailDia
 
         var percentageChangeContent = this.renderPercentageChangeCard(recommendationSite.recommendedSiteOffer.percentageChange);
         var currentSupplier = this.props.suppliers.find(su => su.supplierId == recommendationSite.currentContract.supplierId);
-        var currentSupplierText = currentSupplier == null ? (<h4><strong>Unknown</strong></h4>) : (<img src={currentSupplier.logoUri} style={{ maxWidth: "70px", maxHeight: "40px"}}/>);
+        var currentSupplierText = currentSupplier == null ? (<h4><strong>Unknown</strong></h4>) : (<img src={currentSupplier.logoUri} style={{ maxHeight: "30px"}}/>);
 
         var newSupplier = this.props.suppliers.find(su => su.supplierId == recommendationSite.recommendedSiteOffer.supplierId);
-        var newSupplierText = newSupplier == null ? (<h4><strong>Unknown</strong></h4>) : (<img src={newSupplier.logoUri} style={{ maxWidth: "70px", maxHeight: "40px"}}/>);
+        var newSupplierText = newSupplier == null ? (<h4><strong>Unknown</strong></h4>) : (<img src={newSupplier.logoUri} style={{ maxHeight: "30px"}}/>);
 
         var startDate = moment.utc(recommendationSite.recommendedSiteOffer.startDate).local().format("DD/MM/YYYY");
         var endDate = moment.utc(recommendationSite.recommendedSiteOffer.endDate).local().format("DD/MM/YYYY");
+
         return (
-            <div key={recommendationSite.siteCode}>
-                <div className="uk-child-width-expand@s uk-grid-match uk-text-center" data-uk-grid>
-                    <CounterCard title={recommendationSite.siteCode} label="Site Code" small/>
-                    <CounterCard title={recommendationSite.siteName} label="Site Name" small/>
-                    <CounterCard title={recommendationSite.billingAddress} label="Billing Address" small/>
-                    <CounterCard title={recommendationSite.supplierAddress} label="Supplier Address" small/>
-                </div>
-                <h3><i className="fas fa-file-signature uk-margin-small-right"></i>Existing Contract</h3>
-                <div className="uk-child-width-expand@s uk-grid-match uk-text-center" data-uk-grid>
-                    <CounterCard content={currentSupplierText} label="Current Supplier" small/>
-                    <CounterCard title={format(recommendationSite.currentContract.totalIncCCL, { locale: 'en-GB'})} label="Comparative total cost inc CCL" small/>
-                    <CounterCard title={format(recommendationSite.currentContract.ccl, { locale: 'en-GB'})} label="CCL" small/>
-                    <CounterCard title={`${recommendationSite.currentContract.appu.toFixed(4)}p`} label="Avg Pence Per Unit" small />
-                </div>
-                <h3><i className="fa fa-trophy uk-margin-small-right" style={{color: 'goldenrod'}}></i><i className="fas fa-handshake uk-margin-small-right"></i>Recommended Supplier Offer</h3>
-                <div className="uk-child-width-expand@s uk-grid-match uk-text-center" data-uk-grid>
-                    <CounterCard content={newSupplierText} label="New Supplier" small/>
-                    <CounterCard title={format(recommendationSite.recommendedSiteOffer.totalIncCCL, { locale: 'en-GB'})} label="Annual cost inc CCL" small/>
-                    <CounterCard content={percentageChangeContent} label="Percentage change" small />
-                    <CounterCard title={startDate} label="Start Date" small/>
-                    <CounterCard title={endDate} label="End Date" small/>
-                    <CounterCard title={`${recommendationSite.recommendedSiteOffer.paymentTerms} days`} label="Payment Terms" small/>
-                    <CounterCard title={recommendationSite.recommendedSiteOffer.fuelType} label="Fuel Type" small/>
-                </div>
-                <h3><i className="fa fa-trophy uk-margin-small-right" style={{color: 'goldenrod'}}></i><i className="fas fa-pound-sign uk-margin-small-right"></i>Recommended Supplier Offer Billing Rates</h3>
-                <div className="uk-grid" style={{backgroundColor: '#f8f8f8', marginLeft: '0'}}>
-                    <div className="uk-width-expand" />
-                    <table className="uk-table uk-table-divider uk-width-auto">
-                        <thead>
-                            <tr>
-                                <th>Monthly / Quarterly Charges</th>
-                                <th></th>
-                                <th></th>
-                                <th></th>
-                                <th>Annual Charges</th>
-                                <th></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {billingRatesRows}
-                        </tbody>
-                    </table>
-                    <div className="uk-width-expand" />
-                </div>
-                <h3><i className="fas fa-handshake uk-margin-small-right"></i>Offers received</h3>
-                <table className="uk-table uk-table-divider">
-                    <thead>
-                        <tr>
-                            <th>Ranking</th>
-                            <th>Supplier</th>
-                            <th>Duration</th>
-                            <th>Annual Cost inc CCL</th>
-                            <th>CCL</th>
-                            <th>Average pence per unit</th>
-                            <th>£ Increase or Saving (-)</th>
-                            <th>% Increase or Saving (-)</th>
-                            <th>£ Adrift of Offer Ranked #1</th>
-                            <th>% Adrift of Offer Ranked #1</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {receivedOfferRows}
-                    </tbody>
-                </table>
-            </div>
-        )
+            <div className="bg-body d-flex flex-column py-2 px-3">
+                <Row className="mb-3" noGutters>
+                    <Card className="card-small h-100 w-100">
+                        <CardBody className="p-0 d-flex flex-column">
+                            <Row className="p-2 d-flex" noGutters>
+                                <Col xs={3} className="d-flex flex-column justify-content-center text-center px-1 mt-md-0 mt-3">
+                                    <h5 className="m-0 flex-grow-1 d-flex justify-content-center align-items-center">{recommendationSite.siteCode}</h5>
+                                    <div className="text-light pt-1">Site Code</div>
+                                </Col>
+                                <Col xs={3} className="d-flex flex-column justify-content-center text-center border-left px-1 mt-md-0 mt-3">
+                                    <h5 className="m-0 flex-grow-1 d-flex justify-content-center align-items-center">{recommendationSite.siteName}</h5>
+                                    <div className="text-light pt-1">Site Name</div>
+                                </Col>
+                                <Col xs={3} className="d-flex flex-column justify-content-center text-center border-left px-1 mt-md-0 mt-3">
+                                    <h5 className="m-0 flex-grow-1 d-flex justify-content-center align-items-center">{recommendationSite.billingAddress}</h5>
+                                    <div className="text-light pt-1">Billing Address</div>
+                                </Col>
+                                <Col xs={3} className="d-flex flex-column justify-content-center text-center border-left px-1 mt-md-0 mt-3">
+                                    <h5 className="m-0 flex-grow-1 d-flex justify-content-center align-items-center">{recommendationSite.supplierAddress}</h5>
+                                    <div className="text-light pt-1">Supply Address</div>
+                                </Col>
+                            </Row>
+                        </CardBody>
+                    </Card>
+                </Row>
+                <Row className="mb-3" noGutters>
+                    <Card className="card-small h-100 w-100">
+                        <CardHeader className="border-bottom pl-3 pr-2 py-2">
+                            <div className="d-flex align-items-center">
+                                <div className="flex-grow-1">
+                                    <h6 className="m-0"><i className="fas fa-file-signature mr-1"></i>Existing Contract</h6>
+                                </div>
+                            </div>
+                        </CardHeader>
+                        <CardBody className="p-0 d-flex flex-column">
+                            <Row className="p-2 pt-3" noGutters>
+                                <Col xs={3} className="d-flex flex-column justify-content-center text-center px-1 mt-md-0 mt-3">
+                                    <h5 className="m-0 flex-grow-1 d-flex justify-content-center">{currentSupplierText}</h5>
+                                    <div className="text-light pt-1"><i className="fas fa-industry mr-1 text-indigo"></i>Supplier</div>
+                                </Col>
+                                <Col xs={3} className="d-flex flex-column justify-content-center text-center border-left px-1 mt-md-0 mt-3">
+                                    <h4 className="m-0 flex-grow-1 d-flex justify-content-center"><strong>{format(recommendationSite.currentContract.totalIncCCL, { locale: 'en-GB'})}</strong></h4>
+                                    <div className="text-light pt-1"><i className="fas fa-money-check-alt mr-2 text-accent"></i>Comparative Total Inc CCL</div>
+                                </Col>
+                                <Col xs={3} className="d-flex flex-column justify-content-center text-center border-left px-1 mt-md-0 mt-3">
+                                    <h4 className="m-0 flex-grow-1 d-flex justify-content-center"><strong>{format(recommendationSite.currentContract.ccl, { locale: 'en-GB'})} </strong></h4>
+                                    <div className="text-light pt-1"><i className="fas fa-leaf mr-2 text-success"></i>CCL</div>
+                                </Col>
+                                <Col xs={3} className="d-flex flex-column justify-content-center text-center border-left px-1 mt-md-0 mt-3">
+                                    <h4 className="m-0 flex-grow-1 d-flex justify-content-center"><strong>{`${recommendationSite.currentContract.appu.toFixed(4)}p`}</strong></h4>
+                                    <div className="text-light pt-1"><i className="fas fa-coins mr-1 text-warning mr-2"></i>Avg Pence Per Unit</div>
+                                </Col>
+                            </Row>
+                        </CardBody>
+                    </Card>
+                </Row>
+                <Row className="mb-3" noGutters>
+                    <Card className="card-small h-100 w-100">
+                        <CardHeader className="border-bottom pl-3 pr-2 py-2">
+                            <div className="d-flex align-items-center">
+                                <div className="flex-grow-1">
+                                    <h6 className="m-0"><i className="fa fa-trophy mr-1 fa-xs" style={{color: 'goldenrod'}}></i>Recommended Offer</h6>
+                                </div>
+                            </div>
+                        </CardHeader>
+                        <CardBody className="p-0 d-flex flex-column">
+                            <Row className="p-2 pt-3" noGutters>
+                                <Col xs={3} className="d-flex flex-column justify-content-center text-center px-1 mt-md-0 mt-3">
+                                    <h5 className="m-0 flex-grow-1 d-flex justify-content-center">{newSupplierText}</h5>
+                                    <div className="text-light pt-1"><i className="fas fa-industry mr-1 text-indigo"></i>New Supplier</div>
+                                </Col>
+                                <Col xs={3} className="d-flex flex-column justify-content-center text-center border-left px-1 mt-md-0 mt-3">
+                                    <h4 className="m-0 flex-grow-1 d-flex justify-content-center"><strong>{format(recommendationSite.recommendedSiteOffer.totalIncCCL, { locale: 'en-GB'})}</strong></h4>
+                                    <div className="text-light pt-1"><i className="fas fa-money-check-alt mr-2 text-accent"></i>Annual cost Inc CCL</div>
+                                </Col>
+                                <Col xs={3} className="d-flex flex-column justify-content-center text-center border-left px-1 mt-md-0 mt-3">
+                                    <h5 className="m-0 flex-grow-1 d-flex justify-content-center">{percentageChangeContent}</h5>
+                                    <div className="text-light pt-1"><i className="fas fa-percent mr-2 text-success"></i>Change</div>
+                                </Col>
+                                <Col xs={3} className="d-flex flex-column justify-content-center text-center border-left px-1 mt-md-0 mt-3">
+                                    <h5 className="m-0 flex-grow-1 d-flex justify-content-center">{`${recommendationSite.recommendedSiteOffer.paymentTerms} days`}</h5>
+                                    <div className="text-light pt-1"><i className="fas fa-receipt mr-1 text-indigo mr-2"></i>Payment Terms</div>
+                                </Col>
+                            </Row>
+                            <Row noGutters className="d-block">
+                                <hr />
+                            </Row>
+                            <Row className="p-2" noGutters>
+                                <Col xs={4} className="d-flex flex-column justify-content-center text-center px-1 mt-md-0 mt-3">
+                                    <h5 className="m-0 flex-grow-1 d-flex justify-content-center">{startDate}</h5>
+                                    <div className="text-light pt-1"><i className="fas fa-play mr-1"></i>Start Date</div>
+                                </Col>
+                                <Col xs={4} className="d-flex flex-column justify-content-center text-center border-left px-1 mt-md-0 mt-3">
+                                    <h5 className="m-0 flex-grow-1 d-flex justify-content-center">{endDate}</h5>
+                                    <div className="text-light pt-1"><i className="fas fa-pause mr-1"></i>End Date</div>
+                                </Col>
+                                <Col xs={4} className="d-flex flex-column justify-content-center text-center border-left px-1 mt-md-0 mt-3">
+                                    <h5 className="m-0 flex-grow-1 d-flex justify-content-center">{recommendationSite.recommendedSiteOffer.fuelType || "-"} </h5>
+                                    <div className="text-light pt-1"><i className="fas fa-info mr-2"></i>Fuel Type</div>
+                                </Col>
+                            </Row>
+                            <Row noGutters className="d-block">
+                                <hr />
+                            </Row>
+                            <Row noGutters className="border-bottom"><h6><strong><i className="fas fa-pound-sign mr-1 pl-3"></i>Contract Rates</strong></h6></Row>
+                            <Row noGutters className="d-flex flex-column justify-content-center align-items-center bg-body pb-1">
+                                <table className="table" style={{width: 'auto'}}>
+                                    <thead>
+                                        <tr>
+                                            <th>Monthly / Quarterly Charges</th>
+                                            <th></th>
+                                            <th></th>
+                                            <th></th>
+                                            <th>Annual Charges</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {billingRatesRows}
+                                    </tbody>
+                                </table>
+                            </Row>
+                        </CardBody>
+                    </Card>
+                </Row>
+                <Row className="mb-1" noGutters>
+                    <Card className="card-small h-100 w-100">
+                        <CardHeader className="border-bottom pl-3 pr-2 py-2">
+                            <div className="d-flex align-items-center">
+                                <div className="flex-grow-1">
+                                    <h6 className="m-0"><i className="fas fa-file-signature mr-1"></i>Existing Contract</h6>
+                                </div>
+                            </div>
+                        </CardHeader>
+                        <CardBody className="p-0 d-flex flex-column">
+                            <table className="table table">
+                                <thead>
+                                    <tr>
+                                        <th>Ranking</th>
+                                        <th>Supplier</th>
+                                        <th>Duration</th>
+                                        <th>Annual Cost inc CCL</th>
+                                        <th>CCL</th>
+                                        <th>Average pence per unit</th>
+                                        <th>£ Increase or Saving (-)</th>
+                                        <th>% Increase or Saving (-)</th>
+                                        <th>£ Adrift</th>
+                                        <th>% Adrift</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {receivedOfferRows}
+                                </tbody>
+                            </table>
+                        </CardBody>
+                    </Card>
+                </Row>
+            </div>);
     }
 
-    renderSiteTabs(){
-        if(this.props.sites_working || this.props.recommendation_sites == null){
-            return (<div className="uk-margin-top"><Spinner hasMargin={true}/></div>);
+    renderSiteTabs() {
+        if(this.props.sites_working || !this.props.recommendation_sites){
+            return (<LoadingIndicator text="Loading sites..." />);
         }
-        var tabs: any = [];
-        var tabContent: any = [];
-        
-        this.props.recommendation_sites
-            .sort(
-                (rs1: RecommendationSite, rs2: RecommendationSite) => {        
-                    if (rs1.siteCode < rs2.siteCode) return -1;
-                    if (rs1.siteCode > rs2.siteCode) return 1;
-                    return 0;
-                })
-            .map((rs, index) => {
-                    var tooltip = `title: ${rs.siteName}`;
-                    var tab = (<li key={index} data-uk-tooltip={tooltip}><a href="#">{rs.siteCode}</a></li>);
-                    tabs[index] = tab;
 
-                    var content = this.renderSiteTabContent(rs);
-                    tabContent[index] = content;
-            });
+        let selectedSiteIndex = this.state.selectedSiteIndex;
+        let selectedSite = this.props.recommendation_sites[selectedSiteIndex];
 
         var previousIsDisabled = !this.canGetPreviousSites();
         var nextIsDisabled = !this.canGetNextSites();
         return (
-            <div className="uk-margin-top">
-                <div className="uk-text-center uk-margin-top uk-margin-bottom">
-                    <p className="uk-text-meta">Viewing sites {this.state.currentSiteStart + 1}-{this.state.currentSiteEnd + 1} of {this.props.selected_recommendation.meterCount}</p>
+            <div>
+                <Navbar className="p-0 bg-white d-flex border-bottom">
+                    <div className="flex-grow-1 d-flex justify-content-start pl-2">
+                        <Button color="white" disabled={previousIsDisabled}>
+                            <i className="fas fa-chevron-left" />
+                        </Button>
+                    </div>
+                    <Nav tabs className="justify-content-center flex-grow-1 px-3 border-bottom-0">
+                        {this.props.recommendation_sites.map((rs, index) => {
+                            return (
+                                <NavItem key={index}>
+                                    <NavLink className={cn({ active: selectedSiteIndex === index})}
+                                            onClick={() => this.selectSiteTab(index)}
+                                            href="#">
+                                            {rs.siteCode}
+                                    </NavLink>
+                                </NavItem>);
+                        })}
+                    </Nav>
+                    <div className="flex-grow-1 d-flex justify-content-end pr-2">
+                        <Button color="white" disabled={nextIsDisabled}>
+                            <i className="fas fa-chevron-right" />
+                        </Button>
+                    </div>
+                </Navbar>
+                <div>
+                    {this.renderSiteTabContent(selectedSite)}
                 </div>
-                <div data-uk-grid>
-                    <div className="uk-grid-width-1-10">
-                        <button className="uk-button uk-button-small uk-button-default" type="button" onClick={() => this.getPreviousSites()} disabled={previousIsDisabled}><i className="fas fa-chevron-left"></i></button>
-                    </div>
-                    <div className="uk-width-expand">
-                        <ul data-uk-switcher="connect: #sites-tab-switcher" className="uk-tab">
-                            {tabs}
-                        </ul>
-                    </div>
-                    <div className="uk-grid-width-1-10">
-                        <button className="uk-button uk-button-small uk-button-default" type="button" onClick={() => this.getNextSites()} disabled={nextIsDisabled}><i className="fas fa-chevron-right"></i></button>
-                    </div>
-                </div>
-                <hr />
-                <ul id="sites-tab-switcher" className="uk-switcher uk-margin-top">
-                    {tabContent}
-                </ul>
-            </div>
-        )
+            </div>);
     }
 
-    renderSupplierTabContent(index: number, recommendationSupplier: RecommendationSupplier){
-        var backingSheetsContent = recommendationSupplier.backingsheets.map((bs, index) => {
+    renderOffersTab(){   
+        let selectedOfferIndex = this.state.selectedOfferIndex;
+        let selectedOffer = this.props.recommendation_suppliers[selectedOfferIndex];
+        
+        var backingSheetsContent = selectedOffer.backingsheets.map((bs, index) => {
             var bsFields = bs.map((f,findex) => (<td key={findex}>{f}</td>));
             return (<tr key={index}>{bsFields}</tr>)
         });
 
-        var backingSheetsHeaders = recommendationSupplier.backingsheetTitles.map((bst, index) => {
-            return (<th key={index}>{bst}</th>)
+        var backingSheetsHeaders = selectedOffer.backingsheetTitles.map((bst, index) => {
+            return (<th className="text-capitalize" key={index}>{bst}</th>)
         });
 
-        var isIncumbent = recommendationSupplier.incumbentContract;
-
-        var supplier = this.props.suppliers.find(su => su.supplierId == recommendationSupplier.supplierId);
-        var supplierText = supplier == null ? (<h4><strong>Unknown</strong></h4>) : (<img src={supplier.logoUri} style={{ maxWidth: "70px", maxHeight: "40px"}}/>);
-
         return (
-            <div key={index}>
-                <div>
-                    {!isIncumbent ? (<div className="uk-child-width-expand@s uk-grid-match uk-text-center" data-uk-grid>
-                        <CounterCard content={supplierText} label="Supplier" small/>
-                        <CounterCard title={`${recommendationSupplier.duration} months`} label="Duration" small/>
-                        <CounterCard title={String(recommendationSupplier.version)} label="Version" small/>
-                        <CounterCard title={recommendationSupplier.winner ? "Yes" : "No"} label="Winning Offer" small/>
-                    </div>) : null}
+            <div>
+                <Navbar className="p-0 bg-white">
+                    <Nav tabs className="flex-grow-1 px-3">
+                        {this.props.recommendation_suppliers.map((rs, index) => {
+                            return (
+                                <NavItem key={index}>
+                                    <NavLink className={cn({ active: selectedOfferIndex === index})}
+                                            onClick={() => this.selectOfferTab(index)}
+                                            href="#">
+                                        {rs.winner && (<i className="fa fa-trophy mr-1" style={{color: 'goldenrod'}}></i>)}
+                                        {rs.incumbentContract ? (<span>{rs.supplierName} (Incumbent)</span>) : <span>{rs.supplierName} ({rs.duration}m V{rs.version})</span>}
+                                    </NavLink>
+                                </NavItem>
+                            )
+                        })}
+                    </Nav>
+                </Navbar>
+                <div className="w-100 bg-white">
+                    <table className="table">
+                        <thead>
+                            <tr>{backingSheetsHeaders}</tr>
+                        </thead>
+                        <tbody>
+                            {backingSheetsContent}
+                        </tbody>
+                    </table>
                 </div>
-                <h3><i className="fas fa-pound-sign uk-margin-small-right"></i>Contract Rates</h3>
-                <table className="uk-table uk-table-divider">
-                    <thead>
-                        <tr>
-                            {backingSheetsHeaders}
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {backingSheetsContent}
-                    </tbody>
-                </table>
-            </div>)
-    }
-
-    renderSupplierTab(){
-        var tabs: any = [];
-        var tabContent: any = [];
-        
-        this.props.recommendation_suppliers
-            .map((rs, index) => {
-                var tabTitle;
-                if(rs.incumbentContract){
-                    tabTitle = `${rs.supplierName} (Incumbent)`;
-                }
-                else if(rs.winner){
-                    tabTitle = (<div><i className="fa fa-trophy uk-margin-small-right" style={{color: 'goldenrod'}}></i> {`${rs.supplierName} (${rs.duration}m V${rs.version})`}</div>);
-                }
-                else {
-                    tabTitle = `${rs.supplierName} (${rs.duration}m V${rs.version})`;
-                }
-
-                var tab = (<li key={index}><a href="#">{tabTitle}</a></li>);
-                tabs[index] = tab;
-
-                var content = this.renderSupplierTabContent(index, rs);
-                tabContent[index] = content;
-            });
-
-        return (
-            <div className="uk-margin-top">
-                <ul className="uk-tab" data-uk-switcher="connect: +.uk-switcher">
-                    {tabs}
-                </ul>
-                <ul className="uk-switcher">
-                    {tabContent}
-                </ul>
-            </div>
-        )
+            </div>);
     }
     renderPercentageChangeCard(value: number){
         var formattedValue = `${(value * 10).toFixed(2)}%`;
@@ -437,7 +484,7 @@ class RecommendationDetailDialog extends React.Component<RecommendationDetailDia
     }
 
     renderSummaryTab(){
-        var selectedRecommendation = this.props.selected_recommendation;
+        var selectedRecommendation = this.props.data.recommendation;
         var summary = this.props.recommendation_summary;
         var created = moment.utc(summary.reportDate).local().fromNow();   
         var communicated = selectedRecommendation.communicated == null ? "Never" : moment.utc(selectedRecommendation.communicated).local().fromNow();   
@@ -454,13 +501,12 @@ class RecommendationDetailDialog extends React.Component<RecommendationDetailDia
                         {os.winner ? 
                         (
                             <td>
-                                <i className="fa fa-trophy uk-margin-small-right fa-xs" style={{color: 'goldenrod'}}></i>#{os.ranking + 1}
+                                <i className="fa fa-trophy mr-1 fa-xs" style={{color: 'goldenrod'}}></i>#{os.ranking + 1}
                             </td>
                         )
                         : (<td>{`#${os.ranking + 1}`}</td>)}
-                    <td>{supplierText}</td>
+                    <td>{supplierText} (V{os.version})</td>
                     <td>{os.duration}M</td>
-                    <td>{os.version}</td>
                     <td>{format(os.totalIncCCL, { locale: 'en-GB'})}</td>
                     <td>{format(os.cclCost, { locale: 'en-GB'})}</td>
                     <td>{`${summary.existingAPPU.toFixed(4)}p`}</td>
@@ -472,103 +518,202 @@ class RecommendationDetailDialog extends React.Component<RecommendationDetailDia
         })
 
         var existingSupplier = this.props.suppliers.find(su => su.supplierId == summary.existingSupplierId);
-        var existingSupplierText = existingSupplier == null ? (<h4><strong>Unknown</strong></h4>) : (<img src={existingSupplier.logoUri} style={{ maxWidth: "70px", maxHeight: "40px"}}/>);
+        var existingSupplierText = existingSupplier == null ? (<h4><strong>Unknown</strong></h4>) : (<img src={existingSupplier.logoUri} style={{ maxHeight: "30px"}}/>);
         
         return (
-            <div>
-                <div className="uk-child-width-expand@s uk-grid-match uk-text-center" data-uk-grid>
-                <CounterCard title={summary.tenderId.substr(0, 6)} label="Tender Reference" small/>
-                    <CounterCard title={summary.tenderTitle} label="Tender Title" small/>
-                    <CounterCard title={summary.clientName} label="Client" small/>
-                    <CounterCard title={summary.attentionOf} label="Client Contact" small/>
-                    <CounterCard data-uk-tooltip={`title: ${summary.reportDate}`} title={created} label="Report Created" small/>
-                    <CounterCard data-uk-tooltip={selectedRecommendation.communicated == null ? null : `title: ${selectedRecommendation.communicated}`} title={communicated} label="Last sent" small/>
-                </div>
-                <h3><i className="fas fa-file-signature uk-margin-small-right"></i>Existing Contract</h3>
-                <div className="uk-child-width-expand@s uk-grid-match uk-text-center" data-uk-grid>
-                    <CounterCard content={existingSupplierText} label="Incumbent Supplier" small/>
-                    <CounterCard title={format(summary.existingtotalIncCCL, { locale: 'en-GB'})} label="Total Inc CCL" small/>
-                    <CounterCard title={`${summary.existingAPPU.toFixed(4)}p`} label="Average Pence Per Unit" small/>
-                </div>
-                <h3><i className="fas fa-handshake uk-margin-small-right"></i>Offers Received</h3>
-                <table className="uk-table uk-table-divider">
-                    <thead>
-                        <tr>
-                            <th>Rank</th>
-                            <th></th>
-                            <th>Duration</th>
-                            <th>Version</th>
-                            <th>Total Inc CCL</th>
-                            <th>CCL</th>
-                            <th>Avg Pence / kWh</th>
-                            <th>£ Increase or Saving</th>
-                            <th>% Increase or Saving</th>
-                            <th>£ Adrift of Offer Ranked #1</th>
-                            <th>% Adrift of Offer Ranked #1</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {offerSummaries}
-                    </tbody>
-                </table>
+            <div className="bg-body d-flex flex-column py-2 px-3">
+                <Row className="mb-3" noGutters>
+                    <Card className="card-small h-100 w-100">
+                        <CardBody className="p-0 d-flex flex-column">
+                            <Row className="px-2 pt-3 d-flex" noGutters>
+                                <Col xs={4} className="d-flex flex-column justify-content-center text-center px-1 mt-md-0 mt-3">
+                                    <h5 className="m-0 flex-grow-1 d-flex justify-content-center align-items-center">{summary.tenderId.substr(0, 6)}</h5>
+                                    <div className="text-light pt-1"><i className="fas fa-bookmark text-primary mr-1"></i>Tender Reference</div>
+                                </Col>
+                                <Col xs={4} className="d-flex flex-column justify-content-center text-center border-left px-1 mt-md-0 mt-3">
+                                    <h5 className="m-0 flex-grow-1 d-flex justify-content-center align-items-center">{summary.tenderTitle}</h5>
+                                    <div className="text-light pt-1"><i className="fas fa-list mr-1"></i>Tender Title</div>
+                                </Col>
+                                <Col xs={4} className="d-flex flex-column justify-content-center text-center border-left px-1 mt-md-0 mt-3">
+                                    <h5 className="m-0 flex-grow-1 d-flex justify-content-center align-items-center">{created}</h5>
+                                    <div className="text-light pt-1"><i className="fas fa-bullhorn mr-1 text-accent"></i>Report Created</div>
+                                </Col>
+                            </Row>
+                            <Row noGutters className="d-block">
+                                <hr />
+                            </Row>
+                            <Row className="p-2 pb-3" noGutters>
+                                <Col xs={4} className="d-flex flex-column justify-content-center text-center px-1 mt-md-0 mt-3">
+                                    <h5 className="m-0 flex-grow-1 d-flex justify-content-center">{summary.clientName}</h5>
+                                    <div className="text-light pt-1"><i className="fas fa-building mr-1 text-indigo"></i>Client</div>
+                                </Col>
+                                <Col xs={4} className="d-flex flex-column justify-content-center text-center border-left px-1 mt-md-0 mt-3">
+                                    <h5 className="m-0 flex-grow-1 d-flex justify-content-center">{summary.attentionOf}</h5>
+                                    <div className="text-light pt-1"><i className="fas fa-user mr-1 text-indigo"></i>Client Contact</div>
+                                </Col>
+                                <Col xs={4} className="d-flex flex-column justify-content-center text-center border-left px-1 mt-md-0 mt-3">
+                                    <h5 className="m-0 flex-grow-1 d-flex justify-content-center">{communicated}</h5>
+                                    <div className="text-light pt-1"><i className="material-icons mr-1 text-success">send</i>Last Sent</div>
+                                </Col>
+                            </Row>
+                        </CardBody>
+                    </Card>
+                </Row>
+                <Row className="mb-3" noGutters>
+                    <Card className="card-small h-100 w-100">
+                        <CardHeader className="border-bottom pl-3 pr-2 py-2">
+                            <div className="d-flex align-items-center">
+                                <div className="flex-grow-1">
+                                    <h6 className="m-0"><i className="fas fa-file-signature mr-1"></i>Existing Contract</h6>
+                                </div>
+                            </div>
+                        </CardHeader>
+                        <CardBody className="p-0 d-flex flex-column">
+                            <Row className="p-2 pt-3" noGutters>
+                                <Col xs={4} className="d-flex flex-column justify-content-center text-center px-1 mt-md-0 mt-3">
+                                    <h5 className="m-0 flex-grow-1 d-flex justify-content-center">{existingSupplierText}</h5>
+                                    <div className="text-light pt-1"><i className="fas fa-industry mr-1 text-indigo"></i>Supplier</div>
+                                </Col>
+                                <Col xs={4} className="d-flex flex-column justify-content-center text-center border-left px-1 mt-md-0 mt-3">
+                                    <h5 className="m-0 flex-grow-1 d-flex justify-content-center">{format(summary.existingtotalIncCCL, { locale: 'en-GB'})}</h5>
+                                    <div className="text-light pt-1"><i className="fas fa-money-check-alt mr-2 text-accent"></i>Total Inc CCL</div>
+                                </Col>
+                                <Col xs={4} className="d-flex flex-column justify-content-center text-center border-left px-1 mt-md-0 mt-3">
+                                    <h5 className="m-0 flex-grow-1 d-flex justify-content-center">{`${summary.existingAPPU.toFixed(4)}p`}</h5>
+                                    <div className="text-light pt-1"><i className="fas fa-coins mr-1 text-warning mr-2"></i>Avg Pence Per Unit</div>
+                                </Col>
+                            </Row>
+                        </CardBody>
+                    </Card>
+                </Row>
+                <Row className="mb-2" noGutters>
+                    <Card className="card-small h-100 w-100">
+                        <CardHeader className="border-bottom pl-3 pr-2 py-2">
+                            <div className="d-flex align-items-center">
+                                <div className="flex-grow-1">
+                                    <h6 className="m-0"><i className="fas fa-handshake mr-1"></i>Offers Received</h6>
+                                </div>
+                            </div>
+                        </CardHeader>
+                        <CardBody className="p-0 d-flex flex-column">
+                            <table className="table">
+                                <thead>
+                                    <tr>
+                                        <th>Rank</th>
+                                        <th></th>
+                                        <th>Duration</th>
+                                        <th>Total Inc CCL</th>
+                                        <th>CCL</th>
+                                        <th>Avg Pence / kWh</th>
+                                        <th>£ Increase or Saving</th>
+                                        <th>% Increase or Saving</th>
+                                        <th>£ Adrift</th>
+                                        <th>% Adrift</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {offerSummaries}
+                                </tbody>
+                            </table>
+                        </CardBody>
+                    </Card>
+                </Row>
             </div>)
     }
 
-    renderDialogBody(){
-        return (
-            <div>
-                <div data-uk-grid>
-                    <div className="uk-width-expand">
-                        <ul data-uk-tab="connect: #reco-tabs-switcher">
-                            <li><a href="#"><i className="fa fa-list uk-margin-small-right fa-lg"></i>Summary</a></li>
-                            <li><a href="#"><i className="fas fa-handshake uk-margin-small-right fa-lg"></i>Offers ({this.props.recommendation_suppliers.length - 1})</a></li>
-                            <li><a href="#"><i className="fas fa-tachometer-alt uk-margin-small-right fa-lg"></i>Sites ({this.props.selected_recommendation.meterCount})</a></li>
-                        </ul>
-                    </div>
-                    <div className="uk-grid-width-1-10">
-                        <button className="uk-button uk-button-danger uk-button-small" type="button" onClick={() => this.deleteRecommendation()}>
-                            <i className="fa fa-trash uk-margin-small-right"></i>
-                            Delete
-                        </button>   
-                    </div>
-                </div>
-                
-                <ul id="reco-tabs-switcher" className="uk-switcher uk-margin-top">
-                    {this.renderSummaryTab()}
-                    {this.renderSupplierTab()}
-                    {this.renderSiteTabs()}
-                </ul>
-            </div>
-        )
+    selectTab(tabIndex: number){
+        this.setState({
+            ...this.state,
+            selectedTabIndex: tabIndex
+        });
+    }
+
+    selectOfferTab(index: number){
+        this.setState({
+            ...this.state,
+            selectedOfferIndex: index
+        });
+    }
+
+    selectSiteTab(index: number){
+        this.setState({
+            ...this.state,
+            selectedSiteIndex: index
+        });
     }
 
     render() {
         if(this.props.error){
-            var error = (<ErrorMessage content={this.props.errorMessage} />);
-            return this.renderContent(error, "Recommendation Report");
+            return (<ErrorMessage content={this.props.errorMessage} />);
         }
-        if(this.props.working || this.props.recommendation_suppliers == null || this.props.recommendation_summary == null || this.props.selected_recommendation == null){
-            var spinner = (<Spinner />);
-            return this.renderContent(spinner, "Loading Recommendation Report...");
+        if(this.props.working || !this.props.recommendation_suppliers || !this.props.recommendation_summary){
+            return (<LoadingIndicator text="Loading Recommendation Report..." />);
         }
-        
-        var body = this.renderDialogBody();
-        var title = `Recommendation Report: ${this.props.recommendation_summary.clientName}`;
-        return this.renderContent(body, title);
+
+        return (
+            <div className="modal-content">
+                <ModalHeader toggle={this.props.toggle}><i className="fas fa-bullhorn mr-2" />Recommendation Report: {this.props.recommendation_summary.clientName}</ModalHeader>
+                <Navbar className="p-0 bg-white">
+                    <Nav tabs className="justify-content-center flex-grow-1">
+                        <NavItem>
+                            <NavLink className={cn({ active: this.state.selectedTabIndex === 0})}
+                                    onClick={() => this.selectTab(0)}
+                                    href="#">
+                                <i className="fa fa-list-alt"></i>Summary
+                            </NavLink>
+                        </NavItem>
+                        <NavItem>
+                            <NavLink className={cn({ active: this.state.selectedTabIndex === 1}, "ml-2")}
+                                        onClick={() => this.selectTab(1)}
+                                        href="#">
+                                <i className="fas fa-handshake"></i>Offers
+                            </NavLink>
+                        </NavItem>
+                        <NavItem>
+                            <NavLink className={cn({ active: this.state.selectedTabIndex === 2}, "ml-2")}
+                                        onClick={() => this.selectTab(2)}
+                                        href="#">
+                                <i className="fas fa-store"></i>Sites
+                            </NavLink>
+                        </NavItem>
+                    </Nav>
+                </Navbar>
+                <ModalBody className="p-0" style={{overflowY: 'auto'}}>
+                    {this.state.selectedTabIndex === 0 && this.renderSummaryTab()}
+                    {this.state.selectedTabIndex === 1 && this.renderOffersTab()}
+                    {this.state.selectedTabIndex === 2 && this.renderSiteTabs()}
+                </ModalBody>
+                <ModalFooter className="justify-content-between">
+                    <Button color="danger"
+                        onClick={() => this.deleteRecommendation()}>
+                        <i className="fas fa-trash-alt mr-1" />Delete
+                    </Button>
+                    <Button color="accent" 
+                            href={this.props.data.recommendation.summaryFileName}>
+                        <i className="fas fa-file-download mr-1"></i>Download
+                    </Button>
+                    <Button onClick={this.props.toggle}>
+                        <i className="fas fa-check mr-1"></i>OK
+                    </Button>
+                </ModalFooter>
+            </div>);
     }
 }
 
 const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, RecommendationDetailDialogProps> = (dispatch) => {
     return {
-        closeModalDialog: () => dispatch(closeModalDialog()),
         deleteRecommendation: (tenderId: string, recommendationId: string) => dispatch(deleteRecommendation(tenderId, recommendationId)),
-        getRecommendationSites: (tenderId: string, summaryId: string, siteStart: number, siteEnd: number) => dispatch(fetchRecommendationsSites(tenderId, summaryId, siteStart, siteEnd))
+        
+        getRecommendationSummary:  (tenderId: string, summaryId: string)  => dispatch(fetchRecommendationSummary(tenderId, summaryId)),
+        getRecommendationSuppliers:  (tenderId: string, summaryId: string)  => dispatch(fetchRecommendationsSuppliers(tenderId, summaryId)),
+        getRecommendationSites: (tenderId: string, summaryId: string, siteStart: number, siteEnd: number) => dispatch(fetchRecommendationsSites(tenderId, summaryId, siteStart, siteEnd)),
+
+        openAlertConfirmDialog: (data: AlertConfirmDialogData) => dispatch(openAlertConfirmDialog(data))
     };
 };
   
 const mapStateToProps: MapStateToProps<StateProps, RecommendationDetailDialogProps, ApplicationState> = (state: ApplicationState) => {
     return {
-        selected_recommendation: state.portfolio.tender.selected_recommendation,
         recommendation_summary: state.portfolio.tender.selected_recommendation_summary.value,
         recommendation_suppliers: state.portfolio.tender.selected_recommendation_suppliers.value,
         recommendation_sites: state.portfolio.tender.selected_recommendation_sites.value,
@@ -579,5 +724,11 @@ const mapStateToProps: MapStateToProps<StateProps, RecommendationDetailDialogPro
         suppliers: state.suppliers.value
     };
 };
-  
-export default connect(mapStateToProps, mapDispatchToProps)(RecommendationDetailDialog);
+
+export default asModalDialog(
+{ 
+    name: ModalDialogNames.RecommendationDetail, 
+    centered: true, 
+    backdrop: true,
+    size: "full"
+}, mapStateToProps, mapDispatchToProps)(RecommendationDetailDialog)

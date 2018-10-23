@@ -54,7 +54,7 @@ export interface IApiService {
   exportMeterConsumption(portfolioID: string): Promise<AxiosResponse>;
 
   fetchPortfolioUploads(portfolioId: string): Promise<AxiosResponse>;
-  fetchUploadReport(reportId: string, isImport: boolean): Promise<AxiosResponse>;
+  fetchUploadReport(uri: string): Promise<AxiosResponse>;
 
   uploadLoa(portfolioId: string, file: Blob): Promise<AxiosResponse>;
   uploadSupplyMeterData(accountId: string, file: Blob, utility: UtilityType): Promise<AxiosResponse>;
@@ -126,10 +126,10 @@ export class ApiService implements IApiService {
                 switch (error.response.status) {
                   case 401:
                   case 403:
-                    console.log(`Error (1/2): Received [${error.status}] from API @ [${error.config.url}]:\r\n${error.data}`);
-                    console.log(`Error (2/2): Clearing local storage and redirecting to the login page.`);
-                    this.storage.clearTokens();
-                    window.location.replace('/login');
+                    // console.log(`Error (1/2): Received [${error.status}] from API @ [${error.config.url}]:\r\n${error.data}`);
+                    // console.log(`Error (2/2): Clearing local storage and redirecting to the login page.`);
+                    // this.storage.clearTokens();
+                    // window.location.replace('/login');
                     break;
                   default:
                     console.log(`Error: Received [${error.status}] from API @ [${error.config.url}]:\r\n${error.data}`);
@@ -526,12 +526,8 @@ export class ApiService implements IApiService {
         return axios.get(`${this.baseApiUri}/portman-web/upload/query/portfolio/${portfolioId}`, this.getRequestConfig());        
     }
 
-    fetchUploadReport(reportId: string, isImport: boolean){
-        if(isImport){
-            return axios.get(`${this.baseApiUri}/portman-web/upload/query/import/${reportId}`, this.getRequestConfig());        
-        }
-
-        return axios.get(`${this.baseApiUri}/portman-web/upload/query/upload/${reportId}`, this.getRequestConfig());        
+    fetchUploadReport(blobUri: string){
+        return axios.get(`${blobUri}`, { headers: { "Accept": "application/json" }});        
     }
 
     fetchMeterConsumption(portfolioId: string){
@@ -567,7 +563,8 @@ export class ApiService implements IApiService {
     }
 
     reportLogin(){
-       return axios.post(`${this.baseApiUri}/portman-web/admin/logon`, null, this.getRequestConfig());
+    //    return axios.post(`${this.baseApiUri}/portman-web/admin/logon`, null, this.getRequestConfig());
+    return new FakeApiService().reportLogin();
     }
 
     createContact(contact: AccountContact){

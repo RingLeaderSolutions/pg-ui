@@ -6,13 +6,20 @@ import { User, PortfolioDetails } from '../../../model/Models';
 import Spinner from '../../common/Spinner';
 import { fetchUsers, editPortfolio } from '../../../actions/portfolioActions';
 import { PortfolioCreationRequest, Portfolio } from "../../../model/Portfolio";
-import { closeModalDialog } from "../../../actions/viewActions";
+import { openDialog } from "../../../actions/viewActions";
 import { Strings } from "../../../helpers/Utils";
+import asModalDialog, { ModalDialogProps } from "../../common/modal/AsModalDialog";
+import { LoadingIndicator } from "../../common/LoadingIndicator";
+import { ModalFooter, ModalHeader, ModalBody, Form, FormGroup, Label, Input, Button, CustomInput } from "reactstrap";
+import { ModalDialogNames } from "../../common/modal/ModalDialogNames";
+import DeletePortfolioDialog from "./DeletePortfolioDialog";
 
-interface UpdatePortfolioDialogProps { 
+export interface UpdatePortfolioDialogData {
     portfolio: Portfolio;   
     detail: PortfolioDetails;
 }
+
+interface UpdatePortfolioDialogProps extends ModalDialogProps<UpdatePortfolioDialogData> { }
 
 interface StateProps {
     users: User[];
@@ -24,7 +31,7 @@ interface StateProps {
 interface DispatchProps {
     editPortfolio: (portfolio: PortfolioCreationRequest) => void;
     fetchUsers: () => void;
-    closeModalDialog: () => void;
+    openDeletePortfolioDialog: (portfolioId: string) => void;
 }
 
 interface UpdatePortfolioDialogState {
@@ -37,9 +44,9 @@ class UpdatePortfolioDialog extends React.Component<UpdatePortfolioDialogProps &
     constructor(props: UpdatePortfolioDialogProps & StateProps & DispatchProps){
         super(props);
         this.state = {
-            title: props.portfolio.title,
-            supportExecId: String(props.portfolio.supportExec.id),
-            salesLeadId: String(props.portfolio.salesLead.id)
+            title: props.data.portfolio.title,
+            supportExecId: String(props.data.portfolio.supportExec.id),
+            salesLeadId: String(props.data.portfolio.salesLead.id)
         };
     }
 
@@ -49,8 +56,8 @@ class UpdatePortfolioDialog extends React.Component<UpdatePortfolioDialogProps &
 
     editPortfolio(){
         var portfolio: PortfolioCreationRequest = {
-            id: this.props.portfolio.id,
-            accountId: this.props.detail.portfolio.accountId,
+            id: this.props.data.portfolio.id,
+            accountId: this.props.data.detail.portfolio.accountId,
             title: this.state.title,
             teamId: 989,
             category: "direct",
@@ -59,10 +66,9 @@ class UpdatePortfolioDialog extends React.Component<UpdatePortfolioDialogProps &
         }
         
         this.props.editPortfolio(portfolio);
-        this.props.closeModalDialog();
+        this.props.toggle();
     }
 
-    
     handleFormChange(attribute: string, event: React.ChangeEvent<any>, isCheck: boolean = false){
         var value = isCheck ? event.target.checked : event.target.value;
 
@@ -72,7 +78,6 @@ class UpdatePortfolioDialog extends React.Component<UpdatePortfolioDialogProps &
         })
     }
 
-    
     canSubmit(){
         return Strings.AreNotNullOrEmpty(
             this.state.title,
@@ -85,57 +90,65 @@ class UpdatePortfolioDialog extends React.Component<UpdatePortfolioDialogProps &
             return (<ErrorMessage content={this.props.errorMessage} />);
         }
         if(this.props.working || this.props.users == null){
-            return (<Spinner />);
+            return (<LoadingIndicator />);
         }
+
+        let portfolioId = this.props.data.portfolio.id;
 
         var userOptions = this.props.users.map(u => {
             return (<option key={u.id} value={u.id}>{u.firstName} {u.lastName}</option>)
         });
 
         return (
-            <div>
-                <div className="uk-modal-header">
-                    <h2 className="uk-modal-title"><i className="fas fa-layer-group uk-margin-right"></i>Edit Portfolio</h2>
-                </div>
-                <div className="uk-modal-body">
-                    <div className="uk-margin">
-                        <form>
-                            <fieldset className="uk-fieldset">
-                                <div className='uk-margin'>
-                                    <label className='uk-form-label'>Name</label>
-                                    <input 
-                                        className='uk-input' 
-                                        type='text' 
-                                        value={this.state.title}
-                                        onChange={(e) => this.handleFormChange("title", e)}  />
-                                </div>
-                                <div className='uk-margin'>
-                                    <label className='uk-form-label'>Account Manager</label>
-                                    <select className='uk-select' 
-                                        value={this.state.salesLeadId}
-                                        onChange={(e) => this.handleFormChange("salesLeadId", e)}>
-                                        <option value="" disabled>Select</option>
-                                        {userOptions}
-                                    </select>
-                                </div>
-                                <div className='uk-margin'>
-                                    <label className='uk-form-label'>Tender Analyst</label>
-                                    <select className='uk-select' 
-                                        value={this.state.supportExecId}
-                                        onChange={(e) => this.handleFormChange("supportExecId", e)}>
-                                        <option value="" disabled>Select</option>
-                                        {userOptions}
-                                    </select>
-                                </div>
-                            </fieldset>
-                        </form>
+            <div className="modal-content">
+                <ModalHeader toggle={this.props.toggle}><i className="fas fa-layer-group mr-2"></i>Edit Portfolio</ModalHeader>
+                <ModalBody>
+                    <Form>
+                        <FormGroup>
+                            <Label for="edit-portfolio-name">Name</Label>
+                            <Input id="edit-portfolio-name"
+                                    value={this.state.title}
+                                    onChange={(e) => this.handleFormChange("title", e)} />
+                        </FormGroup>
+                        <FormGroup>
+                            <Label for="edit-portfolio-account-manager">Account Manager</Label>
+                            <CustomInput type="select" name="account-manager-picker" id="edit-portfolio-account-manager"
+                                   value={this.state.salesLeadId}
+                                   onChange={(e) => this.handleFormChange("salesLeadId", e)}>
+                                    <option value="" disabled>Select</option>
+                                    {userOptions}
+                            </CustomInput>
+                        </FormGroup>
+                        <FormGroup>
+                            <Label for="edit-portfolio-tender-analyst">Tender Analyst</Label>
+                            <CustomInput type="select" name="tender-analyst-picker" id="edit-portfolio-tender-analyst"
+                                   value={this.state.supportExecId}
+                                   onChange={(e) => this.handleFormChange("supportExecId", e)}>
+                                    <option value="" disabled>Select</option>
+                                    {userOptions}
+                            </CustomInput>
+                        </FormGroup>
+                    </Form>
+                </ModalBody>
+                <ModalFooter className="justify-content-between">
+                    <Button color="danger"
+                            onClick={() => this.props.openDeletePortfolioDialog(portfolioId)} >
+                            <i className="fas fa-trash-alt mr-1" />Delete
+                    </Button>
+                    <div className="d-flex">
+                        <Button color="secondary" 
+                                onClick={this.props.toggle}>
+                            <i className="fas fa-times mr-1"></i>Cancel    
+                        </Button>
+                        <Button color="accent" className="ml-1"
+                                onClick={() => this.editPortfolio()}
+                                disabled={!this.canSubmit()}>
+                            <i className="material-icons mr-1">edit</i>Save
+                        </Button>
                     </div>
-                </div>
-                <div className="uk-modal-footer uk-text-right">
-                    <button className="uk-button uk-button-default uk-margin-right" type="button" onClick={() => this.props.closeModalDialog()}><i className="fas fa-times uk-margin-small-right"></i>Cancel</button>
-                    <button className="uk-button uk-button-primary" type="button" onClick={() => this.editPortfolio()} disabled={!this.canSubmit()}><i className="fas fa-edit uk-margin-small-right"></i>Save</button>
-                </div>
-            </div>)
+                </ModalFooter>
+                <DeletePortfolioDialog />
+            </div>);
     }
 }
 
@@ -143,7 +156,8 @@ const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, UpdatePortfo
     return {
         editPortfolio: (portfolio: PortfolioCreationRequest) => dispatch(editPortfolio(portfolio)),
         fetchUsers: () => dispatch(fetchUsers()),
-        closeModalDialog: () => dispatch(closeModalDialog())
+
+        openDeletePortfolioDialog: (portfolioId: string) => dispatch(openDialog(ModalDialogNames.DeletePortfolio, { portfolioId }))
     };
 };
   
@@ -156,4 +170,9 @@ const mapStateToProps: MapStateToProps<StateProps, UpdatePortfolioDialogProps, A
     };
 };
   
-export default connect(mapStateToProps, mapDispatchToProps)(UpdatePortfolioDialog);
+export default asModalDialog(
+{ 
+    name: ModalDialogNames.UpdatePortfolio, 
+    centered: true, 
+    backdrop: true
+}, mapStateToProps, mapDispatchToProps)(UpdatePortfolioDialog)

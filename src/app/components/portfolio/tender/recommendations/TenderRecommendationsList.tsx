@@ -6,16 +6,19 @@ import Spinner from '../../../common/Spinner';
 import ErrorMessage from "../../../common/ErrorMessage";
 import * as moment from 'moment';
 
-import { fetchRecommendationsSuppliers, fetchRecommendationsSites, fetchRecommendationSummary, selectRecommendationReport, acceptQuote } from '../../../../actions/tenderActions';
+import { fetchRecommendationsSuppliers, fetchRecommendationsSites, fetchRecommendationSummary, acceptQuote } from '../../../../actions/tenderActions';
 import { Tender, TenderSupplier, TenderRecommendation, TenderIssuance, isComplete } from "../../../../model/Tender";
 import { AccountDetail, PortfolioDetails } from "../../../../model/Models";
 import { retrieveAccount } from "../../../../actions/portfolioActions";
-import { openModalDialog } from "../../../../actions/viewActions";
-import ModalDialog from "../../../common/ModalDialog";
-import GenerateRecommendationDialog from "./GenerateRecommendationDialog";
-import RecommendationDetailDialog from "./RecommendationDetailDialog";
-import SendRecommendationDialog from "./SendRecommendationDialog";
+import GenerateRecommendationDialog, { GenerateRecommendationDialogData } from "./GenerateRecommendationDialog";
+import RecommendationDetailDialog, { RecommendationDetailDialogData } from "./RecommendationDetailDialog";
+import SendRecommendationDialog, { SendRecommendationDialogData } from "./SendRecommendationDialog";
 import { TenderCompleteWarning } from "../warnings/TenderCompleteWarning";
+import { LoadingIndicator } from "../../../common/LoadingIndicator";
+import { ButtonGroup, DropdownItem, InputGroup, InputGroupAddon, Input, Button, UncontrolledDropdown, DropdownToggle, Row, InputGroupText, DropdownMenu, UncontrolledTooltip, Navbar, NavItem, Nav, NavLink, Col, Alert, Card, CardHeader, CardBody } from "reactstrap";
+import { openDialog } from "../../../../actions/viewActions";
+import { ModalDialogNames } from "../../../common/modal/ModalDialogNames";
+import { IsNullOrEmpty } from "../../../../helpers/extensions/ArrayExtensions";
 
 interface TenderRecommendationsListProps {
     tender: Tender;
@@ -32,12 +35,11 @@ interface StateProps {
   
 interface DispatchProps {
     retrieveAccount: (accountId: string) => void;
-    openModalDialog: (dialogId: string) => void;
-    getRecommendationSummary: (tenderId: string, summaryId: string) => void;
-    getRecommendationSuppliers: (tenderId: string, summaryId: string) => void;
-    getRecommendationSites: (tenderId: string, summaryId: string, siteStart: number, siteEnd: number) => void;
-    selectRecommendationReport: (recommendation: TenderRecommendation) => void;
     acceptQuote: (tenderId: string, quoteId: string) => void;
+
+    openRecommendationReportDialog: (data: RecommendationDetailDialogData) => void;
+    openGenerateRecommendationDialog: (data: GenerateRecommendationDialogData) => void;
+    openSendRecommendationReport: (data: SendRecommendationDialogData) => void;
 }
 
 class TenderRecommendationsList extends React.Component<TenderRecommendationsListProps & StateProps & DispatchProps, {}> {
@@ -46,11 +48,7 @@ class TenderRecommendationsList extends React.Component<TenderRecommendationsLis
     }
 
     viewRecommendationReport(recommendation: TenderRecommendation){
-        this.props.getRecommendationSummary(this.props.tender.tenderId, recommendation.summaryId);
-        this.props.getRecommendationSuppliers(this.props.tender.tenderId, recommendation.summaryId);
-
-        this.props.selectRecommendationReport(recommendation);
-        this.props.openModalDialog("view_recommendation");
+        this.props.openRecommendationReportDialog({ tender: this.props.tender, recommendation });
     }
 
 
@@ -58,99 +56,132 @@ class TenderRecommendationsList extends React.Component<TenderRecommendationsLis
         let { tenderId, winningQuoteId, summaryId } = recommendation;
         if(recommendation.communicated){
             return (
-                <div className="uk-button-group">
-                    <button className="uk-button uk-button-primary" disabled={!enableAction} onClick={() => this.props.acceptQuote(tenderId, winningQuoteId)}><i className="fas fa-check-circle uk-margin-small-right"></i>Accept</button>
-                    <div className="uk-inline">
-                        <button className="uk-button uk-button-primary dropdown-button" type="button"  disabled={!enableAction}><i className="fas fa-chevron-down"></i></button>
-                        <div data-uk-dropdown="mode: click; boundary: ! .uk-button-group; boundary-align: true;">
-                            <ul className="uk-nav uk-dropdown-nav">
-                                <li className="uk-active"><a href="#" onClick={() => this.props.openModalDialog(`send_recommendation_${summaryId}`)}><i className="fas fa-envelope uk-margin-small-right"></i>Resend</a></li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>);
+                <ButtonGroup>
+                    <Button color="success" outline className="btn-grey-outline" id={`accept-recommendation-report-${summaryId}`}
+                            disabled={!enableAction}
+                            onClick={() => this.props.acceptQuote(tenderId, winningQuoteId)}>
+                        <i className="fas fa-check"></i>
+                    </Button>
+                    <UncontrolledTooltip target={`accept-recommendation-report-${summaryId}`} placement="bottom">
+                            <strong>Accept the winning quote associated with this report</strong>
+                        </UncontrolledTooltip>
+                    <Button color="accent" outline className="btn-grey-outline" id={`resend-recommendation-report-${summaryId}`}
+                        disabled={!enableAction}
+                        onClick={() => this.props.openSendRecommendationReport({ tender : this.props.tender, recommendation})}>
+                        <i className="material-icons">send</i>
+                    </Button>
+                    <UncontrolledTooltip target={`resend-recommendation-report-${summaryId}`} placement="bottom">
+                        <strong>Re-send this report</strong>
+                    </UncontrolledTooltip>
+                </ButtonGroup>);
         }
 
         return (
-            <button className="uk-button uk-button-primary uk-button-small" type="button" onClick={() => this.props.openModalDialog(`send_recommendation_${summaryId}`)} disabled={!enableAction}>
-                <i className="fas fa-envelope uk-margin-small-right"></i>
-                Send
-            </button>   
-        )
+            <div>
+                <Button color="accent" outline className="btn-grey-outline" id={`send-recommendation-report-${summaryId}`}
+                    disabled={!enableAction}
+                    onClick={() => this.props.openSendRecommendationReport({ tender : this.props.tender, recommendation})}>
+                    <i className="material-icons">send</i>
+                </Button>
+                <UncontrolledTooltip target={`send-recommendation-report-${summaryId}`} placement="bottom">
+                    <strong>Send this report</strong>
+                </UncontrolledTooltip>
+            </div>);
     }
 
     renderSummaryTableContent(enableAction: boolean){
         return this.props.tender.summaries
-        .sort((q1: TenderRecommendation, q2: TenderRecommendation) => {        
-            if (q1.created < q2.created) return 1;
-            if (q1.created > q2.created) return -1;
-            return 0;
-        })
-        .map(s => {
-            var supplier = this.props.suppliers.find(su => su.supplierId == s.supplierId);
-            var supplierText = supplier == null ? "Unknown" : (<img src={supplier.logoUri} style={{ maxWidth: "70px", maxHeight: "40px"}}/>);
+            .sort((q1: TenderRecommendation, q2: TenderRecommendation) => {        
+                if (q1.created < q2.created) return 1;
+                if (q1.created > q2.created) return -1;
+                return 0;
+            })
+            .map(s => {
+                var supplier = this.props.suppliers.find(su => su.supplierId == s.supplierId);
+                var supplierText = supplier == null ? "Unknown" : (<img src={supplier.logoUri} style={{ maxWidth: "70px", maxHeight: "40px"}}/>);
 
-            var created = moment.utc(s.created).local();
-            var communicated = s.communicated != null ? moment.utc(s.communicated).local().fromNow() : "Never";
-            return (
-                <tr key={s.summaryId} className="uk-table-middle">
-                    <td>
-                        <button className="uk-button uk-button-default uk-button-small" type="button" onClick={() => this.viewRecommendationReport(s)}>
-                            <i className="far fa-eye fa-lg"></i>
-                        </button>   
-                    </td>
-                    <td data-uk-tooltip={`title:${created.format("DD/MM/YYYY HH:mm:ss")}`}>{created.fromNow()}</td>
-                    <td>{s.meterCount}</td>
-                    <td>{s.supplierCount}</td>
-                    <td>{supplierText}</td>
-                    <td>{s.winningDuration == 0 ? "Flexi" : `${s.winningDuration} months`}</td>
-                    <td data-uk-tooltip={s.communicated ? `title:${moment.utc(s.communicated).local().format("DD/MM/YYYY HH:mm:ss")}` : "title:This recommendation report has not yet been sent."}>{communicated}</td>
-                    <td>
-                        <div>
-                            {this.renderRecommendationActions(s, enableAction)}
-                            <ModalDialog dialogId={`send_recommendation_${s.summaryId}`}>
-                                <SendRecommendationDialog tender={this.props.tender} recommendation={s} />
-                            </ModalDialog>
-                        </div>
-                    </td>
-                </tr>
-            )
-        });
+                var created = moment.utc(s.created).local();
+                var communicated = s.communicated != null ? moment.utc(s.communicated).local().fromNow() : "Never";
+                return (
+                    <tr key={s.summaryId}>
+                        <td className="align-middle">
+                            <Button color="primary" outline className="btn-grey-outline" id={`view-recommendation-report-${s.summaryId}`}
+                                onClick={() => this.viewRecommendationReport(s)}>
+                                <i className="far fa-eye fa"></i>
+                            </Button>
+                            <UncontrolledTooltip target={`view-recommendation-report-${s.summaryId}`} placement="bottom">
+                                <strong>Open and view this report</strong>
+                            </UncontrolledTooltip>
+                        </td>
+                        <td className="align-middle">
+                            <div>
+                                <p id={`recommendation-created-${s.summaryId}`} className="m-0">{created.fromNow()}</p>
+                                <UncontrolledTooltip target={`recommendation-created-${s.summaryId}`} placement="bottom">
+                                    <strong>{created.format("DD/MM/YYYY HH:mm:ss")}</strong>
+                                </UncontrolledTooltip>
+                            </div>
+                        </td>
+                        <td className="align-middle">{s.meterCount}</td>
+                        <td className="align-middle">{s.supplierCount}</td>
+                        <td className="align-middle">{supplierText}</td>
+                        <td className="align-middle">{s.winningDuration == 0 ? "Flexi" : `${s.winningDuration} months`}</td>
+                        <td className="align-middle">
+                            <div>
+                                <p id={`recommendation-communicated-${s.summaryId}`} className="m-0">{communicated}</p>
+                                <UncontrolledTooltip target={`recommendation-communicated-${s.summaryId}`} placement="bottom">
+                                    <strong>{s.communicated ? `${moment.utc(s.communicated).local().format("DD/MM/YYYY HH:mm:ss")}` : "This recommendation report has not yet been sent."}</strong>
+                                </UncontrolledTooltip>
+                            </div>
+                        </td>
+                        <td className="align-middle">
+                            <div>
+                                {this.renderRecommendationActions(s, enableAction)}
+                            </div>
+                        </td>
+                    </tr>
+                )
+            });
     }
 
     renderSummaryTable(tenderComplete: boolean){
-        var hasContact = this.props.account.contacts != null && this.props.account.contacts.length > 0;
-        var warning = null;
-        if(!hasContact){
-            warning = (
-                <div className="uk-alert-warning uk-margin-small-top uk-margin-small-bottom" data-uk-alert>
-                    <p><i className="fas fa-info-circle uk-margin-small-right"></i>Issuance of recommendations is disabled as this portfolio's account does not have any contacts. Please visit the Accounts tab to add a contact to this account.</p>
-                </div>);
-        }
+        var hasContact = !IsNullOrEmpty(this.props.account.contacts);
 
         let enableAction = !tenderComplete && hasContact;
         var tableContent = this.renderSummaryTableContent(enableAction);
+
         return (
-            <div>
-                {warning}
-                <table className="uk-table uk-table-divider">
-                    <thead>
-                        <tr>
-                            <th></th>
-                            <th>Created</th>
-                            <th>Meter Count</th>
-                            <th>Supplier Count</th>
-                            <th>Winner</th>
-                            <th></th>
-                            <th>Last Sent</th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {tableContent}
-                    </tbody>
-                </table>
-            </div>)
+            <Card className="card-small h-100">
+                <CardHeader className="border-bottom pl-3 pr-2 py-2">
+                    <h6 className="m-0"><i className="fas fa-bullhorn mr-1"></i>Recommendations</h6>
+                </CardHeader>
+                <CardBody className="p-2">
+                    {!hasContact && (
+                        <Alert color="light" className="mb-2">
+                            <div className="d-flex align-items-center flex-column">
+                                <i className="fas fa-exclamation-triangle mr-2"></i>
+                                <p className="m-0 pt-2">Issuance of recommendations is disabled as this portfolio's account does not have any contacts.</p>
+                                <p className="m-0 pt-1">Please visit the Accounts tab to add a contact to this account!</p>
+                            </div>
+                        </Alert>)}
+
+                    <table className="table">
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th>Created</th>
+                                <th>Meter Count</th>
+                                <th>Supplier Count</th>
+                                <th colSpan={2}>Winner</th>
+                                <th>Last Sent</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {tableContent}
+                        </tbody>
+                    </table>
+                </CardBody>
+            </Card>);
     }
 
     getLatestPackIssuance(){
@@ -169,57 +200,57 @@ class TenderRecommendationsList extends React.Component<TenderRecommendationsLis
     render() {
         let { tender } = this.props;
         if(this.props.suppliers == null || this.props.working){
-            return (<div className="uk-margin"><Spinner hasMargin={true} /></div>);
+            return (<LoadingIndicator />);
         }
         else if(this.props.error){
-            return (<div className="uk-margin"><ErrorMessage content={this.props.errorMessage}/></div>);
+            return (<ErrorMessage content={this.props.errorMessage}/>);
         }
-        else if(tender.issuances == null || tender.issuances.length == 0){
+        else if(IsNullOrEmpty(tender.issuances)){
             return (
-                <div className="uk-margin">
-                    <div className="uk-alert-info uk-margin-small-top uk-margin-small-bottom" data-uk-alert>
-                        <p><i className="fas fa-info-circle uk-margin-small-right"></i>No packs have been issued for this tender yet. Head back to the Offers tab to issue some requirements and start receiving offers.</p>
+                <Alert color="light" className="pt-3 m-0">
+                    <div className="d-flex align-items-center flex-column">
+                        <i className="fas fa-exclamation-triangle mr-2"></i>
+                        <p className="m-0 pt-2">No packs have been issued for this tender yet.</p>
+                        <p className="m-0 pt-1">Head back to the Offers tab to issue some and start receiving offers!</p>
                     </div>
-                </div>);
+                </Alert>);
         }
 
         let tenderComplete = isComplete(tender);
-
         let content = (
-            <div className="uk-margin">
-                <div className="uk-alert-info uk-margin-small-top uk-margin-small-bottom" data-uk-alert>
-                    <p><i className="fas fa-info-circle uk-margin-small-right"></i>No recommendations have been generated for this tender yet. Click on the button above to get started!</p>
+            <Alert color="light" className="pt-3 m-0">
+                <div className="d-flex align-items-center flex-column">
+                    <i className="fas fa-exclamation-triangle mr-2"></i>
+                    <p className="m-0 pt-2">No recommendations have been generated for this tender yet.</p>
+                    <p className="m-0 pt-1">Click on the button above to get started!</p>
                 </div>
-            </div>);
+            </Alert>);
         
         if(tender.summaries && tender.summaries.length > 0){
             content = this.renderSummaryTable(tenderComplete);
         }
-        
-        var packIssuance = this.getLatestPackIssuance();
 
         return (
-            <div>
-                { tenderComplete && (<div className="uk-margin-bottom"><TenderCompleteWarning /></div>)}
-                <div className="uk-grid">
-                    <div className="uk-width-expand">
-                    </div>
-                    <div className="uk-width-auto uk-margin-right">
-                        <button className="uk-button uk-button-primary uk-button-small" type="button"onClick={() => this.props.openModalDialog("create_recommendation")} disabled={tenderComplete}>
-                            <i className="fa fa-plus-circle uk-margin-small-right fa-lg"></i>
-                            Create Recommendation
-                        </button>
-                    </div>
-                </div>
-                <div className="uk-margin">
+            <div className="w-100 px-3 py-2">
+                <Row noGutters>
+                    <Col className="d-flex justify-content-center justify-content-md-start align-items-center">
+                        <Button color="accent" id="create-recommendation-button"
+                                disabled={tenderComplete}
+                                onClick={() => this.props.openGenerateRecommendationDialog({ tender: this.props.tender, issuance: this.getLatestPackIssuance() })}>
+                            <i className="fas fa-plus-circle mr-1"></i>
+                             Create Recommendation
+                        </Button>
+                        <UncontrolledTooltip target="create-recommendation-button" placement="bottom">
+                            <strong>Create a recommendation report and select a winning offer</strong>
+                        </UncontrolledTooltip>
+                    </Col>
+                </Row>
+                <div className="mt-3">
                     {content}
-                </div>  
-                <ModalDialog dialogId="view_recommendation" dialogClass="large-modal">
-                    <RecommendationDetailDialog tender={this.props.tender} />
-                </ModalDialog>
-                <ModalDialog dialogId="create_recommendation">
-                    <GenerateRecommendationDialog tender={this.props.tender} issuance={packIssuance} />
-                </ModalDialog>
+                </div>
+                <GenerateRecommendationDialog />
+                <RecommendationDetailDialog />
+                <SendRecommendationDialog />
             </div>);
     }
 }
@@ -227,12 +258,11 @@ class TenderRecommendationsList extends React.Component<TenderRecommendationsLis
 const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, TenderRecommendationsListProps> = (dispatch) => {
     return {
         retrieveAccount: (accountId: string) => dispatch(retrieveAccount(accountId)),
-        openModalDialog: (dialogId: string) => dispatch(openModalDialog(dialogId)),
-        getRecommendationSummary:  (tenderId: string, summaryId: string)  => dispatch(fetchRecommendationSummary(tenderId, summaryId)),
-        getRecommendationSuppliers:  (tenderId: string, summaryId: string)  => dispatch(fetchRecommendationsSuppliers(tenderId, summaryId)),
-        getRecommendationSites: (tenderId: string, summaryId: string, siteStart: number, siteEnd: number) => dispatch(fetchRecommendationsSites(tenderId, summaryId, siteStart, siteEnd)),
-        selectRecommendationReport: (recommendation: TenderRecommendation) => dispatch(selectRecommendationReport(recommendation)),
-        acceptQuote: (tenderId: string, quoteId: string) => dispatch(acceptQuote(tenderId, quoteId))
+        acceptQuote: (tenderId: string, quoteId: string) => dispatch(acceptQuote(tenderId, quoteId)),
+
+        openRecommendationReportDialog: (data: RecommendationDetailDialogData) => dispatch(openDialog(ModalDialogNames.RecommendationDetail, data)),
+        openGenerateRecommendationDialog: (data: GenerateRecommendationDialogData) => dispatch(openDialog(ModalDialogNames.GenerateRecommendation, data)),
+        openSendRecommendationReport: (data: SendRecommendationDialogData) => dispatch(openDialog(ModalDialogNames.SendRecommendation, data))
     };
 };
   

@@ -4,18 +4,20 @@ import { RouteComponentProps } from 'react-router';
 import { MapDispatchToPropsFunction, connect, MapStateToProps } from 'react-redux';
 import { getAllPortfolios } from '../../actions/portfolioActions';
 import { ApplicationState } from '../../applicationState';
-import Header from "../common/Header";
 import ErrorMessage from "../common/ErrorMessage";
 import { Portfolio, User, ApplicationTab } from '../../model/Models';
-import Spinner from '../common/Spinner';
-import CreatePortfolioFromAccountDialog from "./creation/CreatePortfolioFromAccountDialog";
+import CreatePortfolioDialog from "./creation/CreatePortfolioDialog";
 import ReactTable, { Column } from "react-table";
-import { UserCellRenderer, UserSorter } from "../common/TableHelpers";
-import { openModalDialog, selectApplicationTab } from "../../actions/viewActions";
-import ModalDialog from "../common/ModalDialog";
+import { UserCellRenderer, UserSorter, ReactTablePagination, NoMatchesComponent, SortFirstColumn } from "../common/TableHelpers";
+import { selectApplicationTab, openDialog } from "../../actions/viewActions";
+import { PageHeader } from "../common/PageHeader";
+import { Button, CardBody, InputGroup, InputGroupAddon, InputGroupText, Input, Alert } from "reactstrap";
+import Card from "reactstrap/lib/Card";
+import { LoadingIndicator } from "../common/LoadingIndicator";
+import { ModalDialogNames } from "../common/modal/ModalDialogNames";
+import { IsNullOrEmpty } from "../../helpers/extensions/ArrayExtensions";
 
-interface PortfoliosProps extends RouteComponentProps<void> {
-}
+interface PortfoliosProps extends RouteComponentProps<void> { }
 
 interface StateProps {
   portfolios: Portfolio[];
@@ -25,9 +27,9 @@ interface StateProps {
 }
 
 interface DispatchProps {
-  getPortfolios: () => void;
-  openModalDialog: (dialogId: string) => void;
-  selectApplicationTab: (tab: ApplicationTab) => void;
+    getPortfolios: () => void;
+    openCreatePortfolioDialog: () => void;
+    selectApplicationTab: (tab: ApplicationTab) => void;
 }
 
 interface PortfoliosState {
@@ -52,7 +54,8 @@ class Portfolios extends React.Component<PortfoliosProps & StateProps & Dispatch
         accessor: 'name'
     },{
         Header: 'Status',
-        accessor: 'status'
+        accessor: 'status',
+        className: 'text-capitalize'
     },{
         id: 'accountMgr',
         Header: 'Account Manager',
@@ -75,8 +78,8 @@ class Portfolios extends React.Component<PortfoliosProps & StateProps & Dispatch
     stringProperties: string[] = ["portfolioId", "name", "status"];
     numberProperties: string[] = ["siteCount", "meterCount"];
 
-    constructor() {
-        super();
+    constructor(props: PortfoliosProps & StateProps & DispatchProps) {
+        super(props);
         this.state = {
             searchText: '',
             tableData: []
@@ -152,17 +155,6 @@ class Portfolios extends React.Component<PortfoliosProps & StateProps & Dispatch
         return filtered;
     }
 
-    toFriendlyPortfolioStatus(value: string){
-        switch(value){
-            case "onboard":
-                return "Onboarding";
-            case "tender":
-                return "Tender"
-            default:
-                return value;
-        }
-    }
-
     createTableData(portfolios: Portfolio[]): PortfolioTableEntry[]{
         return portfolios
             .filter(p => p.id != null)
@@ -170,7 +162,7 @@ class Portfolios extends React.Component<PortfoliosProps & StateProps & Dispatch
                 return {
                     portfolioId: portfolio.id,
                     name: portfolio.title,
-                    status: this.toFriendlyPortfolioStatus(portfolio.status),
+                    status: portfolio.status,
                     accountMgr: portfolio.salesLead,
                     tenderAnalyst: portfolio.supportExec,
                     siteCount: portfolio.sites,
@@ -180,110 +172,93 @@ class Portfolios extends React.Component<PortfoliosProps & StateProps & Dispatch
     }
 
     render() {
-        var tableContent;
+        let tableContent;
         
         if(this.props.error){
             tableContent = (<ErrorMessage content={this.props.errorMessage}/>);
         }
         else if(this.props.working){
-            tableContent =  (<Spinner />);
+            tableContent =  <LoadingIndicator />;
         }
-        else if(this.props.portfolios == null || this.props.portfolios.length == 0){
+        else if(IsNullOrEmpty(this.props.portfolios)){
             tableContent = (
-                <div className="uk-alert-default uk-margin-right uk-alert" data-uk-alert>
-                    <div className="uk-grid uk-grid-small" data-uk-grid>
-                        <div className="uk-width-auto uk-flex uk-flex-middle">
-                            <i className="fas fa-info-circle uk-margin-small-right"></i>
-                        </div>
-                        <div className="uk-width-expand uk-flex uk-flex-middle">
-                            <p>It's looking rather empty in here... Create a portfolio using the button above!</p>    
-                        </div>
+                <Alert color="light" className="mt-2">
+                    <div className="d-flex align-items-center flex-column">
+                        <i className="fas fa-info-circle mr-2"></i>
+                        <p className="m-0 pt-2">It's looking rather empty in here...</p>
+                        <p className="m-0 pt-1">Create a portfolio using the button above!</p>
                     </div>
-                </div>
-            );
-        }
-        else if (this.state.searchText != "" && this.state.tableData.length == 0){
-            tableContent = (
-                <div className="uk-alert-default uk-margin-right uk-alert" data-uk-alert>
-                    <div className="uk-grid uk-grid-small" data-uk-grid>
-                        <div className="uk-width-auto uk-flex uk-flex-middle">
-                            <i className="fas fa-info-circle uk-margin-small-right"></i>
-                        </div>
-                        <div className="uk-width-expand uk-flex uk-flex-middle">
-                            <p>No results for search term: <i>{this.state.searchText}</i></p>    
-                        </div>
-                    </div>
-                </div>)
+                </Alert>);
         }
         else {
             tableContent = (
                 <ReactTable 
-                    showPagination={false}
+                    className="enable-hover"
+                    NoDataComponent={NoMatchesComponent}
+                    PaginationComponent={ReactTablePagination}
+                    showPagination={true}
                     columns={this.columns}
                     data={this.state.tableData}
-                    style={{maxHeight: `${window.innerHeight - 180}px`}}
-                    getTrProps={(state: any, rowInfo: any, column: any, instance: any) => ({
-                        onClick: (e: any) => {
+                    defaultSorted={SortFirstColumn(this.columns)}
+                    minRows={0}
+                    getTrProps={(state: any, rowInfo: any) => ({
+                        onClick: () => {
                             this.props.history.push(`/portfolio/${rowInfo.original.portfolioId}`);
                         },
                         style: {
                             cursor: 'pointer'
                         } 
                         })}
-                        minRows={0}/>);
+                    />);
         }
-         
 
         return (
-            <div className="content-inner">
-                <Header title="Portfolios" icon="fas fa-layer-group"/>
-                <div className="content-portfolios">
-                    <div className="table-portfolios">
-                        <div className="uk-grid uk-grid-collapse">
-                            <div className="uk-width-expand">
-                                <div className="icon-input-container uk-grid uk-grid-collapse icon-left">
-                                    <div tabIndex={-1} className="uk-width-auto uk-flex uk-flex-middle">
-                                        <i className="fas fa-search"></i>
-                                    </div>
-                                    <input className="uk-input uk-width-expand" type="search" placeholder="Search..." value={this.state.searchText} onChange={(e) => this.handleSearch(e)}/>
-                                </div> 
+            <div className="w-100 px-4">
+                <PageHeader title="All" subtitle="Portfolios" icon="fas fa-layer-group"/>
+                <Card>
+                    <CardBody className="p-0">
+                        <div className="d-flex p-2 justify-content-between">
+                            <div className="d-flex">
+                                <Button color="accent"
+                                            onClick={() => this.props.openCreatePortfolioDialog()}>
+                                    <i className="fas fa-plus-circle mr-2"></i>New Portfolio
+                                </Button>
                             </div>
-                            <div className="uk-width-auto uk-margin-left uk-margin-right">
-                                <button className="uk-button uk-button-primary" onClick={() => this.props.openModalDialog('create_portfolio')}>
-                                    <i className="fa fa-plus-circle uk-margin-small-right fa-lg"></i>
-                                    New portfolio
-                                </button>
+                            <div className="d-flex">
+                                <InputGroup className="input-group-seamless">
+                                    <InputGroupAddon addonType="prepend">
+                                        <InputGroupText>
+                                            <i className="fas fa-search"></i>
+                                        </InputGroupText>
+                                    </InputGroupAddon>
+                                    <Input placeholder="Search..."
+                                        value={this.state.searchText} onChange={(e) => this.handleSearch(e)} />
+                                </InputGroup>
                             </div>
                         </div>
-                        <hr />
-                        <div className="container-table-portfolios">
-                            {tableContent}
-                        </div>
-                    </div>
-                </div>
-
-                <ModalDialog dialogId="create_portfolio">
-                    <CreatePortfolioFromAccountDialog />
-                </ModalDialog>
-            </div>)
+                        {tableContent}
+                    </CardBody>
+                </Card>
+                <CreatePortfolioDialog />
+            </div>);
     }
 }
 
 const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, PortfoliosProps> = (dispatch) => {
-  return {
-    getPortfolios: () => dispatch(getAllPortfolios()),
-    openModalDialog: (dialogId: string) => dispatch(openModalDialog(dialogId)),
-    selectApplicationTab: (tab: ApplicationTab) => dispatch(selectApplicationTab(tab))
-  };
+    return {
+        getPortfolios: () => dispatch(getAllPortfolios()),
+        openCreatePortfolioDialog: () => dispatch(openDialog(ModalDialogNames.CreatePortfolio)),
+        selectApplicationTab: (tab: ApplicationTab) => dispatch(selectApplicationTab(tab))
+    };
 };
 
 const mapStateToProps: MapStateToProps<StateProps, PortfoliosProps, ApplicationState> = (state: ApplicationState) => {
-  return {
-    portfolios: state.portfolios.all.value,
-    working: state.portfolios.all.working,
-    error: state.portfolios.all.error,
-    errorMessage: state.portfolios.all.errorMessage
-  };
+    return {
+        portfolios: state.portfolios.all.value,
+        working: state.portfolios.all.working,
+        error: state.portfolios.all.error,
+        errorMessage: state.portfolios.all.errorMessage
+    };
 };
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Portfolios));

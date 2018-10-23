@@ -1,18 +1,16 @@
 import * as React from "react";
 import ErrorMessage from "../common/ErrorMessage";
-import { RouteComponentProps } from 'react-router';
-import { MapDispatchToPropsFunction, connect, MapStateToProps } from 'react-redux';
+import { connect, MapStateToProps } from 'react-redux';
 import { ApplicationState } from '../../applicationState';
 import { AccountDetail } from '../../model/Models';
 import Spinner from '../common/Spinner';
-import { openModalDialog } from "../../actions/viewActions";
-import CounterCard from "../common/CounterCard";
 import * as moment from 'moment';
-import AccountUploadsView from "./AccountUploadsView";
 
+import { Row, Col, Card, CardBody, CardHeader } from "reactstrap";
+import UploadsCard from "../common/UploadsCard";
+import { FlagIcon } from "../common/FlagIcon";
 
-interface AccountSummaryViewProps {
-}
+interface AccountSummaryViewProps { }
 
 interface StateProps {
     account: AccountDetail;
@@ -22,11 +20,7 @@ interface StateProps {
     portfolios: any;
 }
 
-interface DispatchProps {
-    openModalDialog: (dialogId: string) => void;
-}
-
-class AccountSummaryView extends React.Component<AccountSummaryViewProps & StateProps & DispatchProps, {}> {
+class AccountSummaryView extends React.Component<AccountSummaryViewProps & StateProps, {}> {
     calculateTotalMeters(){
         if(this.props.account.sites.length == 0){
             return 0;
@@ -43,21 +37,11 @@ class AccountSummaryView extends React.Component<AccountSummaryViewProps & State
         return value;
     }
 
-    renderAddress(value: string){
-        // TODO: Extract this logic out to a common component - does UIKit do this for us?
-        // If so, use that, if not, find or build a thin wrapper that can resize text nicely
-        var address = this.renderFriendlyValue(value);
-        if(address.length >= 13){
-            return <h6><strong>{address}</strong></h6>
-        }
-        return (<h4><strong>{address}</strong></h4>);
-    }
-
     renderBooleanIcon(value: boolean){
         if(value){
-            return (<p><i className="fa fa-check-circle fa-2x" style={{color: '#006400'}}></i></p>)
+            return (<p className="m-0 flex-grow-1 d-flex justify-content-center align-items-center"><i className="fa fa-check-circle fa-2x text-success"></i></p>)
         }
-        return (<p><i className="fa fa-times-circle fa-2x" style={{color: '#8B0000'}}></i></p>)
+        return (<p className="m-0 flex-grow-1 d-flex justify-content-center align-items-center"><i className="fa fa-times-circle fa-2x text-danger"></i></p>)
     }
 
     render() {
@@ -71,48 +55,121 @@ class AccountSummaryView extends React.Component<AccountSummaryViewProps & State
         var { account } = this.props;
         var incorporationDate = account.incorporationDate ? moment(account.incorporationDate).format("DD/MM/YYYY") : "-";
         var totalMeters = this.calculateTotalMeters();
-        var totalPortfolios = Object.keys(this.props.portfolios).length;
-        return (
-            <div className="uk-margin uk-margin-right uk-margin-large-top">
-                <div className="uk-child-width-expand@s uk-grid-match uk-text-center" data-uk-grid>
-                    <CounterCard title={String(account.sites.length)} label="Total Sites" small/>
-                    <CounterCard title={String(totalMeters)} label="Total Meters" small />
-                    <CounterCard title={String(totalPortfolios)} label="Total Portfolios" small />
-                    <CounterCard title={String(account.contacts.length)} label="Contacts" small />
-                </div>
-                <div className="uk-child-width-expand@s uk-grid-match uk-text-center" data-uk-grid>
-                    <CounterCard title={this.renderFriendlyValue(account.creditRating)} label="Credit Rating" small/>
-                    <CounterCard title={incorporationDate} label="Incorporation Date" small />
-                    <CounterCard content={this.renderAddress(account.address)} label="Address" small/>
-                    <CounterCard title={this.renderFriendlyValue(account.postcode)} label="Postcode" small/>
-                    <CounterCard title={this.renderFriendlyValue(account.countryOfOrigin)} label="Country" small/>
-                </div>
-                <div className="uk-child-width-expand@s uk-grid-match uk-text-center" data-uk-grid>
-                    <CounterCard content={this.renderBooleanIcon(account.isVATEligible)} label="VAT Eligible" small/>
-                    <CounterCard content={this.renderBooleanIcon(account.isRegisteredCharity)} label="Registered Charity" small />
-                    <CounterCard content={this.renderBooleanIcon(account.hasFiTException)} label="FiT Exception" small/>
-                    <CounterCard content={this.renderBooleanIcon(account.hasCCLException)} label="CCL Exception" small/>
-                </div>
+        var totalPortfolios = this.props.portfolios == null ? 0 : Object.keys(this.props.portfolios).length;
 
-                    <div className="uk-margin">
-                        <div className="uk-card uk-card-default">
-                            <div className="uk-card-body">
-                                <h4 className="uk-text-center"><i className="fa fa-file-upload uk-margin-small-right"></i>Uploads</h4>
-                                <div>
-                                    <AccountUploadsView accountId={this.props.account.id}/>
-                                </div>
-                        </div>
-                    </div>
-                </div>
-            </div>)
+        return (
+            <div className="px-3 pt-3">
+                <Row>
+                    <Col className="mb-4" lg={6} xs={12}>
+                        <Card className="card-small h-100">
+                            <CardHeader className="border-bottom px-3 py-2 d-flex align-items-center">
+                                <h6 className="m-0 flex-grow-1"><i className="fas fa-list-alt mr-1"></i>Account Details</h6>
+                                <FlagIcon country={account.countryOfOrigin} />
+                            </CardHeader>
+                            <CardBody className="p-0 d-flex flex-column">
+                                <Row className="px-2 pt-3 d-flex" noGutters>
+                                    <Col xs={6} className="d-flex flex-column justify-content-center text-center px-1 mt-md-0 mt-3">
+                                        <h5 className="m-0 flex-grow-1 d-flex justify-content-center align-items-center">{this.renderFriendlyValue(account.creditRating)}</h5>
+                                        <div className="text-light pt-2"><i className="fas fa-star text-warning mr-1"></i>Credit Rating</div>
+                                    </Col>
+                                    <Col xs={6} className="d-flex flex-column justify-content-center text-center border-left px-1 mt-md-0 mt-3">
+                                        <h5 className="m-0 flex-grow-1 d-flex justify-content-center align-items-center">{incorporationDate}</h5>
+                                        <div className="text-light pt-2"><i className="fas fa-calendar-alt mr-1 text-primary"></i>Incorporation Date</div>
+                                    </Col>
+                                </Row>
+                                <Row noGutters className="d-block">
+                                <hr />
+                                </Row>
+                                <Row className="p-2 pb-3" noGutters>
+                                    <Col xs={6} className="d-flex flex-column justify-content-center text-center px-1 mt-md-0 mt-3">
+                                        <h6 className="m-0 flex-grow-1 d-flex justify-content-center">{account.address}</h6>
+                                        <div className="text-light pt-2"><i className="fas fa-building mr-1 text-accent"></i>Address</div>
+                                    </Col>
+                                    <Col xs={6} className="d-flex flex-column justify-content-center text-center border-left px-1 mt-md-0 mt-3">
+                                        <h5 className="m-0 flex-grow-1 d-flex justify-content-center align-items-center">{this.renderFriendlyValue(account.postcode)}</h5>
+                                        <div className="text-light pt-2"><i className="fas fa-envelope mr-1 text-accent"></i>Postcode</div>
+                                    </Col>
+                                </Row>
+                            </CardBody>
+                        </Card>
+                    </Col>
+                    <Col className="mb-4" lg={6} xs={12}>
+                        <Card className="card-small h-100">
+                            <CardHeader className="border-bottom px-3 py-2">
+                                <h6 className="m-0"><i className="fas fa-chart-line mr-1"></i>Statistics</h6>
+                            </CardHeader>
+                            <CardBody className="p-0 d-flex flex-column">
+                                <Row className="px-2 pt-3 d-flex" noGutters>
+                                    <Col lg xs={6} className="d-flex flex-column justify-content-center text-center px-1 mt-md-0 mt-3">
+                                        <h5 className="m-0 flex-grow-1 d-flex justify-content-center align-items-center">{String(account.sites.length)}</h5>
+                                        <div className="text-light pt-2"><i className="fas fa-store text-accent mr-1"></i>Sites</div>
+                                    </Col>
+                                    <Col lg xs={6} className="d-flex flex-column justify-content-center text-center border-left px-1 mt-md-0 mt-3">
+                                        <h5 className="m-0 flex-grow-1 d-flex justify-content-center align-items-center">{String(totalMeters)}</h5>
+                                        <div className="text-light pt-2"><i className="fas fa-tachometer-alt mr-1 text-orange"></i>Meters</div>
+                                    </Col>
+                                </Row>
+                                <Row noGutters className="d-block">
+                                    <hr />
+                                </Row>
+                                <Row className="p-2 pb-3 align-items-center flex-grow-1" noGutters>
+                                    <Col lg xs={6} className="d-flex flex-column justify-content-center text-center px-1 mt-md-0 mt-3">
+                                        <h5 className="m-0 flex-grow-1 d-flex justify-content-center align-items-center flex-grow-1 d-flex align-items-center">{String(totalPortfolios)}</h5>
+                                        <div className="text-light pt-2"><i className="fas fa-layer-group mr-1 text-primary"></i>Portfolios</div>
+                                    </Col>
+                                    <Col lg xs={6} className="d-flex flex-column justify-content-center text-center border-left px-1 mt-md-0 mt-xs-3">
+                                        <h5 className="m-0 flex-grow-1 d-flex justify-content-center align-items-center">{String(account.contacts.length)}</h5>
+                                        <div className="text-light pt-2"><i className="fas fa-user mr-1 text-indigo"></i>Contacts</div>
+                                    </Col>
+                                </Row>
+                            </CardBody>
+                        </Card>
+                    </Col>
+                </Row>
+                <Row>
+                    <Col lg={6} md={12}>
+                        <Card className="card-small mb-4">
+                            <CardHeader className="border-bottom px-3 py-2">
+                                <h6 className="m-0"><i className="fas fa-info mr-1"></i>Eligibility &amp; Exceptions</h6>
+                            </CardHeader>
+                            <CardBody className="p-0 d-flex flex-column">
+                                <Row className="px-2 pt-3 d-flex" noGutters>
+                                    <Col lg xs={6} className="d-flex flex-column justify-content-center text-center px-1 mt-md-0 mt-3">
+                                        {this.renderBooleanIcon(account.isVATEligible)}
+                                        <div className="text-light pt-2"><i className="fas fa-percentage text-green mr-1"></i>VAT Eligible</div>
+                                    </Col>
+                                    <Col lg xs={6} className="d-flex flex-column justify-content-center text-center border-left px-1 mt-md-0 mt-3">
+                                        {this.renderBooleanIcon(account.isRegisteredCharity)}
+                                        <div className="text-light pt-2"><i className="fas fa-registered mr-1 text-secondary"></i>Registered Charity</div>
+                                    </Col>
+                                </Row>
+                                <Row noGutters className="d-block">
+                                    <hr />
+                                </Row>
+                                <Row className="p-2 pb-3" noGutters>
+                                    <Col lg xs={6} className="d-flex flex-column justify-content-center text-center px-1 mt-md-0 mt-3">
+                                        {this.renderBooleanIcon(account.hasFiTException)} 
+                                        <div className="text-light pt-2"><i className="fas fa-info mr-1 text-accent"></i>FiT Exception</div>
+                                    </Col>
+                                    <Col lg xs={6} className="d-flex flex-column justify-content-center text-center border-left px-1 mt-md-0 mt-3">
+                                        {this.renderBooleanIcon(account.hasCCLException)}
+                                        <div className="text-light pt-2"><i className="fas fa-leaf mr-1 text-success"></i>CCL Exception</div>
+                                    </Col>
+                                </Row>
+                            </CardBody>
+                        </Card>
+                    </Col>
+                    <Col lg={6} md={12} className="mb-4">
+                        <UploadsCard entity="account" entityId={account.id} />
+                    </Col>
+                </Row>
+                <Row>
+                    
+                </Row>
+            </div>
+        );
     }
 }
-
-const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, AccountSummaryViewProps> = (dispatch) => {
-    return {
-        openModalDialog: (dialogId: string) => dispatch(openModalDialog(dialogId))
-    };
-};
   
 const mapStateToProps: MapStateToProps<StateProps, AccountSummaryViewProps, ApplicationState> = (state: ApplicationState) => {
     return {
@@ -124,4 +181,4 @@ const mapStateToProps: MapStateToProps<StateProps, AccountSummaryViewProps, Appl
     };
 };
   
-export default connect(mapStateToProps, mapDispatchToProps)(AccountSummaryView);
+export default connect(mapStateToProps, {})(AccountSummaryView);

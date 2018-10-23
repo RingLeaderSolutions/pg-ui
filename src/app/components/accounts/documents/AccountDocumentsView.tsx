@@ -3,14 +3,14 @@ import ErrorMessage from "../../common/ErrorMessage";
 import { MapDispatchToPropsFunction, connect, MapStateToProps } from 'react-redux';
 import { ApplicationState } from '../../../applicationState';
 import { AccountDetail, AccountDocument } from '../../../model/Models';
-import Spinner from '../../common/Spinner';
 import * as moment from 'moment';
 
-
 import { fetchAccountDocumentation } from '../../../actions/hierarchyActions';
-import UploadAccountDocumentDialog from "./UploadAccountDocumentDialog";
-import { openModalDialog } from "../../../actions/viewActions";
-import ModalDialog from "../../common/ModalDialog";
+import UploadAccountDocumentDialog, { UploadAccountDocumentDialogData } from "./UploadAccountDocumentDialog";
+import { openDialog } from "../../../actions/viewActions";
+import { LoadingIndicator } from "../../common/LoadingIndicator";
+import { Col, Card, CardBody, Button, Alert, Row } from "reactstrap";
+import { ModalDialogNames } from "../../common/modal/ModalDialogNames";
 
 interface AccountDocumentsViewProps {
     account: AccountDetail;
@@ -25,7 +25,7 @@ interface StateProps {
 
 interface DispatchProps {
     fetchAccountDocumentation: (accountId: string) => void;
-    openModalDialog: (dialogId: string) => void;
+    openUploadAccountDocumentDialog: (data: UploadAccountDocumentDialogData) => void;
 }
 
 class AccountDocumentsView extends React.Component<AccountDocumentsViewProps & StateProps & DispatchProps, {}> {
@@ -33,59 +33,43 @@ class AccountDocumentsView extends React.Component<AccountDocumentsViewProps & S
         this.props.fetchAccountDocumentation(this.props.account.id);
     }
 
-    renderDocumentationRows(){
-
-        if(this.props.documentation == null || this.props.documentation.length == 0){
-            return (<tr><td colSpan={4}>No documents have been uploaded yet.</td></tr>);
-        }
-
-        return this.props.documentation.map(d => {
-            var received = moment.utc(d.received).local().fromNow();     
-            var expiry = moment.utc(d.expiry).local().format("DD/MM/YYYY");     
-            return (
-                <tr key={d.id}>
-                    <td>{d.documentType == "loa" ? <p>Letter of Authority</p> : <p>Other</p>}</td>
-                    <td>{received}</td>
-                    <td>{expiry}</td>
-                    <td>
-                        <a className="uk-button uk-button-default uk-button-small borderless-button" href={d.blobFileName}>
-                            <i className="fas fa-download"></i>
-                        </a> 
-                    </td>
-                </tr>
-            )
-        })
-    }
-
     renderDocumentsTable(){
         return (
-            <table className="uk-table uk-table-divider">
-                <thead>
-                    <tr>
-                        <th>Document Type</th>
-                        <th>Uploaded</th>
-                        <th>Expiry</th>
-                        <th>Download</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {this.renderDocumentationRows()}
-                </tbody>
-            </table>)
+            <div className="d-flex flex-wrap w-100">
+                {this.props.documentation
+                        .map((c) => this.renderDocumentCard(c))}
+            </div>);
+    }
+
+    renderDocumentCard(d: AccountDocument): JSX.Element {
+        var received = moment.utc(d.received).local().fromNow();     
+        var expiry = moment.utc(d.expiry).local().format("DD/MM/YYYY");    
+        return (
+            <Col md={6} sm={12} className="mb-4" key={d.id}>
+                <Card className="card-small h-100">
+                    <CardBody>
+                        <div className="text-center">
+                            <h4>{d.documentType == "loa" ? <span>Letter of Authority</span>: <span>Document</span>}</h4>
+                            <p className="d-block text-lightweight mb-1 mt-2 text-nowrap"><i className="fa fa-file-upload text-primary mr-2"></i><strong>Uploaded:</strong> {received}</p>
+                            <p className="d-block text-lightweight mb-3 text-nowrap"><i className="fa fa-stopwatch text-orange mr-2"></i><strong>Expires:</strong> {expiry}</p>
+                            <Button color="accent" outline className="btn-grey-outline"
+                                    href={d.blobFileName}>
+                                <i className="fas fa-download mr-2"></i>Download
+                            </Button>
+                        </div>
+                    </CardBody>
+                </Card>
+            </Col>);
     }
 
     renderNoDocumentsWarning(){
         return (
-            <div className="uk-alert-default uk-margin-right uk-alert" data-uk-alert>
-                <div className="uk-grid uk-grid-small" data-uk-grid>
-                    <div className="uk-width-auto uk-flex uk-flex-middle">
-                        <i className="fas fa-info-circle uk-margin-small-right"></i>
-                    </div>
-                    <div className="uk-width-expand uk-flex uk-flex-middle">
-                        <p>No documents have yet been uploaded and associated with this account. Click on the button above to get started.</p>    
-                    </div>
+            <Alert color="light">
+                <div className="d-flex align-items-center">
+                    <i className="fas fa-exclamation-triangle mr-2"></i>
+                    No documents have yet been uploaded and associated with this account. Click on the Upload Document button above to get started.
                 </div>
-            </div>)
+            </Alert>);
     }
 
     render() {
@@ -93,29 +77,31 @@ class AccountDocumentsView extends React.Component<AccountDocumentsViewProps & S
             return (<ErrorMessage content={this.props.errorMessage} />);
         }
         if(this.props.working || this.props.account == null){
-            return (<Spinner />);
+            return (<LoadingIndicator />);
         }
 
         var hasDocumentation = this.props.documentation != null && this.props.documentation.length > 0;
         return (
-            <div>
-                <p className="uk-text-right">
-                    <button className='uk-button uk-button-primary uk-margin-small-right' onClick={() => this.props.openModalDialog('upload_account_document')}><i className="fa fa-file-upload uk-margin-small-right"></i> Upload Document</button>
-                </p>
-                <hr />
-                {hasDocumentation ? this.renderDocumentsTable() : this.renderNoDocumentsWarning()}
-
-                <ModalDialog dialogId="upload_account_document">
-                    <UploadAccountDocumentDialog accountId={this.props.account.id} />
-                </ModalDialog>
-            </div>)
+            <div className="w-100 p-3">
+                <Row className="d-flex" noGutters>
+                    <Button color="accent"
+                            onClick={() => this.props.openUploadAccountDocumentDialog({ accountId: this.props.account.id })}>
+                        <i className="fas fa-file-upload mr-2"></i>
+                        Upload Document
+                    </Button>
+                </Row>
+                <Row noGutters className="mt-3">
+                    {hasDocumentation ? this.renderDocumentsTable() : this.renderNoDocumentsWarning()}
+                </Row>
+                <UploadAccountDocumentDialog />
+            </div>);
     }
 }
 
 const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, AccountDocumentsViewProps> = (dispatch) => {
     return {
         fetchAccountDocumentation: (accountId: string) => dispatch(fetchAccountDocumentation(accountId)),
-        openModalDialog: (dialogId: string) => dispatch(openModalDialog(dialogId))
+        openUploadAccountDocumentDialog: (data: UploadAccountDocumentDialogData) => dispatch(openDialog(ModalDialogNames.UploadAccountDocument, data))
     };
 };
   

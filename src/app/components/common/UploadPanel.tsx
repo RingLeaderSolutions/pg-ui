@@ -1,4 +1,6 @@
 import * as React from "react";
+import * as cn from "classnames";
+import { Card, CardBody, Row, Col, Button } from "reactstrap";
 
 interface FileViewProps {
     file: File;
@@ -41,26 +43,22 @@ class FileView extends React.Component<FileViewProps, {}> {
         }
 
         return (
-            <div className={bottomMargin ? "uk-margin-small-bottom" : null}>
-                <div className="uk-card-small">
-                    <div className="uk-card-body uk-card-default uk-grid uk-grid-small uk-margin-remove-left">
-                        <div className="uk-width-auto uk-flex uk-flex-middle">
-                            <i className={`fas fa-${iconClass} fa-lg`}></i>
+            <Card className={cn("border", { "mb-1" : bottomMargin})}>
+                <CardBody style={{padding: "1rem"}}>
+                    <Row noGutters className="align-items-center flex-nowrap justify-content-between">
+                        <i className={`fas fa-${iconClass} fa-lg`}></i>
+                        {/* See: https://css-tricks.com/flexbox-truncated-text/ */}
+                        <div className="pl-2" style={{minWidth: '0'}}>
+                            <h6 className="m-0 text-truncate">{name}</h6>
                         </div>
-                        <div className="uk-width-expand uk-flex uk-flex-middle">
-                            <h5 className="uk-text-truncate" data-uk-tooltip={`title:${name}`}>{name}</h5>
-                        </div>
-                        <div className="uk-width-auto uk-flex uk-flex-middle">
-                            <p className="uk-text-meta">{size}</p>
-                        </div>
-                        {showClear ? 
-                        (<div className="uk-width-auto uk-flex uk-flex-middle">
-                            <button className='uk-button uk-button-default uk-button-small' onClick={() => onClear()}><i className="fas fa-trash" data-uk-tooltip="title: Clear"></i></button>
-                        </div>) : null}
-                    </div>
-                </div>
-            </div>
-        )
+                        <p className="text-lightweight px-1 m-0 text-nowrap text-align-right">{size}</p>
+                        { showClear && (
+                            <Button color="danger" outline className="btn-grey-outline ml-1" size="sm" onClick={() => onClear()}>
+                                <i className="material-icons">delete</i>
+                            </Button>)}
+                    </Row>
+                </CardBody>
+            </Card>);
     }
 }
 
@@ -90,9 +88,9 @@ export class MultiUploadPanel extends React.Component<MultiUploadPanelProps, {}>
         var files = this.props.files;
         if(files == null || files.length == 0) {
             return (
-                <div className="uk-flex uk-flex-center uk-form-custom file-upload-pane">
+                <div className="tf-custom-file-input file-upload-pane p-3 d-flex align-items-center position-relative h-100 w-100">
                     <input type="file" onChange={(e:any) => this.onFilesChosen(e)} multiple />
-                    <p><i className="fas fa-mouse-pointer uk-margin-small-right"></i><strong>Choose multiple files</strong>, or drag them here.</p>
+                    <p className="w-100 m-0 text-center"><i className="fas fa-mouse-pointer mr-2"></i><strong>Choose multiple files</strong>, or drag them here.</p>
                 </div>);
         }
         
@@ -102,10 +100,13 @@ export class MultiUploadPanel extends React.Component<MultiUploadPanelProps, {}>
 
         return (
             <div>
-                <div className="uk-flex uk-flex-right uk-margin-small-bottom">
-                    <button className='uk-button uk-button-default uk-button-small' onClick={() => this.clearFiles()}><i className="fas fa-trash uk-margin-small-right" data-uk-tooltip="title: Clear"></i>Clear</button>
+                <div className="mb-1 d-flex justify-content-end">
+                    <Button color="danger" outline className="btn-grey-outline ml-2" size="sm" onClick={() => this.clearFiles()}>
+                        <i className="material-icons">delete</i>
+                        Clear
+                    </Button>
                 </div>
-                <div className="uk-height-max-medium" style={{overflow: 'auto', padding: '0px 10px'}}>
+                <div className="px-2" style={{overflow: 'auto', maxHeight: '300px'}}>
                     {fileViews}
                 </div>
             </div>
@@ -134,9 +135,9 @@ export class UploadPanel extends React.Component<UploadPanelProps, {}> {
         var file = this.props.file;
         if(file == null) {
             return (
-                <div className="uk-flex uk-flex-center uk-form-custom file-upload-pane">
+                <div className="tf-custom-file-input file-upload-pane p-3 d-flex align-items-center position-relative h-100 w-100">
                     <input type="file" onChange={(e:any) => this.onFileChosen(e)} />
-                    <p><i className="fas fa-mouse-pointer uk-margin-small-right"></i><strong>Choose a file</strong>, or drag it here.</p>
+                    <p className="w-100 m-0 text-center"><i className="fas fa-mouse-pointer mr-2"></i><strong>Choose a file</strong>, or drag it here.</p>
                 </div>);
         }
 

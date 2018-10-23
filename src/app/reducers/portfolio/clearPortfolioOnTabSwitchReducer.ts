@@ -14,7 +14,6 @@ export const clearPortfolioOnTabSwitchReducer = (state: PortfolioState, action: 
                     tenders: initialRequestState,
                     offers: initialRequestState,
                     recommendations: initialRequestState,
-                    selected_recommendation: null,
                     selected_recommendation_summary: initialRequestState,
                     selected_recommendation_sites: initialRequestState,
                     selected_recommendation_suppliers: initialRequestState,
@@ -32,7 +31,7 @@ export const clearPortfolioOnTabSwitchReducer = (state: PortfolioState, action: 
                     tariffs: idleInitialRequestState,
                     delete_quote: idleInitialRequestState
                 },
-                uploads: initialRequestState
+                uploads: idleInitialRequestState
             };
         default:
             return state;

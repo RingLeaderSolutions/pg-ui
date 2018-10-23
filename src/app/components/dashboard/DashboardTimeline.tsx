@@ -5,9 +5,15 @@ import { MapDispatchToPropsFunction, connect, MapStateToProps } from 'react-redu
 import { getDashboardTimeline } from '../../actions/dashboardActions';
 import { ApplicationState } from '../../applicationState';
 import { DashboardPortfolioTimeline } from '../../model/Models';
+import { Col, Card, CardHeader, CardBody, CardFooter, Row, ListGroup, Alert } from "reactstrap";
+import { Pie, Doughnut } from "react-chartjs-2";
+import { Link } from "react-router-dom";
 
-interface TimelineProps {
-}
+// ListGroupItem doesn't appear to work with option #1 of passing `tag={Link}`
+// See: https://github.com/DefinitelyTyped/DefinitelyTyped/issues/20461
+import { default as ListGroupItem } from "reactstrap/lib/ListGroupItem";
+
+interface TimelineProps { }
 
 interface StateProps {
     timeline: DashboardPortfolioTimeline;
@@ -26,41 +32,80 @@ class DashboardSummary extends React.Component<TimelineProps & StateProps & Disp
     }
 
     renderTimelineTable(){
-        var tableContent = this.props.timeline.timelineList.map(timelineItem => {
-            var totalActions = (timelineItem.totalMpans * 2);
-            var remainingPercentage = timelineItem.workload / totalActions;
-            var label = (<span className="uk-label uk-label-success">Low</span>);
-            if(remainingPercentage >= 0.7){
-                label = (<span className="uk-label uk-label-danger">High</span>);
+        let listItems = this.props.timeline.timelineList.map(item => {
+            let remainingPercentage = item.workload / (item.totalMpans * 2);
+            let completedPercentage = 1 - remainingPercentage;
+
+            // guard against NaN
+            if(item.workload === 0 || item.totalMpans === 0){
+                remainingPercentage = 0;
+                completedPercentage = 0;
             }
-            else if(remainingPercentage > 0){
-                label = (<span className="uk-label uk-label-warning">Medium</span>);
+
+            let color = "#c4183c" // Danger
+            
+            if(completedPercentage >= 0.75) {
+                color = "#17c671" // Green
             }
+            else if(completedPercentage >= 0.50){
+                color = "#007bff" // Primary
+            }
+            else if(completedPercentage > 0.25){
+                color = "#ffb400" // Warning
+            }
+
+            let chartData = [completedPercentage * 100, remainingPercentage * 100];
             return (
-                <tr key={timelineItem.id}>
-                    <td>{timelineItem.contractStart} - {timelineItem.contractEnd}</td>
-                    <td><strong>{timelineItem.title}</strong></td>
-                    <td>{label}</td>
-                </tr>
-            );
-        });
-        
+                <ListGroupItem key={item.id} action tag={Link} to={`/portfolio/${item.id}`} className="p-2 d-flex row m-0 border-top-0">
+                    <Col lg={8} md={8} sm={8}>
+                        <h6 className="text-truncate">{item.title}</h6>
+                        <div className="text-meta">
+                            <span className="mr-2">
+                                <strong>{item.totalMpans}</strong>
+                                <span className="ml-1">Meters</span>
+                            </span>
+                            <span>
+                                <strong style={{color}}>{item.workload}</strong>
+                                <span className="ml-1">Remaining Actions</span>
+                            </span>
+                        </div>
+                    </Col>
+                    <Col lg={4} md={4} sm={4} className="d-flex">
+                        <div className="text-right ml-auto pr-2">
+                            <h6 className="mb-1">{completedPercentage * 100}%</h6>
+                            <span className="text-meta">Complete</span>
+                        </div>
+                        <div className="d-flex">
+                            <Doughnut height={45} width={45}
+                            data={{
+                                datasets: [{
+                                    hoverBorderColor: '#ffffff',
+                                    data: chartData,
+                                    backgroundColor: [
+                                        color,
+                                        'rgba(0,0,0,0.1)'
+                                    ]
+                                    }]
+                            }}
+                            options={{
+                                
+                                legend: {
+                                    display: false,
+                                },
+                                cutoutPercentage: 70,
+                                tooltips: {
+                                    enabled: false
+                                }
+                            }} />
+                        </div>
+                    </Col>
+                </ListGroupItem>)
+        })
+
         return (
-            <div className="dashboard-timeline">
-                <table className="uk-table uk-table-divider">
-                    <thead>
-                        <tr>
-                            <th>Contract Dates</th>
-                            <th>Portfolio</th>
-                            <th>Meter Workload</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {tableContent}
-                    </tbody>
-                </table>
-            </div>
-        )
+            <ListGroup flush className="d-block" style={{overflowY: "auto"}}>
+                {listItems}
+            </ListGroup>);
     }
 
     render() {
@@ -74,30 +119,27 @@ class DashboardSummary extends React.Component<TimelineProps & StateProps & Disp
         else {
             if(this.props.timeline.timelineList.length == 0){
                 content = (
-                    (<div className="uk-alert-default uk-margin-right uk-alert" data-uk-alert>
-                    <div className="uk-grid uk-grid-small" data-uk-grid>
-                        <div className="uk-width-auto uk-flex uk-flex-middle">
-                            <i className="fas fa-info-circle uk-margin-small-right"></i>
+                    <Alert color="light">
+                        <div className="d-flex align-items-center">
+                            <i className="fas fa-info-circle mr-2"></i>
+                            Sorry! No portfolios have been created yet.
                         </div>
-                        <div className="uk-width-expand uk-flex uk-flex-middle">
-                            <p>Sorry! No portfolios have been created yet.</p>    
-                        </div>
-                    </div>
-                </div>)
-                )               
+                    </Alert>);         
             }
             else {
                 content = this.renderTimelineTable();
             }
         }
-        
+
         return (
-            <div>
-                <div className="uk-card uk-card-default uk-card-body">
-                    <h3><i className="fas fa-briefcase uk-margin-small-right"></i>Portfolio Workload</h3>
-                    {content}
-                </div>
-            </div>)
+                <Card className="card-small h-100 flex-grow-1" style={{flexBasis: '400px'}}>
+                    <CardHeader className="border-bottom">
+                        <h6 className="m-0"><i className="fas fa-briefcase mr-1"></i>Onboarding Workload</h6>
+                    </CardHeader>
+                    <CardBody className="py-0 px-0 d-flex flex-column">
+                        {content}
+                    </CardBody> 
+                </Card>)
         }
     }
 

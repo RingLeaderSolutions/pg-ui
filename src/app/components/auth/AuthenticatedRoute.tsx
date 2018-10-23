@@ -3,8 +3,8 @@ import { RouteComponentProps, RouteProps, Redirect, Route } from "react-router-d
 import { History } from 'history';
 import { LocalStorageRepository } from "../../services/LocalStorageRepository";
 
-class LoginRedirect extends React.Component<RouteComponentProps, {}> {
-    render() {
+class LoginRedirect extends React.Component<RouteProps, {}> {
+    render() {        
         var location: History.LocationDescriptor = {
             pathname: `/login`,
             state: { intendedPath: this.props.location.pathname }
@@ -18,7 +18,7 @@ class AuthenticatedRoute extends React.Component<RouteProps, {}> {
     render() {
         var token = new LocalStorageRepository().fetchIdToken();
         let canAccess = token && token != '';
-        return canAccess ? (<Route {...this.props} />) : (<Route component={LoginRedirect} />);
+        return canAccess ? (<Route {...this.props} />) : (<LoginRedirect {...this.props}/>);
     }
 }
 

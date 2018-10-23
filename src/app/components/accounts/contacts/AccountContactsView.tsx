@@ -8,10 +8,14 @@ import Spinner from '../../common/Spinner';
 
 
 import { deleteContact } from '../../../actions/hierarchyActions';
-import CreateContactDialog from "./CreateContactDialog";
-import UpdateContactDialog from "./UpdateContactDialog";
-import { openModalDialog } from "../../../actions/viewActions";
-import ModalDialog from "../../common/ModalDialog";
+import CreateContactDialog, { CreateContactDialogData } from "./CreateContactDialog";
+import UpdateContactDialog, { UpdateContactDialogData } from "./UpdateContactDialog";
+import { openDialog } from "../../../actions/viewActions";
+import { Row, Alert, Button, CardBody, Col, Card, UncontrolledTooltip } from "reactstrap";
+import { LoadingIndicator } from "../../common/LoadingIndicator";
+import CardHeader from "reactstrap/lib/CardHeader";
+import { ModalDialogNames } from "../../common/modal/ModalDialogNames";
+import { IsNullOrEmpty } from "../../../helpers/extensions/ArrayExtensions";
 
 interface AccountContactsViewProps {
 }
@@ -25,7 +29,8 @@ interface StateProps {
 
 interface DispatchProps {
     deleteContact: (contactId: string) => void;
-    openModalDialog: (dialogId: string) => void;
+    openCreateContactDialog: (data: CreateContactDialogData) => void;
+    openUpdateContactDialog: (data: UpdateContactDialogData) => void;
 }
 
 class AccountContactsView extends React.Component<AccountContactsViewProps & StateProps & DispatchProps, {}> {
@@ -33,88 +38,69 @@ class AccountContactsView extends React.Component<AccountContactsViewProps & Sta
         this.props.deleteContact(contactId);
     }
 
-    renderAccountContactRows(){
-        return this.props.account.contacts
-        .sort(
-            (c1: AccountContact, c2: AccountContact) => {        
-                if (c1.firstName < c2.firstName) return -1;
-                if (c1.firstName > c2.firstName) return 1;
-                return 0;
-            })
-        .map(c => {
-            var updateContactDialogName = `update_contact_${c.id}`;
+    renderContactsTable(): JSX.Element {
+        return (
+            <div className="d-flex flex-wrap w-100">
+                {this.props.account.contacts
+                        .sort(
+                            (c1: AccountContact, c2: AccountContact) => {        
+                                if (c1.firstName < c2.firstName) return -1;
+                                if (c1.firstName > c2.firstName) return 1;
+                                return 0;
+                            })
+                        .map((c, index) => this.renderContactCard(c, index))}
+            </div>);
+    }
 
-            return (
-                <tr key={c.id} className="uk-table-middle">
-                    <td style={{padding: '0px'}}><i className="fa fa-user-circle fa-lg"></i></td>
-                    <td>{c.firstName}</td>
-                    <td>{c.lastName}</td>
-                    <td>{c.phoneNumber}</td>
-                    <td>{c.email}</td>
-                    <td>{c.role}</td>
-                    <td>
-                        <div>
-                            <div className="uk-inline">
-                                <button className="uk-button uk-button-default borderless-button" type="button">
-                                    <i className="fa fa-ellipsis-v"></i>
-                                </button>
-                                <div data-uk-dropdown="pos:bottom-justify;mode:click">
-                                    <ul className="uk-nav uk-dropdown-nav">
-                                    <li><a href="#" onClick={() => this.props.openModalDialog(updateContactDialogName)}>
-                                        <i className="far fa-edit uk-margin-small-right"></i>
-                                        Edit
-                                    </a></li>
-                                    <li className="uk-nav-divider"></li>
-                                    <li><a href="#" onClick={() => this.deleteContact(c.id)}>
-                                        <i className="far fa-trash-alt uk-margin-small-right"></i>
-                                        Delete
-                                    </a></li>
-                                    </ul>
-                                </div>
+    renderContactCard(c: AccountContact, index: number): JSX.Element {
+        return (
+            <Col md={6} sm={12} className="mb-4" key={c.id}>
+                <Card className="card-small h-100">
+                    <CardHeader className="border-bottom px-3 py-2">
+                        <div className="d-flex align-items-center">
+                            <div className="flex-grow-1">
+                                <h6 className="m-0"><i className="fas fa-user mr-2"></i>{index + 1}</h6>
                             </div>
-                            <ModalDialog dialogId={updateContactDialogName}>
-                                <UpdateContactDialog contact={c} />
-                            </ModalDialog>
+                            <div className="d-flex">
+                                <Button color="accent" outline className="btn-grey-outline" size="sm" id={`edit-account-contact-button${c.id}`}
+                                     onClick={() => this.props.openUpdateContactDialog({ contact: c})}>
+                                    <i className="material-icons">mode_edit</i>
+                                </Button>
+                                <UncontrolledTooltip target={`edit-account-contact-button${c.id}`} placement="top">
+                                    <strong>Edit Contact</strong>
+                                </UncontrolledTooltip>
+                                <Button color="danger" outline className="btn-grey-outline ml-2" size="sm" id={`delete-account-contact-button${c.id}`} 
+                                        onClick={() => this.deleteContact}>
+                                    <i className="material-icons">delete</i>
+                                </Button>
+                                <UncontrolledTooltip target={`delete-account-contact-button${c.id}`} placement="top">
+                                    <strong>Delete Contact</strong>
+                                </UncontrolledTooltip>
+                            </div>
                         </div>
-                    </td>
-                </tr>
-            )
-        });
+                    </CardHeader>
+                    <CardBody>
+                        <div className="text-center">
+                            <h4 className="text-capitalize"><i className="fa fa-user-circle text-accent mr-2"></i>{c.firstName} {c.lastName}</h4>
+                            <p className="text-lightweight">{c.role}</p>
+                        </div>
+                        <div className="d-flex flex-column align-items-center">
+                            <a href={`tel:${c.phoneNumber}`} className="d-block text-lightweight mb-1 text-nowrap"><i className="material-icons text-success mr-2">phone</i>{c.phoneNumber}</a>
+                            <a href={`mailto:${c.email}`}className="d-block text-lightweight mb-1 text-nowrap"><i className="material-icons text-indigo mr-2">email</i>{c.email}</a>
+                        </div>
+                    </CardBody>
+                </Card>
+            </Col>);
     }
 
-    renderContactsTable(){
+    renderNoContactsWarning(): JSX.Element {
         return (
-            <table className="uk-table uk-table-divider">
-                <thead>
-                    <tr>
-                        <th></th>
-                        <th>First Name</th>
-                        <th>Last Name</th>
-                        <th>Phone #</th>
-                        <th>Email</th>
-                        <th>Role</th>
-                        <th></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {this.renderAccountContactRows()}
-                </tbody>
-            </table>
-        )
-    }
-
-    renderNoContactsWarning(){
-        return (
-            <div className="uk-alert-default uk-margin-right uk-alert" data-uk-alert>
-                <div className="uk-grid uk-grid-small" data-uk-grid>
-                    <div className="uk-width-auto uk-flex uk-flex-middle">
-                        <i className="fas fa-info-circle uk-margin-small-right"></i>
-                    </div>
-                    <div className="uk-width-expand uk-flex uk-flex-middle">
-                        <p>There are no contacts associated with this account. Click on the button above to get started.</p>    
-                    </div>
+            <Alert color="light">
+                <div className="d-flex align-items-center">
+                    <i className="fas fa-exclamation-triangle mr-2"></i>
+                    There are no contacts associated with this account. Click on the Add Contact button above to get started.
                 </div>
-            </div>)
+            </Alert>);
     }
 
     render() {
@@ -122,29 +108,34 @@ class AccountContactsView extends React.Component<AccountContactsViewProps & Sta
             return (<ErrorMessage content={this.props.errorMessage} />);
         }
         if(this.props.working || this.props.account == null){
-            return (<Spinner />);
+            return (<LoadingIndicator />);
         }
 
-        var hasContacts = this.props.account.contacts != null && this.props.account.contacts.length > 0;
+        var hasContacts = !IsNullOrEmpty(this.props.account.contacts);
+
         return (
-            <div>
-                <p className="uk-text-right">
-                    <button className='uk-button uk-button-primary uk-margin-small-right' onClick={() => this.props.openModalDialog('create-contact')}><i className="fas fa-user-plus uk-margin-small-right"></i> Add Contact</button>
-                </p>
-                <hr />
-                {hasContacts ? this.renderContactsTable() : this.renderNoContactsWarning()}
-                
-                <ModalDialog dialogId="create-contact">
-                    <CreateContactDialog accountId={this.props.account.id} />
-                </ModalDialog>
-            </div>)
+            <div className="w-100 p-3">
+                <Row className="d-flex" noGutters>
+                    <Button color="accent"
+                            onClick={() => this.props.openCreateContactDialog({ accountId: this.props.account.id})}>
+                        <i className="fas fa-user-plus mr-2"></i>
+                        Add Contact
+                    </Button>
+                </Row>
+                <Row noGutters className="mt-3">
+                    {hasContacts ? this.renderContactsTable() : this.renderNoContactsWarning()}
+                </Row>
+                <CreateContactDialog />
+                <UpdateContactDialog />
+            </div>);
     }
 }
 
 const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, AccountContactsViewProps> = (dispatch) => {
     return {
         deleteContact: (contactId: string) => dispatch(deleteContact(contactId)),
-        openModalDialog: (dialogId: string) => dispatch(openModalDialog(dialogId))
+        openCreateContactDialog: (data: CreateContactDialogData) => dispatch(openDialog(ModalDialogNames.CreateAccountContact, data)),
+        openUpdateContactDialog: (data: UpdateContactDialogData) => dispatch(openDialog(ModalDialogNames.UpdateAccountContact, data))
     };
 };
   

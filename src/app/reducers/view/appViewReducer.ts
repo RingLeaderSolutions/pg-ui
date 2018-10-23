@@ -4,10 +4,12 @@ import { ApplicationTab } from '../../model/Models';
 
 export interface ApplicationViewState {
     selectedTab: ApplicationTab;
+    sidebar_open: boolean;
 }
 
 const initialApplicationTabState = {
-    selectedTab: ApplicationTab.Dashboard
+    selectedTab: ApplicationTab.Dashboard,
+    sidebar_open: false
 }
 
 const selectAppTabReducer = (state: ApplicationViewState, action: any): ApplicationViewState => {
@@ -16,6 +18,11 @@ const selectAppTabReducer = (state: ApplicationViewState, action: any): Applicat
             return {
                 ...state,
                 selectedTab: action.data
+            };
+        case types.TOGGLE_SIDEBAR_OPEN:
+            return {
+                ...state,
+                sidebar_open: !state.sidebar_open
             };
         default:
             return state;

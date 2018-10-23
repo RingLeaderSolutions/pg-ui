@@ -1,18 +1,22 @@
 import * as React from "react";
 import { MapDispatchToPropsFunction, connect, MapStateToProps } from 'react-redux';
 import { ApplicationState } from '../../../../applicationState';
-import Spinner from '../../../common/Spinner';
 import ErrorMessage from "../../../common/ErrorMessage";
 import * as moment from 'moment';
 
 import { issueTenderPack, fetchTenderIssuanceEmail } from '../../../../actions/tenderActions';
 import { Tender, TenderSupplier, TenderIssuanceEmail } from "../../../../model/Tender";
-import { closeModalDialog } from "../../../../actions/viewActions";
+import asModalDialog, { ModalDialogProps } from "../../../common/modal/AsModalDialog";
+import { LoadingIndicator } from "../../../common/LoadingIndicator";
+import TenderDeadlineWarning from "../warnings/TenderDeadlineWarning";
+import { ModalHeader, ModalBody, ModalFooter, Form, FormGroup, Label, Input, Button, Navbar, Nav, NavItem, NavLink, Col, Row, InputGroup, InputGroupAddon, CustomInput } from "reactstrap";
+import { ModalDialogNames } from "../../../common/modal/ModalDialogNames";
 
-interface IssueTenderPackDialogProps {
+export interface IssueTenderPackDialogData {
     tender: Tender;
-    portfolioId: string;
 }
+
+interface IssueTenderPackDialogProps extends ModalDialogProps<IssueTenderPackDialogData> { }
 
 interface StateProps {
     working: boolean;
@@ -25,44 +29,59 @@ interface StateProps {
 interface DispatchProps {
     fetchIssuanceEmail: (tenderId: string) => void;
     issueTenderPack: (tenderId: string, subject: string, body: string) => void;
-    closeModalDialog: () => void;
 }
 
 interface IssueTenderPackDialogState {
+    deadline: moment.Moment;
+    deadlinePassed: boolean;
     subject: string;
     body: string;
 }
 
 class IssueTenderPackDialog extends React.Component<IssueTenderPackDialogProps & StateProps & DispatchProps, IssueTenderPackDialogState> {
     constructor(props: IssueTenderPackDialogProps & StateProps & DispatchProps) {
-        super();
+        super(props);
         this.state = {
+            deadline: null,
+            deadlinePassed: false,
             subject: props.email == null ? "" : props.email.subject,
             body: props.email == null ? "" : props.email.body
         }
     }
 
-    componentWillReceiveProps(nextProps: IssueTenderPackDialogProps & StateProps & DispatchProps){
-        if(nextProps.email != null) {
-            this.setState({
-                subject: nextProps.email.subject,
-                body: nextProps.email.body
-            });
+    static getDerivedStateFromProps(props: IssueTenderPackDialogProps & StateProps & DispatchProps, state: IssueTenderPackDialogState) : IssueTenderPackDialogState {
+        let dialogEmpty = state.subject.IsNullOrWhitespace() || state.body.IsNullOrWhitespace();
+        if(!props.email || !dialogEmpty){
+            return null;
         }
-        if(this.props.tender == null || nextProps.tender.tenderId != this.props.tender.tenderId){
-            this.props.fetchIssuanceEmail(nextProps.tender.tenderId);
+
+        return {
+            ...state,
+            subject: props.email.subject,
+            body: props.email.body
         }
     }
 
     componentDidMount(){
-        if(this.props.tender.unissuedPacks.length > 0){
-            this.props.fetchIssuanceEmail(this.props.tender.tenderId);
+        let { tender } = this.props.data;
+
+        let deadline = moment(tender.deadline);
+        let deadlinePassed = moment().diff(deadline, 'hours') > 0;
+        
+        if(!deadlinePassed){
+            this.props.fetchIssuanceEmail(tender.tenderId);
         }
+        
+        this.setState({
+            ...this.state,
+            deadline,
+            deadlinePassed
+        });
     }
 
-    issueTender() {
-        this.props.issueTenderPack(this.props.tender.tenderId, this.state.subject, this.state.body);
-        this.props.closeModalDialog();
+    issueTenderPacks() {
+        this.props.issueTenderPack(this.props.data.tender.tenderId, this.state.subject, this.state.body);
+        this.props.toggle();
     }
 
     handleFormChange(attribute: string, event: React.ChangeEvent<any>){
@@ -74,88 +93,59 @@ class IssueTenderPackDialog extends React.Component<IssueTenderPackDialogProps &
         })
     }
 
-    renderPackDialogContent(){
-        if(this.props.email == null) {
-            return (<Spinner />)
-        }
-
-        var deadline = moment(this.props.tender.deadline);
-        var now = moment();
-        if(deadline.isSameOrBefore(now, 'day')){
-            return (
-                <div>
-                    <div className="uk-alert-danger uk-margin-small-top uk-margin-small-bottom uk-modal-body" data-uk-alert>
-                        <p>Sorry! The deadline set for this tender ({deadline.format('DD-MM-YYYY')}) is now in the past. </p>
-                        <p>If you wish to issue a new requirements pack, please update the deadline by editing the tender.</p>
-                    </div>
-                    <div className="uk-modal-footer uk-text-right">
-                        <button className="uk-button uk-button-default uk-margin-right" type="button" onClick={() => this.props.closeModalDialog()}>OK</button>
-                    </div>
-                </div>)
-        }
-
+    renderIssuePackForm(){
         return (
-            <div>
-                <div className="uk-modal-body">
-                    <form>
-                        <div className='uk-flex'>
-                            <div className='uk-flex-1'>
-                                <fieldset className='uk-fieldset'>
-                                    <div className='uk-margin'>
-                                        <label className='uk-form-label'>Subject</label>
-                                        <input className='uk-input' 
-                                            value={this.state.subject}
-                                            onChange={(e) => this.handleFormChange("subject", e)}/>
-                                    </div>
+            <Form>
+                <FormGroup>
+                    <Label for="issue-packs-email-subject">Subject</Label>
+                    <Input id="issue-packs-email-subject"
+                            value={this.state.subject}
+                            onChange={(e) => this.handleFormChange("subject", e)} />
+                </FormGroup>
 
-                                    <div className='uk-margin'>
-                                        <label className='uk-form-label'>Body</label>
-                                        <textarea className='uk-textarea' 
-                                            rows={4}
-                                            value={this.state.body}
-                                            onChange={(e) => this.handleFormChange("body", e)}/>
-                                    </div>
-                                </fieldset>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-                <div className="uk-modal-footer uk-text-right">
-                    <button className="uk-button uk-button-default uk-margin-right" type="button" onClick={() => this.props.closeModalDialog()}><i className="fas fa-times uk-margin-small-right"></i>Cancel</button>
-                    <button className="uk-button uk-button-primary" type="button" onClick={() => this.issueTender()}><i className="fas fa-envelope uk-margin-small-right"></i>Issue</button>
-                </div>
-            </div>);
+                <FormGroup>
+                    <Label for="issue-packs-email-body">Body</Label>
+                    <Input id="issue-packs-email-body"
+                        type="textarea"
+                        value={this.state.body}
+                        onChange={(e) => this.handleFormChange("body", e)}/>
+                </FormGroup>
+            </Form>);
     }
 
     render() {
-        let content;
-        if(this.props.suppliers == null || this.props.working){
-            content = (<Spinner hasMargin={true} />);
+        if(this.props.working || !this.props.suppliers || !this.props.email){
+            return (<LoadingIndicator />);
         }
         else if(this.props.error){
-            content = (<ErrorMessage content={this.props.errorMessage}/> )
-        }
-        else {
-            content = this.renderPackDialogContent();
+            return (<ErrorMessage content={this.props.errorMessage}/>);
         }
         
+        let { deadlinePassed, deadline } = this.state;
+
         return (
-            <div>
-                <div className="uk-modal-header">
-                    <h2 className="uk-modal-title"><i className="fas fa-envelope uk-margin-small-right"></i>Issue Requirements Packs</h2>
-                </div>
-                <div>
-                    {content}
-                </div>
-            </div>)
+            <div className="modal-content">
+                <ModalHeader toggle={this.props.toggle}><i className="fas fa-envelope mr-2"></i>Issue Requirements Packs</ModalHeader>
+                <ModalBody>
+                    {deadlinePassed ? (<TenderDeadlineWarning deadline={deadline} />) : this.renderIssuePackForm()}
+                </ModalBody>
+                <ModalFooter>
+                    <Button onClick={this.props.toggle}>
+                        <i className="fas fa-times mr-1"></i>Cancel
+                    </Button>
+                    {!deadlinePassed && (<Button color="accent" 
+                        onClick={() => this.issueTenderPacks()}>
+                        <i className="material-icons mr-1">send</i>Issue
+                    </Button>)}
+                </ModalFooter>
+            </div>);
     }
 }
 
 const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, IssueTenderPackDialogProps> = (dispatch) => {
     return {
         fetchIssuanceEmail: (tenderId: string) => dispatch(fetchTenderIssuanceEmail(tenderId)),
-        issueTenderPack: (tenderId: string, subject: string, body: string) => dispatch(issueTenderPack(tenderId, subject, body)),
-        closeModalDialog: () => dispatch(closeModalDialog()) 
+        issueTenderPack: (tenderId: string, subject: string, body: string) => dispatch(issueTenderPack(tenderId, subject, body))
     };
 };
   
@@ -169,4 +159,9 @@ const mapStateToProps: MapStateToProps<StateProps, IssueTenderPackDialogProps, A
     };
 };
   
-export default connect(mapStateToProps, mapDispatchToProps)(IssueTenderPackDialog);
+export default asModalDialog(
+{ 
+    name: ModalDialogNames.IssueTenderPack, 
+    centered: true, 
+    backdrop: true,
+}, mapStateToProps, mapDispatchToProps)(IssueTenderPackDialog)

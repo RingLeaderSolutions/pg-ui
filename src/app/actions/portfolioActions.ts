@@ -339,15 +339,16 @@ export function fetchPortfolioUploads(portfolioId: string){
     };
 }
 
-export function fetchUploadReport(reportId: string, isImport: boolean){
+export function fetchUploadReport(reportId: string){
     return (dispatch: Dispatch<any>) => {
-        let fetchTariffsPromise = ApiService.fetchUploadReport(reportId, isImport);
+        let fetchTariffsPromise = ApiService.fetchUploadReport(reportId);
         dispatch({ type: types.FETCH_UPLOAD_REPORT_WORKING });
 
         makeApiRequest(dispatch,
             fetchTariffsPromise,
             200, 
             data => {
+                console.log(data);
                 return { type: types.FETCH_UPLOAD_REPORT_SUCCESSFUL, data};
                 
             }, 

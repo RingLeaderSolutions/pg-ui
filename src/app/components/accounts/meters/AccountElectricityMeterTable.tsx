@@ -1,31 +1,25 @@
 import * as React from "react";
-import { MapDispatchToPropsFunction, connect, MapStateToProps } from 'react-redux';
-import { ApplicationState } from '../../../applicationState';
+import { MapDispatchToPropsFunction, connect } from 'react-redux';
 import { SiteDetail } from '../../../model/HierarchyObjects';
 import { Link } from "react-router-dom";
 import ReactTable, { Column } from "react-table";
-import { BooleanCellRenderer } from "../../common/TableHelpers";
-import { openModalDialog } from "../../../actions/viewActions";
+import { BooleanCellRenderer, ReactTablePagination, NoMatchesComponent, SortFirstColumn } from "../../common/TableHelpers";
+import { openDialog } from "../../../actions/viewActions";
 import { Tariff } from "../../../model/Tender";
-import { fetchTariffs } from "../../../actions/portfolioActions";
-import Spinner from "../../common/Spinner";
-import ErrorMessage from "../../common/ErrorMessage";
+import { Alert, Card, CardBody, Button, InputGroup, InputGroupAddon, InputGroupText, Input } from "reactstrap";
+import { ModalDialogNames } from "../../common/modal/ModalDialogNames";
+import UploadSupplyDataDialog, { UploadSupplyDataDialogData } from "./UploadSupplyDataDialog";
+import { UtilityType } from "../../../model/Models";
 
 interface AccountElectricityMeterTableProps {
+    accountId: string;
     sites: SiteDetail[];
     portfolios: any;
-}
-
-interface StateProps {
-    working: boolean;
-    error: boolean;
-    errorMessage: string;
     tariffs: Tariff[];
 }
 
 interface DispatchProps {
-    openModalDialog: (dialogId: string) => void;
-    fetchTariffs: () => void;
+    openUploadSupplyDataDialog: (data: UploadSupplyDataDialogData) => void;
 }
 
 interface AccountElectricityMeterTableState {
@@ -53,13 +47,13 @@ interface AccountElectricityMeterTableEntry {
     newConnection: boolean;
 }
 
-class AccountElectricityMeterTable extends React.Component<AccountElectricityMeterTableProps & StateProps & DispatchProps, AccountElectricityMeterTableState> {
+class AccountElectricityMeterTable extends React.Component<AccountElectricityMeterTableProps & DispatchProps, AccountElectricityMeterTableState> {
     columns: Column[] = [{
         Header: 'Site',
         accessor: 'site'
     },{
         Header: 'Meter',
-        accessor: 'meter'
+        accessor: 'meter',
     },{
         Header: 'Type',
         accessor: 'type'
@@ -111,20 +105,16 @@ class AccountElectricityMeterTable extends React.Component<AccountElectricityMet
     stringProperties: string[] = ["siteId", "site", "meter", "type", "topline", "tariff", "serialNumber", "da", "dc", "mo", "voltage", "connection", "postcode" ];
     numberProperties: string[] = ["rec", "eac", "capacity"];
     
-    constructor() {
-        super();
+    constructor(props: AccountElectricityMeterTableProps & DispatchProps) {
+        super(props);
 
         this.state = {
             searchText: '',
-            tableData: []
+            tableData: this.createTableData(props.sites, props.tariffs)
         };
     }
 
-    componentDidMount(){
-        this.props.fetchTariffs();
-    }
-
-    componentWillReceiveProps(nextProps: AccountElectricityMeterTableProps & StateProps & DispatchProps){
+    componentWillReceiveProps(nextProps: AccountElectricityMeterTableProps & DispatchProps){
         if(nextProps.sites == null || nextProps.tariffs == null){
             return;
         }
@@ -189,15 +179,6 @@ class AccountElectricityMeterTable extends React.Component<AccountElectricityMet
 
     createTableData(sites: SiteDetail[], tariffs: Tariff[]): AccountElectricityMeterTableEntry[]{
         var metersBySites = sites
-            .sort(
-                (site1: SiteDetail, site2: SiteDetail) => {
-                    let lowerFirst = site1.siteCode.toLowerCase();
-                    let lowerSecond = site2.siteCode.toLowerCase();
-            
-                    if (lowerFirst < lowerSecond) return -1;
-                    if (lowerFirst > lowerSecond) return 1;
-                    return 0;
-                })
             .map(site => {
                     var siteId = site.id;
                     var siteCode = site.siteCode;
@@ -237,115 +218,63 @@ class AccountElectricityMeterTable extends React.Component<AccountElectricityMet
     }
 
     render() {
-        if(this.props.working){
-            return (<Spinner hasMargin={true} />);
-        }
-        if(this.props.error){
-            return (<ErrorMessage content={this.props.errorMessage}/>);
-        }
-        
-        var actions = (
-            <div>
-                <button className='uk-button uk-button-primary uk-margin-small-right' onClick={() => this.props.openModalDialog('upload-supply-data-electricity')}><i className="fa fa-file-upload uk-margin-small-right fa-lg"></i> Upload Supply Data</button>    
-            </div>
-        );
+        let tableContent = null;
 
-        var hasData = this.state.tableData.length > 0;
-        if(!hasData && this.state.searchText == ""){
-            var missingDataMessage = "No electricity meters have been uploaded to this account yet.";
-            if(this.props.sites.length == 0){
-                missingDataMessage = "No site or meter data has been uploaded to this account yet."
-            }
-
-            return (
-                <div>
-                    <div className="uk-grid uk-grid-collapse">
-                        <div className="uk-width-expand">
-                            <div className="icon-input-container uk-grid uk-grid-collapse icon-left disabled">
-                                <div tabIndex={-1} className="uk-width-auto uk-flex uk-flex-middle">
-                                    <i className="fas fa-search"></i>
-                                </div>
-                                <input className="uk-input uk-width-expand" type="search" placeholder="Search..." disabled/>
-                            </div> 
-                        </div>
-                        <div className="uk-width-auto uk-margin-left uk-margin-right">
-                            {actions}
-                        </div>
+        if(this.props.sites.length == 0){
+            tableContent = (
+                <Alert color="light">
+                    <div className="d-flex align-items-center">
+                        <i className="fas fa-exclamation-triangle mr-2"></i>
+                        No electricity meters have been uploaded to this account yet.
                     </div>
-                    <hr />
-                    <div className="uk-alert-default uk-margin-right uk-alert" data-uk-alert>
-                        <div className="uk-grid uk-grid-small" data-uk-grid>
-                            <div className="uk-width-auto uk-flex uk-flex-middle">
-                                <i className="fas fa-info-circle uk-margin-small-right"></i>
-                            </div>
-                            <div className="uk-width-expand uk-flex uk-flex-middle">
-                                <p>{missingDataMessage} Click on the button above to get started.</p>    
-                            </div>
-                        </div>
-                    </div>
-                </div>);
-        }        
-
-        var portfolioButtons = this.renderPortfolioButtons();
-        return (
-            <div>
-                <p className="uk-text-right">
-                    {portfolioButtons}
-                </p>
-                <div className="uk-grid uk-grid-collapse">
-                    <div className="uk-width-expand">
-                        <div className="icon-input-container uk-grid uk-grid-collapse icon-left">
-                            <div tabIndex={-1} className="uk-width-auto uk-flex uk-flex-middle">
-                                <i className="fas fa-search"></i>
-                            </div>
-                            <input className="uk-input uk-width-expand" type="search" placeholder="Search..." value={this.state.searchText} onChange={(e) => this.handleSearch(e)}/>
-                        </div> 
-                    </div>
-                    <div className="uk-width-auto uk-margin-left uk-margin-right">
-                        {actions}
-                    </div>
-                </div>
-                <hr />
-                <div>
-
-                    <div >
-                {!hasData ? (
-                    <div className="uk-alert-default uk-margin-right uk-alert" data-uk-alert>
-                        <div className="uk-grid uk-grid-small" data-uk-grid>
-                            <div className="uk-width-auto uk-flex uk-flex-middle">
-                                <i className="fas fa-info-circle uk-margin-small-right"></i>
-                            </div>
-                            <div className="uk-width-expand uk-flex uk-flex-middle">
-                                <p>No results for search term: <i>{this.state.searchText}</i></p>    
-                            </div>
-                        </div>
-                    </div>)
-                : (<ReactTable 
-                    showPagination={false}
+                </Alert>);
+        }    
+        else {
+            tableContent = (
+                <ReactTable 
+                    NoDataComponent={NoMatchesComponent}
+                    PaginationComponent={ReactTablePagination}
+                    showPagination={true}
                     columns={this.columns}
-                    data={this.state.tableData}                    
-                    style={{maxHeight: `${window.innerHeight - 320}px`}}
-                    minRows={0}/>)}
+                    data={this.state.tableData}
+                    defaultSorted={SortFirstColumn(this.columns)}
+                    minRows={0}/>);
+        }    
+
+        return (
+            <Card className="w-100">
+                <CardBody className="p-0">
+                    <div className="d-flex p-2 justify-content-between">
+                        <div className="d-flex">
+                            <Button color="accent" outline className="btn-grey-outline"
+                                    onClick={() => this.props.openUploadSupplyDataDialog({ accountId: this.props.accountId, type : UtilityType.Electricity })}>
+                                <i className="fas fa-file-upload mr-2"></i>
+                                Upload Supply Data
+                            </Button>
+                        </div>
+                        <div className="d-flex">
+                            <InputGroup className="input-group-seamless">
+                                <InputGroupAddon addonType="prepend">
+                                    <InputGroupText>
+                                        <i className="fas fa-search"></i>
+                                    </InputGroupText>
+                                </InputGroupAddon>
+                                <Input placeholder="Search..."
+                                    value={this.state.searchText} onChange={(e) => this.handleSearch(e)} />
+                            </InputGroup>
+                        </div>
                     </div>
-                </div>
-            </div>)
+                    {tableContent}
+                </CardBody>
+                <UploadSupplyDataDialog />
+            </Card>);
     }
 }
 
 const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, AccountElectricityMeterTableProps> = (dispatch) => {
     return {
-        openModalDialog: (dialogId: string) => dispatch(openModalDialog(dialogId)),
-        fetchTariffs: () => dispatch(fetchTariffs())
+        openUploadSupplyDataDialog: (data: UploadSupplyDataDialogData) => dispatch(openDialog(ModalDialogNames.UploadSupplyData, data))
     };
 };
   
-const mapStateToProps: MapStateToProps<StateProps, AccountElectricityMeterTableProps, ApplicationState> = (state: ApplicationState) => {
-    return {
-        working: state.portfolio.tender.tariffs.working,
-        error:  state.portfolio.tender.tariffs.error,
-        errorMessage: state.portfolio.tender.tariffs.errorMessage,
-        tariffs: state.portfolio.tender.tariffs.value        
-    };
-};
-  
-export default connect(mapStateToProps, mapDispatchToProps)(AccountElectricityMeterTable);
+export default connect(null, mapDispatchToProps)(AccountElectricityMeterTable);

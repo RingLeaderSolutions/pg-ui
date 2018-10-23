@@ -1,23 +1,23 @@
 import * as React from "react";
-import Header from "../common/Header";
 import ErrorMessage from "../common/ErrorMessage";
 import { RouteComponentProps } from 'react-router';
 import { MapDispatchToPropsFunction, connect, MapStateToProps } from 'react-redux';
 import { ApplicationState } from '../../applicationState';
-import { AccountDetail, UtilityType, ApplicationTab } from '../../model/Models';
-import Spinner from '../common/Spinner';
-import { selectAccountTab, openModalDialog, selectApplicationTab } from "../../actions/viewActions";
+import { AccountDetail, ApplicationTab } from '../../model/Models';
+import { selectAccountTab, selectApplicationTab, openDialog } from "../../actions/viewActions";
 
 import { retrieveAccountDetail, fetchAccountPortfolios } from '../../actions/hierarchyActions';
-import UploadSupplyDataDialog from "../portfolio/mpan/UploadSupplyDataDialog";
-import UpdateAccountDialog from "./creation/UpdateAccountDialog";
 import AccountContactsView from "./contacts/AccountContactsView";
 import AccountDocumentsView from "./documents/AccountDocumentsView";
-import AccountGasMeterTable from "./meters/AccountGasMeterTable";
-import AccountElectricityMeterTable from "./meters/AccountElectricityMeterTable";
-import ModalDialog from "../common/ModalDialog";
 import AccountContractsView from "./contracts/AccountContractsView";
 import AccountSummaryView from "./AccountSummaryView";
+import * as cn from "classnames";
+import { Nav, NavItem, NavLink, Button, UncontrolledTooltip, Navbar } from "reactstrap";
+import { PageHeader } from "../common/PageHeader";
+import AccountMeters from "./meters/AccountMeters";
+import { LoadingIndicator } from "../common/LoadingIndicator";
+import UpdateAccountDialog, { UpdateAccountDialogData } from "./creation/UpdateAccountDialog";
+import { ModalDialogNames } from "../common/modal/ModalDialogNames";
 
 interface AccountDetailViewProps extends RouteComponentProps<void> {
 }
@@ -34,15 +34,18 @@ interface StateProps {
 interface DispatchProps {
     retrieveAccountDetail: (accountId: string) => void;
     fetchAccountPortfolios: (accountId: string) => void;
+
     selectAccountTab: (index: number) => void;
-    openModalDialog: (dialogId: string) => void;
     selectApplicationTab: (tab: ApplicationTab) => void;
+
+    openUpdateAccountDialog: (data: UpdateAccountDialogData) => void;
 }
 
 class AccountDetailView extends React.Component<AccountDetailViewProps & StateProps & DispatchProps, {}> {
     componentDidMount(){
         this.props.selectApplicationTab(ApplicationTab.Accounts);
         var accountId = this.props.location.pathname.split('/')[2];        
+
         this.props.retrieveAccountDetail(accountId);
         this.props.fetchAccountPortfolios(accountId);
     }
@@ -51,23 +54,17 @@ class AccountDetailView extends React.Component<AccountDetailViewProps & StatePr
         this.props.selectAccountTab(index);
     }
 
-    renderActiveTabStyle(index: number){
-        return this.props.selectedTab == index ? "uk-active" : null;
-    }
-
     renderSelectedTab(){
         switch(this.props.selectedTab){
             case 0:
                 return (<AccountSummaryView />)
             case 1:
-                return (<AccountElectricityMeterTable sites={this.props.account.sites} portfolios={this.props.portfolios} />);
+                return (<AccountMeters sites={this.props.account.sites} portfolios={this.props.portfolios} accountId={this.props.account.id} />);
             case 2:
-                return (<AccountGasMeterTable sites={this.props.account.sites} portfolios={this.props.portfolios} />);
-            case 3:
                 return (<AccountContractsView />)
-            case 4:
+            case 3:
                 return (<AccountDocumentsView account={this.props.account}/>);
-            case 5:
+            case 4:
                 return (<AccountContactsView />);
             default:
                 return (<p>No tab selected</p>);
@@ -79,39 +76,68 @@ class AccountDetailView extends React.Component<AccountDetailViewProps & StatePr
             return (<ErrorMessage content={this.props.errorMessage} />);
         }
         if(this.props.working || this.props.account == null){
-            return (<Spinner />);
+            return (<LoadingIndicator />);
         }
+
         var selectedAccount = this.props.account;
-        var headerTitle = `Account: ${selectedAccount.companyName}`;
+
         return (
-            <div className="content-inner">
-                <Header title={headerTitle} icon="fa fa-building">
-                    <button className='uk-button uk-button-default uk-button-small uk-margin-large-right borderless-button' data-uk-tooltip="title: Edit account" onClick={() => this.props.openModalDialog('update-account')}><i className="fas fa-edit"></i></button>
-                </Header>
-                <ul className="uk-tab">
-                    <li className={this.renderActiveTabStyle(0)} onClick={() => this.selectTab(0)}><a href="#"><i className="fa fa-list uk-margin-small-right fa-lg"></i>Summary</a></li>
-                    <li className={this.renderActiveTabStyle(1)} onClick={() => this.selectTab(1)}><a href="#"><i className="fa fa-bolt uk-margin-small-right fa-lg"></i>Electricity</a></li>
-                    <li className={this.renderActiveTabStyle(2)} onClick={() => this.selectTab(2)}><a href="#"><i className="fa fa-fire uk-margin-small-right fa-lg"></i>Gas</a></li>
-                    <li className={this.renderActiveTabStyle(3)} onClick={() => this.selectTab(3)}><a href="#"><i className="fa fa-file-signature uk-margin-small-right fa-lg"></i>Contracts</a></li>
-                    <li className={this.renderActiveTabStyle(4)} onClick={() => this.selectTab(4)}><a href="#"><i className="fa fa-file uk-margin-small-right fa-lg"></i>Documentation</a></li>
-                    <li className={this.renderActiveTabStyle(5)} onClick={() => this.selectTab(5)}><a href="#"><i className="fa fa-users uk-margin-small-right fa-lg"></i>Contacts</a></li>
-                </ul>
+            <div className="w-100">
+                <PageHeader title={selectedAccount.companyName} subtitle="account" icon="fas fa-building" className="px-4">
+                    <Button color="accent" outline className="ml-auto btn-grey-outline" id="edit-account-button"
+                            onClick={() => this.props.openUpdateAccountDialog({ account: selectedAccount })}>
+                        <i className="material-icons">
+                            mode_edit
+                        </i>
+                    </Button>
+                    <UncontrolledTooltip target="edit-account-button" placement="bottom">
+                        <strong>Edit Account</strong>
+                    </UncontrolledTooltip>
+                </PageHeader>
+                <Navbar className="p-0 bg-white border-top">
+                    <Nav tabs className="justify-content-center flex-grow-1">
+                        <NavItem>
+                            <NavLink className={cn({ active: this.props.selectedTab == 0})}
+                                        onClick={() => this.selectTab(0)}
+                                        href="#">
+                                <i className="fa fa-list"></i>Summary
+                            </NavLink>
+                        </NavItem>
+                        <NavItem className="ml-md-3 ml-sm-1">
+                            <NavLink className={cn({ active: this.props.selectedTab == 1})}
+                                        onClick={() => this.selectTab(1)}
+                                        href="#">
+                                <i className="fas fa-tachometer-alt"></i>Meters
+                            </NavLink>
+                        </NavItem>
+                        <NavItem className="ml-md-3 ml-sm-1">
+                            <NavLink className={cn({ active: this.props.selectedTab == 2})}
+                                        onClick={() => this.selectTab(2)}
+                                        href="#">
+                                <i className="fas fa-file-signature"></i>Contracts
+                            </NavLink>
+                        </NavItem>
+                        <NavItem className="ml-md-3 ml-sm-1">
+                            <NavLink className={cn({ active: this.props.selectedTab == 3})}
+                                        onClick={() => this.selectTab(3)}
+                                        href="#">
+                                <i className="fas fa-file"></i>Documentation
+                            </NavLink>
+                        </NavItem>
+                        <NavItem className="ml-md-3 ml-sm-1">
+                            <NavLink className={cn({ active: this.props.selectedTab == 4})}
+                                        onClick={() => this.selectTab(4)}
+                                        href="#">
+                                <i className="fas fa-users"></i>Contacts
+                            </NavLink>
+                        </NavItem>
+                    </Nav>
+                </Navbar>
                 <div>
                     {this.renderSelectedTab()}
                 </div>
-
-                <ModalDialog dialogId="upload-supply-data-electricity">
-                    <UploadSupplyDataDialog accountId={this.props.account.id} type={UtilityType.Electricity} />
-                </ModalDialog>
-
-                <ModalDialog dialogId="upload-supply-data-gas">
-                    <UploadSupplyDataDialog accountId={this.props.account.id} type={UtilityType.Gas} />
-                </ModalDialog>
-
-                <ModalDialog dialogId="update-account">
-                    <UpdateAccountDialog account={selectedAccount} />
-                </ModalDialog>
-            </div>)
+                <UpdateAccountDialog />
+            </div>);
     }
 }
 
@@ -119,9 +145,11 @@ const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, AccountDetai
     return {
         retrieveAccountDetail: (accountId: string) => dispatch(retrieveAccountDetail(accountId)),
         fetchAccountPortfolios: (accountId: string) => dispatch(fetchAccountPortfolios(accountId)),
+
         selectAccountTab: (index: number) => dispatch(selectAccountTab(index)),
-        openModalDialog: (dialogId: string) => dispatch(openModalDialog(dialogId)),
-        selectApplicationTab: (tab: ApplicationTab) => dispatch(selectApplicationTab(tab))
+        selectApplicationTab: (tab: ApplicationTab) => dispatch(selectApplicationTab(tab)),
+
+        openUpdateAccountDialog: (data: UpdateAccountDialogData) => dispatch(openDialog(ModalDialogNames.UpdateAccount, data))
     };
 };
   

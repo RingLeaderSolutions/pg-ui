@@ -1,19 +1,23 @@
 import * as React from "react";
-import { MapDispatchToPropsFunction, connect, MapStateToProps } from 'react-redux';
+import { MapDispatchToPropsFunction, MapStateToProps } from 'react-redux';
 import { ApplicationState } from '../../../applicationState';
-import Spinner from '../../common/Spinner';
 
 import { createContractRenewal, getTenderSuppliers, clearRenewalState } from '../../../actions/tenderActions';
 import { TenderContract, TenderSupplier, ContractRenewalResponse } from "../../../model/Tender";
-import { closeModalDialog, redirectToPortfolio } from "../../../actions/viewActions";
+import { redirectToPortfolio } from "../../../actions/viewActions";
 import ErrorMessage from "../../common/ErrorMessage";
 import { ContractRenewalStage } from "../../../model/app/ContractRenewalStage";
-import ModalDialog from "../../common/ModalDialog";
+import asModalDialog, { ModalDialogProps } from "../../common/modal/AsModalDialog";
+import { ModalDialogNames } from "../../common/modal/ModalDialogNames";
+import ModalFooter from "reactstrap/lib/ModalFooter";
+import { LoadingIndicator } from "../../common/LoadingIndicator";
+import { ModalBody, Button, ModalHeader } from "reactstrap";
 
-interface RenewContractDialogProps {
+export interface RenewContractDialogData {
     contract: TenderContract;
-    dialogId: string;
 }
+
+interface RenewContractDialogProps extends ModalDialogProps<RenewContractDialogData> { }
 
 interface StateProps {
     suppliers_working: boolean;
@@ -29,7 +33,6 @@ interface DispatchProps {
     getSuppliers: () => void;
     renewContract: (contractId: string) => void;
     clearRenewalState: () => void;
-    closeModalDialog: () => void;
     redirectToPortfolio: (portfolioId: string) => void;
 }
 
@@ -42,44 +45,41 @@ class RenewContractDialog extends React.Component<RenewContractDialogProps & Sta
 
     redirectToPortfolio(portfolioId: string){
         this.props.redirectToPortfolio(portfolioId);
-        this.props.clearRenewalState();
-        this.props.closeModalDialog();
+        this.closeAndClear();
     }
 
     renewContract(){
-        var { contractId } = this.props.contract;
+        var { contractId } = this.props.data.contract;
         this.props.renewContract(contractId);
     }
 
     closeAndClear(){
         this.props.clearRenewalState();
-        this.props.closeModalDialog();
+        this.props.toggle();
     }
 
     renderOnlyOKButton(){
         return (
-            <div className="uk-modal-footer uk-text-right">
-                <button className="uk-button uk-button-default uk-margin-right" type="button"  onClick={() => this.closeAndClear()}><i className="fas fa-times uk-margin-small-right"></i>OK</button>
-            </div>);
+            <ModalFooter>
+                <Button onClick={() => this.closeAndClear()}>
+                    <i className="fas fa-times mr-1"></i>OK
+                </Button>
+            </ModalFooter>);
     }
 
     renderInProgressDisplay(step: string){
         return (
-            <div>
-                <div className="uk-modal-header">
-                    <h2 className="uk-modal-title"><i className="fas fa-exclamation-triangle uk-margin-right"></i><i className="fas fa-file-signature uk-margin-right"></i>Working</h2>
-                </div>
-                 <div className="uk-modal-body">
-                    <div className="spinner-2"></div>
-                    <h4 className="uk-text-center uk-margin-bottom">Contract renewal in progress (Step {step})</h4>
-                </div>
-            </div>
-        )
+            <div className="modal-content">
+                <ModalHeader><i className="fas fa-file-signature mr-1"></i>Working...</ModalHeader>
+                <ModalBody>
+                    <LoadingIndicator minHeight={200} text={`Contract renewal in progress (Step ${step})`} />
+                </ModalBody>
+            </div>);
     }
 
     renderSupplierPane(){
         if(this.props.suppliers_working){
-            return (<Spinner />);
+            return (<LoadingIndicator minHeight={200} />);
         }
 
         if(this.props.suppliers_error){
@@ -89,7 +89,7 @@ class RenewContractDialog extends React.Component<RenewContractDialogProps & Sta
         return <ErrorMessage />
     }
 
-    renderDialog(){
+    render(){
         if(this.props.suppliers == null){
             return this.renderSupplierPane();
         }
@@ -97,23 +97,26 @@ class RenewContractDialog extends React.Component<RenewContractDialogProps & Sta
         switch(this.props.renewal_stage){
             case ContractRenewalStage.Idle:
                 return (
-                    <div>
-                        <div className="uk-modal-header">
-                            <h2 className="uk-modal-title"><i className="fas fa-redo uk-margin-right"></i><i className="fas fa-file-signature uk-margin-right"></i>Renew Existing Contract</h2>
-                        </div>
-                        <div className="uk-modal-body">
-                            <p>This process will:</p>
-                            <ul>
+                    <div className="modal-content">
+                        <ModalHeader><i className="fas fa-file-signature mr-1"></i>Renew Existing Contract</ModalHeader>
+                        <ModalBody>
+                            <p className="text-midweight">This process will:</p>
+                            <ul className="text-midweight">
                                 <li>Create a new renewal portfolio, if one does not yet exist</li>
                                 <li>Assign the meters included in the previous contract to the new portfolio</li>
                                 <li>Create a new tender and assign the existing supplier as an intended recipient</li>
                             </ul>
-                            <p>Would you like to proceed?</p>
-                        </div>
-                        <div className="uk-modal-footer uk-text-right">
-                            <button className="uk-button uk-button-default uk-margin-right" type="button"  onClick={() => this.props.closeModalDialog()}><i className="fas fa-times uk-margin-small-right"></i>Cancel</button>
-                            <button className="uk-button uk-button-primary" type="button" onClick={() => this.renewContract()}><i className="fas fa-redo uk-margin-small-right"></i>Renew</button>
-                        </div>
+                            <p className="mb-0">Would you like to proceed?</p>
+                        </ModalBody>
+                        <ModalFooter>
+                            <Button onClick={() => this.closeAndClear()}>
+                                <i className="fas fa-times mr-1"></i>Cancel
+                            </Button>
+                            <Button color="accent" 
+                                    onClick={() => this.renewContract()}>
+                               <i className="fas fa-redo mr-1"></i>Renew
+                            </Button>
+                        </ModalFooter>
                     </div>);
             case ContractRenewalStage.RenewalRequestSent:
                 return this.renderInProgressDisplay('1');
@@ -121,50 +124,36 @@ class RenewContractDialog extends React.Component<RenewContractDialogProps & Sta
                 return this.renderInProgressDisplay('2');
             case ContractRenewalStage.RenewalFailed:
                 return (
-                    <div>
-                        <div className="uk-modal-header">
-                            <h2 className="uk-modal-title"><i className="fas fa-exclamation-triangle uk-margin-right"></i>Renew Existing Contract: Error</h2>
-                        </div>
-                        <div className="uk-modal-body">
+                    <div className="modal-content">
+                        <ModalHeader><i className="fas fa-file-signature mr-1"></i>Renew Existing Contract: Error</ModalHeader>
+                        <ModalBody>
                             <ErrorMessage>
                                 <div>
                                     <p>Sorry, we encountered a problem trying to renew this contract:</p>
                                     <p>{this.props.renewal_errorMessage}</p>
                                 </div>
                             </ErrorMessage>
-                        </div>
+                        </ModalBody>
                         {this.renderOnlyOKButton()}
                     </div>);
             case ContractRenewalStage.Complete:
                 var result = this.props.renewal_result;
                 var successMessage = result.status.toLowerCase() == 'created' ? 
-                    (<p>A new portfolio, <i>"{result.title}"</i> has been created.</p>) : (<p>The <i>"{result.title}"</i> portfolio has been updated.</p>);
+                    (<p className="mb-1">A new portfolio, <i>"{result.title}"</i> has been created.</p>) : (<p className="mb-1">The <i>"{result.title}"</i> portfolio has been updated.</p>);
                 return (
-                    <div>
-                        <div className="uk-modal-header">
-                            <h2 className="uk-modal-title"><i className="fa fa-check-circle uk-margin-small-right" style={{color: '#006400'}}></i>Success!</h2>
-                        </div>
-                        <div className="uk-modal-body">
-                            <div className="uk-text-center">
-                                <h4>This contract was successfully renewed!</h4> 
-                                {successMessage}
-                                <p>Click on the button below to view the portfolio, or click OK to close this window.</p>
-                                <button className='uk-button uk-button-default uk-button-small uk-margin-top' data-uk-tooltip="title: Jump to portfolio" onClick={() => this.redirectToPortfolio(result.portfolioId)}>
-                                <i className="fa fa-external-link-alt uk-margin-small-right"></i>{result.title}</button>
-                            </div>
-                            
-                        </div>
+                    <div className="modal-content">
+                        <ModalHeader toggle={() => this.closeAndClear()}><i className="fa fa-check-circle text-success mr-1"></i>Success!</ModalHeader>
+                        <ModalBody>
+                            <h4>This contract was successfully renewed!</h4> 
+                            {successMessage}
+                            <p>Click on the button below to view the portfolio, or click OK to close this window.</p>
+                            <Button color="white" onClick={() => this.redirectToPortfolio(result.portfolioId)}>
+                                <i className="fa fa-external-link-alt mr-1"></i>{result.title}
+                            </Button>
+                        </ModalBody>
                         {this.renderOnlyOKButton()}
                     </div>);
         }
-    }
-
-    render(){
-        return (
-            <ModalDialog dialogId={this.props.dialogId} onClose={() => this.props.clearRenewalState()}>
-                {this.renderDialog()}
-            </ModalDialog>
-        )
     }
 }
 
@@ -173,7 +162,6 @@ const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, RenewContrac
         getSuppliers: () => dispatch(getTenderSuppliers()),
         renewContract: (contractId: string) => dispatch(createContractRenewal(contractId)),
         clearRenewalState: () => dispatch(clearRenewalState()),
-        closeModalDialog: () => dispatch(closeModalDialog()),
         redirectToPortfolio: (portfolioId: string) => dispatch(redirectToPortfolio(portfolioId))
     };
 };
@@ -190,4 +178,9 @@ const mapStateToProps: MapStateToProps<StateProps, RenewContractDialogProps, App
     };
 };
   
-export default connect(mapStateToProps, mapDispatchToProps)(RenewContractDialog);
+export default asModalDialog(
+{ 
+    name: ModalDialogNames.RenewAccountContract, 
+    centered: true, 
+    backdrop: true
+}, mapStateToProps, mapDispatchToProps)(RenewContractDialog)

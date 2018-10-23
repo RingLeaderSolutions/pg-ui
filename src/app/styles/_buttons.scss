@@ -1,0 +1,30 @@
+@import "globals";
+
+// Replace the outline of a button with the standard grey, but retain the bgcolor change on hover
+.btn-grey-outline {
+    border: 1px solid $border-color;
+    background-color: #fff;
+}
+
+
+// Replace the background on disable so that it's super obvious
+.btn-accent {
+    &.disabled,&:disabled {
+        background-color: #fff;
+        border: 1px solid $border-color;
+        color: $fiord-blue;
+    }
+}
+
+@mixin fix-button-outline-variant-disabled( $color, $color-hover: color-yiq($color), $active-background: $color, $active-border: $color) {  
+    &.disabled,
+    &:disabled {
+        cursor: not-allowed; // this is missing in shards-ui
+    }
+}
+
+@each $color, $value in $theme-colors {
+    .btn-outline-#{$color} {
+        @include fix-button-outline-variant-disabled($value);
+    }
+}

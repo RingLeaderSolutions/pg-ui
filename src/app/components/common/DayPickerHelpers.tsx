@@ -3,6 +3,7 @@ import * as moment from 'moment';
 import * as React from "react";
 import { CaptionElementProps } from "react-day-picker/types/props";
 import DayPickerInput from "react-day-picker/DayPickerInput";
+import { Input } from "reactstrap";
 
 export const Today = new Date();
 const currentYear = Today.getFullYear();
@@ -56,27 +57,32 @@ const YearMonthForm: React.SFC<CaptionElementProps & YearMonthFormProps> = (prop
         years.push(i);
     }
 
-    const handleChange = function handleChange(e: React.ChangeEvent<HTMLSelectElement>) {
+    const handleChange = function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
         const { year, month } = e.target.form;
         onChange(new Date(year.value, month.value));
     };
 
+    let autoWidth: React.CSSProperties = { width: 'auto' };
     return (
         <div className="DayPicker-Caption">
-        <select className='uk-select' name="month" onChange={(e) => handleChange(e)} value={date.getMonth()}>
-            {months.map((month, i) => (
-            <option key={month} value={i}>
-                {month}
-            </option>
-            ))}
-        </select>
-        <select className='uk-select uk-margin-small-left' name="year" onChange={(e) => handleChange(e)} value={date.getFullYear()}>
-            {years.map(year => (
-            <option key={year} value={year}>
-                {year}
-            </option>
-            ))}
-        </select>
+            <div className="d-flex">
+                <Input type="select" name="month" style={autoWidth} bsSize="sm"
+                    onChange={(e) => handleChange(e)} value={date.getMonth()}>
+                    {months.map((month, i) => (
+                        <option key={month} value={i}>
+                            {month}
+                        </option>
+                    ))}
+                </Input>
+                <Input type="select" name="year" className="ml-1" style={autoWidth} bsSize="sm"
+                    onChange={(e) => handleChange(e)} value={date.getFullYear()}>
+                    {years.map(year => (
+                        <option key={year} value={year}>
+                            {year}
+                        </option>
+                    ))}
+                </Input>
+            </div>
         </div>
     );
 }
@@ -96,7 +102,7 @@ interface DayPickerState {
 
 export class DayPickerWithMonthYear extends React.Component<DayPickerWithMonthYearProps, DayPickerState> {
     constructor(props: DayPickerWithMonthYearProps){
-        super();
+        super(props);
         this.state = {
             month: props.selectedDay && props.selectedDay.isValid() ? props.selectedDay.toDate() : moment().utc().toDate()
         }
@@ -119,16 +125,7 @@ export class DayPickerWithMonthYear extends React.Component<DayPickerWithMonthYe
         var selectedDay = hasValidSelection ? this.props.selectedDay.toDate() : null;
         return (
             <DayPickerInput
-                component={(inputProps: React.DetailedHTMLProps<React.InputHTMLAttributes<HTMLInputElement>, HTMLInputElement>) => (
-                    <div className="icon-input-container uk-grid uk-grid-collapse">
-                        <input {...inputProps} className="uk-width-expand uk-input"/>
-                        <div tabIndex={-1} className="clickable-icon-container uk-width-auto uk-flex uk-flex-middle" 
-                            onClick={() => inputProps.onClick(null)} 
-                            onBlur={() => inputProps.onBlur(null) }>
-                            <i className="far fa-calendar-alt"></i>
-                        </div>
-                    </div>
-                )}
+                component={DayPickerInputField}
                 dayPickerProps={{
                     selectedDays: selectedDay,
                     disabledDays: disabledDays,
@@ -149,6 +146,23 @@ export class DayPickerWithMonthYear extends React.Component<DayPickerWithMonthYe
                 placeholder='Select Date'
                 value={formatDate(selectedDay)}
                 onDayChange={(d: Date, modifiers: DayModifiers, dayPickerInput: DayPickerInput) => this.props.onDayChange(moment(d), modifiers, dayPickerInput)}/>
+        )
+    }
+}
+
+// See: https://github.com/gpbl/react-day-picker/issues/748
+class DayPickerInputField extends React.Component<any, {}> {
+    constructor(props: any){
+        super(props);
+    }
+    render(){
+        return (
+            <div className="input-group input-group-seamless">
+                <div className="input-group-prepend">
+                    <span className="input-group-text"><i className="far fa-calendar-alt"></i></span>
+                </div>
+                <input type="text" className="form-control" {...this.props} />
+            </div>
         )
     }
 }

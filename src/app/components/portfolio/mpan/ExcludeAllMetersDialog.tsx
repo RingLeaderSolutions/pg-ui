@@ -1,68 +1,61 @@
 import * as React from "react";
-import { MapDispatchToPropsFunction, connect, MapStateToProps } from 'react-redux';
+import { MapDispatchToPropsFunction } from 'react-redux';
 import { PortfolioDetails } from '../../../model/Models';
 
 import { excludeMeters } from '../../../actions/meterActions';
-import { closeModalDialog } from "../../../actions/viewActions";
-import { ApplicationState } from "../../../applicationState";
+import { ModalDialogNames } from "../../common/modal/ModalDialogNames";
+import asModalDialog, { ModalDialogProps } from "../../common/modal/AsModalDialog";
+import { ModalHeader, ModalBody, ModalFooter, Button } from "reactstrap";
 
-interface ExcludeAllMetersDialogProps {    
+export interface ExcludeAllMetersDialogData {
     portfolio: PortfolioDetails;
     includedMeters: string[];
 }
 
-interface StateProps {
-}
+interface ExcludeAllMetersDialogProps extends ModalDialogProps<ExcludeAllMetersDialogData> { }
 
 interface DispatchProps {
     excludeMeters: (portfolioId: string, meters: string[]) => void;
-    closeModalDialog: () => void;
 }
 
-class ExcludeAllMetersDialog extends React.Component<ExcludeAllMetersDialogProps & StateProps & DispatchProps, {}> {
+class ExcludeAllMetersDialog extends React.Component<ExcludeAllMetersDialogProps  & DispatchProps, {}> {
     completeExclusion(){
-        this.props.excludeMeters(this.props.portfolio.portfolio.id, this.props.includedMeters);
-        this.props.closeModalDialog();
+        this.props.excludeMeters(this.props.data.portfolio.portfolio.id, this.props.data.includedMeters);
+        this.props.toggle();
     }
 
     render() {
         return (
-            <div>
-                <div className="uk-modal-header">
-                    <h2 className="uk-modal-title"><i className="fas fa-folder-minus uk-margin-right"></i>Exclude All Meters</h2>
-                </div>
-                <div className="uk-modal-body">
-                    <div className="uk-alert-danger uk-alert" data-uk-alert>
-                        <div className="uk-grid uk-grid-small" data-uk-grid>
-                            <div className="uk-width-auto uk-flex uk-flex-middle">
-                                <i className="fas fa-exclamation-triangle uk-margin-small-right"></i>
-                            </div>
-                            <div className="uk-width-expand uk-flex uk-flex-middle">
-                                <div>
-                                    <p><strong>Are you sure you wish to exclude all meters currently attached to this portfolio?</strong></p>
-                                    <p>You can add meters back at any time using the include meters button.</p>
-                                </div>
-                            </div>
-                        </div>
+            <div className="modal-content">
+                <ModalHeader className="modal-header-danger" toggle={this.props.toggle}><i className="fas fa-folder-minus mr-2"></i>Exclude All Meters</ModalHeader>
+                <ModalBody>
+                    <div className="d-flex align-items-center flex-column">
+                        <p className="m-0 pt-2"><strong>Are you sure you wish to exclude all meters currently attached to this portfolio?</strong></p>
+                        <p className="m-0 pt-1">You can add meters back at any time using the include meters button.</p>
                     </div>
-                </div>
-                <div className="uk-modal-footer uk-text-right">
-                    <button className="uk-button uk-button-default uk-margin-right" type="button" onClick={() => this.props.closeModalDialog()}><i className="fas fa-check-circle uk-margin-small-right" style={{color:'#006400'}}></i>No</button>
-                    <button className="uk-button uk-button-danger" type="button" onClick={() => this.completeExclusion()}><i className="fas fa-minus-circle uk-margin-small-right"></i>Yes</button>
-                </div>
-            </div>)
+                </ModalBody>
+                <ModalFooter className="justify-content-between">
+                    <Button onClick={this.props.toggle}>
+                        <i className="fas fa-times mr-1"></i>No, Cancel!    
+                    </Button>
+                    <Button color="danger" 
+                            onClick={() => this.completeExclusion()}>
+                        <i className="fas fa-trash-alt mr-1"></i>Yes, I know what I'm doing!
+                    </Button>
+                </ModalFooter>
+            </div>);
     }
 }
 
 const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, ExcludeAllMetersDialogProps> = (dispatch) => {
     return {
-        excludeMeters: (portfolioId: string, meters: string[]) => dispatch(excludeMeters(portfolioId, meters)),
-        closeModalDialog: () => dispatch(closeModalDialog())
+        excludeMeters: (portfolioId: string, meters: string[]) => dispatch(excludeMeters(portfolioId, meters))
     };
 };
   
-const mapStateToProps: MapStateToProps<StateProps, ExcludeAllMetersDialogProps, ApplicationState> = () => {
-    return {};
-};
-  
-export default connect(mapStateToProps, mapDispatchToProps)(ExcludeAllMetersDialog);
+export default asModalDialog(
+{ 
+    name: ModalDialogNames.ExcludeAllMeters, 
+    centered: true, 
+    backdrop: true,
+}, null, mapDispatchToProps)(ExcludeAllMetersDialog)

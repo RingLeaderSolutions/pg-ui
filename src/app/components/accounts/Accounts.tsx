@@ -3,16 +3,17 @@ import { RouteComponentProps } from 'react-router';
 import { MapDispatchToPropsFunction, connect, MapStateToProps } from 'react-redux';
 import { retrieveAccounts, clearAccountCreation } from '../../actions/hierarchyActions';
 import { ApplicationState } from '../../applicationState';
-import Header from "../common/Header";
 import ErrorMessage from "../common/ErrorMessage";
 import { Account, ApplicationTab } from '../../model/Models';
 import Spinner from '../common/Spinner';
 import NewAccountDialog from "./creation/NewAccountDialog";
 import ReactTable, { Column } from "react-table";
-import { BooleanCellRenderer } from "../common/TableHelpers";
-import { openModalDialog, selectApplicationTab } from "../../actions/viewActions";
-import ModalDialog from "../common/ModalDialog";
+import { ReactTablePagination, NoMatchesComponent, SortFirstColumn } from "../common/TableHelpers";
+import { selectApplicationTab, openDialog } from "../../actions/viewActions";
 import * as moment from 'moment';
+import { CardBody, Card, Button, InputGroup, InputGroupAddon, InputGroupText, Input, Alert } from "reactstrap";
+import { PageHeader } from "../common/PageHeader";
+import { ModalDialogNames } from "../common/modal/ModalDialogNames";
 
 interface AccountsProps extends RouteComponentProps<void> {
 }
@@ -26,9 +27,10 @@ interface StateProps {
 
 interface DispatchProps {
   retrieveAccounts: () => void;
-  openModalDialog: (dialogId: string) => void;
   clearAccountCreation: () => void;
   selectApplicationTab: (tab: ApplicationTab) => void;
+
+  openCreateAccountDialog: () => void;
 }
 
 interface AccountsState {
@@ -61,8 +63,8 @@ class Accounts extends React.Component<AccountsProps & StateProps & DispatchProp
     }];
     stringProperties: string[] = ["accountId", "name", "country", "regNumber", "status"];
 
-    constructor() {
-        super();
+    constructor(props: AccountsProps & StateProps & DispatchProps) {
+        super(props);
         this.state = {
             searchText: '',
             tableData: []
@@ -152,89 +154,73 @@ class Accounts extends React.Component<AccountsProps & StateProps & DispatchProp
         }
         else if(this.props.accounts == null || this.props.accounts.length == 0){
             tableContent = (
-                <div className="uk-alert-default uk-margin-right uk-alert" data-uk-alert>
-                    <div className="uk-grid uk-grid-small" data-uk-grid>
-                        <div className="uk-width-auto uk-flex uk-flex-middle">
-                            <i className="fas fa-info-circle uk-margin-small-right"></i>
-                        </div>
-                        <div className="uk-width-expand uk-flex uk-flex-middle">
-                            <p>No accounts have been created or loaded yet. Get started with the button above!</p>    
-                        </div>
+                <Alert color="light">
+                    <div className="d-flex align-items-center">
+                        <i className="fas fa-exclamation-triangle mr-2"></i>
+                        No accounts have been created or loaded yet. Get started with the button above!
                     </div>
-                </div>
-            );
-        }
-        else if (this.state.searchText != "" && this.state.tableData.length == 0){
-            tableContent = (
-                <div className="uk-alert-default uk-margin-right uk-alert" data-uk-alert>
-                    <div className="uk-grid uk-grid-small" data-uk-grid>
-                        <div className="uk-width-auto uk-flex uk-flex-middle">
-                            <i className="fas fa-info-circle uk-margin-small-right"></i>
-                        </div>
-                        <div className="uk-width-expand uk-flex uk-flex-middle">
-                            <p>No results for search term: <i>{this.state.searchText}</i></p>    
-                        </div>
-                    </div>
-                </div>)
+                </Alert>);
         }
         else {
             tableContent = (
                 <ReactTable 
-                    showPagination={false}
+                    className="enable-hover"
+                    NoDataComponent={NoMatchesComponent}
+                    PaginationComponent={ReactTablePagination}
+                    showPagination={true}
                     columns={this.columns}
                     data={this.state.tableData}
-                    style={{maxHeight: `${window.innerHeight - 180}px`}}
-                    getTrProps={(state: any, rowInfo: any, column: any, instance: any) => ({
-                        onClick: (e: any) => {
+                    defaultSorted={SortFirstColumn(this.columns)}
+                    minRows={0}
+                    getTrProps={(state: any, rowInfo: any) => ({
+                        onClick: () => {
                             this.props.history.push(`/account/${rowInfo.original.accountId}`);
                         },
                         style: {
                             cursor: 'pointer'
                         } 
                       })}
-                      minRows={0}/>);
+                    />);
         }
 
         return (
-            <div className="content-inner">
-                <Header title="Accounts" icon="fa fa-building"/>
-                <div className="content-accounts">
-                    <div className="table-accounts">
-                        <div className="uk-grid uk-grid-collapse">
-                            <div className="uk-width-expand">
-                                <div className="icon-input-container uk-grid uk-grid-collapse icon-left">
-                                    <div tabIndex={-1} className="uk-width-auto uk-flex uk-flex-middle">
-                                        <i className="fas fa-search"></i>
-                                    </div>
-                                    <input className="uk-input uk-width-expand" type="search" placeholder="Search..." value={this.state.searchText} onChange={(e) => this.handleSearch(e)}/>
-                                </div> 
+            <div className="w-100 px-4">
+                <PageHeader title="All" subtitle="Accounts" icon="fas fa-building"/>
+                <Card>
+                    <CardBody className="p-0">
+                        <div className="d-flex p-2 justify-content-between">
+                            <div className="d-flex">
+                                <Button color="accent"
+                                            onClick={() => this.props.openCreateAccountDialog()} >
+                                            <i className="fas fa-plus-circle mr-2"></i>New Account
+                                    </Button>
                             </div>
-                            <div className="uk-width-auto uk-margin-left uk-margin-right">
-                                <button className="uk-button uk-button-primary" onClick={() => this.props.openModalDialog('new_account')}>
-                                    <i className="fa fa-plus-circle uk-margin-small-right fa-lg"></i>
-                                    New account
-                                </button>
+                            <div className="d-flex">
+                                <InputGroup className="input-group-seamless">
+                                    <InputGroupAddon addonType="prepend">
+                                        <InputGroupText>
+                                            <i className="fas fa-search"></i>
+                                        </InputGroupText>
+                                    </InputGroupAddon>
+                                    <Input placeholder="Search..."
+                                        value={this.state.searchText} onChange={(e) => this.handleSearch(e)} />
+                                </InputGroup>
                             </div>
                         </div>
-                        <hr />
-                        <div className="container-table-accounts">
-                            {tableContent}
-                        </div>
-                    </div>
-                </div>
-                <ModalDialog dialogId="new_account" onClose={() => this.props.clearAccountCreation()}>
-                    <NewAccountDialog />
-                </ModalDialog>
-            </div>)
+                        {tableContent}
+                    </CardBody>
+                </Card>
+                <NewAccountDialog />
+            </div>);
     }
 }
 
 const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, AccountsProps> = (dispatch) => {
   return {
     retrieveAccounts: () => dispatch(retrieveAccounts()),
-    openModalDialog: (dialogId: string) => dispatch(openModalDialog(dialogId)),
     clearAccountCreation: () => dispatch(clearAccountCreation()),
-    selectApplicationTab: (tab: ApplicationTab) => dispatch(selectApplicationTab(tab))
+    selectApplicationTab: (tab: ApplicationTab) => dispatch(selectApplicationTab(tab)),
+    openCreateAccountDialog: () => dispatch(openDialog(ModalDialogNames.CreateAccount))
   };
 };
 

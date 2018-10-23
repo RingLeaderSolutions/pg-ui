@@ -1,17 +1,28 @@
-$margin-small: 6px;
-$margin-medium: 10px;
-$margin-xmedium: 15px;
-$margin-large: 20px;
-$margin-xlarge: 30px;
-$margin-xxlarge: 40px;
-$margin-xxxlarge: 50px;
+// Global application variables
 
-$app-background: #ffffff;
+$accent-color: #0091e2; //#0b2144
 
-$grey-border: #e5e5e5;
-$text-color: #666666;
+// $orange:  #fb7906 !default;
+$orange:  #e25822 !default;
+$indigo:  #674eec !default;
+$purple:  #8445f7 !default;
+$pink:    #ff4169 !default;
+$teal:    #1adba2 !default;
 
-$color-proposal: orange;
-$color-qualified: grey;
-$color-primary: #1875f0;
-$color-priced: limegreen;
+// Add to theme colors so that they can be used with all components
+$theme-colors: () !default;
+$theme-colors: map-merge((
+  "orange":    $orange,
+  "indigo":    $indigo,
+  "purple":    $purple,
+  "pink":      $pink,
+  "teal":      $teal
+), $theme-colors);
+
+
+$font-family-system-first: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+$tooltip-font-size: 0.875rem;
+
+$modal-backdrop-opacity: .7;
+$main-sidebar-zindex: 1035;
+$modal-header-padding: 1rem;

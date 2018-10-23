@@ -1,0 +1,100 @@
+@import "globals";
+
+.main-navbar .navbar {
+    height: auto;
+
+    .navbar-brand {
+        height: auto;
+
+        #main-logo {
+            max-width: 250px;
+            width: 100%;
+            height: auto;
+        }
+    }
+}
+
+.label-connection {
+    .tf-label {
+        text-transform: none;
+        padding: 5px 20px;
+        border-radius: 8px;
+        background: #f4f4f5;
+        
+        max-width: 55px;
+        transition: max-width 0.5s ease;
+        
+        span {
+            opacity: 0;
+            transition: opacity 0.1s linear;
+            user-select: none;
+        }
+
+        i {
+            margin-right: 0px;
+            transition: margin-right 0.1s linear 0.2s;
+        }
+    }
+
+    .tf-label:hover {
+        max-width: 100%;
+        transition: max-width 0.5s ease;
+
+        span {
+            opacity: 1;
+            transition: opacity 0.1s linear 0.1s;
+        }
+
+        i {
+            margin-right: 10px;
+            transition: none;
+        }
+    }
+
+    .label-connected {
+        color: #16ac16;
+        background: #cff7ce;
+    }
+    
+    .label-connecting {
+        color: #666666;
+        background: #f4f4f5;
+        
+        i {
+            animation: spin 2s linear infinite;
+        }
+    }
+
+    .label-recovering {
+        color: #ac6116;
+        background: #f7e2ce;
+        i {
+            animation: spin 2s linear infinite;
+        }
+    }
+    
+    .label-error {
+        color: #ac1616;
+        background: #f7cecf;
+        i {
+            animation: fade-in-out 2s ease infinite;
+        }
+    }
+    .label-error:hover {
+        i {
+            animation: none;
+        }
+    }
+}
+
+.main-sidebar__nav-title {
+    text-transform:uppercase;
+    margin: 0;
+    font-size: $page-subtitle-font-size;
+    letter-spacing: $page-subtitle-letter-spacing;
+    padding:1px $main-sidebar-nav-link-padding-x;
+    font-weight: $page-title-font-weight;
+    color: #9ea8b9;
+    border-bottom: $main-sidebar-nav-link-border;
+    border-top: $main-sidebar-nav-link-border;
+}

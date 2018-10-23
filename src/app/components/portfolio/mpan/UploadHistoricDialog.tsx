@@ -1,15 +1,19 @@
 import * as React from "react";
-import { MapDispatchToPropsFunction, connect, MapStateToProps } from 'react-redux';
+import { MapDispatchToPropsFunction, MapStateToProps } from 'react-redux';
 import { ApplicationState } from '../../../applicationState';
 import { PortfolioDetails } from '../../../model/Models';
 
 import { uploadHistoric } from '../../../actions/portfolioActions';
-import { closeModalDialog } from "../../../actions/viewActions";
 import { MultiUploadPanel } from "../../common/UploadPanel";
+import asModalDialog, { ModalDialogProps } from "../../common/modal/AsModalDialog";
+import { ModalHeader, ModalBody, ModalFooter, Button, Form, FormGroup, Label, Input } from "reactstrap";
+import { ModalDialogNames } from "../../common/modal/ModalDialogNames";
 
-interface UploadHistoricDialogProps {
+export interface UploadHistoricDialogData {
     details: PortfolioDetails;
 }
+
+interface UploadHistoricDialogProps extends ModalDialogProps<UploadHistoricDialogData> { }
 
 interface StateProps {
   working: boolean;
@@ -19,7 +23,6 @@ interface StateProps {
 
 interface DispatchProps {
     uploadHistoric: (portfolioId: string, files: Blob[], historicalType: string) => void;
-    closeModalDialog: () => void;
 }
 
 interface UploadHistoricState {
@@ -28,8 +31,8 @@ interface UploadHistoricState {
 }
 
 class UploadHistoricDialog extends React.Component<UploadHistoricDialogProps & StateProps & DispatchProps, UploadHistoricState> {
-    constructor(){
-        super();
+    constructor(props: UploadHistoricDialogProps & StateProps & DispatchProps){
+        super(props);
         this.state = {
             files: null,
             historicalType: ""
@@ -38,11 +41,11 @@ class UploadHistoricDialog extends React.Component<UploadHistoricDialogProps & S
     
     upload() {
         this.props.uploadHistoric(
-            this.props.details.portfolio.id,
+            this.props.data.details.portfolio.id,
              this.state.files,
               this.state.historicalType);
 
-        this.props.closeModalDialog();
+        this.props.toggle();
     }
 
     onFilesSelected(files: File[]){
@@ -70,44 +73,44 @@ class UploadHistoricDialog extends React.Component<UploadHistoricDialogProps & S
 
     render() {
         return (
-            <div>
-                <div className="uk-modal-header">
-                    <h2 className="uk-modal-title"><i className="fa fa-file-upload uk-margin-right"></i>Upload Historical Consumption</h2>
-                </div>
-                <div className="uk-modal-body">
-                    <div className="uk-margin">
-                        <p>Select the files you wish to upload.</p>
-                        <form>
-                            <fieldset className="uk-fieldset">
-                                <select className='uk-select' 
-                                    value={this.state.historicalType}
-                                    onChange={(e) => this.handleFormChange("historicalType", e)} >
-                                    <option value="" disabled>Select</option>
-                                    <option value="Generic">Generic</option>
-                                    <option value="BACKWARDS">Backwards</option>
-                                    <option value="UKDC">UKDC</option>
-                                </select>
-                            </fieldset>
-                            <hr />
-                            <MultiUploadPanel 
-                                files={this.state.files}
-                                onFilesSelected={(files: File[]) => this.onFilesSelected(files)}
-                                onFilesCleared={() => this.onFilesCleared()} />
-                        </form>
-                    </div>
-                </div>
-                <div className="uk-modal-footer uk-text-right">
-                    <button className="uk-button uk-button-default uk-margin-right" type="button" onClick={() => this.props.closeModalDialog()}><i className="fas fa-times uk-margin-right"></i>Cancel</button>
-                    <button className="uk-button uk-button-primary" type="button" onClick={() => this.upload()} disabled={!this.canSubmit()}><i className="fa fa-arrow-circle-up uk-margin-right"></i>Upload</button>
-                </div>
-            </div>)
+            <div className="modal-content">
+                <ModalHeader toggle={this.props.toggle}><i className="fas fa-file-upload mr-2"></i>Upload Historical Consumption</ModalHeader>
+                <ModalBody>
+                    <Form>
+                        <FormGroup>
+                            <Input type="select" name="upload-historic-type-picker" id="upload-historic-type"
+                                   value={this.state.historicalType}
+                                    onChange={(e) => this.handleFormChange("historicalType", e)}>
+                                <option value="" disabled>Select</option>
+                                <option value="Generic">Generic</option>
+                                <option value="BACKWARDS">Backwards</option>
+                                <option value="UKDC">UKDC</option>
+                            </Input>
+                        </FormGroup>
+                        <hr />
+                        <MultiUploadPanel 
+                            files={this.state.files}
+                            onFilesSelected={(files: File[]) => this.onFilesSelected(files)}
+                            onFilesCleared={() => this.onFilesCleared()} />
+                    </Form>
+                </ModalBody>
+                <ModalFooter>
+                    <Button onClick={this.props.toggle}>
+                        <i className="fas fa-times mr-1"></i>Cancel
+                    </Button>
+                    <Button color="accent" 
+                            disabled={!this.canSubmit()}
+                            onClick={() => this.upload()}>
+                        <i className="fas fa-arrow-circle-up mr-1"></i>Save
+                    </Button>
+                </ModalFooter>
+            </div>);
     }
 }
 
 const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, UploadHistoricDialogProps> = (dispatch) => {
     return {
-        uploadHistoric: (portfolioId: string, files: File[], historicalType: string) => dispatch(uploadHistoric(portfolioId, files, historicalType)),
-        closeModalDialog: () => dispatch(closeModalDialog())
+        uploadHistoric: (portfolioId: string, files: File[], historicalType: string) => dispatch(uploadHistoric(portfolioId, files, historicalType))
     };
 };
   
@@ -119,4 +122,9 @@ const mapStateToProps: MapStateToProps<StateProps, UploadHistoricDialogProps, Ap
     };
 };
   
-export default connect(mapStateToProps, mapDispatchToProps)(UploadHistoricDialog);
+export default asModalDialog(
+{ 
+    name: ModalDialogNames.UploadHistoric, 
+    centered: true, 
+    backdrop: true,
+}, mapStateToProps, mapDispatchToProps)(UploadHistoricDialog)

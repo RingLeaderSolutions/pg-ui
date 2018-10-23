@@ -2,22 +2,22 @@ import * as React from "react";
 import { MapDispatchToPropsFunction, connect, MapStateToProps } from 'react-redux';
 import { ApplicationState } from '../../../../applicationState';
 
-import Spinner from '../../../common/Spinner';
 import * as moment from 'moment';
 
-import TenderBackingSheetsDialog from '../TenderBackingSheetsDialog';
-import QuoteCollateralDialog from './QuoteCollateralDialog';
+import OfferCollateralDialog, { OfferCollateralDialogData } from './OfferCollateralDialog';
 
 import { fetchQuoteBackingSheets, exportContractRates, deleteQuote, generateTenderPack } from '../../../../actions/tenderActions';
-import { Tender, TenderSupplier, TenderQuote, TenderIssuance, TenderPack, QuoteIndicator, QuoteBestCategoryEntry, isComplete } from "../../../../model/Tender";
+import { Tender, TenderSupplier, TenderQuote, TenderIssuance, TenderPack, isComplete } from "../../../../model/Tender";
 import { format } from 'currency-formatter';
-import UploadOfferDialog from "./UploadOfferDialog";
-import IssueTenderPackDialog from "./IssueTenderPackDialog";
-import { openModalDialog } from "../../../../actions/viewActions";
-import ModalDialog from "../../../common/ModalDialog";
-import * as UIkit from 'uikit';
-import TenderDeadlineWarning from "../warnings/TenderDeadlineWarning";
-import { TenderCompleteWarning } from "../warnings/TenderCompleteWarning";
+import UploadOfferDialog, { UploadOfferDialogData } from "./UploadOfferDialog";
+import IssueTenderPackDialog, { IssueTenderPackDialogData } from "./IssueTenderPackDialog";
+import { openDialog, openAlertDialog } from "../../../../actions/viewActions";
+import { DropdownItem, Button, UncontrolledDropdown, DropdownToggle, Row, DropdownMenu, UncontrolledTooltip, Col, Alert, Card, CardHeader, CardBody } from "reactstrap";
+import { LoadingIndicator } from "../../../common/LoadingIndicator";
+import Badge from "reactstrap/lib/Badge";
+import { ModalDialogNames } from "../../../common/modal/ModalDialogNames";
+import ContractRatesDialog from "../ContractRatesDialog";
+import { IsNullOrEmpty } from "../../../../helpers/extensions/ArrayExtensions";
 
 interface TenderOffersTableProps {
     tender: Tender;
@@ -33,201 +33,408 @@ interface DispatchProps {
     exportContractRates: (tenderId: string, quoteId: string) => void;
     deleteQuote: (tenderId: string, quoteId: string) => void;
     generateTenderPack: (portfolioId: string, tenderId: string) => void;
-    openModalDialog: (dialogId: string) => void;
+    
+    openAlertDialog: (title: string, body: string) => void;
+    openIssueTenderPackDialog: (data: IssueTenderPackDialogData) => void;
+    openOfferCollateralDialog: (data: OfferCollateralDialogData) => void;
+    openContractRatesDialog: () => void;
+    openUploadOfferDialog: (data: UploadOfferDialogData) => void;
 }
 
-class TenderOffersTable extends React.Component<TenderOffersTableProps & StateProps & DispatchProps, {}> {
-    fetchAndDisplayRates(quoteId: string, ratesDialogName: string){
-        this.props.fetchQuoteBackingSheets(this.props.tender.tenderId, quoteId);
-        this.props.openModalDialog(ratesDialogName);
+enum SelectedOfferTab {
+    Received,
+    Pending
+}
+
+interface TenderOffersTableState {
+    selectedIssuanceId: string;
+    selectedOfferTab: SelectedOfferTab;
+}
+
+class TenderOffersTable extends React.Component<TenderOffersTableProps & StateProps & DispatchProps, TenderOffersTableState> {
+    constructor(props: TenderOffersTableProps & StateProps & DispatchProps) {
+        super(props);
+        this.state = {
+            selectedIssuanceId: null,
+            selectedOfferTab: SelectedOfferTab.Received
+        };
+    }
+    
+    selectIssuance(selectedIssuanceId: string){
+        this.setState({
+            ...this.state,
+            selectedIssuanceId
+        });
     }
 
-    exportQuote(quoteId: string){
+    fetchAndDisplayRates(quoteId: string){
+        this.props.fetchQuoteBackingSheets(this.props.tender.tenderId, quoteId);
+        this.props.openContractRatesDialog();
+    }
+
+    exportOffer(quoteId: string){
         this.props.exportContractRates(this.props.tender.tenderId, quoteId);
     }
 
     deleteQuote(quoteId: string){
         this.props.deleteQuote(this.props.tender.tenderId, quoteId);
     }
-    
-    mapIndicatorsToIcons(indicators: QuoteIndicator[]){
-        var errorIconColor = "#ff0000";
-        var warningIconColor = "#ffa500";
 
-        var indicatorIcons = indicators.map((i, index) => {
-            var margin = index == 0 ? null : "uk-margin-small-left";
+    renderIndicator(icon: string, index: number, quoteId: string, tooltip: string){
+        let indicatorId = `indicator-${quoteId}-${index}`;
+        return (
+            <div key={index}>
+                <i className={icon} id={indicatorId}></i>
+                <UncontrolledTooltip target={indicatorId} placement="bottom">
+                    {tooltip}
+                </UncontrolledTooltip>
+            </div>
+        )
+    }
+
+    renderIndicators(quote: TenderQuote){
+        let { quoteId } = quote;
+        var indicatorIcons = quote.indicators.map((i, index) => {
+            var margin = index == 0 ? null : "ml-1";
 
             switch(i.type){
                 case "EMAIL":
-                    return (<i key={index} className={`fas fa-envelope ${margin}`} data-uk-tooltip="title:This offer was uploaded via email."/>);
+                    return this.renderIndicator(`fas fa-envelope ${margin}`, index, quoteId, "This offer was uploaded via email.");
                 case "UPLOAD":
-                    return (<i key={index} className={`fas fa-cloud-upload-alt ${margin}`} data-uk-tooltip="title:This offer was uploaded manually."/>);
+                    return this.renderIndicator(`fas fa-cloud-upload-alt ${margin}`, index, quoteId, "This offer was uploaded manually.");
                 case "METER_ERROR":
-                    return (<i key={index} style={{color: errorIconColor}} className={`fas fa-tachometer-alt ${margin}`} data-uk-tooltip="title:This offer has missing meters or are in an error state."/>);
+                    return this.renderIndicator(`fas fa-tachometer-alt text-danger ${margin}`, index, quoteId, "This offer has missing meters or are in an error state.");
                 case "DATE_ERROR":
-                    return (<i key={index} style={{color: errorIconColor}} className={`fas fa-calendar-alt ${margin}`} data-uk-tooltip="title:This offer has incorrect dates on its meters."/>);
+                    return this.renderIndicator(`fas fa-calendar-alt text-danger ${margin}`, index, quoteId, "This offer has incorrect dates on its meters.");
                 case "CONSUMPTION_VARIATION":
-                    return (<i key={index} style={{color: warningIconColor}} className={`fas fa-chart-line ${margin}`} data-uk-tooltip="title:This offer's consumption varies by more than 10%."/>);
+                    return this.renderIndicator(`fas fa-chart-line text-orange ${margin}`, index, quoteId, "This offer's consumption varies by more than 10%.");
                 case "TARIFF_VARIATION":
-                    return (<i key={index} style={{color: errorIconColor}} className={`fas fa-exclamation-triangle ${margin}`} data-uk-tooltip="title:This offer has meters with tariffs that do not match the previously accepted periods."/>);
+                    return this.renderIndicator(`fas fa-exclamation-triangle ${margin}`, index, quoteId, "This offer has meters with tariffs that do not match the previously accepted periods.");
                 default:
-                    return (<i key={index} className={`fas fa-info-circle ${margin}`} data-uk-tooltip={`title:${i.detail}`}/>)
+                    return this.renderIndicator(`fas fa-info-circle ${margin}`, index, quoteId, i.detail);
             }
         });
-        return (<div>{indicatorIcons}</div>)
+        return (<div className="d-flex justify-content-center">{indicatorIcons}</div>)
     }
 
-    renderBestCategories(bestCategories: QuoteBestCategoryEntry[]){
-        return bestCategories.map((bc, index) => {
-            var className = index == 0 ? "" : "uk-margin-small-left";
-
+    renderBestCategories(quote: TenderQuote){
+        let labels = quote.bestCategories.map((bc, index) => {
             var title = bc.title;
-            var tooltipTitle = bc.title;
+            var lowestProperty = bc.title;
             if(bc.title == "totalCCL"){
                 title = "Total";
-                tooltipTitle = "Total inc. CCL"
+                lowestProperty = "Total inc. CCL"
             }
 
-            var tooltip = `This offer scores as the lowest price in <strong>${tooltipTitle}</strong> for <strong>${bc.score} meter(s).</strong>`;
-            return (<span key={index} className={`uk-label uk-label-success ${className}`} data-uk-tooltip={`title:${tooltip}`}>{title}: {bc.score}</span>)
-        })
+            let bcId = `bc-${quote.quoteId}-${index}`;
+            return (
+                <div key={index}>
+                    <p id={bcId} className="m-0 pt-1 pl-1">
+                        <Badge color="light" className="border">
+                            <i className="fas fa-check text-success mr-1" />{title}: {bc.score}
+                        </Badge>
+                    </p>
+                    <UncontrolledTooltip target={bcId} placement="bottom">
+                        This offer scored as the lowest price in <strong>{lowestProperty}</strong> for <strong>{bc.score} meters.</strong>
+                    </UncontrolledTooltip>
+                </div>
+            )
+        });
+        return (<div className="d-flex justify-content-center flex-wrap">{labels}</div>)
     }
 
     renderPendingSuppliers(packs: TenderPack[]){
-        var pendingSupplierCards = packs
-        .sort((p1: TenderPack, p2: TenderPack) => {        
-            if (p1.supplierId < p2.supplierId) return 1;
-            if (p1.supplierId > p2.supplierId) return -1;
-            return 0;
-        })
-        .map(p => {
-            var supplier = this.props.suppliers.find(su => su.supplierId == p.supplierId);
-            var supplierImage = supplier == null ? "Unknown" : (<img data-uk-tooltip={`title:${supplier.name}`} src={supplier.logoUri} style={{ maxWidth: "105px", maxHeight: "60px" }}/>);
-
-            return (
-                <div key={p.supplierId}>
-                    <div key={p.supplierId} className="uk-card uk-card-small uk-card-default uk-card-body uk-flex-1">
-                        <div className="uk-grid uk-grid-collapse uk-height-1-1">
-                            <div className="uk-width-expand uk-flex uk-flex-middle uk-flex-center">
-                                {supplierImage}
-                            </div>
-                        </div>
-                    </div>
-                </div>);
-        })
+        var supplierImages = packs
+            .map(p => {
+                var supplier = this.props.suppliers.find(su => su.supplierId == p.supplierId);
+                return (
+                    <div key={supplier.supplierId} className="mx-2 d-flex align-items-center">
+                        <img src={supplier.logoUri} style={{maxWidth: '140px', maxHeight: '80px'}} />
+                    </div>)
+            });
         return (
-            <div className="uk-child-width-1-5 uk-grid-match uk-grid-height-match" data-uk-grid>
-                {pendingSupplierCards}
+            <div>
+                <h6><i className="material-icons text-warning mr-2">autorenew</i><strong>Pending Offers:</strong></h6>
+                <div className="d-flex flex-wrap justify-content-center align-items-center p-2">
+                    {supplierImages}
+                </div>
             </div>
         )
     }
 
-    renderReceivedOffers(tenderComplete: boolean, packs: TenderPack[]){
-        var quotes = packs
-        .map((p) => {
-            return p.quotes
-            // Order the quotes of the pack so that the latest version appears first in the list
-            .sort((q1: TenderQuote, q2: TenderQuote) => {        
-                if (q1.version < q2.version) return 1;
-                if (q1.version > q2.version) return -1;
-                return 0;
-            })
-            .map((quote) => {
-                var supplier = this.props.suppliers.find(su => su.supplierId == quote.supplierId);
-                var supplierImage = supplier == null ? "Unknown" : (<img src={supplier.logoUri} style={{ maxWidth: "70px", maxHeight: "40px"}}/>);
-
-                var viewQuoteModalName = `view_quote_rates_${this.props.tender.tenderId}`;
-                var collateralDialogName = `view_collateral_${quote.quoteId}`;
-
-                return (
-                    <tr key={quote.quoteId} className="uk-table-middle">
-                        <td>{supplierImage}</td>
-                        <td>{`${quote.contractLength} months`}</td>
-                        <td>{this.mapIndicatorsToIcons(quote.indicators)}</td>  
-                        <td>{quote.version}</td>
-                        <td>{format(quote.totalIncCCL, { locale: 'en-GB'})}</td>
-                        <td>{`${quote.appu.toFixed(4)}p`}</td>
-                        <td>{this.renderBestCategories(quote.bestCategories)}</td>
-                        <td>
-                            <div>
-                                <div className="uk-inline">
-                                    <button className="uk-button uk-button-default borderless-button" type="button">
-                                        <i className="fa fa-ellipsis-v"></i>
-                                    </button>
-                                    <div data-uk-dropdown="pos:bottom-justify;mode:click">
-                                        <ul className="uk-nav uk-dropdown-nav">
-                                        <li><a href="#" onClick={() => this.exportQuote(quote.quoteId)}>
-                                            <i className="fas fa-cloud-download-alt uk-margin-small-right"></i>
-                                            Download
-                                        </a></li>
-                                        <li className="uk-nav-divider"></li>
-                                        <li><a href="#" onClick={() => this.fetchAndDisplayRates(quote.quoteId, viewQuoteModalName)}>
-                                            <i className="fas fa-pound-sign uk-margin-small-right"></i>
-                                            View Contract Rates
-                                        </a></li>
-                                        <li className="uk-nav-divider"></li>
-                                        <li><a href="#" onClick={() => this.props.openModalDialog(collateralDialogName)}>
-                                            <i className="fas fa-folder-open uk-margin-small-right"></i>                                      
-                                            View Collateral
-                                        </a></li>
-                                        <li className="uk-nav-divider"></li>
-                                        <li className={tenderComplete ? 'uk-disabled' : ''} ><a href="#" onClick={() => this.deleteQuote(quote.quoteId)}>
-                                            <i className="fas fa-trash uk-margin-small-right"></i>                              
-                                            Delete
-                                        </a></li>
-                                        </ul>
-                                    </div>
-                                </div>
-                                <ModalDialog dialogId={collateralDialogName}>
-                                    <QuoteCollateralDialog collateral={quote.collateralList} />
-                                </ModalDialog>
-                            </div>
-                        </td>
-                    </tr>
-                );
-            });
-        });
-
+    renderReceivedOffersTable(packs: TenderPack[]){
+        let offers = this.flattenOffers(packs);
         return (
-            <div>
-                <table className="uk-table uk-table-divider">
-                    <thead>
-                        <tr>
-                            <th>Supplier</th>
-                            <th>Contract Length</th>
-                            <th>Status</th>
-                            <th>Version</th>
-                            <th>Contract Value</th>
-                            <th>APPU</th>
-                            <th>Best of breed</th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {quotes}
-                    </tbody>
-                </table>
-            </div>
+            <table className="table table-borderless offers-table">
+                <tbody>
+                    <tr>
+                        <th className="border-right"></th>
+                        {packs.map((p) => {
+                            var supplier = this.props.suppliers.find(su => su.supplierId == p.supplierId);
+                            var supplierImage = supplier == null ? "Unknown" : (<img src={supplier.logoUri} style={{ maxWidth: "105px", maxHeight: "60px"}}/>);
+                            return (
+                                <td key={`supplier-image${p.supplierId}`} colSpan={p.quotes.length}  className="text-center border-right">
+                                    {supplierImage}
+                                </td>)
+                        })}
+                    </tr>
+
+                    <tr>
+                        <th className="border-right"></th>
+                        {offers.map(o => (<td key={`quote-length-${o.quoteId}`} className="text-center border-right"><p className="text-small m-0">{`${o.contractLength} months`} {`(V${o.version})`}</p></td>))}
+                    </tr>                 
+
+                    <tr className="table-highlight-grey">
+                        <th className="th-contract-value text-center align-middle text-nowrap table-highlight-grey border-right"><span><i className="fas fa-money-check-alt mr-2 text-accent"></i>Contract Value</span></th>
+                        {offers.map(o => (<td key={`contract-value-${o.quoteId}`} className="border-right text-center"><h4 className="m-0"><strong>{format(o.totalIncCCL, { locale: 'en-GB'})}</strong></h4></td>))}
+                    </tr>
+
+                    <tr className="table-highlight-grey">
+                        <th className="th-appu text-center align-middle text-nowrap table-highlight-grey border-right"><span><i className="fas fa-coins mr-1 text-warning mr-2"></i>Avg. Pence Per Unit</span></th>
+                        {offers.map(o => (<td key={`appu-${o.quoteId}`} className="border-right text-center"><h4 className="m-0">{`${o.appu.toFixed(4)}p`}</h4></td>))}
+                    </tr>
+
+                    <tr>
+                        <th className="text-center align-middle text-nowrap border-right"><span><i className="fas fa-info-circle text-info mr-2"/>Indicators</span></th>
+                        {offers.map(o => (<td key={`indicators-${o.quoteId}`} className="border-right text-center">{this.renderIndicators(o)}</td>))}
+                    </tr>
+
+                    <tr className="table-highlight-green">
+                        <th className="th-best text-center align-middle text-nowrap table-highlight-green border-right"><span><i className="fas fa-trophy text-success mr-2"/>Best In Breed</span></th>
+                        {offers.map(o => (<td key={`best-in-breed-${o.quoteId}`} className="border-right text-center">{this.renderBestCategories(o)}</td>))}
+                    </tr>
+                    <tr>
+                        <th className="border-right"></th>
+                        {offers.map(o => (
+                            <td key={`actions-${o.quoteId}`} className="border-right text-center">
+                                <UncontrolledDropdown>
+                                    <DropdownToggle color="white" caret>
+                                        <i className="material-icons text-secondary mr-1">edit</i>
+                                        <span className="mr-1">Actions</span>
+                                    </DropdownToggle>
+                                    <DropdownMenu right>
+                                        <DropdownItem href="#" onClick={() => this.exportOffer(o.quoteId)}>
+                                            <span><i className="material-icons mr-1 text-secondary">cloud_download</i>Download</span>
+                                        </DropdownItem>
+                                        <DropdownItem href="#" onClick={() => this.props.openOfferCollateralDialog({ collateral: o.collateralList })}>
+                                            <span><i className="material-icons mr-1 text-secondary">folder_open</i>View Collateral</span>
+                                        </DropdownItem>
+                                        <DropdownItem href="#" onClick={() => this.fetchAndDisplayRates(o.quoteId)}>
+                                            <span><i className="fas fa-pound-sign mr-2 text-success" />View Rates</span>
+                                        </DropdownItem>
+                                        <DropdownItem divider />
+                                        <DropdownItem href="#" onClick={() => this.props.deleteQuote(this.props.tender.tenderId, o.quoteId)}>
+                                            <span className="text-danger"><i className="fas fa-trash-alt mr-1 text-danger" />Delete</span>
+                                        </DropdownItem>
+                                    </DropdownMenu>
+                                </UncontrolledDropdown>
+                                {/* <ButtonGroup>
+                                    <Button color="accent" outline className="btn-grey-outline" size="sm">
+                                        <i className="material-icons">cloud_download</i>
+                                    </Button>
+                                    <Button color="accent" outline className="btn-grey-outline" size="sm">
+                                        <i className="material-icons">folder_open</i>
+                                    </Button>
+                                    <Button color="success" outline className="btn-grey-outline" size="sm">
+                                        <i className="fas fa-eye"></i>
+                                    </Button>
+                                    <Button color="danger" outline className="btn-grey-outline" size="sm">
+                                        <i className="material-icons">delete</i>
+                                    </Button>
+                                </ButtonGroup> */}
+                            </td>))}
+                    </tr>
+                </tbody>
+            </table>
         )
+    }
+
+    flattenOffers(packs: TenderPack[]){
+        return packs.map((p) => {
+            return p.quotes
+                // Order the quotes of the pack so that the latest version appears first in the list
+                .sort((q1: TenderQuote, q2: TenderQuote) => {        
+                    if(q1.contractLength < q2.contractLength) return 1;
+                    if(q1.contractLength > q2.contractLength) return -1;
+                    
+                    if (q1.version < q2.version) return 1;
+                    if (q1.version > q2.version) return -1;
+                    return 0;
+                })})
+                .SelectMany(tq => tq);
+    }
+
+    renderReceivedOffers(packs: TenderPack[]){
+        let offerCards = packs
+            .map((p) => {
+                return p.quotes
+                // Order the quotes of the pack so that the latest version appears first in the list
+                .sort((q1: TenderQuote, q2: TenderQuote) => {        
+                    if (q1.version < q2.version) return 1;
+                    if (q1.version > q2.version) return -1;
+                    return 0;
+                })
+                .map((quote) => {
+                    var supplier = this.props.suppliers.find(su => su.supplierId == quote.supplierId);
+                    var supplierImage = supplier == null ? "Unknown" : (<img src={supplier.logoUri} style={{ maxWidth: "70px", maxHeight: "40px"}}/>);
+
+                    return (
+                        <Col md={6} sm={12} className="mb-4">
+                            <Card className="card-small h-100">
+                                <CardHeader className="border-bottom px-3 py-2">
+                                    <h6 className="m-0"><i className="fas fa-handshake mr-1"></i>{supplier.name} - {`${quote.contractLength} months`} - Version {quote.version}</h6>
+                                </CardHeader>
+                                <CardBody className="p-2">
+                                    <Row className="p-2 d-flex align-items-stretch flex-grow-1" noGutters>
+                                        <Col lg xs={6} className="d-flex flex-column justify-content-center text-center px-1 mt-md-0 mt-sm-3">
+                                            {supplierImage}
+                                        </Col>
+                                        <Col lg xs={6} className="d-flex flex-column justify-content-center text-center border-left px-1 mt-md-0 mt-sm-3">
+                                            <h5 className="m-0">{format(quote.totalIncCCL, { locale: 'en-GB'})}</h5>
+                                            <div className="text-light pt-1"><i className="fas fa-pound mr-1 text-success"></i>Contract Value</div>
+                                        </Col>
+                                        <Col lg xs={6} className="d-flex flex-column justify-content-center text-center border-left px-1 mt-md-0 mt-sm-3">
+                                            <h5 className="m-0">{`${quote.appu.toFixed(4)}p`}</h5>
+                                            <div className="text-light pt-1"><i className="material-icons text-success mr-1">send</i>Avg. Pence Per Unit</div>
+                                        </Col>
+                                        <Col lg xs={6} className="d-flex flex-column justify-content-center text-center border-left px-1 mt-md-0 mt-sm-3">
+                                            {this.renderIndicators(quote)}
+                                        </Col>
+                                        <Col lg xs={6} className="d-flex flex-column justify-content-center text-center border-left px-1 mt-md-0 mt-sm-3">
+                                            {this.renderBestCategories(quote)}
+                                        </Col>
+                                    </Row>
+                                </CardBody>
+                            </Card>
+                        </Col>);
+                });
+            })
+            .SelectMany(tpo => tpo);
+
+            return (
+                <Row className="d-flex flex-wrap-1">
+                    {offerCards}
+                </Row>
+            )
     }
 
     getFormattedDateTime(dateTime: string){
         return moment.utc(dateTime).local().format("MMMM Do, HH:mm");
     }
 
-    renderIssuanceContent(tenderComplete: boolean, issuance: TenderIssuance){
-        var supplierCount = issuance.packs.length;
-        var lastIssued = this.getFormattedDateTime(issuance.packs[issuance.packs.length - 1].lastIssued);
-        var created = this.getFormattedDateTime(issuance.created);
-        var expiry = this.getFormattedDateTime(issuance.expiry);
+    generateNewPack(){
+        var deadlineHasPassed = moment().diff(moment(this.props.tender.deadline), 'days') > 0;
+        if(deadlineHasPassed){
+            this.props.openAlertDialog("Warning", "Sorry, this tender's deadline is now in the past. Please update this before generating a new requirements pack.");
+            return;
+        }
 
-        var uploadOfferName = `upload_offer_${issuance.tenderId}`;
+        if(this.props.tender.assignedSuppliers.IsEmpty()){
+            this.props.openAlertDialog("Warning", "Sorry, this tender does not have any assigned suppliers. Please assign at least one supplier before generating a new requirements pack.");
+            return;
+        }
 
-        var hasReceivedQuotes = issuance.packs.some(
-            (p: TenderPack) => {
-                return p.quotes.some(
-                    (q:TenderQuote) => q.status != "PENDING") });
+        if(IsNullOrEmpty(this.props.tender.offerTypes)){
+            this.props.openAlertDialog("Warning", "Sorry, this tender does not have any requested contract durations. Please rectify this by editing the tender and selecting at least one duration.");
+            return;
+        }
 
+        this.props.generateTenderPack(this.props.tender.portfolioId, this.props.tender.tenderId);
+    }
+
+    renderUnissued(tenderComplete: boolean){
+        let { unissuedPacks } = this.props.tender;
+        let hasUnissued = !IsNullOrEmpty(unissuedPacks);
+
+        let content = (
+            <Alert color="light">
+                <div className="d-flex align-items-center flex-column">
+                    <i className="fas fa-exclamation-triangle mr-2"></i>
+                    <p className="m-0 pt-2">This tender doesn't have any unissued requirements packs.</p>
+                    <p className="m-0 pt-1">Click on the "Generate" button above to create some.</p>
+                </div>
+            </Alert>);
+
+        if(hasUnissued){
+            let tableContent = this.props.tender.unissuedPacks.map(p => {
+                var supplier = this.props.suppliers.find(s => s.supplierId == p.supplierId);
+                var supplierImage = supplier == null ? "Unknown" : (<img src={supplier.logoUri} style={{ maxWidth: "70px", maxHeight: "40px"}}/>);
+    
+                return (
+                    <tr key={p.packId}>
+                        <td>{p.packId.substring(0, 8)}</td>
+                        <td>{moment.utc(p.created).local().format("MMMM Do, HH:mm")}</td>
+                        <td>{p.meterCount}</td>
+                        <td>{supplierImage}</td>
+                        <td>
+                            <Button color="accent" outline className="btn-grey-outline" href={p.zipFileName}>
+                                <i className="fas fa-cloud-download-alt"></i>
+                            </Button> 
+                        </td>
+                    </tr>
+                )
+            });
+
+            content = (
+                <table className="table">
+                <thead>
+                    <tr>
+                        <th>Pack ID</th>
+                        <th>Created</th>
+                        <th>Meter #</th>
+                        <th>Supplier</th>
+                        <th/>
+                    </tr>
+                </thead>
+                <tbody>
+                    {tableContent}
+                </tbody>
+            </table>)
+        }
+
+        return (
+            <Card className="card-small h-100">
+                <CardHeader className="border-bottom pl-3 pr-2 py-2">
+                    <div className="d-flex align-items-center">
+                        <div className="flex-grow-1">
+                            <h6 className="m-0"><i className="fas fa-drafting-compass mr-1"></i>Unissued Requirements Packs</h6>
+                        </div>
+                            <Button color={hasUnissued ? "white" : "accent"} id="generate-new-packs-button" className="mr-3"
+                                    onClick={() => this.generateNewPack()} disabled={tenderComplete}>
+                                <i className="fas fa-plus-circle mr-1"></i>
+                                {hasUnissued ? "Regenerate" : "Generate"} 
+                            </Button>
+                            <UncontrolledTooltip target="generate-new-packs-button" placement="bottom">
+                                <strong>Generate new packs for issuance to suppliers</strong>
+                            </UncontrolledTooltip>
+                            <Button color="accent" id="issue-packs-button"
+                                    disabled={tenderComplete || !hasUnissued}
+                                    onClick={() => this.props.openIssueTenderPackDialog({ tender: this.props.tender })}>
+                                <i className="fas fa-envelope mr-1"></i>
+                                Issue 
+                            </Button>
+                            <UncontrolledTooltip target="issue-packs-button" placement="bottom">
+                                <strong>Issue the below tender packs, via email, to their respective suppliers</strong>
+                            </UncontrolledTooltip>
+                    </div>
+                </CardHeader>
+                <CardBody className="p-2">
+                    {content}
+                </CardBody>
+                <IssueTenderPackDialog />
+            </Card>
+        );
+    }
+
+
+    selectOfferTab(selectedOfferTab: SelectedOfferTab): void {
+        this.setState({
+            ...this.state,
+            selectedOfferTab
+        })
+    }
+
+    renderIssuanceOffers(issuance: TenderIssuance, tenderComplete: boolean): JSX.Element {
         var pendingQuotes = issuance.packs.filter((p: TenderPack) => {
             return p.quotes.some((q:TenderQuote) => q.status == "PENDING")
         });
@@ -238,248 +445,189 @@ class TenderOffersTable extends React.Component<TenderOffersTableProps & StatePr
 
         var hasReceivedQuotes = receivedQuotes.length != 0;
 
-        return (
-            <div key={issuance.issuanceId}>
-                <TenderDeadlineWarning deadline={moment(this.props.tender.deadline)} />
-                <div className="uk-grid uk-margin-small-left uk-margin-small-right uk-grid-match" data-uk-grid>
-                    <div className="uk-card uk-card-default uk-card-small uk-card-body uk-width-1-4 uk-text-center">
-                        <p className="uk-text-bold uk-margin-small">{created}</p>
-                        <p className="uk-text-meta uk-margin-small">Created</p>
-                    </div>
-                    <div className="uk-card uk-card-default uk-card-small uk-card-body uk-width-1-4 uk-text-center">
-                        <p className="uk-text-bold uk-margin-small">{supplierCount}</p>
-                        <p className="uk-text-meta uk-margin-small">Supplier Count</p>
-                    </div>
-                    <div className="uk-card uk-card-default uk-card-small uk-card-body uk-width-1-4 uk-text-center">
-                        <p className="uk-text-bold uk-margin-small">{lastIssued}</p>
-                        <p className="uk-text-meta uk-margin-small">Last issued</p>
-                    </div>
-                    <div className="uk-card uk-card-default uk-card-small uk-card-body uk-width-1-4 uk-text-center">
-                        <p className="uk-text-bold uk-margin-small">{expiry}</p>
-                        <p className="uk-text-meta uk-margin-small">Expiry</p>
-                    </div>
-                </div>
-                <div className="uk-margin-medium-top">
-                    <div className="uk-grid" data-uk-grid>
-                        <div className="uk-width-expand@s">
-                            {hasReceivedQuotes ? (<h3><i className="fas fa-handshake uk-margin-right"></i>Offers</h3>) : (<h3><i className="fas fa-hourglass-half uk-margin-right"></i>Pending Supplier Responses</h3>)}
-                        </div>
-                        <div className="uk-width-1-2">
-                            <button className="uk-button uk-button-primary uk-button-small uk-align-right" type="button"onClick={() => this.props.openModalDialog(uploadOfferName)} disabled={tenderComplete}>
-                                <i className="fa fa-file-upload uk-margin-small-right fa-lg"></i>
-                                Upload Offer
-                            </button>
-                        </div>
-                    </div>
-
-                    {hasReceivedQuotes ? (
-                        <div className="uk-margin-small-top">
-                            <ul data-uk-switcher="connect: +.uk-switcher" className="uk-tab">
-                                <li><a href="#"><i className="fas fa-envelope-open uk-margin-small-right fa-lg" style={{color: "#006400"}}></i>Received</a></li>
-                                <li><a href="#"><i className="fas fa-hourglass-half uk-margin-small-right fa-lg" style={{color: "#FFA500"}}></i>Pending Responses ({pendingQuotes.length})</a></li>
-                            </ul>
-                            <ul className='uk-switcher'>
-                                <li>{this.renderReceivedOffers(tenderComplete, receivedQuotes)}</li>
-                                <li>{this.renderPendingSuppliers(pendingQuotes)}</li>
-                            </ul>
-                        </div>) : this.renderPendingSuppliers(pendingQuotes)}
-                </div>
-                <ModalDialog dialogId={uploadOfferName}>
-                    <UploadOfferDialog tenderId={this.props.tender.tenderId} assignedSuppliers={this.props.tender.assignedSuppliers} utilityType={this.props.tender.utility} />
-                </ModalDialog>
-            </div>
-        )
-    }
-
-    generateNewPack(){
-        var deadlineHasPassed = moment().diff(moment(this.props.tender.deadline), 'days') > 0;
-        if(deadlineHasPassed){
-            UIkit.modal.alert("Sorry, this tender's deadline is now in the past. Please update this before generating a new requirements pack.")
-            return;
-        }
-
-        if(this.props.tender.assignedSuppliers.length <= 0){
-            UIkit.modal.alert("Sorry, this tender does not have any assigned suppliers. Please assign at least one supplier before generating a new requirements pack.")
-            return;
-        }
-
-        if(this.props.tender.offerTypes == null || this.props.tender.offerTypes.length == 0){
-            UIkit.modal.alert("Sorry, this tender does not have any requested contract durations. Please rectify this by editing the tender and selecting at least one duration.")
-            return;
-        }
-
-        this.props.generateTenderPack(this.props.tender.portfolioId, this.props.tender.tenderId);
-    }
-
-    renderUnissued(){
-        if(this.props.tender.unissuedPacks == null || this.props.tender.unissuedPacks.length == 0){
-            return (
+        let content: JSX.Element | JSX.Element[] = null;
+        if(hasReceivedQuotes){
+            content = (
                 <div>
-                    <TenderDeadlineWarning deadline={moment(this.props.tender.deadline)} className="uk-margin-top" />
-                    <div className="uk-alert-default uk-margin uk-margin-top uk-alert" data-uk-alert>
-                        <div className="uk-grid uk-grid-small" data-uk-grid>
-                            <div className="uk-width-auto uk-flex uk-flex-middle">
-                                <i className="fas fa-info-circle uk-margin-small-right"></i>
-                            </div>
-                            <div className="uk-width-expand uk-flex uk-flex-middle">
-                                <p>This tender doesn't have any unissued requirements packs.</p>    
-                            </div>
-                        </div>
+                    <div className="offers-table-container">
+                        {this.renderReceivedOffersTable(receivedQuotes)}
                     </div>
-                </div>);
+                    {pendingQuotes.length > 0 && (
+                        <div>
+                            <hr className="my-2"/>
+                            {this.renderPendingSuppliers(pendingQuotes)}
+                        </div>
+                    )}        
+                    <ContractRatesDialog />
+                </div>)
+        }
+        else {
+            content = this.renderPendingSuppliers(pendingQuotes);
         }
 
-        var tableContent = this.props.tender.unissuedPacks.map(p => {
-            var supplier = this.props.suppliers.find(s => s.supplierId == p.supplierId);
-            var supplierImage = supplier == null ? "Unknown" : (<img src={supplier.logoUri} style={{ maxWidth: "70px", maxHeight: "40px"}}/>);
-
-            return (
-                <tr key={p.packId}>
-                    <td>{<span className="uk-label uk-label-success">{p.packId.substring(0, 8)}</span>}</td>
-                    <td>{moment.utc(p.created).local().format("MMMM Do, HH:mm")}</td>
-                    <td>{p.meterCount}</td>
-                    <td>{supplierImage}</td>
-                    <td>
-                        <a className="uk-button uk-button-default uk-button-small" href={p.zipFileName} data-uk-tooltip="title:Download">
-                            <i className="fas fa-cloud-download-alt"></i>
-                        </a> 
-                    </td>
-                </tr>
+        let { assignedSuppliers, tenderId, utility } = this.props.tender;
+        return (
+            <Card className="card-small h-100">
+                <CardHeader className="border-bottom pl-3 pr-2 py-2">
+                    <div className="d-flex align-items-center">
+                        <div className="flex-grow-1 d-flex">
+                            <h6 className="m-0">
+                                <i className="fas fa-handshake mr-1"></i>
+                                Offers ({receivedQuotes.SelectMany(tp => tp.quotes).length} received, {pendingQuotes.length} pending)
+                                <i className="fas fa-info-circle text-accent pl-2" id="selected-issuance-details-icon"/>
+                                <UncontrolledTooltip target="selected-issuance-details-icon" placement="bottom" autohide={false}>
+                                    {this.renderIssuanceDetailCard(issuance)}
+                                </UncontrolledTooltip>
+                            </h6>
+                        </div>
+                        <Button color="accent" className="ml-2" id="manual-quote-upload-button"
+                                    disabled={tenderComplete}
+                                    onClick={() => this.props.openUploadOfferDialog({ assignedSuppliers, tenderId, utilityType: utility})}>
+                            <i className="fas fa-file-upload mr-1"></i>
+                            Upload 
+                        </Button>
+                        <UncontrolledTooltip target="manual-quote-upload-button" placement="bottom">
+                            <strong>Manually upload an offer received from a supplier</strong>
+                        </UncontrolledTooltip>
+                    </div>
+                </CardHeader>
+                <CardBody className="p-2">
+                    {content}
+                    <OfferCollateralDialog />
+                    <UploadOfferDialog />
+                </CardBody>
+            </Card>
             )
-        });
+    }
+
+    renderIssuanceDetailCard(issuance: TenderIssuance) : JSX.Element{
+        var supplierCount = issuance.packs.length;
+        var lastIssued = this.getFormattedDateTime(issuance.packs[issuance.packs.length - 1].lastIssued);
+        var created = this.getFormattedDateTime(issuance.created);
+        var expiry = this.getFormattedDateTime(issuance.expiry);
 
         return (
             <div>
-                <div className="uk-grid-small" data-uk-grid>
-                    <div className="uk-width-expand" />
-                    <div className="uk-width-auto">
-                        <button className="uk-button uk-button-primary uk-button-small" type="button" onClick={() => this.props.openModalDialog("issue_requirements_pack")}>
-                            <i className="fas fa-envelope uk-margin-small-right"></i>
-                            Issue
-                        </button>
-                    </div>
+                <h6 className="m-0"><i className="fas fa-industry mr-1 text-indigo"></i> {supplierCount} Suppliers</h6>
+                <hr className="my-1"/>
+                <div className="text-meta text-left">
+                    <i className="fas fa-plug text-accent mr-1"></i>Created:
                 </div>
-                <TenderDeadlineWarning deadline={moment(this.props.tender.deadline)} />
-                <div className="uk-alert-info uk-margin-small-top uk-margin-small-bottom" data-uk-alert>
-                    <p><i className="fas fa-info-circle uk-margin-small-right"></i>These requirements packs have not yet been issued.</p>
+                <h6 className="m-0">{created}</h6>
+                <hr className="my-1"/>
+                <div className="text-meta text-left">
+                    <i className="material-icons text-success mr-1">send</i>Issued:
                 </div>
-                <table className="uk-table uk-table-divider">
-                    <thead>
-                        <tr>
-                            <th>Pack ID</th>
-                            <th>Created</th>
-                            <th>Meter #</th>
-                            <th>Supplier</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {tableContent}
-                    </tbody>
-                </table>
-                <ModalDialog dialogId="issue_requirements_pack">
-                    <IssueTenderPackDialog tender={this.props.tender} portfolioId={this.props.tender.portfolioId} />
-                </ModalDialog>
-            </div>)
-    }
-
-    renderOffersContent(tenderComplete: boolean, issuances: TenderIssuance[]){
-        if(issuances == null || issuances.length == 0)
-        {
-            return this.renderUnissued();
-        }
-        
-        var tabs: any = [];
-        var tabContent: any = [];
-
-        issuances
-            .sort(
-                (i1: TenderIssuance, i2: TenderIssuance) => {
-                    var firstDate = moment.utc(i1.created).unix();
-                    var secondDate = moment.utc(i2.created).unix();
-            
-                    if (firstDate > secondDate) return -1;
-                    if (firstDate < secondDate) return 1;
-                    return 0;
-                })
-            .map((issuance, index) => {
-                var tabName = moment.utc(issuance.created).local().format("MMMM Do YYYY");
-                var tab = (<li key={index}><a href="#">{tabName}</a></li>);
-                tabs[index] = tab;
-
-                var content = this.renderIssuanceContent(tenderComplete, issuance);
-                tabContent[index] = content;
-            });
-
-        return (
-            <div className="uk-margin-top">
-                <ul className="uk-tab" data-uk-switcher="connect: +.uk-switcher">
-                    {tabs}
-                    <li key="unissued"><a href="#">Unissued</a></li>
-                </ul>
-                <ul className="uk-switcher">
-                    {tabContent}
-                    {this.renderUnissued()}
-                </ul>
+                <h6 className="m-0">{lastIssued}</h6>
+                <hr className="my-1"/>
+                <div className="text-meta text-left">
+                    <i className="fas fa-stopwatch mr-1 text-orange"></i>Expires:
+                </div>
+                <h6 className="m-0">{expiry}</h6>
             </div>
         )
     }
     
-    renderCardContent(content: any){
-        return (
-            <div className="uk-card uk-card-default">
-                <div className="uk-card-body">
-                    {content}
-                </div>
-            </div>)
+    sortIssuances(issuances: TenderIssuance[]) : TenderIssuance[] {
+        return issuances.sort(
+            (i1: TenderIssuance, i2: TenderIssuance) => {
+                var firstDate = moment.utc(i1.created).unix();
+                var secondDate = moment.utc(i2.created).unix();
+        
+                if (firstDate > secondDate) return -1;
+                if (firstDate < secondDate) return 1;
+                return 0;
+            })
     }
 
+    getIssuanceName(issuance: TenderIssuance, includeSelected?: boolean): JSX.Element {
+        let name = moment.utc(issuance.created).local().format("MMMM Do YYYY");
+        return (
+            <span>
+                <i className="fas fa-archive mr-1"></i> {includeSelected && <strong>Selected Issuance: </strong>}<span className="mr-1">{name}</span>
+            </span>);
+    }
+
+    renderIssuancePicker(issuances: TenderIssuance[], selectedIssuance: TenderIssuance | null): JSX.Element {
+        let issuanceOptions: JSX.Element[] = [];
+
+        if(!IsNullOrEmpty(issuances)){
+            issuances
+            .map((issuance, index) => {
+                let { issuanceId } = issuance;
+                issuanceOptions.push(
+                    <DropdownItem key={issuanceId} href="#" onClick={() => this.selectIssuance(issuanceId)}>
+                        {this.getIssuanceName(issuance)}{index === 0 && <span className="text-light">(Latest)</span>}
+                    </DropdownItem>);
+            });
+        }
+        
+        if(issuanceOptions.length > 0){
+            issuanceOptions.push(<DropdownItem key="divider" divider />);
+        }
+
+        issuanceOptions.push(
+            <DropdownItem key="unissued" href="#" onClick={() => this.selectIssuance("unissued")}><i className="fas fa-drafting-compass mr-1"></i><span className="mr-1">Unissued Packs</span></DropdownItem>
+        );
+
+        let selectedTitle = selectedIssuance ? this.getIssuanceName(selectedIssuance, true) : 
+            (<span><i className="fas fa-drafting-compass mr-1"></i> <strong>Viewing: </strong><span className="mr-1">Unissued Packs</span></span>);
+
+        return (
+            <div className="d-flex">
+                <UncontrolledDropdown>
+                    <DropdownToggle color="white" caret>
+                        {selectedTitle}
+                    </DropdownToggle>
+                    <DropdownMenu>
+                        {issuanceOptions}
+                    </DropdownMenu>
+                </UncontrolledDropdown>
+            </div>
+        )
+    }
+    
     render(){
         if(this.props.working){
-            let content = (<Spinner hasMargin={true} />);
-            return this.renderCardContent(content);
+            return (<LoadingIndicator />)
         }
         
         let { tender } = this.props;
         if(tender.existingContract == null || tender.existingContract.sheetCount == 0){
-            let content = (
-                <div className="uk-alert-warning uk-margin-small-bottom uk-alert" data-uk-alert>
-                    <div className="uk-grid uk-grid-small" data-uk-grid>
-                        <div className="uk-width-auto uk-flex uk-flex-middle">
-                            <i className="fas fa-exclamation-triangle uk-margin-small-right"></i>
+            return (
+                <div className="w-100">
+                    <Alert color="danger">
+                        <div className="d-flex align-items-center">
+                            <i className="fas fa-exclamation-triangle mr-2"></i>
+                            This tender has not yet been matched to an existing contract.
                         </div>
-                        <div className="uk-width-expand uk-flex uk-flex-middle">
-                            <p>Tender setup appears to be incomplete. Please ensure an existing contract has been created and its rates have been uploaded.</p>    
-                        </div>
-                    </div>
+                    </Alert>
                 </div>)
-
-            return this.renderCardContent(content);
         }
         
         let tenderComplete = isComplete(tender);
-        let content = (
-            <div>
-                <div className="uk-grid" data-uk-grid>
-                    <div className="uk-width-expand@s">
-                        <h3><i className="fas fa-archive uk-margin-right"></i>Requirements Packs</h3>
-                    </div>
-                    <div className="uk-width-1-2">
-                        <button className="uk-button uk-button-primary uk-button-small uk-align-right" type="button" onClick={() => this.generateNewPack()} disabled={tenderComplete}>
-                            <i className="fas fa-plus-circle uk-margin-small-right fa-lg"></i>
-                            Generate New
-                        </button>
-                    </div>
-                </div>
-                <div>
-                    {tenderComplete && <div className="uk-margin-top"><TenderCompleteWarning /></div>}
-                    {this.renderOffersContent(tenderComplete, tender.issuances)}
-                </div>
-                <ModalDialog dialogId={`view_quote_rates_${tender.tenderId}`} dialogClass="backing-sheet-modal">
-                    <TenderBackingSheetsDialog />
-                </ModalDialog>
-        </div>);
+        let issuances = this.sortIssuances(tender.issuances); 
 
-        return this.renderCardContent(content);
+        let selectedIssuance: TenderIssuance = null;
+        if(this.state.selectedIssuanceId != "unissued"){
+            selectedIssuance = issuances.find(i => i.issuanceId == this.state.selectedIssuanceId);
+            if(!selectedIssuance && !IsNullOrEmpty(issuances)){
+                selectedIssuance = issuances.find(i => i != null);
+            }
+        }
+
+        return (
+            <div className="w-100 px-3 py-2">
+                <Row noGutters>
+                    <Col className="d-flex justify-content-center align-items-center">
+                        {this.renderIssuancePicker(issuances, selectedIssuance)}
+                    </Col>
+                </Row>
+                
+                <div className="mt-2">
+                    {selectedIssuance ? this.renderIssuanceOffers(selectedIssuance, tenderComplete) : this.renderUnissued(tenderComplete)}
+                </div>
+            </div>);
     }
 }
 
@@ -489,7 +637,12 @@ const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, TenderOffers
         exportContractRates: (tenderId: string, quoteId: string) => dispatch(exportContractRates(tenderId, quoteId)),
         deleteQuote: (tenderId: string, quoteId: string) => dispatch(deleteQuote(tenderId, quoteId)),
         generateTenderPack: (portfolioId: string, tenderId: string) => dispatch(generateTenderPack(portfolioId, tenderId)),
-        openModalDialog: (dialogId: string) => dispatch(openModalDialog(dialogId))
+        
+        openAlertDialog: (title: string, body: string) => dispatch(openAlertDialog(title, body)),
+        openIssueTenderPackDialog: (data: IssueTenderPackDialogData) => dispatch(openDialog(ModalDialogNames.IssueTenderPack, data)),
+        openOfferCollateralDialog: (data: OfferCollateralDialogData) => dispatch(openDialog(ModalDialogNames.ViewOfferCollateral, data)),
+        openContractRatesDialog: () => dispatch(openDialog(ModalDialogNames.ContractRates)),
+        openUploadOfferDialog: (data: UploadOfferDialogData) => dispatch(openDialog(ModalDialogNames.UploadOffer, data))
     };
 };
   

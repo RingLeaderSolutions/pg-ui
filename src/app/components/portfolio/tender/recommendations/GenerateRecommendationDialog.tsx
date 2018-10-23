@@ -8,13 +8,18 @@ import * as moment from 'moment';
 import { generateSummaryReport } from '../../../../actions/tenderActions';
 import { Tender, TenderSupplier, TenderQuote, TenderIssuance } from "../../../../model/Tender";
 import { format } from 'currency-formatter';
-import { closeModalDialog } from "../../../../actions/viewActions";
 import { Strings } from "../../../../helpers/Utils";
+import asModalDialog, { ModalDialogProps } from "../../../common/modal/AsModalDialog";
+import { ModalDialogNames } from "../../../common/modal/ModalDialogNames";
+import { ModalHeader, Alert, ModalBody, ModalFooter, Button, Form, FormGroup, Label, CustomInput, Input } from "reactstrap";
+import { LoadingIndicator } from "../../../common/LoadingIndicator";
 
-interface GenerateRecommendationDialogProps {
+export interface GenerateRecommendationDialogData {
     tender: Tender;
     issuance: TenderIssuance;
 }
+
+interface GenerateRecommendationDialogProps extends ModalDialogProps<GenerateRecommendationDialogData> { }
 
 interface StateProps {
     working: boolean;
@@ -25,7 +30,6 @@ interface StateProps {
   
 interface DispatchProps {
     generateSummaryReport: (tenderId: string, quoteId: string, marketCommentary: string, selectionCommentary: string) => void;
-    closeModalDialog: () => void;
 }
 
 interface GenerateRecommendationDialogState {
@@ -34,8 +38,8 @@ interface GenerateRecommendationDialogState {
     marketCommentary: string;
 }
 class GenerateRecommendationDialog extends React.Component<GenerateRecommendationDialogProps & StateProps & DispatchProps, GenerateRecommendationDialogState> {    
-    constructor(){
-        super();
+    constructor(props: GenerateRecommendationDialogProps & StateProps & DispatchProps){
+        super(props);
         this.state = {
             selectedQuoteId: "",
             selectionCommentary: "",
@@ -45,11 +49,11 @@ class GenerateRecommendationDialog extends React.Component<GenerateRecommendatio
 
     generateReport() {
         this.props.generateSummaryReport(
-            this.props.tender.tenderId,
+            this.props.data.tender.tenderId,
             this.state.selectedQuoteId, 
             this.state.marketCommentary, 
             this.state.selectionCommentary);
-        this.props.closeModalDialog();
+        this.props.toggle();
     }
 
     getFormattedDateTime(dateTime: string){
@@ -65,8 +69,65 @@ class GenerateRecommendationDialog extends React.Component<GenerateRecommendatio
         })
     }
 
-    renderPackDialogContent(){
-        var quotes = this.props.issuance.packs.SelectMany((p) => p.quotes);
+    renderNoValidQuotesAlert(){
+        return (
+            <Alert color="light">
+                <div className="text-center">
+                    <i className="fas fa-exclamation-triangle mr-2 mb-1 d-block"></i>
+                    Sorry, this tender's latest issuance has not yet received any valid quotes!
+                </div>
+            </Alert>);
+    }
+
+    renderQuoteSelectionForm(quoteOptions: JSX.Element[]){
+        return (
+            <div>
+                <p>You are creating a recommendation report against the issuance issued on <strong>{this.getFormattedDateTime(this.props.data.issuance.created)}</strong>, which has received <strong>{quoteOptions.length}</strong> supplier responses.</p>
+                <Form>
+                    <FormGroup>
+                        <Label for="new-reco-selected-quote">Winning Quote</Label>
+                        <CustomInput type="select" name="new-reco-selected-quote-picker" id="new-reco-selected-quote"
+                                value={this.state.selectedQuoteId}
+                                onChange={(e) => this.handleFormChange("selectedQuoteId", e)}>
+                            <option value="" disabled>Select</option>
+                            {quoteOptions}
+                        </CustomInput>
+                    </FormGroup>
+                    <FormGroup>
+                        <Label for="new-reco-market-comm">Market Commentary</Label>
+                        <Input id="new-reco-market-comm"
+                            type="textarea"
+                            value={this.state.marketCommentary}
+                            onChange={(e) => this.handleFormChange("marketCommentary", e)} />
+                    </FormGroup>
+                    <FormGroup>
+                        <Label for="new-reco-quote-comm">Quote Selection Commentary</Label>
+                        <Input id="new-reco-quote-comm"
+                            type="textarea"
+                            value={this.state.selectionCommentary}
+                            onChange={(e) => this.handleFormChange("selectionCommentary", e)} />
+                    </FormGroup>
+                </Form>
+            </div>
+        )
+    }
+
+    canSubmit(){
+        return Strings.AreNotNullOrEmpty(
+            this.state.selectedQuoteId,
+             this.state.marketCommentary,
+              this.state.selectionCommentary);
+    }
+
+    render() {
+        if(this.props.suppliers == null || this.props.working){
+            return (<LoadingIndicator />);
+        }
+        else if(this.props.error){
+            return (<ErrorMessage content={this.props.errorMessage}/> )
+        }
+
+        var quotes = this.props.data.issuance.packs.SelectMany((p) => p.quotes);
 
         let quoteOptions = quotes
             .filter((q: TenderQuote) => q.status == "SUBMITTED")
@@ -78,94 +139,31 @@ class GenerateRecommendationDialog extends React.Component<GenerateRecommendatio
                 return (<option key={key} value={quote.quoteId}>{supplierText} - {quote.quoteId.substr(0, 8)}-V{quote.version} - {format(quote.totalIncCCL, { locale: 'en-GB'})}</option>)
             });
 
-        if(quoteOptions.length == 0){
-            return (
-                <div>
-                    <div className="uk-modal-body">
-                        <div className="uk-alert-warning uk-margin-small-top uk-margin-small-bottom" data-uk-alert>
-                            <p><i className="fas fa-exclamation-triangle uk-margin-small-right"></i> Sorry! The latest issuance has not yet received any quotes, so a recommendation cannot be created.</p>
-                        </div>
-                    </div>
-                    <div className="uk-modal-footer uk-text-right">
-                        <button className="uk-button uk-button-default uk-margin-right" type="button" onClick={() => this.props.closeModalDialog()}>OK</button>
-                    </div>
-                </div>
-            )
-        }
+        let hasQuoteOptions = quoteOptions.length > 0;
 
         return (
-            <div>
-                <div className="uk-modal-body">
-                    <p>You are creating a recommendation report against the issuance issued on <strong>{this.getFormattedDateTime(this.props.issuance.created)}</strong>, which has received <strong>{quoteOptions.length}</strong> supplier responses.</p>
-                    <form>
-                        <fieldset className='uk-fieldset'>
-                            <div className="uk-margin">
-                                <select className='uk-select' 
-                                    value={this.state.selectedQuoteId}
-                                    onChange={(e) => this.handleFormChange("selectedQuoteId", e)}>
-                                    <option value="" disabled>Select</option>
-                                    {quoteOptions}
-                                </select>
-                            </div>
-
-                            <div className='uk-margin'>
-                                <label className='uk-form-label'>Market Commentary</label>
-                                <textarea className='uk-textarea' 
-                                    rows={4}
-                                    value={this.state.marketCommentary}
-                                    onChange={(e) => this.handleFormChange("marketCommentary", e)} />
-                            </div>
-
-                            <div className='uk-margin'>
-                                <label className='uk-form-label'>Quote Selection Commentary</label>
-                                <textarea className='uk-textarea' 
-                                    rows={4}
-                                    value={this.state.selectionCommentary}
-                                    onChange={(e) => this.handleFormChange("selectionCommentary", e)} />
-                            </div>
-                        </fieldset>
-                    </form>
-                </div>
-                <div className="uk-modal-footer uk-text-right">
-                    <button className="uk-button uk-button-default uk-margin-right" type="button" onClick={() => this.props.closeModalDialog()}><i className="fas fa-times uk-margin-small-right"></i>Cancel</button>
-                    <button className="uk-button uk-button-primary" type="button" onClick={() => this.generateReport()} disabled={!this.canSubmit()}><i className="fas fa-plus-circle uk-margin-small-right"></i>Create</button>
-                </div>
+            <div className="modal-content">
+                <ModalHeader toggle={this.props.toggle}><i className="fas fa-bullhorn mr-2"></i>Create Recommendation Report</ModalHeader>
+                <ModalBody>
+                {hasQuoteOptions ? this.renderQuoteSelectionForm(quoteOptions) : this.renderNoValidQuotesAlert()}
+                </ModalBody>
+                <ModalFooter>
+                    <Button onClick={this.props.toggle}>
+                        <i className="fas fa-times mr-1"></i>Cancel
+                    </Button>
+                    { hasQuoteOptions && (<Button color="accent" 
+                            disabled={!this.canSubmit()}
+                            onClick={() => this.generateReport()}>
+                        <i className="fas fa-plus-circle mr-1"></i>Create
+                    </Button>)}
+                </ModalFooter>
             </div>);
-    }
-
-    canSubmit(){
-        return Strings.AreNotNullOrEmpty(
-            this.state.selectedQuoteId,
-             this.state.marketCommentary,
-              this.state.selectionCommentary);
-    }
-
-    render() {
-        let content;
-        if(this.props.suppliers == null || this.props.working){
-            content = (<Spinner hasMargin={true} />);
-        }
-        else if(this.props.error){
-            content = (<ErrorMessage content={this.props.errorMessage}/> )
-        }
-        else {
-            content = this.renderPackDialogContent();
-        }
-        
-        return (
-            <div>
-                <div className="uk-modal-header">
-                    <h2 className="uk-modal-title"><i className="fas fa-bullhorn uk-margin-right"></i>Create Recommendation Report</h2>
-                </div>
-                {content}
-            </div>)
     }
 }
 
 const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, GenerateRecommendationDialogProps> = (dispatch) => {
     return {
-        generateSummaryReport: (tenderId: string, quoteId: string, marketCommentary: string, selectionCommentary: string) =>  dispatch(generateSummaryReport(tenderId, quoteId, marketCommentary, selectionCommentary)),
-        closeModalDialog: () => dispatch(closeModalDialog()) 
+        generateSummaryReport: (tenderId: string, quoteId: string, marketCommentary: string, selectionCommentary: string) =>  dispatch(generateSummaryReport(tenderId, quoteId, marketCommentary, selectionCommentary))
     };
 };
   
@@ -178,4 +176,9 @@ const mapStateToProps: MapStateToProps<StateProps, GenerateRecommendationDialogP
     };
 };
   
-export default connect(mapStateToProps, mapDispatchToProps)(GenerateRecommendationDialog);
+export default asModalDialog(
+{ 
+    name: ModalDialogNames.GenerateRecommendation, 
+    centered: true, 
+    backdrop: true
+}, mapStateToProps, mapDispatchToProps)(GenerateRecommendationDialog)

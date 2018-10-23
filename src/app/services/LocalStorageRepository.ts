@@ -6,6 +6,8 @@ export class LocalStorageRepository {
         let roles = auth0Profile.app_metadata && auth0Profile.app_metadata.roles;
 
         localStorage.setItem(PersistedDataKeys.UserId, auth0Profile.user_id);
+        localStorage.setItem(PersistedDataKeys.FirstName, auth0Profile.given_name);
+        localStorage.setItem(PersistedDataKeys.LastName, auth0Profile.family_name);
         localStorage.setItem(PersistedDataKeys.Email, auth0Profile.email);
         localStorage.setItem(PersistedDataKeys.Roles, JSON.stringify(roles));
         localStorage.setItem(PersistedDataKeys.LastPasswordReset, auth0Profile.last_password_reset || '');
@@ -26,6 +28,8 @@ export class LocalStorageRepository {
 
         return {
             userId: localStorage.getItem(PersistedDataKeys.UserId),
+            firstName: localStorage.getItem(PersistedDataKeys.FirstName),
+            lastName: localStorage.getItem(PersistedDataKeys.LastName),
             email: localStorage.getItem(PersistedDataKeys.Email),
             roles: JSON.parse(roles),
             lastPasswordReset: new Date(lastPasswordReset),
@@ -71,6 +75,8 @@ class PersistedDataKeys {
 
     public static readonly ProfileSection = `${PersistedDataKeys.Namespace}.profile`;
     public static readonly UserId = `${PersistedDataKeys.ProfileSection}.id`;
+    public static readonly FirstName = `${PersistedDataKeys.ProfileSection}.firstName`;
+    public static readonly LastName = `${PersistedDataKeys.ProfileSection}.lastName`;
     public static readonly Email = `${PersistedDataKeys.ProfileSection}.email`;
     public static readonly Roles = `${PersistedDataKeys.ProfileSection}.roles`;
     public static readonly Picture = `${PersistedDataKeys.ProfileSection}.picture`;

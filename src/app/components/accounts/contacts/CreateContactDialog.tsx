@@ -1,22 +1,21 @@
 import * as React from "react";
-import { MapDispatchToPropsFunction, connect, MapStateToProps } from 'react-redux';
+import { MapDispatchToPropsFunction } from 'react-redux';
 
 import { createContact } from '../../../actions/hierarchyActions';
 import { AccountContact } from "../../../model/HierarchyObjects";
-import { closeModalDialog } from "../../../actions/viewActions";
 import { Strings } from "../../../helpers/Utils";
-import { ApplicationState } from "../../../applicationState";
+import asModalDialog, { ModalDialogProps } from "../../common/modal/AsModalDialog";
+import { ModalHeader, ModalBody, Form, FormGroup, Label, Input, ModalFooter, Button } from "reactstrap";
+import { ModalDialogNames } from "../../common/modal/ModalDialogNames";
 
-interface CreateContactDialogProps {    
-    accountId: string;
+export interface CreateContactDialogData {
+    accountId: string;   
 }
 
-interface StateProps {
-}
+interface CreateContactDialogProps extends ModalDialogProps<CreateContactDialogData> { }
 
 interface DispatchProps {
     createContact: (contact: AccountContact) => void;
-    closeModalDialog: () => void;
 }
 
 interface CreateAccountDialogState {
@@ -27,8 +26,8 @@ interface CreateAccountDialogState {
     role: string;
 }
 
-class CreateContactDialog extends React.Component<CreateContactDialogProps & StateProps & DispatchProps, CreateAccountDialogState> {
-    constructor(props: CreateContactDialogProps & StateProps & DispatchProps){
+class CreateContactDialog extends React.Component<CreateContactDialogProps  & DispatchProps, CreateAccountDialogState> {
+    constructor(props: CreateContactDialogProps  & DispatchProps){
         super(props);
         this.state = {
             firstName: '',
@@ -42,7 +41,7 @@ class CreateContactDialog extends React.Component<CreateContactDialogProps & Sta
     createContact(){
         var contact: AccountContact = {
             id: "",
-            accountId: this.props.accountId,
+            accountId: this.props.data.accountId,
             firstName: this.state.firstName,
             lastName: this.state.lastName,
             email: this.state.email,
@@ -51,7 +50,7 @@ class CreateContactDialog extends React.Component<CreateContactDialogProps & Sta
         }
         
         this.props.createContact(contact);
-        this.props.closeModalDialog();
+        this.props.toggle();
     }
 
     handleFormChange(attribute: string, event: React.ChangeEvent<any>){
@@ -73,75 +72,65 @@ class CreateContactDialog extends React.Component<CreateContactDialogProps & Sta
     
     render() {
         return (
-            <div>
-                <div className="uk-modal-header">
-                    <h2 className="uk-modal-title"><i className="fas fa-user-plus uk-margin-right"></i>Add Contact</h2>
-                </div>
-                <div className="uk-modal-body">
-                    <div className="uk-margin">
-                        <form>
-                            <fieldset className="uk-fieldset">
-                                <div className='uk-margin'>
-                                    <label className='uk-form-label'>First Name</label>
-                                    <input 
-                                        className='uk-input' 
-                                        type='text' 
-                                        value={this.state.firstName}
-                                        onChange={(e) => this.handleFormChange("firstName", e)} />
-                                </div>
-                                <div className='uk-margin'>
-                                    <label className='uk-form-label'>Last Name</label>
-                                    <input 
-                                        className='uk-input' 
-                                        type='text' 
-                                        value={this.state.lastName}
-                                        onChange={(e) => this.handleFormChange("lastName", e)} />
-                                </div>
-                                <div className='uk-margin'>
-                                    <label className='uk-form-label'>Email</label>
-                                    <input 
-                                        className='uk-input' 
-                                        type='text' 
-                                        value={this.state.email}
-                                        onChange={(e) => this.handleFormChange("email", e)} />
-                                </div>
-                                <div className='uk-margin'>
-                                    <label className='uk-form-label'>Phone Number</label>
-                                    <input 
-                                        className='uk-input' 
-                                        type='text' 
-                                        value={this.state.phoneNumber}
-                                        onChange={(e) => this.handleFormChange("phoneNumber", e)} />
-                                </div>
-                                <div className='uk-margin'>
-                                    <label className='uk-form-label'>Role</label>
-                                    <input 
-                                        className='uk-input' 
-                                        type='text' 
-                                        value={this.state.role}
-                                        onChange={(e) => this.handleFormChange("role", e)} />
-                                </div>
-                            </fieldset>
-                        </form>
-                    </div>
-                </div>
-                <div className="uk-modal-footer uk-text-right">
-                    <button className="uk-button uk-button-default uk-margin-right" type="button" onClick={() => this.props.closeModalDialog()}><i className="fas fa-times uk-margin-small-right"></i>Cancel</button>
-                    <button className="uk-button uk-button-primary" type="button" onClick={() => this.createContact()} disabled={!this.canSubmit()}><i className="fas fa-user-plus uk-margin-small-right"></i>Create</button>
-                </div>
-            </div>)
+            <div className="modal-content">
+                <ModalHeader toggle={this.props.toggle}><i className="fas fa-user-plus mr-2"></i>Add Contact</ModalHeader>
+                <ModalBody>
+                    <Form>
+                        <FormGroup>
+                            <Label for="new-contact-firstname">First Name</Label>
+                            <Input id="new-contact-firstname"
+                                    value={this.state.firstName}
+                                    onChange={(e) => this.handleFormChange("firstName", e)} />
+                        </FormGroup>
+                        <FormGroup>
+                            <Label for="new-contact-lastname">Last Name</Label>
+                            <Input id="new-contact-lastname"
+                                    value={this.state.lastName}
+                                    onChange={(e) => this.handleFormChange("lastName", e)} />
+                        </FormGroup>
+                        <FormGroup>
+                            <Label for="new-contact-email">Email</Label>
+                            <Input id="new-contact-email"
+                                    value={this.state.email}
+                                    onChange={(e) => this.handleFormChange("email", e)} />
+                        </FormGroup>
+                        <FormGroup>
+                            <Label for="new-contact-phone">Phone</Label>
+                            <Input id="new-contact-phone"
+                                    value={this.state.phoneNumber}
+                                    onChange={(e) => this.handleFormChange("phoneNumber", e)} />
+                        </FormGroup>
+                        <FormGroup>
+                            <Label for="new-contact-role">Role</Label>
+                            <Input id="new-contact-role"
+                                    value={this.state.role}
+                                    onChange={(e) => this.handleFormChange("role", e)} />
+                        </FormGroup>
+                    </Form>
+                </ModalBody>
+                <ModalFooter>
+                    <Button onClick={this.props.toggle}>
+                        <i className="fas fa-times mr-1"></i>Cancel
+                    </Button>
+                    <Button color="accent" 
+                            disabled={!this.canSubmit()}
+                            onClick={() => this.createContact()}>
+                        <i className="fas fa-user-plus mr-1"></i>Save
+                    </Button>
+                </ModalFooter>
+            </div>);
     }
 }
 
 const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, CreateContactDialogProps> = (dispatch) => {
     return {
-        createContact: (contact: AccountContact) =>  dispatch(createContact(contact)),
-        closeModalDialog: () => dispatch(closeModalDialog()) 
+        createContact: (contact: AccountContact) =>  dispatch(createContact(contact))
     };
 };
-  
-const mapStateToProps: MapStateToProps<StateProps, CreateContactDialogProps, ApplicationState> = () => {
-    return {};
-};
-  
-export default connect(mapStateToProps, mapDispatchToProps)(CreateContactDialog);
+
+export default asModalDialog(
+{ 
+    name: ModalDialogNames.CreateAccountContact, 
+    centered: true, 
+    backdrop: true,
+}, null, mapDispatchToProps)(CreateContactDialog)

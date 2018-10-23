@@ -1,0 +1,231 @@
+.table-highlight-grey {
+    background-color: #f0f0f0;
+}
+
+.table-highlight-green {
+    background-color: #f4fef4;
+}
+
+.offers-table-container {
+    margin-left: 180px;
+    overflow-x: auto;
+    .offers-table {
+        th, td {
+            height: 60px;
+        }
+
+        .th-contract-value {
+            border-top-left-radius: $card-border-radius;
+        }
+
+        .th-appu {
+            border-bottom-left-radius: $card-border-radius;
+        }
+
+        .th-best {
+            border-top-left-radius: $card-border-radius;
+            border-bottom-left-radius: $card-border-radius;
+        }
+
+        th {
+            position: absolute;
+            display: inline-block;
+            left: $spacer / 2;
+            top: auto;
+            width: 180px;
+            font-weight: 500;
+            
+            span {
+                display: block;
+                padding-top: $spacer / 4;
+            }
+        }
+    }
+}
+
+
+.ReactTable {
+    border: none;
+    display: flex;
+
+    &.enable-hover {
+        .rt-tr-group:hover {
+            background-color: #eeeeee !important;
+            transition: background-color 0.1s linear;
+        }
+    }
+    
+    .rt-table {
+        order: 0;
+        font-size: 0.8125rem;
+        width: 100% !important;
+        
+        .rt-thead {
+            border-top: 1px solid #e1e5eb;
+            border-bottom: 1px solid #e1e5eb;
+            &.-header {
+                box-shadow: none;
+            }
+            .rt-tr {
+                &:last-child th {
+                    padding-right: 1.7rem; 
+                }
+                .rt-th {
+                    text-align: center;
+                    background-color: #FBFBFB;
+                    border-right: 1px solid #e1e5eb;
+                    font-weight: 400;
+                    padding: 0.75rem 1.0625rem;
+                    text-transform: capitalize;
+
+                    &:focus {
+                        outline: 0 !important;
+                    }
+
+                    &:last-child {
+                        border-right: none;
+                    }
+
+                    &.-sort-asc, &.-sort-desc {
+                        box-shadow: none;
+
+                    }
+
+                    
+                    &:after {
+                        content: '';
+                        position: absolute;
+                        background-position: center;
+                        right: 7px;
+                        top: 50%;
+                        transform: translateY(-50%);
+                        opacity: .2;
+                    }
+
+                    &:not(.-sort-desc):not(.-sort-asc) {
+                        &:after {
+                            width: 10px;
+                            height: 13px;
+                            background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz48c3ZnIHdpZHRoPSIxMHB4IiBoZWlnaHQ9IjEzcHgiIHZpZXdCb3g9IjAgMCAxMCAxMyIgdmVyc2lvbj0iMS4xIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIj4gICAgICAgIDx0aXRsZT5pY19hcnJvd19kcm9wX2Rvd25fYmxhY2tfMjRweDwvdGl0bGU+ICAgIDxkZXNjPkNyZWF0ZWQgd2l0aCBTa2V0Y2guPC9kZXNjPiAgICA8ZGVmcz48L2RlZnM+ICAgIDxnIGlkPSJQYWdlLTEiIHN0cm9rZT0ibm9uZSIgc3Ryb2tlLXdpZHRoPSIxIiBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPiAgICAgICAgPGcgaWQ9ImljX2Fycm93X2Ryb3BfZG93bl9ibGFja18yNHB4LSgxKSIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoLTcuMDAwMDAwLCAtMi4wMDAwMDApIiBmaWxsPSIjMDAwMDAwIiBmaWxsLXJ1bGU9Im5vbnplcm8iPiAgICAgICAgICAgIDxnIGlkPSJpY19hcnJvd19kcm9wX2Rvd25fYmxhY2tfMjRweCIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoMTIuMDAwMDAwLCA4LjUwMDAwMCkgcm90YXRlKC0xODAuMDAwMDAwKSB0cmFuc2xhdGUoLTEyLjAwMDAwMCwgLTguNTAwMDAwKSB0cmFuc2xhdGUoNy4wMDAwMDAsIDIuMDAwMDAwKSI+ICAgICAgICAgICAgICAgIDxwb2x5Z29uIGlkPSJTaGFwZSIgcG9pbnRzPSIxLjQyMTA4NTQ3ZS0xNCA4IDUgMTMgMTAgOCI+PC9wb2x5Z29uPiAgICAgICAgICAgICAgICA8cG9seWdvbiBpZD0iU2hhcGUiIHRyYW5zZm9ybT0idHJhbnNsYXRlKDUuMDAwMDAwLCAzLjMzMzg5Nykgcm90YXRlKC0xODAuMDAwMDAwKSB0cmFuc2xhdGUoLTUuMDAwMDAwLCAtMy4zMzM4OTcpICIgcG9pbnRzPSIxLjQyMTA4NTQ3ZS0xNCAwLjgzMzg5NjkyMiA1IDUuODMzODk2OTIgMTAgMC44MzM4OTY5MjIiPjwvcG9seWdvbj4gICAgICAgICAgICA8L2c+ICAgICAgICA8L2c+ICAgIDwvZz48L3N2Zz4=);
+                            background-size: 90%;
+                        }
+                    }
+
+                    &.-sort-asc:after {
+                        width: 10px;
+                        height: 6px;
+                        background-image: url(data:image/svg+xml;base64,PHN2ZyBmaWxsPSIjMDAwMDAwIiBoZWlnaHQ9IjI0IiB2aWV3Qm94PSIwIDAgMjQgMjQiIHdpZHRoPSIyNCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4gICAgPHBhdGggZD0iTTcgMTRsNS01IDUgNXoiLz4gICAgPHBhdGggZD0iTTAgMGgyNHYyNEgweiIgZmlsbD0ibm9uZSIvPjwvc3ZnPg==);
+                    }
+
+                    &.-sort-desc:after {
+                        width: 10px;
+                        height: 6px;
+                        background-image: url(data:image/svg+xml;base64,PHN2ZyBmaWxsPSIjMDAwMDAwIiBoZWlnaHQ9IjI0IiB2aWV3Qm94PSIwIDAgMjQgMjQiIHdpZHRoPSIyNCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4gICAgPHBhdGggZD0iTTcgMTBsNSA1IDUtNXoiLz4gICAgPHBhdGggZD0iTTAgMGgyNHYyNEgweiIgZmlsbD0ibm9uZSIvPjwvc3ZnPg==);
+                    }
+                }
+            }
+        }
+        .rt-tbody {
+            overflow: hidden;
+            .rt-tr-group:not(:last-child) {
+                border-bottom: 1px solid #e1e5eb;
+            }
+            .rt-td {
+                padding: 0.875em 1.0625rem;
+                border-right: 1px solid #e1e5eb;
+                text-align: center;
+                &:last-child {
+                    border-right: none;
+                }
+            }
+        }
+    }
+
+    .rt-no-search-matches {
+        order: 1;
+        border-top: 1px solid #e1e5eb;
+        padding: .8125rem 1.0625rem;
+        font-size: 0.8125rem;
+        font-weight: 500;
+        text-align: center;
+    }
+
+    .pagination-bottom {
+        order: 2;
+        border-top: 1px solid #e1e5eb;
+        .pagination-container {
+            box-shadow: none;
+            color: #818EA3;
+            border: 0;
+            background-color: #fbfbfb;
+            border-bottom-left-radius: $card-border-radius;
+            border-bottom-right-radius: $card-border-radius;
+            ul {
+                margin: 0;
+            }
+
+            .page-link {
+                background: #fff;
+                padding: 0.4286rem 0.875rem;
+                border: 1px solid #e1e5eb;
+                color: #3D5170;
+                will-change: background-color, color, border-color;
+                transition: background-color 250ms ease-in-out, color 250ms ease-in-out, border-color 250ms ease-in-out;
+                box-shadow: none;
+                font-size: 13px;
+                font-weight: 500;
+
+                &.ellipsis {
+                    cursor: default;
+                }
+
+                &:not(.ellipsis){
+                    &:hover {
+                        background: #007bff;
+                        color: #fff;
+                        border-color: #007bff;
+                        cursor: pointer;
+                        text-decoration: none;
+                    }
+                }
+                
+                &:not(.previous){
+                    border-left: 0;
+                }
+
+                &:focus {
+                    outline: 0
+                }
+            }
+
+            .page-item {
+                box-shadow: none;
+
+                &.active .page-link {
+                    background: #007bff;
+                    color: #fff;
+                    border-color: #007bff;
+                }
+
+                &.previous {
+                    border-top-left-radius: 0.25rem;
+                    border-bottom-left-radius: 0.25rem;
+                }
+                
+                &.next {
+                    border-top-right-radius: 0.25rem;
+                    border-bottom-right-radius: 0.25rem;
+                }
+                
+                &.disabled {
+                    .page-link {
+                        background-color: #f2f4f5;
+                    }
+                    &:hover {
+                        cursor: not-allowed;
+                    }
+                }
+            }
+        }
+    }
+}

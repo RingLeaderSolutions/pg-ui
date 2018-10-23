@@ -6,18 +6,17 @@ export interface UploadReportsResponse {
 }
 
 export interface UploadReport {
-    id: string,
-    portfolioId: string,
-    dataType: string,
-    resultDocId: string,
-    requested: string,
-    requestor: User,
-    notes: string
+    id: string;
+    portfolioId: string;
+    dataType: string;
+    resultDocId: string;
+    requested: string;
+    requestor: User;
+    notes: string;
+    uploadReportBlobURI: string;
 }
 
-export interface UploadReportBase {
-
-}
+export interface UploadReportBase { }
 
 export interface ImportReportDetail extends UploadReportBase {
     user: User,
