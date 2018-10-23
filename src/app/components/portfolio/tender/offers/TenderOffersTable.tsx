@@ -471,7 +471,6 @@ class TenderOffersTable extends React.Component<TenderOffersTableProps & StatePr
 
         let { assignedSuppliers, tenderId, utility, halfHourly } = this.props.tender;
         let canQuickQuote = !halfHourly || utility.toLowerCase() === "gas";
-        console.log(canQuickQuote);
         return (
             <Card className="card-small h-100">
                 <CardHeader className="border-bottom pl-3 pr-2 py-2">
