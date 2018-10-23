@@ -126,10 +126,10 @@ export class ApiService implements IApiService {
                 switch (error.response.status) {
                   case 401:
                   case 403:
-                    // console.log(`Error (1/2): Received [${error.status}] from API @ [${error.config.url}]:\r\n${error.data}`);
-                    // console.log(`Error (2/2): Clearing local storage and redirecting to the login page.`);
-                    // this.storage.clearTokens();
-                    // window.location.replace('/login');
+                    console.log(`Error (1/2): Received [${error.status}] from API @ [${error.config.url}]:\r\n${error.data}`);
+                    console.log(`Error (2/2): Clearing local storage and redirecting to the login page.`);
+                    this.storage.clearTokens();
+                    window.location.replace('/login');
                     break;
                   default:
                     console.log(`Error: Received [${error.status}] from API @ [${error.config.url}]:\r\n${error.data}`);
@@ -563,8 +563,7 @@ export class ApiService implements IApiService {
     }
 
     reportLogin(){
-    //    return axios.post(`${this.baseApiUri}/portman-web/admin/logon`, null, this.getRequestConfig());
-    return new FakeApiService().reportLogin();
+        return axios.post(`${this.baseApiUri}/portman-web/admin/logon`, null, this.getRequestConfig());
     }
 
     createContact(contact: AccountContact){
