@@ -20,7 +20,7 @@ import {
     InstanceDetail
 } from '../../model/Models';
 import { PortfolioDetails } from '../../model/PortfolioDetails';
-import { BackingSheet, Tender, TenderContract, TenderSupplier, TenderIssuanceEmail, Tariff } from '../../model/Tender';
+import { BackingSheet, Tender, TenderContract, TenderSupplier, TenderIssuanceEmail, Tariff, QuickQuote } from '../../model/Tender';
 import { IApiService } from '../apiService';
 import { AccountContact } from '../../model/HierarchyObjects';
 import { PortfolioCreationRequest } from '../../model/Portfolio';
@@ -1090,6 +1090,10 @@ export class FakeApiService implements IApiService {
     }
 
     createContractRenewal(contractId: string){
+        return OK();
+    }
+
+    submitQuickQuote(tenderId: string, quote: QuickQuote) {
         return OK();
     }
 }

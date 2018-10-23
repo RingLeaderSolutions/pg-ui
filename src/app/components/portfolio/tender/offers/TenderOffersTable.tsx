@@ -18,6 +18,8 @@ import Badge from "reactstrap/lib/Badge";
 import { ModalDialogNames } from "../../../common/modal/ModalDialogNames";
 import ContractRatesDialog from "../ContractRatesDialog";
 import { IsNullOrEmpty } from "../../../../helpers/extensions/ArrayExtensions";
+import QuickOfferDialog, { QuickOfferDialogData } from "./QuickOfferDialog";
+import { MeterConsumptionSummary } from "../../../../model/Meter";
 
 interface TenderOffersTableProps {
     tender: Tender;
@@ -26,6 +28,7 @@ interface TenderOffersTableProps {
 interface StateProps {
     suppliers: TenderSupplier[];
     working: boolean;
+    consumption: MeterConsumptionSummary;
 }
   
 interface DispatchProps {
@@ -39,6 +42,7 @@ interface DispatchProps {
     openOfferCollateralDialog: (data: OfferCollateralDialogData) => void;
     openContractRatesDialog: () => void;
     openUploadOfferDialog: (data: UploadOfferDialogData) => void;
+    openQuickOfferDialog: (data: QuickOfferDialogData) => void;
 }
 
 enum SelectedOfferTab {
@@ -465,12 +469,14 @@ class TenderOffersTable extends React.Component<TenderOffersTableProps & StatePr
             content = this.renderPendingSuppliers(pendingQuotes);
         }
 
-        let { assignedSuppliers, tenderId, utility } = this.props.tender;
+        let { assignedSuppliers, tenderId, utility, halfHourly } = this.props.tender;
+        let canQuickQuote = !halfHourly || utility.toLowerCase() === "gas";
+        console.log(canQuickQuote);
         return (
             <Card className="card-small h-100">
                 <CardHeader className="border-bottom pl-3 pr-2 py-2">
-                    <div className="d-flex align-items-center">
-                        <div className="flex-grow-1 d-flex">
+                    <div className="d-flex align-items-between">
+                        <div className="d-flex">
                             <h6 className="m-0">
                                 <i className="fas fa-handshake mr-1"></i>
                                 Offers ({receivedQuotes.SelectMany(tp => tp.quotes).length} received, {pendingQuotes.length} pending)
@@ -480,6 +486,14 @@ class TenderOffersTable extends React.Component<TenderOffersTableProps & StatePr
                                 </UncontrolledTooltip>
                             </h6>
                         </div>
+
+                        {canQuickQuote && <Button color="accent" className="ml-2" id="manual-quick-quote-button"
+                                    disabled={tenderComplete}
+                                    onClick={() => this.props.openQuickOfferDialog({ tender: this.props.tender, consumption: this.props.consumption })}>
+                            <i className="fas fa-keyboard mr-1"></i>
+                            Quick Offer
+                        </Button>}
+
                         <Button color="accent" className="ml-2" id="manual-quote-upload-button"
                                     disabled={tenderComplete}
                                     onClick={() => this.props.openUploadOfferDialog({ assignedSuppliers, tenderId, utilityType: utility})}>
@@ -495,6 +509,7 @@ class TenderOffersTable extends React.Component<TenderOffersTableProps & StatePr
                     {content}
                     <OfferCollateralDialog />
                     <UploadOfferDialog />
+                    <QuickOfferDialog />
                 </CardBody>
             </Card>
             )
@@ -642,14 +657,16 @@ const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, TenderOffers
         openIssueTenderPackDialog: (data: IssueTenderPackDialogData) => dispatch(openDialog(ModalDialogNames.IssueTenderPack, data)),
         openOfferCollateralDialog: (data: OfferCollateralDialogData) => dispatch(openDialog(ModalDialogNames.ViewOfferCollateral, data)),
         openContractRatesDialog: () => dispatch(openDialog(ModalDialogNames.ContractRates)),
-        openUploadOfferDialog: (data: UploadOfferDialogData) => dispatch(openDialog(ModalDialogNames.UploadOffer, data))
+        openUploadOfferDialog: (data: UploadOfferDialogData) => dispatch(openDialog(ModalDialogNames.UploadOffer, data)),
+        openQuickOfferDialog: (data: QuickOfferDialogData) => dispatch(openDialog(ModalDialogNames.QuickOffer, data))
     };
 };
   
 const mapStateToProps: MapStateToProps<StateProps, TenderOffersTableProps, ApplicationState> = (state: ApplicationState) => {
     return {
         suppliers: state.suppliers.value,
-        working: state.suppliers.working
+        working: state.suppliers.working,
+        consumption: state.meters.consumption.value
     };
 };
   

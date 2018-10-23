@@ -353,3 +353,17 @@ export interface Tariff {
     id: string;
     name: string;
 }
+
+export interface QuickQuote {
+    supplierId: string;
+    prices: QuickQuoteEntry[];
+}
+
+export interface QuickQuoteEntry {
+    meterNumber: string;
+    duration: number;
+    rate: number;
+    standingCharge: number;
+    standingChargeUOM: string;
+    [index: string]: any;
+}

@@ -2,7 +2,7 @@ import { AxiosResponse } from 'axios';
 import axios from 'axios';
 import { CompanyInfo, PortfolioContact, PortfolioRequirements, Account, AccountCompanyStatusFlags, UtilityType, User } from "../model/Models";
 import { FakeApiService } from './fake/fakeApiService';
-import { Tender, TenderContract } from '../model/Tender';
+import { Tender, TenderContract, QuickQuote } from '../model/Tender';
 import * as moment from 'moment';
 import { AccountContact } from '../model/HierarchyObjects';
 import { PortfolioCreationRequest } from '../model/Portfolio';
@@ -91,6 +91,7 @@ export interface IApiService {
   exportContractRates(tenderId: string, quoteId: string): Promise<AxiosResponse>;
   deleteQuote(tenderId: string, quoteId: string): Promise<AxiosResponse>;
   acceptQuote(tenderId: string, quoteId: string): Promise<AxiosResponse>;
+  submitQuickQuote(tenderId: string, quote: QuickQuote): Promise<AxiosResponse>;
   
   fetchTenderOffers(portfolioId: string): Promise<AxiosResponse>;
   fetchTenderRecommendations(portfolioId: string): Promise<AxiosResponse>;
@@ -639,6 +640,10 @@ export class ApiService implements IApiService {
 
     acceptQuote(tenderId: string, quoteId: string){
         return axios.put(`${this.baseApiUri}/portman-web/tender/${tenderId}/quote/accept/${quoteId}`, null, this.getRequestConfig());        
+    }
+
+    submitQuickQuote(tenderId: string, quote: QuickQuote) {
+        return axios.post(`${this.baseApiUri}/portman-web/upload/quickquote/tender/${tenderId}`, quote, this.getRequestConfig());                
     }
 
     getEndpointPrefix(utility: UtilityType) {

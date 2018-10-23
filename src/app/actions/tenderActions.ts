@@ -1,6 +1,6 @@
 import ApiService from "../services/apiService";
 
-import { Tender, TenderContract, TenderSupplier, TenderIssuanceEmail, ContractRatesResponse, RecommendationSite, RecommendationSupplier, RecommendationSummary, TenderRecommendation, ContractRenewalResponse } from "../model/Tender";
+import { Tender, TenderContract, TenderSupplier, TenderIssuanceEmail, ContractRatesResponse, RecommendationSite, RecommendationSupplier, RecommendationSummary, TenderRecommendation, ContractRenewalResponse, QuickQuote } from "../model/Tender";
 import { UploadResponse, UtilityType, ExportResponse } from "../model/Models";
 
 import * as types from "./actionTypes";
@@ -612,6 +612,23 @@ export function deleteQuote(tenderId: string, quoteId: string){
             }, 
             error => {
                 return { type: types.DELETE_QUOTE_FAILED, errorMessage: error };
+            });
+    };
+}
+
+export function submitQuickQuote(tenderId: string, quote: QuickQuote){
+    return (dispatch: Dispatch<any>) => {
+        let createPromise = ApiService.submitQuickQuote(tenderId, quote);
+        dispatch({ type: types.SUBMIT_QUICKQUOTE_WORKING });
+
+        makeApiRequest(dispatch,
+            createPromise,
+            200, 
+            () => {
+                return { type: types.SUBMIT_QUICKQUOTE_SUCCESSFUL, data: null };
+            }, 
+            error => {
+                return { type: types.SUBMIT_QUICKQUOTE_FAILED, errorMessage: error };
             });
     };
 }
