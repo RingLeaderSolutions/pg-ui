@@ -475,7 +475,7 @@ class TenderOffersTable extends React.Component<TenderOffersTableProps & StatePr
         return (
             <Card className="card-small h-100">
                 <CardHeader className="border-bottom pl-3 pr-2 py-2">
-                    <div className="d-flex align-items-between">
+                    <div className="d-flex align-items-center justify-content-between">
                         <div className="d-flex">
                             <h6 className="m-0">
                                 <i className="fas fa-handshake mr-1"></i>
@@ -487,22 +487,30 @@ class TenderOffersTable extends React.Component<TenderOffersTableProps & StatePr
                             </h6>
                         </div>
 
-                        {canQuickQuote && <Button color="accent" className="ml-2" id="manual-quick-quote-button"
-                                    disabled={tenderComplete}
-                                    onClick={() => this.props.openQuickOfferDialog({ tender: this.props.tender, consumption: this.props.consumption })}>
-                            <i className="fas fa-keyboard mr-1"></i>
-                            Quick Offer
-                        </Button>}
+                        <div className="d-flex">
+                            {canQuickQuote && 
+                            <div className="mr-4">
+                                <Button color="indigo" id="quick-quote-button"
+                                            disabled={tenderComplete}
+                                            onClick={() => this.props.openQuickOfferDialog({ tender: this.props.tender, consumption: this.props.consumption })}>
+                                    <i className="fas fa-keyboard mr-1"></i>
+                                    Quick Offer
+                                </Button>
+                                <UncontrolledTooltip target="quick-quote-button" placement="bottom">
+                                    <strong>Quickly enter values associated with a quote received from a supplier</strong>
+                                </UncontrolledTooltip>
+                            </div>}
 
-                        <Button color="accent" className="ml-2" id="manual-quote-upload-button"
-                                    disabled={tenderComplete}
-                                    onClick={() => this.props.openUploadOfferDialog({ assignedSuppliers, tenderId, utilityType: utility})}>
-                            <i className="fas fa-file-upload mr-1"></i>
-                            Upload 
-                        </Button>
-                        <UncontrolledTooltip target="manual-quote-upload-button" placement="bottom">
-                            <strong>Manually upload an offer received from a supplier</strong>
-                        </UncontrolledTooltip>
+                            <Button color="accent"id="manual-quote-upload-button"
+                                        disabled={tenderComplete}
+                                        onClick={() => this.props.openUploadOfferDialog({ assignedSuppliers, tenderId, utilityType: utility})}>
+                                <i className="fas fa-file-upload mr-1"></i>
+                                Upload 
+                            </Button>
+                            <UncontrolledTooltip target="manual-quote-upload-button" placement="bottom">
+                                <strong>Manually upload an offer received from a supplier</strong>
+                            </UncontrolledTooltip>
+                        </div>
                     </div>
                 </CardHeader>
                 <CardBody className="p-2">
