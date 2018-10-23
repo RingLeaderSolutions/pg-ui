@@ -1,6 +1,6 @@
 {
   "name": "pg-ui",
-  "version": "0.1.55",
+  "version": "0.1.57",
   "description": "UI for the Portfolio Generation project",
   "main": "src/server/server.js",
   "scripts": {
@@ -27,7 +27,7 @@
     "@types/react": "^16.0.0",
     "@types/react-dom": "^16.0.0",
     "@types/react-redux": "^5.0.14",
-    "@types/react-router": "^4.0.21",
+    "@types/react-router": "^4.0.32",
     "@types/react-router-dom": "^4.2.3",
     "@types/reactstrap": "^6.4.0",
     "@types/webpack-env": "^1.13.6",
