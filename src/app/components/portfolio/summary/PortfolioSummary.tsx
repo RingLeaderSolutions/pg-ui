@@ -1,24 +1,16 @@
 import * as React from "react";
-import { MapDispatchToPropsFunction, connect, MapStateToProps } from 'react-redux';
 
-import CounterCard from "../../common/CounterCard";
 import { Portfolio, PortfolioDetails, User } from '../../../model/Models';
 import PortfolioMeterStatus from "./PortfolioMeterStatus";
-import DeletePortfolioDialog from "../creation/DeletePortfolioDialog";
-import ModalDialog from "../../common/ModalDialog";
-import { openModalDialog } from "../../../actions/viewActions";
-import PortfolioUploads from "../upload/PortfolioUploads";
+import UploadsCard from "../../common/UploadsCard";
+import { Row, Col, Card, CardBody } from "reactstrap";
 
 interface PortfolioSummaryProps {
     portfolio: Portfolio;
     detail: PortfolioDetails;
 }
 
-interface DispatchProps {
-    openModalDialog: (dialogId: string) => void;
-}
-
-class PortfolioSummary extends React.Component<PortfolioSummaryProps & DispatchProps, {}> {
+export default class PortfolioSummary extends React.Component<PortfolioSummaryProps, {}> {
     missingFieldText: string = "-";
 
     formatForDisplay(value: string){
@@ -31,23 +23,13 @@ class PortfolioSummary extends React.Component<PortfolioSummaryProps & DispatchP
 
     renderUser(user: User){
         if(user == null){
-            return (<h4><strong>-</strong></h4>)
+            return (<h6><strong>-</strong></h6>)
         }
 
         return (
-            <div className="uk-grid uk-grid-small">
-                <div className="uk-width-expand" />
-                <div className="uk-width-auto">
-                    <div className="uk-grid uk-grid-small">
-                        <div className="uk-width-auto uk-flex uk-flex-middle">
-                            <img className="avatar avatar-xlarge" src={user.avatarUrl} />
-                        </div>
-                        <div className="uk-width-auto uk-flex uk-flex-middle">
-                            <h4><strong>{user.firstName} {user.lastName}</strong></h4>
-                        </div>
-                    </div>
-                </div>
-                <div className="uk-width-expand" />
+            <div className="d-flex align-items-center">
+                <img className="user-avatar rounded-circle mr-2" src={user.avatarUrl} style={{height: '45px'}}/>
+                <h6 className="flex-grow-1 m-0"><span><strong>{user.firstName} {user.lastName}</strong></span></h6>
             </div>
         )
     }
@@ -59,46 +41,51 @@ class PortfolioSummary extends React.Component<PortfolioSummaryProps & DispatchP
         var supportExec = this.renderUser(portfolio.supportExec);
 
         return (
-            <div className="content-inner-portfolio">
-                <div className="uk-grid" data-uk-grid>
-                    <div className="uk-width-expand@s"></div>
-                    <div className="uk-width-auto@s">
-                        <button className='uk-button uk-button-danger uk-button-small' onClick={() => this.props.openModalDialog('delete_portfolio')}><i className="fas fa-trash uk-margin-small-right"></i> Delete portfolio</button>
-                    </div>
-                </div>
-                <div className="uk-child-width-expand@s uk-grid-match uk-text-center" data-uk-grid>
-                    <CounterCard content={salesLead} label="Account Manager" small/>
-                    <CounterCard content={supportExec} label="Tender Analyst" small/>
-                    <CounterCard title={String(portfolio.mpans)} label="Included Meters" small />
-                </div>
-                <div className="uk-grid-match" data-uk-grid>
-                    <div className="uk-width-auto">
-                        <PortfolioMeterStatus portfolio={portfolio} />
-                    </div>
-
-                    
-                    <div className="uk-width-expand">
-                        <div className="uk-card uk-card-default uk-card-body">
-                            <h4 className="uk-text-center"><i className="fa fa-file-upload uk-margin-small-right"></i>Uploads</h4>
-                            <div className="portfolio-history">
-                                <PortfolioUploads portfolio={portfolio}/>
-                            </div>
-                        </div>
-                    </div>
-                    {/* <PortfolioHistory portfolio={portfolio} /> */}
-                </div>
-                <ModalDialog dialogId="delete_portfolio">
-                    <DeletePortfolioDialog portfolioId={portfolio.id}/>
-                </ModalDialog>
-            </div>)
+            <div className="w-100 p-3">
+                <Row>
+                    <Col lg md={4} sm={4} className="mb-4">
+                        <Card className="stats-small stats-small--1 card-small">
+                            <CardBody className="p-0 d-flex">
+                                <div className="d-flex flex-column m-auto">
+                                    <div className="stats-small__data text-center">
+                                        <span className="stats-small__label text-uppercase"><i className="fas fa-user-alt mr-1"></i>Account Manager</span>
+                                        <h6 className="stats-small__value count my-3">{salesLead}</h6>
+                                    </div>
+                                </div>
+                            </CardBody>
+                        </Card>
+                    </Col>
+                    <Col lg md={4} sm={4} className="mb-4">
+                        <Card className="stats-small stats-small--1 card-small">
+                            <CardBody className="p-0 d-flex">
+                                <div className="d-flex flex-column m-auto">
+                                    <div className="stats-small__data text-center">
+                                        <span className="stats-small__label text-uppercase"><i className="fas fa-user-alt mr-1"></i>Support Executive</span>
+                                        <h6 className="stats-small__value count my-3">{supportExec}</h6>
+                                    </div>
+                                </div>
+                            </CardBody>
+                        </Card>
+                    </Col>
+                    <Col lg md={4} sm={4} className="mb-4">
+                        <Card className="stats-small stats-small--1 card-small">
+                            <CardBody className="p-0 d-flex">
+                                <div className="d-flex flex-column m-auto">
+                                    <div className="stats-small__data text-center">
+                                        <span className="stats-small__label text-uppercase"><i className="fas fa-tachometer-alt mr-1"></i>Included Meters</span>
+                                        <h6 className="stats-small__value count my-3">{String(portfolio.mpans)}</h6>
+                                    </div>
+                                </div>
+                            </CardBody>
+                        </Card>
+                    </Col>
+                </Row>
+                <Row>
+                    <PortfolioMeterStatus portfolio={portfolio} />
+                    <Col lg={6} md={12} className="mb-4">
+                        <UploadsCard entity="portfolio" entityId={portfolio.id} />
+                    </Col>
+                </Row>
+            </div>);
     }
 }
-
-
-const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, PortfolioSummaryProps> = (dispatch) => {
-    return {
-        openModalDialog: (dialogId: string) => dispatch(openModalDialog(dialogId))
-    };
-};
-  
-export default connect(null, mapDispatchToProps)(PortfolioSummary);

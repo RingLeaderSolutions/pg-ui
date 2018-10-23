@@ -1,66 +1,64 @@
 import * as React from "react";
-import { MapDispatchToPropsFunction, connect, MapStateToProps } from 'react-redux';
+import { MapDispatchToPropsFunction } from 'react-redux';
+import asModalDialog, { ModalDialogProps } from "../../common/modal/AsModalDialog";
+import { ModalDialogNames } from "../../common/modal/ModalDialogNames";
+import { ModalHeader, ModalBody, ModalFooter, Button } from "reactstrap";
 
 import { deletePortfolio } from '../../../actions/portfolioActions';
-import { closeModalDialog } from "../../../actions/viewActions";
-import { ApplicationState } from "../../../applicationState";
+import { closeDialog } from "../../../actions/viewActions";
 
-interface DeletePortfolioDialogProps {    
+export interface DeletePortfolioDialogData {
     portfolioId: string;
 }
 
-interface StateProps {
-}
+interface DeletePortfolioDialogProps extends ModalDialogProps<DeletePortfolioDialogData> { }
 
 interface DispatchProps {
     deletePortfolio: (portfolioId: string) => void;
-    closeModalDialog: () => void;
+    closePortfolioUpdateDialog: () => void;
 }
 
-class DeletePortfolioDialog extends React.Component<DeletePortfolioDialogProps & StateProps & DispatchProps, {}> {
+class DeletePortfolioDialog extends React.Component<DeletePortfolioDialogProps & DispatchProps, {}> {
     completeDeletion(){
-        this.props.deletePortfolio(this.props.portfolioId);
-        this.props.closeModalDialog();
+        this.props.deletePortfolio(this.props.data.portfolioId);
+        this.props.closePortfolioUpdateDialog();
+        this.props.toggle();
     }
 
     render() {
         return (
-            <div>
-                <div className="uk-modal-header">
-                    <h2 className="uk-modal-title"><i className="fas fa-trash-alt uk-margin-right"></i>Delete Portfolio</h2>
-                </div>
-                <div className="uk-modal-body">
-                    <div className="uk-alert-danger uk-alert" data-uk-alert>
-                        <div className="uk-grid uk-grid-small" data-uk-grid>
-                            <div className="uk-width-auto uk-flex uk-flex-middle">
-                                <i className="fas fa-exclamation-triangle uk-margin-small-right"></i>
-                            </div>
-                            <div className="uk-width-expand uk-flex uk-flex-middle">
-                                <div>
-                                    <p><strong>Are you sure you want to delete this portfolio?</strong></p>
-                                    <p>Deleting this portfolio will also delete any in-progress tenders, remove any generated requirements packs, and clear any received offers.</p>
-                                </div>
-                            </div>
-                        </div>
+            <div className="modal-content">
+                <ModalHeader className="modal-header-danger" toggle={this.props.toggle}><i className="fas fa-trash-alt mr-2"></i>Delete Portfolio</ModalHeader>
+                <ModalBody>
+                    <div className="d-flex align-items-center flex-column">
+                        <i className="fas fa-info-circle mr-2"></i>
+                        <p className="m-0 pt-2"><strong>Are you sure you want to delete this portfolio?</strong></p>
+                        <p className="m-0 pt-1">Deleting this portfolio will also delete any in-progress tenders, remove any generated requirements packs, and clear any received offers.</p>
                     </div>
-                </div>
-                <div className="uk-modal-footer uk-text-right">
-                    <button className="uk-button uk-button-default uk-margin-right" type="button" onClick={() => this.props.closeModalDialog()}><i className="fas fa-check-circle uk-margin-small-right" style={{color:'#006400'}}></i>No</button>
-                    <button className="uk-button uk-button-danger" type="button" onClick={() => this.completeDeletion()}><i className="fas fa-trash-alt uk-margin-small-right"></i>Yes</button>
-                </div>
-            </div>)
+                </ModalBody>
+                <ModalFooter className="justify-content-between">
+                    <Button onClick={this.props.toggle}>
+                        <i className="fas fa-times mr-1"></i>No, Cancel!    
+                    </Button>
+                    <Button color="danger" 
+                            onClick={() => this.completeDeletion()}>
+                        <i className="fas fa-trash-alt mr-1"></i>Yes, I know what I'm doing!
+                    </Button>
+                </ModalFooter>
+            </div>);
     }
 }
 
 const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, DeletePortfolioDialogProps> = (dispatch) => {
     return {
         deletePortfolio: (portfolioId: string) => dispatch(deletePortfolio(portfolioId)),
-        closeModalDialog: () => dispatch(closeModalDialog())
+        closePortfolioUpdateDialog: () => dispatch(closeDialog(ModalDialogNames.UpdatePortfolio))
     };
 };
   
-const mapStateToProps: MapStateToProps<StateProps, DeletePortfolioDialogProps, ApplicationState> = () => {
-    return {};
-};
-  
-export default connect(mapStateToProps, mapDispatchToProps)(DeletePortfolioDialog);
+export default asModalDialog(
+{ 
+    name: ModalDialogNames.DeletePortfolio, 
+    centered: true, 
+    backdrop: true,
+}, null, mapDispatchToProps)(DeletePortfolioDialog)

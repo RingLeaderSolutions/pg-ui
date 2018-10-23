@@ -1,14 +1,18 @@
 import * as React from "react";
-import { MapDispatchToPropsFunction, connect, MapStateToProps } from 'react-redux';
+import { MapDispatchToPropsFunction, MapStateToProps } from 'react-redux';
 import { ApplicationState } from '../../../applicationState';
 
 import { uploadAccountDocument } from '../../../actions/hierarchyActions';
-import { closeModalDialog } from "../../../actions/viewActions";
 import { UploadPanel } from "../../common/UploadPanel";
+import asModalDialog, { ModalDialogProps } from "../../common/modal/AsModalDialog";
+import { ModalHeader, ModalBody, Form, FormGroup, Label, CustomInput, ModalFooter, Button } from "reactstrap";
+import { ModalDialogNames } from "../../common/modal/ModalDialogNames";
 
-interface UploadAccountDocumentDialogProps {
+export interface UploadAccountDocumentDialogData {
     accountId: string;
 }
+
+interface UploadAccountDocumentDialogProps extends ModalDialogProps<UploadAccountDocumentDialogData> { }
 
 interface StateProps {
   working: boolean;
@@ -18,7 +22,6 @@ interface StateProps {
 
 interface DispatchProps {
     uploadAccountDocument: (accountId: string, documentType: string, file: Blob) => void;
-    closeModalDialog: () => void;
 }
 
 interface UploadAccountDocumentDialogState {
@@ -27,8 +30,8 @@ interface UploadAccountDocumentDialogState {
 }
 
 class UploadAccountDocumentDialog extends React.Component<UploadAccountDocumentDialogProps & StateProps & DispatchProps, UploadAccountDocumentDialogState> {
-    constructor(){
-        super();
+    constructor(props: UploadAccountDocumentDialogProps & StateProps & DispatchProps){
+        super(props);
         this.state = {
             file: null,
             documentType: ""
@@ -36,9 +39,9 @@ class UploadAccountDocumentDialog extends React.Component<UploadAccountDocumentD
     }
     
     upload() {
-        this.props.uploadAccountDocument(this.props.accountId, this.state.documentType, this.state.file);
+        this.props.uploadAccountDocument(this.props.data.accountId, this.state.documentType, this.state.file);
         this.onFileCleared();
-        this.props.closeModalDialog();
+        this.props.toggle();
     }
 
     onFileSelected(file: File){
@@ -64,46 +67,45 @@ class UploadAccountDocumentDialog extends React.Component<UploadAccountDocumentD
 
     render() {
         return (
-            <div>
-                <div className="uk-modal-header">
-                    <h2 className="uk-modal-title"><i className="fa fa-file-upload uk-margin-right"></i>Upload Account Document</h2>
-                </div>
-                <div className="uk-modal-body">
-                    <div className="uk-margin">
-                        <p>Select the file you wish to upload.</p>
-                        <form>
-                            <fieldset className="uk-fieldset">
-                                <div className="uk-margin">
-                                    <label className='uk-form-label'>Document Type</label>
-                                    <select className='uk-select' 
-                                        value={this.state.documentType}
-                                        onChange={(e) => this.handleFormChange("documentType", e)}>
-                                        <option value="" disabled>Select</option>
-                                        <option value="loa">Letter of Authority</option>
-                                        <option value="Other">Other</option>
-                                    </select>
-                                </div>
-                            </fieldset>
-                            <hr />
-                            <UploadPanel 
+            <div className="modal-content">
+                <ModalHeader toggle={this.props.toggle}><i className="fas fa-file-upload mr-2"></i>Upload Account Document</ModalHeader>
+                <ModalBody>
+                    <Form>
+                        <p className="m-0 text-center">Select the file you wish to upload.</p> 
+                        <FormGroup className="mt-2">
+                            <Label for="upload-account-document-type">Type</Label>
+                            <CustomInput type="select" name="upload-account-document-type-picker" id="upload-account-document-type"
+                                    value={this.state.documentType}
+                                    onChange={(e) => this.handleFormChange("documentType", e)}>
+                                    <option value="" disabled>Select</option>
+                                    <option value="loa">Letter of Authority</option>
+                                    <option value="Other">Other</option>
+                            </CustomInput>
+                        </FormGroup>
+                        <hr />
+                        <UploadPanel 
                                 file={this.state.file}
                                 onFileSelected={(file: File) => this.onFileSelected(file)}
                                 onFileCleared={() => this.onFileCleared()} />
-                        </form>
-                    </div>
-                </div>
-                <div className="uk-modal-footer uk-text-right">
-                    <button className="uk-button uk-button-default uk-margin-right" type="button" onClick={() => this.props.closeModalDialog()}><i className="fa fa-times uk-margin-small-right"></i>Cancel</button>
-                    <button className="uk-button uk-button-primary" type="button" onClick={() => this.upload()} disabled={!this.canSubmit()}><i className="fa fa-arrow-circle-up uk-margin-small-right"></i>Upload</button>
-                </div>
-            </div>)
+                    </Form>
+                </ModalBody>
+                <ModalFooter>
+                    <Button onClick={this.props.toggle}>
+                        <i className="fas fa-times mr-1"></i>Cancel
+                    </Button>
+                    <Button color="accent" 
+                            disabled={!this.state.file}
+                            onClick={() => this.upload()}>
+                        <i className="fas fa-arrow-circle-up mr-1"></i>Upload
+                    </Button>
+                </ModalFooter>
+            </div>);
     }
 }
 
 const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, UploadAccountDocumentDialogProps> = (dispatch) => {
     return {
-        uploadAccountDocument: (accountId: string, documentType: string, file: Blob) => dispatch(uploadAccountDocument(accountId, documentType, file)),
-        closeModalDialog: () => dispatch(closeModalDialog()) 
+        uploadAccountDocument: (accountId: string, documentType: string, file: Blob) => dispatch(uploadAccountDocument(accountId, documentType, file))
     };
 };
   
@@ -115,4 +117,9 @@ const mapStateToProps: MapStateToProps<StateProps, UploadAccountDocumentDialogPr
     };
 };
   
-export default connect(mapStateToProps, mapDispatchToProps)(UploadAccountDocumentDialog);
+export default asModalDialog(
+{ 
+    name: ModalDialogNames.UploadAccountDocument, 
+    centered: true, 
+    backdrop: true,
+}, mapStateToProps, mapDispatchToProps)(UploadAccountDocumentDialog)

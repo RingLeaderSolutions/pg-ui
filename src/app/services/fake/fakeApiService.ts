@@ -930,7 +930,7 @@ export class FakeApiService implements IApiService {
         return OK();
     }
 
-    fetchUploadReport(reportId: string, isImport: boolean){
+    fetchUploadReport(uri: string){
         return OK();
     }
 

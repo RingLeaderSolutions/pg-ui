@@ -5,9 +5,8 @@ import { MapDispatchToPropsFunction, connect, MapStateToProps } from 'react-redu
 import { getDashboardStatus } from '../../actions/dashboardActions';
 import { ApplicationState } from '../../applicationState';
 import { DashboardPortfolioStatus } from '../../model/Models';
-import { ChartConfig } from "./DashboardStatusChartConfig";
-
-var ReactHighCharts = require("react-highcharts");
+import { Pie } from "react-chartjs-2";
+import { Col, Card, CardHeader, CardBody, CardFooter, Row, Alert } from "reactstrap";
 
 interface StatusProps {
 }
@@ -39,14 +38,42 @@ class DashboardStatus extends React.Component<StatusProps & StateProps & Dispatc
         }
     }
 
-    renderChart(){
-        var config = ChartConfig;
-        
-        config.series[0].data = this.props.status.statusList.map(statusItem => {
-            return { name: this.toFriendlyPortfolioStatus(statusItem.status), y: statusItem.count };
-        });
-
-        return (<ReactHighCharts config={config} />);
+    renderChart(){        
+        let items = this.props.status.statusList;
+        return (
+            <Pie height={220}
+                data={{
+                    datasets: [{
+                        hoverBorderColor: '#ffffff',
+                        data: items.map(si => si.count),
+                        backgroundColor: [
+                            'rgba(0,123,255,0.9)',
+                            'rgba(0,123,255,0.5)',
+                            'rgba(0,123,255,0.3)'
+                        ]
+                        }],
+                        labels: items.map(si => this.toFriendlyPortfolioStatus(si.status))
+                }}
+                options={{
+                    // Hides the gap between slices of the pie/donut
+                    elements: {
+                        arc: {
+                            borderWidth: 0
+                        }
+                    },
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            padding: 25,
+                            boxWidth: 20
+                        },
+                    },
+                    cutoutPercentage: 50,
+                    tooltips: {
+                        mode: 'index',
+                        position: 'nearest'
+                    }
+                }} />)
     }
     render() {
         var content;
@@ -59,17 +86,12 @@ class DashboardStatus extends React.Component<StatusProps & StateProps & Dispatc
         else {
             if(this.props.status.statusList.length == 0){
                 content = (
-                    (<div className="uk-alert-default uk-margin-right uk-alert" data-uk-alert>
-                        <div className="uk-grid uk-grid-small" data-uk-grid>
-                            <div className="uk-width-auto uk-flex uk-flex-middle">
-                                <i className="fas fa-info-circle uk-margin-small-right"></i>
-                            </div>
-                            <div className="uk-width-expand uk-flex uk-flex-middle">
-                                <p>Sorry! No portfolios have been created yet.</p>    
-                            </div>
+                    <Alert color="light">
+                        <div className="d-flex align-items-center">
+                            <i className="fas fa-info-circle mr-2"></i>
+                            Sorry! No portfolios have been created yet.
                         </div>
-                    </div>)
-                );          
+                    </Alert>);
             }
             else {
                 content = this.renderChart();
@@ -77,12 +99,21 @@ class DashboardStatus extends React.Component<StatusProps & StateProps & Dispatc
         }
 
         return (
-            <div>
-                <div className="uk-card uk-card-default uk-card-body">
-                    <h3><i className="fa fa-chart-pie uk-margin-right"></i>Portfolio Status</h3>
-                    {content}
-                </div>
-            </div>)
+                <Card className="card-small">
+                    <CardHeader className="border-bottom">
+                        <h6 className="m-0"><i className="fas fa-chart-pie mr-1"></i>Portfolio Status</h6>
+                    </CardHeader>
+                    <CardBody className="d-flex py-3">
+                        {content}
+                    </CardBody>
+                    <CardFooter className="border-top">
+                        <Row>
+                            <Col className="text-right view-report">
+                                <a href="#">View portfolios &rarr;</a>
+                            </Col>
+                        </Row>
+                    </CardFooter>
+                </Card>)
     }
 }
 const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, StatusProps> = (dispatch) => {

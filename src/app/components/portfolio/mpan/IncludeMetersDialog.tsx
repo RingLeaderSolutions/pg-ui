@@ -1,20 +1,23 @@
 import * as React from "react";
 import ErrorMessage from "../../common/ErrorMessage";
-import { MapDispatchToPropsFunction, connect, MapStateToProps } from 'react-redux';
+import { MapDispatchToPropsFunction, MapStateToProps } from 'react-redux';
 import { ApplicationState } from '../../../applicationState';
 import { UtilityType, AccountDetail, PortfolioDetails, HierarchyMpan, HierarchyMprn, decodeUtilityType } from '../../../model/Models';
-import Spinner from '../../common/Spinner';
 
 import { retrieveAccountDetail } from '../../../actions/hierarchyActions';
 import { includeMeters } from '../../../actions/meterActions';
-import { closeModalDialog } from "../../../actions/viewActions";
 import { Link } from "react-router-dom";
+import asModalDialog, { ModalDialogProps } from "../../common/modal/AsModalDialog";
+import { ModalDialogNames } from "../../common/modal/ModalDialogNames";
+import { ModalHeader, ModalBody, ModalFooter, Button, Alert, Col, CustomInput, Row } from "reactstrap";
+import { LoadingIndicator } from "../../common/LoadingIndicator";
 
-interface IncludeMetersDialogProps {    
+export interface IncludeMetersDialogData {
     utility: UtilityType;
     portfolio: PortfolioDetails;
     includedMeters: string[];
 }
+interface IncludeMetersDialogProps extends ModalDialogProps<IncludeMetersDialogData> { }
 
 interface StateProps {
     account: AccountDetail;
@@ -26,7 +29,6 @@ interface StateProps {
 interface DispatchProps {
     retrieveAccountDetail: (accountId: string) => void;
     includeMeters: (portfolioId: string, meters: string[]) => void;
-    closeModalDialog: () => void;
 }
 
 interface IncludedMetersDialogState {
@@ -37,8 +39,8 @@ interface IncludedMetersDialogState {
 }
 
 class IncludeMetersDialog extends React.Component<IncludeMetersDialogProps & StateProps & DispatchProps, IncludedMetersDialogState> {
-    constructor() {
-        super();
+    constructor(props: IncludeMetersDialogProps & StateProps & DispatchProps) {
+        super(props);
         this.state = {
             includedMeters: [],
             excludedMpans: [],
@@ -47,17 +49,17 @@ class IncludeMetersDialog extends React.Component<IncludeMetersDialogProps & Sta
     }
 
     componentDidMount(){
-        this.props.retrieveAccountDetail(this.props.portfolio.portfolio.accountId)
+        this.props.retrieveAccountDetail(this.props.data.portfolio.portfolio.accountId)
     }
 
     completeInclusion(){
-        this.props.includeMeters(this.props.portfolio.portfolio.id, this.state.includedMeters);
-        this.props.closeModalDialog();
+        this.props.includeMeters(this.props.data.portfolio.portfolio.id, this.state.includedMeters);
+        this.props.toggle();
     }
 
     componentWillReceiveProps(nextProps: IncludeMetersDialogProps & StateProps & DispatchProps){
         if(nextProps.account != null){
-            if(nextProps.utility == UtilityType.Electricity){
+            if(nextProps.data.utility == UtilityType.Electricity){
                 var excludedMpans =  this.getExcludedMpans(nextProps.account);
                 this.setState({
                     ...this.state,
@@ -96,17 +98,17 @@ class IncludeMetersDialog extends React.Component<IncludeMetersDialogProps & Sta
     getExcludedMpans(account: AccountDetail) : HierarchyMpan[]{
         var mpans = account.sites.SelectMany((s) => s.mpans);
 
-        return mpans.filter(mp => this.props.includedMeters.indexOf(mp.mpanCore) < 0);
+        return mpans.filter(mp => this.props.data.includedMeters.indexOf(mp.mpanCore) < 0);
     }
 
     getExcludedMprns(account: AccountDetail) : HierarchyMprn[]{
         var mprns = account.sites.SelectMany((s) => s.mprns);
 
-        return mprns.filter(mp => this.props.includedMeters.indexOf(mp.mprnCore) < 0);
+        return mprns.filter(mp => this.props.data.includedMeters.indexOf(mp.mprnCore) < 0);
     }
 
     includeAllMeters(){
-        if(this.props.utility == UtilityType.Electricity){
+        if(this.props.data.utility == UtilityType.Electricity){
             this.setState({
                 ...this.state,
                 includedMeters:  this.state.excludedMpans.map(em => em.mpanCore)
@@ -137,19 +139,18 @@ class IncludeMetersDialog extends React.Component<IncludeMetersDialogProps & Sta
             
         var meters = excludedMeters.map(em => {
             var isSelected = this.state.includedMeters.find(im => im == em.mpanCore) != null;
-            var hhIndicator = em.meterType == "HH" ? (<i className="fa fa-clock uk-margin-small-right" data-uk-tooltip="title: Half-hourly meter"></i>) : null;
+            var hhIndicator = em.meterType == "HH" ? (<i className="fa fa-clock ml-1"></i>) : null;
+
             return (
-                <div className="uk-width-1-2" key={em.mpanCore}>
-                    <label>
-                        <input 
-                            className='uk-checkbox'
-                            type='checkbox' 
-                            onChange={() => this.handleChange(em.mpanCore)}
-                            checked={isSelected}
-                            /> {em.mpanCore} {hhIndicator}
-                    </label>
-                </div>
-            )
+                <Col xs={6} key={em.mpanCore} className="d-flex align-items-center">
+                    <CustomInput type="checkbox"
+                                 id={`check-${em.mpanCore}`}
+                                 checked={isSelected}
+                                 onChange={() => this.handleChange(em.mpanCore)} 
+                                 label={em.mpanCore}
+                                 inline/>
+                    {hhIndicator}
+                </Col>);
         });
 
         return this.renderFullMetersDisplay(meters);
@@ -166,75 +167,58 @@ class IncludeMetersDialog extends React.Component<IncludeMetersDialogProps & Sta
         var meters = excludedMeters.map(em => {
             var isSelected = this.state.includedMeters.find(im => im == em.mprnCore) != null;
             return (
-                <div className="uk-width-1-2" key={em.mprnCore}>
-                    <label>
-                        <input 
-                            className='uk-checkbox'
-                            type='checkbox' 
-                            onChange={() => this.handleChange(em.mprnCore)}
-                            checked={isSelected}
-                            /> {em.mprnCore}
-                    </label>
-                </div>
-            )
+                <Col xs={6} key={em.mprnCore}>
+                    <CustomInput type="checkbox"
+                                 id={`check-${em.mprnCore}`}
+                                 checked={isSelected}
+                                 onChange={() => this.handleChange(em.mprnCore)} 
+                                 label={em.mprnCore}
+                                 inline/>
+                </Col>);
         });
 
         return this.renderFullMetersDisplay(meters);
     }
 
     renderFullMetersDisplay(meters: any[]){
-        if(meters.length == 0){
-            var lowerCaseUtility = decodeUtilityType(this.props.utility).toLowerCase();
-            if(this.props.includedMeters.length == 0){
+        if(meters.length === 0){
+            var lowerCaseUtility = decodeUtilityType(this.props.data.utility).toLowerCase();
+            if(this.props.data.includedMeters.length === 0){
                 return (
-                    <div className="uk-alert-warning uk-margin-small-bottom uk-alert" data-uk-alert>
-                        <div className="uk-grid uk-grid-small" data-uk-grid>
-                            <div className="uk-width-auto uk-flex uk-flex-middle">
-                                <i className="fas fa-exclamation-triangle uk-margin-small-right"></i>
-                            </div>
-                            <div className="uk-width-expand uk-flex uk-flex-middle">
-                                <div>
-                                    <p>This portfolio's account ({this.props.account.companyName}) doesn't contain any {lowerCaseUtility} meters to include.</p>    
-                                    <p><Link to={`/account/${this.props.account.id}`} onClick={() => this.props.closeModalDialog()}>Click here</Link> to visit the account where you can add some.</p>
-                                </div>
-                            </div>
+                    <Alert color="light">
+                        <div className="d-flex align-items-center flex-column">
+                            <i className="fas fa-info-circle mr-2"></i>
+                            <p className="m-0 pt-2">This portfolio's account ({this.props.account.companyName}) doesn't contain any {lowerCaseUtility} meters to include.</p>
+                            <p className="m-0 pt-1"><Link to={`/account/${this.props.account.id}`} onClick={() => this.props.toggle()}>Click here</Link> to visit the account where you can add some.</p>
                         </div>
-                    </div>
-                )
+                    </Alert>);
             }
 
             return (
-                <div className="uk-alert-success uk-margin-small-bottom uk-alert" data-uk-alert>
-                        <div className="uk-grid uk-grid-small" data-uk-grid>
-                            <div className="uk-width-auto uk-flex uk-flex-middle">
-                                <i className="fas fa-info-circle uk-margin-small-right"></i>
-                            </div>
-                            <div className="uk-width-expand uk-flex uk-flex-middle">
-                                <p>You have already included all of the available {lowerCaseUtility} meters into this portfolio.</p>    
-                            </div>
-                        </div>
+                <Alert color="light">
+                    <div className="d-flex align-items-center flex-column">
+                        <i className="fas fa-info-circle mr-2"></i>
+                        <p className="m-0 pt-2">You have already included all of the available {lowerCaseUtility} meters into this portfolio.</p>
                     </div>
-            )
+                </Alert>);
         }
 
         return (
-            <div className="uk-margin">
-                <form>
-                    <fieldset className="uk-fieldset">
-                        <div className="include-meter-list" data-uk-grid>
-                            {meters}
-                        </div>
-                        <hr />
-                        <button className="uk-button uk-button-small uk-button-default uk-margin-right" onClick={() => this.includeAllMeters()} type="button">
-                            <i className="fa fa-check-double uk-margin-small-right"></i> Select All
-                        </button>
-                        <button className="uk-button uk-button-small uk-button-default uk-margin-right" onClick={() => this.includeNoMeters()} type="button">
-                            <i className="fa fa-times uk-margin-small-right fa-lg"></i> Select None
-                        </button>
-                    </fieldset>
-                </form>
-            </div>
-        )
+            <div>
+                <Row noGutters>
+                    {meters}
+                </Row>
+                <hr />
+                <div className="d-flex">
+                    <Button color="white" size="sm" onClick={() => this.includeAllMeters()}>
+                        <i className="fa fa-check-double mr-1"></i> Select All
+                    </Button>
+                    <Button color="white" size="sm" className="ml-1"
+                            onClick={() => this.includeNoMeters()}>
+                        <i className="fa fa-times mr-1"></i> Select None
+                    </Button>
+                </div>
+            </div>);
     }
 
     render() {
@@ -242,31 +226,35 @@ class IncludeMetersDialog extends React.Component<IncludeMetersDialogProps & Sta
             return (<ErrorMessage content={this.props.errorMessage} />);
         }
         if(this.props.working || this.props.account == null){
-            return (<Spinner />);
+            return (<LoadingIndicator />);
         }
 
         var saveDisabled = this.state.includedMeters.length == 0;
+
         return (
-            <div>
-                <div className="uk-modal-header">
-                    <h2 className="uk-modal-title"><i className="fas fa-folder-plus uk-margin-right"></i>Include {decodeUtilityType(this.props.utility)} Meters</h2>
-                </div>
-                <div className="uk-modal-body">
-                    {this.props.utility == UtilityType.Electricity ? this.renderExcludedMpans() : this.renderExcludedMprns()}
-                </div>
-                <div className="uk-modal-footer uk-text-right">
-                    <button className="uk-button uk-button-default uk-margin-right" type="button" onClick={() => this.props.closeModalDialog()}><i className="fa fa-times uk-margin-small-right"></i>Cancel</button>
-                    <button className="uk-button uk-button-primary" type="button" onClick={() => this.completeInclusion()} disabled={saveDisabled}><i className="fas fa-folder-plus uk-margin-small-right"></i>Save</button>
-                </div>
-            </div>)
+            <div className="modal-content">
+                <ModalHeader toggle={this.props.toggle}><i className="fas fa-folder-plus mr-2"></i>Include {decodeUtilityType(this.props.data.utility)} Meters</ModalHeader>
+                <ModalBody>
+                    {this.props.data.utility == UtilityType.Electricity ? this.renderExcludedMpans() : this.renderExcludedMprns()}
+                </ModalBody>
+                <ModalFooter>
+                    <Button onClick={this.props.toggle}>
+                        <i className="fas fa-times mr-1"></i>Cancel
+                    </Button>
+                    <Button color="accent" 
+                            disabled={saveDisabled}
+                            onClick={() => this.completeInclusion()}>
+                        <i className="fas fa-folder-plus mr-1"></i>Save
+                    </Button>
+                </ModalFooter>
+            </div>);
     }
 }
 
 const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, IncludeMetersDialogProps> = (dispatch) => {
     return {
         retrieveAccountDetail: (accountId: string) => dispatch(retrieveAccountDetail(accountId)),   
-        includeMeters: (portfolioId: string, meters: string[]) => dispatch(includeMeters(portfolioId, meters)),
-        closeModalDialog: () => dispatch(closeModalDialog())
+        includeMeters: (portfolioId: string, meters: string[]) => dispatch(includeMeters(portfolioId, meters))
     };
 };
   
@@ -278,5 +266,10 @@ const mapStateToProps: MapStateToProps<StateProps, IncludeMetersDialogProps, App
         errorMessage: state.hierarchy.selected.errorMessage
     };
 };
-  
-export default connect(mapStateToProps, mapDispatchToProps)(IncludeMetersDialog);
+
+export default asModalDialog(
+{ 
+    name: ModalDialogNames.IncludeMeters, 
+    centered: true, 
+    backdrop: true,
+}, mapStateToProps, mapDispatchToProps)(IncludeMetersDialog)

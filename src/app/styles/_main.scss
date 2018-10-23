@@ -1,0 +1,13 @@
+@import "globals";
+
+html, body, .root {
+    height: 100%;
+}
+
+.initialising {
+    //background-image: require('../images/panels.png');
+
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}

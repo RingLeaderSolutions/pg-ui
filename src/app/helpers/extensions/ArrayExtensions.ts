@@ -6,17 +6,17 @@ declare global {
          * @param selector The selector function, providing the arrays to flatten
          */
         SelectMany<T, TOut>(this: T[], selector: (t: T) => TOut[]): TOut[];
-        
+
         /**
-         * Returns a boolean indicating whether an array is null, or contains no elements.
+         * Returns a boolean indicating whether an array  contains no elements.
          * @param this The array to check
          */
-        IsNullOrEmpty(this: Array<T>): boolean;
+        IsEmpty(this: Array<T>): boolean;
     }
 }
 
-Array.prototype.IsNullOrEmpty = function<T>(this: Array<T>): boolean {
-    return this === null || this === undefined || this.length === 0;
+Array.prototype.IsEmpty = function<T>(this: Array<T>): boolean {
+    return this.length === 0;
 }
 
 Array.prototype.SelectMany = function<T, TOut>(this: T[], selector: (t: T) => TOut[]): TOut[] {
@@ -27,3 +27,7 @@ Array.prototype.SelectMany = function<T, TOut>(this: T[], selector: (t: T) => TO
 }
 
 export {};
+
+export const IsNullOrEmpty = function<T>(arr: Array<T>): boolean {
+    return arr === null || arr === undefined || arr.IsEmpty();
+}

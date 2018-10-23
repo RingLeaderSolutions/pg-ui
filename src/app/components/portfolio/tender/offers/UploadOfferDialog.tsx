@@ -4,15 +4,19 @@ import { ApplicationState } from '../../../../applicationState';
 import { TenderSupplier } from "../../../../model/Tender";
 
 import { uploadElectricityOffer, uploadGasOffer } from '../../../../actions/tenderActions';
-import { closeModalDialog } from "../../../../actions/viewActions";
 import { UploadPanel } from "../../../common/UploadPanel";
 import { getWellFormattedUtilityName } from "../../../common/UtilityIcon";
+import asModalDialog, { ModalDialogProps } from "../../../common/modal/AsModalDialog";
+import { ModalDialogNames } from "../../../common/modal/ModalDialogNames";
+import { ModalFooter, ModalHeader, ModalBody, Form, FormGroup, Label, CustomInput, Button } from "reactstrap";
 
-interface UploadOfferDialogProps {
+export interface UploadOfferDialogData {
     tenderId: string;
     assignedSuppliers: TenderSupplier[];
     utilityType: string;
 }
+
+interface UploadOfferDialogProps extends ModalDialogProps<UploadOfferDialogData> { }
 
 interface StateProps {
   working: boolean;
@@ -23,7 +27,6 @@ interface StateProps {
 interface DispatchProps {
     uploadElectricityOffer: (tenderId: string, supplierId: string, file: Blob) => void;
     uploadGasOffer: (tenderId: string, supplierId: string, file: Blob) => void;
-    closeModalDialog: () => void;
 }
 
 interface UploadOfferState {
@@ -32,8 +35,8 @@ interface UploadOfferState {
 }
 
 class UploadOfferDialog extends React.Component<UploadOfferDialogProps & StateProps & DispatchProps, UploadOfferState> {
-    constructor(){
-        super();
+    constructor(props: UploadOfferDialogProps & StateProps & DispatchProps){
+        super(props);
         this.state = {
             file: null,
             supplierId: ""
@@ -41,15 +44,16 @@ class UploadOfferDialog extends React.Component<UploadOfferDialogProps & StatePr
     }
 
     upload() {
-        if(this.props.utilityType.toLowerCase() == "gas"){
-            this.props.uploadGasOffer(this.props.tenderId, this.state.supplierId, this.state.file);
+        let { tenderId, utilityType } = this.props.data;
+        if(utilityType.toLowerCase() == "gas"){
+            this.props.uploadGasOffer(tenderId, this.state.supplierId, this.state.file);
         }
         else {
-            this.props.uploadElectricityOffer(this.props.tenderId, this.state.supplierId, this.state.file);
+            this.props.uploadElectricityOffer(tenderId, this.state.supplierId, this.state.file);
         }
         
         this.onFileCleared();
-        this.props.closeModalDialog();
+        this.props.toggle();
     }
 
     handleFormChange(attribute: string, event: React.ChangeEvent<any>, isCheck: boolean = false){
@@ -59,21 +63,6 @@ class UploadOfferDialog extends React.Component<UploadOfferDialogProps & StatePr
             ...this.state,
             [attribute]: value
         })
-    }
-
-    renderSupplierSelect(){
-        var options = this.props.assignedSuppliers.map(s => {
-                return (<option key={s.supplierId} value={s.supplierId}>{s.name}</option>)
-        })
-
-        return (
-            <select className='uk-select' 
-                value={this.state.supplierId}
-                onChange={(e) => this.handleFormChange("supplierId", e)}>
-                <option value="" disabled>Select</option>
-                {options}
-            </select>
-        );
     }
 
     onFileSelected(file: File){
@@ -87,45 +76,52 @@ class UploadOfferDialog extends React.Component<UploadOfferDialogProps & StatePr
     canSubmit(){
         return this.state.file != null && !this.state.supplierId.IsNullOrEmpty();
     }
+    
     render() {  
-        var friendlyUtility = getWellFormattedUtilityName(this.props.utilityType);
+        var friendlyUtility = getWellFormattedUtilityName(this.props.data.utilityType);
               
         return (
-            <div>
-                <div className="uk-modal-header">
-                    <h2 className="uk-modal-title"><i className="fa fa-file-upload uk-margin-right"></i>Upload {friendlyUtility} Offer</h2>
-                </div>
-                <div className="uk-modal-body">
-                    <div className="uk-margin">
-                        <p>Please select the originating supplier, and browse for the offer file provided by the supplier.</p>
-                        <form>
-                            <fieldset className="uk-fieldset">
-                                <div className='uk-margin'>
-                                    <label className='uk-form-label'>Supplier</label>
-                                    {this.renderSupplierSelect()}
-                                </div>
-                            </fieldset>
-                            <hr />
-                            <UploadPanel 
+            <div className="modal-content">
+                <ModalHeader toggle={this.props.toggle}><i className="fas fa-file-upload mr-2"></i>Upload {friendlyUtility} Offer</ModalHeader>
+                <ModalBody>
+                    {/* <p className="text-center">Please select the originating supplier and locate the offer file.</p> */}
+                    <Form>
+                        <FormGroup>
+                            <Label for="upload-offer-supplier">Supplier</Label>
+                            <CustomInput type="select" name="upload-offer-supplier-picker" id="upload-offer-supplier"
+                                   value={this.state.supplierId}
+                                   onChange={(e) => this.handleFormChange("supplierId", e)}>
+                                <option value="" disabled>Select</option>
+                                {this.props.data.assignedSuppliers.map(s => {
+                                        return (<option key={s.supplierId} value={s.supplierId}>{s.name}</option>)
+                                })}
+                            </CustomInput>
+                        </FormGroup>
+                        <hr />
+                        <UploadPanel 
                                 file={this.state.file}
                                 onFileSelected={(file: File) => this.onFileSelected(file)}
                                 onFileCleared={() => this.onFileCleared()} />
-                        </form>
-                    </div>
-                </div>
-                <div className="uk-modal-footer uk-text-right">
-                    <button className="uk-button uk-button-default uk-margin-right" type="button"  onClick={() => this.props.closeModalDialog()}><i className="fa fa-times uk-margin-small-right"></i>Cancel</button>
-                    <button className="uk-button uk-button-primary" type="button" onClick={() => this.upload()} disabled={!this.canSubmit()}><i className="fa fa-arrow-circle-up uk-margin-small-right"></i>Upload</button>
-                </div>
-            </div>)
+                    </Form>
+                </ModalBody>
+                <ModalFooter>
+                    <Button onClick={this.props.toggle}>
+                        <i className="fas fa-times mr-1"></i>Cancel
+                    </Button>
+                    <Button color="accent" 
+                            disabled={!this.canSubmit()}
+                            onClick={() => this.upload()}>
+                        <i className="fas fa-arrow-circle-up mr-1"></i>Upload
+                    </Button>
+                </ModalFooter>
+            </div>);
     }
 }
 
 const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, UploadOfferDialogProps> = (dispatch) => {
     return {
         uploadElectricityOffer: (tenderId: string, supplierId: string, file: Blob) => dispatch(uploadElectricityOffer(tenderId, supplierId, file)),
-        uploadGasOffer: (tenderId: string, supplierId: string,  file: Blob) => dispatch(uploadGasOffer(tenderId, supplierId, file)),
-        closeModalDialog: () => dispatch(closeModalDialog())
+        uploadGasOffer: (tenderId: string, supplierId: string,  file: Blob) => dispatch(uploadGasOffer(tenderId, supplierId, file))
     };
 };
   
@@ -138,4 +134,9 @@ const mapStateToProps: MapStateToProps<StateProps, UploadOfferDialogProps, Appli
     };
 };
   
-export default connect(mapStateToProps, mapDispatchToProps)(UploadOfferDialog);
+export default asModalDialog(
+{ 
+    name: ModalDialogNames.UploadOffer, 
+    centered: true, 
+    backdrop: true,
+}, mapStateToProps, mapDispatchToProps)(UploadOfferDialog)

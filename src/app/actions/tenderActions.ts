@@ -172,12 +172,6 @@ export function fetchTenderOffers(portfolioId: string){
     }
 };
 
-export function selectRecommendationReport(recommendation: TenderRecommendation){    
-    return (dispatch: Dispatch<any>) => {
-        dispatch({ type: types.SELECT_RECOMMENDATION_REPORT, data: recommendation});
-    }
-};
-
 export function fetchTenderRecommendations(portfolioId: string){    
     return (dispatch: Dispatch<any>) => {
         let fetchPromise = ApiService.fetchTenderRecommendations(portfolioId);
@@ -221,7 +215,14 @@ export function fetchRecommendationsSites(tenderId: string, summaryId: string, s
             fetchPromise,
             200, 
             data => {
-                return { type: types.FETCH_RECOMMENDATIONS_SITES_SUCCESSFUL, data: data as RecommendationSite[] };
+                let sites = data as RecommendationSite[];
+                let sorted = sites.sort(
+                    (rs1: RecommendationSite, rs2: RecommendationSite) => {        
+                        if (rs1.siteCode < rs2.siteCode) return -1;
+                        if (rs1.siteCode > rs2.siteCode) return 1;
+                        return 0;
+                    });
+                return { type: types.FETCH_RECOMMENDATIONS_SITES_SUCCESSFUL, data: sorted };
             }, 
             error => {
                 return { type: types.FETCH_RECOMMENDATIONS_SITES_FAILED, errorMessage: error };

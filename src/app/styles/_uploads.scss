@@ -1,0 +1,21 @@
+@import "globals";
+
+.tf-custom-file-input input[type="file"]{
+    position: absolute;
+    top: 0;
+    z-index: 1;
+    width: 100%;
+    height: 100%;
+    left: 0;
+    -webkit-appearance: none;
+    opacity: 0;
+    cursor: pointer;
+    font-size: 500px;
+    overflow: hidden;
+}
+
+.file-upload-pane {
+    outline: #666 dashed 2px;
+    outline-offset: 5px;
+    background: #f1f1f1;
+}

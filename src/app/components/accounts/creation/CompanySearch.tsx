@@ -2,54 +2,45 @@ import * as React from "react";
 import { MapDispatchToPropsFunction, connect, MapStateToProps } from 'react-redux';
 import { ApplicationState } from '../../../applicationState';
 import ErrorMessage from '../../common/ErrorMessage';
-import Spinner from '../../common/Spinner';
 import { CompanyInfo } from '../../../model/Models';
 
-import { searchCompany, clearCompany, selectCompany } from '../../../actions/hierarchyActions';
+import { searchCompany, clearCompany, selectCompany, clearAccountCreation } from '../../../actions/hierarchyActions';
+import { LoadingIndicator } from "../../common/LoadingIndicator";
+import { ModalHeader, ModalBody, Form, InputGroup, InputGroupAddon, InputGroupText, Input, Button, ModalFooter } from "reactstrap";
+
+interface CompanySearchProps {
+    toggle: () => void;
+}
 
 interface StateProps {
     working: boolean;
     error: boolean;
     errorMessage: string;
     company: CompanyInfo;
-  }
+}
   
-  interface DispatchProps {
-      searchCompany: (number: string) => void;
-      clearCompany: () => void;
-      continueOnboarding: () => void;
-  }
+interface DispatchProps {
+    searchCompany: (number: string) => void;
+    clearCompany: () => void;
+    continueOnboarding: () => void;
+    clearAccountCreation: () => void;
+}
 
 interface CompanySearchState {
     registrationNumber: string;
 }
 
-class CompanySearch extends React.Component<DispatchProps & StateProps, CompanySearchState> {
-    constructor(props: StateProps & DispatchProps) {
+class CompanySearch extends React.Component<CompanySearchProps & DispatchProps & StateProps, CompanySearchState> {
+    constructor(props: CompanySearchProps & StateProps & DispatchProps) {
         super(props);
         this.state = {
             registrationNumber: ''
         }
-
-        this.searchCompany = this.searchCompany.bind(this);
-        this.clearCompany = this.clearCompany.bind(this);
-        this.onboard = this.onboard.bind(this);
     }
-    searchCompany(event: any) {
-        event.preventDefault();
 
+    searchCompany() {
         const number = this.state.registrationNumber.trim();
         this.props.searchCompany(number);
-    }
-
-    clearCompany(event: any){
-        event.preventDefault();
-        this.props.clearCompany();
-    }
-
-    onboard(event: any){
-        event.preventDefault();
-        this.props.continueOnboarding();
     }
 
     updateRegistrationNumber(ev: any){
@@ -60,96 +51,91 @@ class CompanySearch extends React.Component<DispatchProps & StateProps, CompanyS
         });
     }
 
-    render(){
-        let frameContent;
-        let actionContent = (
-            <div className="uk-modal-footer uk-text-right">
-                <button className="uk-button uk-button-default uk-margin-right" type="button" disabled><i className="fa fa-eraser uk-margin-small-right"></i>Clear search</button>
-                <button className="uk-button uk-button-primary" type="button" disabled><i className="fa fa-arrow-circle-right uk-margin-small-right"></i>Continue</button>
-            </div>
-        );
+    close(){
+        this.props.clearAccountCreation();
+        this.props.toggle();
+    }
 
+    render(){
         let searchInProgress = this.props.working;
 
-        if(searchInProgress){
-            frameContent = (<div><Spinner /></div>);
-        }
-
-        if(!searchInProgress && this.props.error){
-            frameContent = (
-                <ErrorMessage content={this.props.errorMessage} />
-            )
-        }
+        var canSearch = this.state.registrationNumber.length > 0;
 
         let foundCompany = this.props.company;
-        if(!searchInProgress && foundCompany){
-            frameContent = (
-                <div>
-                    <div className="uk-grid uk-grid-small uk-child-width-1-2@s" data-uk-grid>
-                        <div>Company Name</div>
-                        <div>{foundCompany.companyName}</div>
-                        <div>Registration Number</div>
-                        <div>{foundCompany.companyNumber}</div>
-                        <div>Status</div>
-                        <div>{foundCompany.companyStatus}</div>
-                        <div>Incorporation Date</div>
-                        <div>{foundCompany.incorporationDate}</div>
-                        <div>Registered Address</div>
-                        <div>
-                            <div>{foundCompany.addressLine1}</div>
-                            <div>{foundCompany.addressLine2}</div>
-                            <div>{foundCompany.postTown}</div>
-                            <div>{foundCompany.county}</div>
-                            <div>{foundCompany.countryOfOrigin}</div>
-                            <div>{foundCompany.postcode}</div>
-                        </div>
-                    </div>
-                    <hr />
-                    <p>If this is the company you were looking for, click the <i>Continue</i> button below.</p>
-                </div>
-            );
+        let hasSearchError = !searchInProgress && this.props.error;
+        let hasSearchResult = !searchInProgress && !this.props.error && foundCompany != null;
 
-            actionContent = (
-                <div className="uk-modal-footer uk-text-right">
-                    <button className="uk-button uk-button-default uk-margin-right" type="button" onClick={this.clearCompany}><i className="fa fa-eraser uk-margin-small-right"></i>Clear search</button>
-                    <button className="uk-button uk-button-primary" type="button" onClick={this.onboard}><i className="fa fa-arrow-circle-right uk-margin-small-right"></i>Continue</button>
-                </div>
-            )
-        }
-
-        var canSearch = this.state.registrationNumber.length > 0;
         return (
-            <div>
-                <div className="uk-modal-header">
-                    <h2 className="uk-modal-title"><i className="fa fa-search uk-margin-right"></i>Search Company</h2>
-                </div>
-                <div className="uk-modal-body">
-                    <div className="uk-margin">
-                        <p>Enter the company registration number and press the search button to find the prospect to onboard.</p>
-
-                        <div className="uk-grid-small" data-uk-grid>
-                            <div className="uk-width-expand@s">
-                                <div className="icon-input-container uk-grid uk-grid-collapse icon-left">
-                                    <div tabIndex={-1} className="uk-width-auto uk-flex uk-flex-middle">
-                                        <i className="far fa-building"></i>
-                                    </div>
-                                    <input id="registrationNumber" className="uk-input uk-width-expand" type="input" placeholder="Registration Number" value={this.state.registrationNumber} onChange={e => this.updateRegistrationNumber(e)} />
-                                </div>
+            <div className="modal-content">
+                <ModalHeader toggle={() => this.close()}><i className="fas fa-search mr-2"></i>Search Company</ModalHeader>
+                <ModalBody>
+                    <p>Enter the company registration number and press the search button.</p>
+                    <Form>
+                        <div className="d-flex">
+                            <div className="flex-grow-1 pr-2">
+                                <InputGroup className="input-group-seamless">
+                                    <InputGroupAddon addonType="prepend">
+                                        <InputGroupText>
+                                            <i className="fas fa-building"></i>
+                                        </InputGroupText>
+                                    </InputGroupAddon>
+                                    <Input id="search-company-reg-number"
+                                    value={this.state.registrationNumber} 
+                                    onChange={e => this.updateRegistrationNumber(e)} />
+                                </InputGroup>
                             </div>
-                            <div className="uk-width-auto@s">
-                                <button className="uk-button uk-button-primary" type="button" onClick={this.searchCompany} disabled={!canSearch}>
-                                    <i className="fa fa-search uk-margin-small-right fa-lg"></i>
-                                    Search
-                                </button>
-                            </div>
+                                <Button color="white" 
+                                    onClick={() => this.searchCompany()} 
+                                    disabled={!canSearch}>
+                                <i className="fas fa-search mr-1"></i>Search
+                            </Button>
                         </div>
-
                         <hr />
-                        {frameContent}
-                    </div>
-                </div>
-                {actionContent}
-            </div>)
+                        {searchInProgress && (
+                            <LoadingIndicator text="Searching..." minHeight={200} />
+                        )}
+                        {hasSearchError && (
+                            <ErrorMessage content={this.props.errorMessage} />
+                        )}
+                        {hasSearchResult && (
+                            <div>
+                                <div>
+                                    <div className="text-small">Company Name</div>
+                                    <div className="pl-3">{foundCompany.companyName}</div>
+                                    <div className="text-small">Registration Number</div>
+                                    <div className="pl-3">{foundCompany.companyNumber}</div>
+                                    <div className="text-small">Status</div>
+                                    <div className="pl-3">{foundCompany.companyStatus}</div>
+                                    <div className="text-small">Incorporation Date</div>
+                                    <div className="pl-3">{foundCompany.incorporationDate}</div>
+                                    <div className="text-small">Registered Address</div>
+                                    <div className="pl-3">
+                                        <div>{foundCompany.addressLine1}</div>
+                                        <div>{foundCompany.addressLine2}</div>
+                                        <div>{foundCompany.postTown}</div>
+                                        <div>{foundCompany.county}</div>
+                                        <div>{foundCompany.countryOfOrigin}</div>
+                                        <div>{foundCompany.postcode}</div>
+                                    </div>
+                                </div>
+                            <hr />
+                            <p>If this is the company you were looking for, click the <i>Continue</i> button below.</p>
+                            </div>
+                        )}
+                    </Form>
+                </ModalBody>
+                <ModalFooter>
+                    <Button onClick={() => this.props.clearCompany()}
+                            disabled={!hasSearchResult}>
+                        <i className="fas fa-eraser mr-1"></i>Clear search
+                    </Button>
+                    <Button color="accent" 
+                            onClick={() => this.props.continueOnboarding()}
+                            disabled={!hasSearchResult}>
+                        <i className="fas fa-arrow-circle-right mr-1"></i>Continue
+                    </Button>
+                </ModalFooter>
+            </div>);
     }
 }
 
@@ -157,11 +143,12 @@ const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, {}> = (dispa
     return {
         searchCompany: (number: string) => dispatch(searchCompany(number)),
         clearCompany: () => dispatch(clearCompany()),
-        continueOnboarding: () => dispatch(selectCompany())
+        continueOnboarding: () => dispatch(selectCompany()),
+        clearAccountCreation: () => dispatch(clearAccountCreation())
     }
 }
 
-const mapStateToProps: MapStateToProps<StateProps, {}, ApplicationState> = (state: ApplicationState) => {
+const mapStateToProps: MapStateToProps<StateProps, CompanySearchProps, ApplicationState> = (state: ApplicationState) => {
     return {
         working: state.hierarchy.create_account.company.working,
         error: state.hierarchy.create_account.company.error,

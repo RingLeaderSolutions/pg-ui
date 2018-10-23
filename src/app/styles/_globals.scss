@@ -1,0 +1,16 @@
+// Catch-all for all variables, including those from dependencies.
+
+// Application variables
+@import "variables";
+
+// Shards-dashboard overrides
+@import "shards/overrides";
+
+// Shards-ui (requires bootstrap/functions)
+@import "~bootstrap/scss/functions";
+@import "~shards-ui/src/scss/variables";
+
+@import "~bootstrap/scss/variables";
+
+// Shard-dashboard
+@import "shards/variables";

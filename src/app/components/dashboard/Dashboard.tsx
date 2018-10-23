@@ -1,12 +1,13 @@
 import * as React from "react";
-import { MapDispatchToPropsFunction, connect, MapStateToProps } from 'react-redux';
-import Header from "../common/Header";
+import { MapDispatchToPropsFunction, connect } from 'react-redux';
 
 import DashboardSummary from "./DashboardSummary";
 import DashboardStatus from "./DashboardStatus";
 import DashboardTimeline from "./DashboardTimeline";
 import { ApplicationTab } from "../../model/Models";
 import { selectApplicationTab } from "../../actions/viewActions";
+import { Row, Col } from "reactstrap";
+import { PageHeader } from "../common/PageHeader";
 
 interface DispatchProps {
     selectApplicationTab: (tab: ApplicationTab) => void;
@@ -18,19 +19,20 @@ class Dashboard extends React.Component<DispatchProps, {}> {
     }
     
     render(){
-        return (
-            <div className="content-inner">
-                <div className="content-dashboard">
-                    <Header title="Dashboard" icon="fas fa-chart-line"/>
-                    <div className="content-dashboard">
-                        <DashboardSummary />
-                        <div className="uk-child-width-expand@s uk-grid-match uk-text-center" data-uk-grid data-uk-height-match="target: > div > .uk-card">
-                            <DashboardStatus />
-                            <DashboardTimeline />
-                        </div>
-                    </div>
-                </div>
-            </div>)
+        return(
+            <div className="w-100 px-4">
+                <PageHeader subtitle="Dashboard" icon="fas fa-chart-line"/>
+                <DashboardSummary />
+                <Row>
+                    <Col lg={6} md={12} className="mb-4 d-flex flex-column">
+                        <DashboardStatus />
+                    </Col>
+                    <Col lg={6} md={12} className="mb-4 d-flex flex-column">
+                        <DashboardTimeline />
+                    </Col>
+                </Row>
+            </div>
+        )
     }
 }
 

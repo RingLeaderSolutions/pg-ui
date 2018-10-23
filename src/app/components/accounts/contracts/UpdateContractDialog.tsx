@@ -5,13 +5,18 @@ import Spinner from '../../common/Spinner';
 
 import { updateAccountContract } from '../../../actions/tenderActions';
 import { TenderContract, TenderSupplier } from "../../../model/Tender";
-import { closeModalDialog } from "../../../actions/viewActions";
 import { UtilityType } from "../../../model/Models";
 import { Strings } from "../../../helpers/Utils";
+import asModalDialog, { ModalDialogProps } from "../../common/modal/AsModalDialog";
+import { ModalDialogNames } from "../../common/modal/ModalDialogNames";
+import { LoadingIndicator } from "../../common/LoadingIndicator";
+import { Button, ModalHeader, ModalBody, Form, FormGroup, Label, Input, CustomInput, ModalFooter } from "reactstrap";
 
-interface UpdateContractDialogProps {
+export interface UpdateContractDialogData {
     contract: TenderContract;
 }
+
+interface UpdateContractDialogProps extends ModalDialogProps<UpdateContractDialogData> { }
 
 interface StateProps {
     working: boolean;
@@ -22,7 +27,6 @@ interface StateProps {
   
 interface DispatchProps {
     updateExistingContract: (contract: TenderContract) => void;
-    closeModalDialog: () => void;
 }
 
 interface UpdateContractDialogState {
@@ -34,34 +38,19 @@ interface UpdateContractDialogState {
 
 class UpdateContractDialog extends React.Component<UpdateContractDialogProps & StateProps & DispatchProps, UpdateContractDialogState> {
     constructor(props: UpdateContractDialogProps & StateProps & DispatchProps) {
-        super();
+        super(props);
 
-        var contractUtility = this.decodeUtility(props.contract.utility);
+        let { contract } = props.data;
+        var contractUtility = this.decodeUtility(contract.utility);
         var eligibleSuppliers = props.suppliers != null && props.suppliers.length > 0 ? this.getEligibleSuppliers(contractUtility, props.suppliers) : [];
-        var selectedSupplier = this.getSelectedSupplierFromEligible(props.contract.supplierId, eligibleSuppliers);
+        var selectedSupplier = this.getSelectedSupplierFromEligible(contract.supplierId, eligibleSuppliers);
 
         this.state = {
-            contractRef: props.contract.reference || '',
+            contractRef: contract.reference || '',
             supplier: selectedSupplier,
-            product: props.contract.product || '',
+            product: contract.product || '',
             eligibleSuppliers
         }
-    }
-
-    componentWillReceiveProps(nextProps: UpdateContractDialogProps & StateProps & DispatchProps){        
-        if(nextProps.suppliers == null || nextProps.suppliers.length == 0) {
-           return; 
-        }
-
-        var contractUtility = this.decodeUtility(nextProps.contract.utility);
-        var eligibleSuppliers = this.getEligibleSuppliers(contractUtility, nextProps.suppliers);
-        var newSelected = this.getSelectedSupplierFromEligible(this.state.supplier, eligibleSuppliers);
-
-        this.setState({
-            ...this.state,
-            eligibleSuppliers,
-            supplier: newSelected
-        });
     }
 
     decodeUtility(utility: string){
@@ -94,7 +83,7 @@ class UpdateContractDialog extends React.Component<UpdateContractDialogProps & S
 
     updateExistingContract(){
         var contract: TenderContract = {
-            ...this.props.contract,
+            ...this.props.data.contract,
             
             supplierId: this.state.supplier,
             product: this.state.product,
@@ -102,22 +91,7 @@ class UpdateContractDialog extends React.Component<UpdateContractDialogProps & S
         };
 
         this.props.updateExistingContract(contract);
-        this.props.closeModalDialog();
-    }
-
-    renderSupplierSelect(){
-        var options = this.state.eligibleSuppliers
-            .map(s => {
-                return (<option key={s.supplierId} value={s.supplierId}>{s.name}</option>)
-            })
-            return (
-                <select className='uk-select' 
-                    value={this.state.supplier}
-                    onChange={(e) => this.handleFormChange("supplier", e)}>
-                    <option value="" disabled>Select</option>
-                    {options}
-                </select>
-            );
+        this.props.toggle();
     }
 
     handleFormChange(attribute: string, event: React.ChangeEvent<any>){
@@ -137,62 +111,65 @@ class UpdateContractDialog extends React.Component<UpdateContractDialogProps & S
 
     render() {
         if(this.props.suppliers == null){
-            return (<Spinner />);
+            return (<LoadingIndicator />);
         }
+
+        let supplierOptions = this.state.eligibleSuppliers.map(s => {
+            return (<option key={s.supplierId} value={s.supplierId}>{s.name}</option>)
+        });
+
         return (
-            <div>
-                <div className="uk-modal-header">
-                    <h2 className="uk-modal-title"><i className="fas fa-file-signature uk-margin-right"></i>Edit existing contract</h2>
-                </div>
-                <div className="uk-modal-body">
-                    <form>
-                        <fieldset className='uk-fieldset'>
-                            <div className='uk-margin'>
-                                <label className='uk-form-label'>Contract Reference</label>
-                                <input className='uk-input' 
-                                    value={this.state.contractRef}
-                                    onChange={(e) => this.handleFormChange("contractRef", e)}/>
-                            </div>
-                            <div className='uk-margin'>
-                                <label className='uk-form-label'>Product</label>
-                                <select className='uk-select' 
-                                    value={this.state.product}
-                                    onChange={(e) => this.handleFormChange("product", e)}>
-                                    <option value="" disabled>Select</option>
-                                    <option>Fixed</option>
-                                    <option>Flexi</option>
-                                </select>
-                            </div>
-                            
-                            <div className='uk-margin'>
-                                <label className='uk-form-label'>Supplier</label>
-                                {this.renderSupplierSelect()}
-                            </div>
-                        </fieldset>
-                    </form>
-                    <div className="uk-alert uk-alert-warning uk-margin-small-bottom" data-uk-alert>
-                        <div className="uk-grid uk-grid-small" data-uk-grid>
-                            <div className="uk-width-auto uk-flex uk-flex-middle">
-                                <i className="fas fa-exclamation-triangle uk-margin-small-right"></i>
-                            </div>
-                            <div className="uk-width-expand uk-flex uk-flex-middle">
-                                <p>Please be aware that changing an existing contract's supplier will clear any uploaded contract rates.</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div className="uk-modal-footer uk-text-right">
-                    <button className="uk-button uk-button-default uk-margin-right" type="button" onClick={() => this.props.closeModalDialog()}><i className="fas fa-times uk-margin-small-right"></i>Cancel</button>
-                    <button className="uk-button uk-button-primary" type="button" onClick={() => this.updateExistingContract()} disabled={!this.canSubmit()}><i className="fas fa-edit uk-margin-small-right"></i>Save</button>
-                </div>
-            </div>)
+            <div className="modal-content">
+            <ModalHeader toggle={this.props.toggle}><i className="fas fa-file-signature mr-1"></i>Edit existing contract</ModalHeader>
+            <ModalBody>
+                <Form>
+                   
+
+                    <FormGroup>
+                        <Label for="add-contract-ref">Contract Reference</Label>
+                        <Input id="add-contract-ref"
+                                value={this.state.contractRef}
+                                onChange={(e) => this.handleFormChange("contractRef", e)} />
+                    </FormGroup>
+                    <FormGroup>
+                        <Label for="add-contract-product">Product</Label>
+                        <CustomInput type="select" name="add-contract-product-picker" id="add-contract-product"
+                                value={this.state.product}
+                                onChange={(e) => this.handleFormChange("product", e)}>
+                            <option value="" disabled>Select</option>
+                            <option>Fixed</option>
+                            <option>Flexi</option>
+                        </CustomInput>
+                    </FormGroup>   
+                    <FormGroup>
+                        <Label for="add-contract-supplier">Supplier</Label>
+                        <CustomInput type="select" name="add-contract-supplier-picker" id="add-contract-supplier"
+                                value={this.state.supplier}
+                                onChange={(e) => this.handleFormChange("supplier", e)}>
+                            <option value="" disabled>Supplier</option>
+                            {supplierOptions}
+                        </CustomInput>
+                    </FormGroup>         
+                    <p className="mb-0">Please be aware that changing an existing contract's supplier will clear any uploaded contract rates.</p>
+                </Form>
+            </ModalBody>
+            <ModalFooter>
+                <Button onClick={this.props.toggle}>
+                    <i className="fas fa-times mr-1"></i>Cancel
+                </Button>
+                <Button color="accent" 
+                        disabled={!this.canSubmit()}
+                        onClick={() => this.updateExistingContract()}>
+                    <i className="material-icons mr-1">edit</i>Save
+                </Button>
+            </ModalFooter>
+        </div>);
     }
 }
 
 const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, UpdateContractDialogProps> = (dispatch) => {
     return {
-        updateExistingContract: (contract: TenderContract) => dispatch(updateAccountContract(contract)),
-        closeModalDialog: () => dispatch(closeModalDialog()) 
+        updateExistingContract: (contract: TenderContract) => dispatch(updateAccountContract(contract))
     };
 };
   
@@ -205,4 +182,9 @@ const mapStateToProps: MapStateToProps<StateProps, UpdateContractDialogProps, Ap
     };
 };
   
-export default connect(mapStateToProps, mapDispatchToProps)(UpdateContractDialog);
+export default asModalDialog(
+{ 
+    name: ModalDialogNames.UpdateAccountContract, 
+    centered: true, 
+    backdrop: true
+}, mapStateToProps, mapDispatchToProps)(UpdateContractDialog)

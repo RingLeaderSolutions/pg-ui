@@ -5,6 +5,8 @@ import { Portfolio, PortfolioDetails } from '../../../model/Models';
 import Spinner from '../../common/Spinner';
 import { UtilityIcon } from "../../common/UtilityIcon";
 import { Router } from "react-router";
+import { Card, Col, CardHeader, CardBody, CardFooter, Row, Table, UncontrolledTooltip, Alert } from "reactstrap";
+import { selectPortfolioTab } from "../../../actions/viewActions";
 
 interface PortfolioMeterStatusProps {
     portfolio: Portfolio;
@@ -17,6 +19,7 @@ interface StateProps {
 }
 
 interface DispatchProps {
+    selectMetersTab: () => void;
 }
 
 class PortfolioMeterStatus extends React.Component<PortfolioMeterStatusProps & StateProps & DispatchProps, {}> {
@@ -40,19 +43,25 @@ class PortfolioMeterStatus extends React.Component<PortfolioMeterStatusProps & S
             )
         })
         return (
-            <table className="uk-table uk-table-divider">
-            <thead>
-                <tr>
-                    <th>Utility</th>
-                    <th>Consumption</th>
-                    <th data-uk-tooltip="title: The number of meters that have successfully uploaded supply data records">Supply Data</th>
-                    <th data-uk-tooltip="title: The number of meters that have associated historic data provided">Historical</th>
-                </tr>
-            </thead>
-            <tbody>
-                {rows}
-            </tbody>
-        </table>
+            <Table>
+                <thead>
+                    <tr>
+                        <th>Utility</th>
+                        <th>Consumption</th>
+                        <th id="meter-status-supply-data-header">Supply Data</th>
+                        <UncontrolledTooltip target="meter-status-supply-data-header">
+                            <strong>The number of meters that have successfully uploaded supply data records.</strong>
+                        </UncontrolledTooltip>
+                        <th id="meter-status-historic-data-header">Historical</th>
+                        <UncontrolledTooltip target="meter-status-historic-data-header">
+                            <strong>The number of meters that have associated historic data provided (half-hourly only)</strong>
+                        </UncontrolledTooltip>
+                    </tr>
+                </thead>
+                <tbody>
+                    {rows}
+                </tbody>
+            </Table>
         )
     }
 
@@ -61,26 +70,42 @@ class PortfolioMeterStatus extends React.Component<PortfolioMeterStatusProps & S
         if(!this.props.working && this.props.details.meterGroups != null){
             if(this.props.details.meterGroups.length == 0){
                 content = (
-                    <div className="uk-alert-default uk-margin-small-top uk-margin-small-bottom uk-text-center" data-uk-alert>
-                        <p><i className="fas fa-info-circle uk-margin-small-right"></i>No meters have been uploaded to this portfolio yet.</p>
-                    </div>);    
+                    <Alert color="light">
+                        <div className="d-flex align-items-center">
+                            <i className="fas fa-info-circle mr-2"></i>
+                            No meter have been uploaded to this portfolio yet.
+                        </div>
+                    </Alert>);
             }
             content = this.createSummaryTable();
         }
 
         return (
-            <div>
-                <div className="uk-card uk-card-default uk-card-body">
-                    <h4 className="uk-text-center"><i className="fas fa-stopwatch uk-margin-small-right"></i>Meter Status</h4>
-                    {content}
-                </div>
-            </div>
+            <Col lg={6} md={12} className="mb-4">
+                <Card className="card-small h-100">
+                    <CardHeader className="border-bottom">
+                        <h6 className="m-0"><i className="fas fa-stopwatch mr-1"></i>Meter Status</h6>
+                    </CardHeader>
+                    <CardBody className="d-flex p-0">
+                        {content}
+                    </CardBody>
+                    <CardFooter className="border-top">
+                        <Row>
+                            <Col className="text-right view-report">
+                                <a href="#" onClick={() => this.props.selectMetersTab()}><i className="fas fa-tachometer-alt mr-1"></i>View meters &rarr;</a>
+                            </Col>
+                        </Row>
+                    </CardFooter>
+                </Card>
+            </Col>
         )
     }
 }
 
-const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, PortfolioMeterStatusProps> = () => {
-    return {};
+const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, PortfolioMeterStatusProps> = (dispatch) => {
+    return {
+        selectMetersTab: () => dispatch(selectPortfolioTab(1))
+    };
 };
   
 const mapStateToProps: MapStateToProps<StateProps, PortfolioMeterStatusProps, ApplicationState> = (state: ApplicationState) => {

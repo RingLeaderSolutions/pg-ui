@@ -1,0 +1,15 @@
+@import "globals";
+
+.dropdown-item {
+    font-size: 0.85rem;
+    font-weight: $btn-font-weight;
+
+    &:active,
+    &.active {
+        color: initial;
+    }
+
+    &:hover {
+        background-color: lighten($blueish-grey, 60) !important;
+      }
+}

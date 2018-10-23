@@ -1,24 +1,21 @@
 import * as React from "react";
 import { RouteComponentProps } from 'react-router';
 import { Link } from "react-router-dom";
+import PreAuthAppContainer from "../common/PreAuthAppContainer";
+import { Button } from "reactstrap";
 
 class Logout extends React.Component<RouteComponentProps<void>, {}> {
     render() {
         return (
-            <div className="uk-cover-container uk-height-viewport">
-                <img src={require('../../images/powerline.png')} alt="" data-uk-cover />
-                <div className="uk-position-center">
-                    <div className="uk-card uk-card-body uk-card-default">
-                        <h2>You have successfully logged out of the system.</h2>
-                        <Link to="/login">
-                            <button className="uk-button uk-button-primary" type="button">
-                                <i className="fas fa-sign-in-alt uk-margin-small-right"></i>
-                                Log back in
-                            </button>
-                        </Link>
-                    </div>
-                </div>
-            </div>
+            <PreAuthAppContainer centerText>
+                <h5>You have successfully logged out of the system.</h5>
+                <Link to="/login">
+                    <Button color="accent" className="d-table mx-auto mt-2">
+                        <i className="fas fa-sign-in-alt mx-1"></i>
+                        Log back in
+                    </Button>
+                </Link>
+            </PreAuthAppContainer>
         )
     }
 }

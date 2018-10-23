@@ -1,0 +1,47 @@
+@import "globals";
+
+.card {
+
+    .card-body {
+        // when body is the first element, i.e. no header
+        &:first-child {
+            @include border-top-radius($card-border-radius);
+
+            // ensure the first child of the body is rounded to match the card
+            .list-group:first-child {
+                @include border-top-radius($card-border-radius);
+            }
+
+            // set vertical scrollbar to have correct radius in top-right
+            > ::-webkit-scrollbar-track, 
+            > ::-webkit-scrollbar-thumb {
+                &:vertical {
+                    border-top-right-radius: $card-border-radius;
+                }
+            }
+        }
+
+        // when the body is the last element, i.e. no footer
+        &:last-child {
+            @include border-bottom-radius($card-border-radius);
+
+            .list-group:last-child {
+                @include border-bottom-radius($card-border-radius);
+            }
+
+            // ensure vertical scrollbar has bottom-right radius, and horizontals have both bottom L&R radius
+            > ::-webkit-scrollbar-track, 
+            > ::-webkit-scrollbar-thumb {
+                &:vertical {
+                    border-bottom-right-radius: $card-border-radius;
+                }
+                &:horizontal {
+                    @include border-bottom-radius($card-border-radius);
+                }
+            }  
+        }
+
+        // note: possible to have both styles, i.e. no header, no footer - 
+        // in which case all scrollbars and content should be rounded appropriately
+    }
+}

@@ -5,11 +5,12 @@ import { Account, CompanyInfo } from '../../../model/Models';
 import * as moment from 'moment';
 
 import { createAccount, clearAccountCreation } from '../../../actions/hierarchyActions';
-import { closeModalDialog } from "../../../actions/viewActions";
 import { Today, TwoHundredthYearPast, DayPickerWithMonthYear } from "../../common/DayPickerHelpers";
 import { Strings } from "../../../helpers/Utils";
+import { ModalHeader, ModalBody, Form, Row, Col, FormGroup, Label, Input, CustomInput, ModalFooter, Button } from "reactstrap";
 
 interface CreateAccountDialogProps {    
+    toggle: () => void;
 }
 
 interface StateProps {
@@ -18,7 +19,6 @@ interface StateProps {
 
 interface DispatchProps {
     createAccount: (account: Account) => void;
-    closeModalDialog: () => void;
     clearAccountCreation: () => void;
 }
 
@@ -136,155 +136,132 @@ class CreateAccountDialog extends React.Component<CreateAccountDialogProps & Sta
 
     close(){
         this.props.clearAccountCreation();
-        this.props.closeModalDialog();
+        this.props.toggle();
     }
 
     render() {
-        return (
-            <div>
-                <div className="uk-modal-header">
-                    <h2 className="uk-modal-title"><i className="fa fa-building uk-margin-right"></i>Create Account</h2>
-                </div>
-                <div className="uk-modal-body">
-                    <div className="uk-margin">
-                        <form>
-                            <fieldset className="uk-fieldset">
-                                <div className="uk-grid" data-uk-grid>
-                                    <div className="uk-width-1-2">
-                                        <div className='uk-margin'>
-                                            <label className='uk-form-label'>Company Name</label>
-                                            <input 
-                                                className='uk-input' 
-                                                type='text' 
-                                                value={this.state.companyName}
-                                        onChange={(e) => this.handleFormChange("companyName", e)} />
-                                        </div>
-                                        <div className='uk-margin'>
-                                            <label className='uk-form-label'>Company Registration No.</label>
-                                            <input 
-                                                className='uk-input' 
-                                                type='text' 
-                                                value={this.state.companyReg}
-                                        onChange={(e) => this.handleFormChange("companyReg", e)} />
-                                        </div>
-                                        <div className='uk-margin'>
-                                            <label className='uk-form-label'>Address</label>
-                                            <input 
-                                                className='uk-input' 
-                                                type='text' 
-                                                value={this.state.address}
-                                                onChange={(e) => this.handleFormChange("address", e)} />
-                                        </div>
-                                        <div className='uk-margin'>
-                                            <label className='uk-form-label'>Postcode</label>
-                                            <input 
-                                                className='uk-input' 
-                                                type='text' 
-                                                value={this.state.postcode}
-                                                onChange={(e) => this.handleFormChange("postcode", e)} />
-                                        </div>
-                                        <div className='uk-margin'>
-                                            <label className='uk-form-label'>Country</label>
-                                            <select className='uk-select' 
-                                                value={this.state.country}
-                                                onChange={(e) => this.handleFormChange("country", e)}>
-                                                <option value="" disabled>Select</option>
-                                                <option value="United Kingdom">United Kingdom</option>
-                                                <option value="Ireland">Ireland</option>
-                                            </select>
-                                        </div>
+        return(
+            <div className="modal-content">
+                <ModalHeader toggle={() => this.close()}><i className="fas fa-building mr-2"></i>Create Account</ModalHeader>
+                <ModalBody>
+                    <Form>
+                        <Row noGutters>
+                            <Col xs={6} className="pr-2">
+                                <FormGroup>
+                                    <Label for="new-account-name">Company Name</Label>
+                                    <Input id="new-account-name"
+                                            value={this.state.companyName}
+                                            onChange={(e) => this.handleFormChange("companyName", e)} />
+                                </FormGroup>
+                                <FormGroup>
+                                    <Label for="new-account-company-reg">Company Registration No.</Label>
+                                    <Input id="new-account-company-reg"
+                                            value={this.state.companyReg}
+                                            onChange={(e) => this.handleFormChange("companyReg", e)} />
+                                </FormGroup>
+                                <FormGroup>
+                                    <Label for="new-account-address">Address</Label>
+                                    <Input id="new-account-address"
+                                            value={this.state.address}
+                                            onChange={(e) => this.handleFormChange("address", e)} />
+                                </FormGroup>
+                                <FormGroup>
+                                    <Label for="new-account-postcode">Postcode</Label>
+                                    <Input id="new-account-postcode"
+                                            value={this.state.postcode}
+                                            onChange={(e) => this.handleFormChange("postcode", e)} />
+                                </FormGroup>
+                                <FormGroup>
+                                    <Label for="new-account-country">Country</Label>
+                                    <CustomInput type="select" name="new-account-country-picker" id="new-account-country"
+                                            value={this.state.country}
+                                            onChange={(e) => this.handleFormChange("country", e)}>
+                                        <option value="" disabled>Select</option>
+                                        <option value="United Kingdom">United Kingdom</option>
+                                        <option value="Ireland">Ireland</option>
+                                    </CustomInput>
+                                </FormGroup>    
+                            </Col>
+                            <Col xs={6}>
+                                <Label>Incorporation Date</Label>
+                                <FormGroup>
+                                    <DayPickerWithMonthYear 
+                                        disableFuture={true} 
+                                        fromMonth={TwoHundredthYearPast} 
+                                        toMonth={Today} 
+                                        onDayChange={(d: moment.Moment) => this.handleIncorporationDateChange(d)}
+                                        selectedDay={this.state.incorporationDate} />
+                                </FormGroup>   
+                                <FormGroup>
+                                    <Label for="new-account-status">Status</Label>
+                                    <CustomInput type="select" name="new-account-status-picker" id="new-account-status"
+                                            value={this.state.status}
+                                            onChange={(e) => this.handleFormChange("status", e)}>
+                                        <option value="" disabled>Select</option>
+                                        <option value="Active">Active</option>
+                                        <option value="On-boarding">On-boarding</option>
+                                        <option value="Suspended">Suspended</option>
+                                    </CustomInput>
+                                </FormGroup>
+                                <FormGroup>
+                                    <Label for="new-account-creditRating">Credit Rating</Label>
+                                    <Input id="new-account-creditRating"
+                                            value={this.state.creditRating}
+                                            onChange={(e) => this.handleFormChange("creditRating", e)} />
+                                </FormGroup>
+                                <FormGroup>
+                                    <div className="custom-toggle custom-control">
+                                        <input type="checkbox" id="new-account-vat" className="custom-control-input"
+                                                checked={this.state.vatEligible}
+                                                onChange={(e) => this.handleFormChange("vatEligible", e)} />
+                                        <Label className="custom-control-label" for="new-account-vat">VAT Eligible</Label>
                                     </div>
-                                    <div className="uk-width-1-2">
-                                        <div className="uk-margin">
-                                            <label className="uk-form-label" data-for="deadline-input">Incorporation Date</label>
-                                            <div className="uk-form-controls">
-                                                <div id="deadline-input">
-                                                    <DayPickerWithMonthYear 
-                                                        disableFuture={true} 
-                                                        fromMonth={TwoHundredthYearPast} 
-                                                        toMonth={Today} 
-                                                        onDayChange={(d: moment.Moment) => this.handleIncorporationDateChange(d)}
-                                                        selectedDay={this.state.incorporationDate} />
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div className='uk-margin'>
-                                            <label className='uk-form-label'>Status</label>
-                                            <select className='uk-select' 
-                                                value={this.state.status}
-                                                onChange={(e) => this.handleFormChange("status", e)}>
-                                                <option value="" disabled>Select</option>
-                                                <option value="Active">Active</option>
-                                                <option value="On-boarding">On-boarding</option>
-                                                <option value="Suspended">Suspended</option>
-                                            </select>
-                                        </div>
-                                        <div className='uk-margin'>
-                                            <label className='uk-form-label'>Credit Rating</label>
-                                            <input 
-                                                className='uk-input' 
-                                                type='text' 
-                                                value={this.state.creditRating}
-                                                onChange={(e) => this.handleFormChange("creditRating", e)} />
-                                        </div>
-                                        <div className='uk-margin'>
-                                            <label>
-                                                <input 
-                                                    className='uk-checkbox'
-                                                    type='checkbox' 
-                                                    checked={this.state.vatEligible}
-                                                    onChange={(e) => this.handleFormChange("vatEligible", e, true)}
-                                                    /> Is VAT Eligible
-                                            </label>
-                                        </div>
-                                        <div className='uk-margin'>
-                                            <label>
-                                                <input 
-                                                    className='uk-checkbox'
-                                                    type='checkbox' 
-                                                    checked={this.state.registeredCharity}
-                                                    onChange={(e) => this.handleFormChange("registeredCharity", e, true)}
-                                                    /> Is Registered Charity
-                                            </label>
-                                        </div>
-                                        <div className='uk-margin'>
-                                            <label>
-                                                <input 
-                                                    className='uk-checkbox'
-                                                    type='checkbox' 
-                                                    checked={this.state.fitEligible}
-                                                    onChange={(e) => this.handleFormChange("fitEligible", e, true)}
-                                                    /> Is FiT Eligible
-                                            </label>
-                                        </div>
-                                        <div className='uk-margin'>
-                                            <label>
-                                                <input 
-                                                    className='uk-checkbox'
-                                                    type='checkbox' 
-                                                    checked={this.state.cclEligible}
-                                                    onChange={(e) => this.handleFormChange("cclEligible", e, true)}
-                                                    /> Is CCL Eligible
-                                            </label>
-                                        </div>
+                                </FormGroup>
+                                <FormGroup>
+                                    <div className="custom-toggle custom-control">
+                                        <input type="checkbox" id="new-account-regCharity" className="custom-control-input"
+                                                checked={this.state.registeredCharity}
+                                                onChange={(e) => this.handleFormChange("registeredCharity", e)} />
+                                        <Label className="custom-control-label" for="new-account-regCharity">Registered Charity</Label>
                                     </div>
-                                </div>
-                            </fieldset>
-                        </form>
-                    </div>
-                </div>
-                <div className="uk-modal-footer uk-text-right">
-                    <button className="uk-button uk-button-default uk-margin-right" type="button" onClick={() => this.close()}><i className="fa fa-times uk-margin-small-right"></i>Cancel</button>
-                    <button className="uk-button uk-button-primary" type="button" onClick={() => this.createAccount()} disabled={!this.canSubmit()}><i className="fa fa-plus-circle uk-margin-small-right"></i>Create</button>
-                </div>
-            </div>)
+                                </FormGroup>
+                                <FormGroup>
+                                    <div className="custom-toggle custom-control">
+                                        <input type="checkbox" id="new-account-fit" className="custom-control-input"
+                                                checked={this.state.vatEligible}
+                                                onChange={(e) => this.handleFormChange("fitEligible", e)} />
+                                        <Label className="custom-control-label" for="new-account-fit">FiT Eligible</Label>
+                                    </div>
+                                </FormGroup>
+                                <FormGroup>
+                                    <div className="custom-toggle custom-control">
+                                        <input type="checkbox" id="new-account-ccl" className="custom-control-input"
+                                                checked={this.state.cclEligible}
+                                                onChange={(e) => this.handleFormChange("cclEligible", e)} />
+                                        <Label className="custom-control-label" for="new-account-ccl">CCL Eligible</Label>
+                                    </div>
+                                </FormGroup>                       
+                            </Col>
+                        </Row>
+                    </Form>
+                </ModalBody>
+                <ModalFooter>
+                    <Button onClick={() => this.close()}>
+                        <i className="fas fa-times mr-1"></i>Cancel
+                    </Button>
+                    <Button color="accent" 
+                            disabled={!this.canSubmit()}
+                            onClick={() => this.createAccount()}>
+                        <i className="fas fa-plus-circle mr-1"></i>Create
+                    </Button>
+                </ModalFooter>
+            </div>);
     }
 }
 
 const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, CreateAccountDialogProps> = (dispatch) => {
     return {
         createAccount: (account: Account) =>  dispatch(createAccount(account)),
-        closeModalDialog: () => dispatch(closeModalDialog()),
         clearAccountCreation: () => dispatch(clearAccountCreation())
     };
 };

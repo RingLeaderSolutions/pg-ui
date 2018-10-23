@@ -5,13 +5,11 @@ import { TenderRecommendationsState } from './fetchTenderRecommendationsReducer'
 import { RecommendationSuppliersState } from './fetchRecommendationSuppliersReducer';
 import { RecommendationSitesState } from './fetchRecommendationSitesReducer';
 import { RecommendationSummaryState } from './fetchRecommendationSummaryReducer';
-import { TenderRecommendation } from '../../model/Tender';
 
 export interface TenderState {
     tenders: TendersState;
     offers: TenderOffersState,
     recommendations: TenderRecommendationsState,
-    selected_recommendation: TenderRecommendation,
     selected_recommendation_summary: RecommendationSummaryState,
     selected_recommendation_suppliers: RecommendationSuppliersState,
     selected_recommendation_sites: RecommendationSitesState,

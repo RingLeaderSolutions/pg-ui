@@ -2,17 +2,22 @@ import * as React from "react";
 import { MapDispatchToPropsFunction, connect, MapStateToProps } from 'react-redux';
 import { ApplicationState } from '../../../applicationState';
 import Spinner from '../../common/Spinner';
-
+import * as cn from "classnames";
 import { createAccountContract } from '../../../actions/tenderActions';
 import { TenderContract, TenderSupplier } from "../../../model/Tender";
-import { closeModalDialog } from "../../../actions/viewActions";
 import { getWellFormattedUtilityType } from "../../common/UtilityIcon";
 import { UtilityType } from "../../../model/Models";
 import { Strings } from "../../../helpers/Utils";
+import asModalDialog, { ModalDialogProps } from "../../common/modal/AsModalDialog";
+import { ModalDialogNames } from "../../common/modal/ModalDialogNames";
+import { Button, ModalHeader, ModalBody, Form, Row, Col, Card, CardBody, FormGroup, Label, Input, CustomInput, ModalFooter } from "reactstrap";
+import { LoadingIndicator } from "../../common/LoadingIndicator";
 
-interface AddExistingContractDialogProps {
+export interface AddExistingContractDialogData {
     accountId: string;
 }
+
+interface AddExistingContractDialogProps extends ModalDialogProps<AddExistingContractDialogData> { }
 
 interface StateProps {
     working: boolean;
@@ -23,7 +28,6 @@ interface StateProps {
   
 interface DispatchProps {
     addExistingContract: (accountId: string, contract: TenderContract) => void;
-    closeModalDialog: () => void;
 }
 
 interface AddExistingContractDialogState {
@@ -37,7 +41,7 @@ interface AddExistingContractDialogState {
 
 class AddExistingContractDialog extends React.Component<AddExistingContractDialogProps & StateProps & DispatchProps, AddExistingContractDialogState> {
     constructor(props: AddExistingContractDialogProps & StateProps & DispatchProps) {
-        super();
+        super(props);
         
         var eligibleSuppliers = props.suppliers != null && props.suppliers.length > 0 ? this.getEligibleSuppliers(UtilityType.Electricity, props.suppliers) : [];
         this.state = {
@@ -86,7 +90,7 @@ class AddExistingContractDialog extends React.Component<AddExistingContractDialo
         var contract: TenderContract = {
             contractId: null,
             supplierId: String(this.state.supplier),
-            accountId: this.props.accountId,
+            accountId: this.props.data.accountId,
             product: this.state.product,
             reference: this.state.contractRef,
             contractStart: null,
@@ -99,23 +103,8 @@ class AddExistingContractDialog extends React.Component<AddExistingContractDialo
             sheetCount: 0,
             halfHourly
         };
-        this.props.addExistingContract(this.props.accountId, contract);
-        this.props.closeModalDialog();
-    }
-
-    renderSupplierSelect(){
-        var options = this.state.eligibleSuppliers.map(s => {
-                return (<option key={s.supplierId} value={s.supplierId}>{s.name}</option>)
-        })
-
-        return (
-            <select className='uk-select' 
-                value={this.state.supplier}
-                onChange={(e) => this.handleFormChange("supplier", e)}>
-                <option value="" disabled>Select</option>
-                {options}
-            </select>
-        );
+        this.props.addExistingContract(this.props.data.accountId, contract);
+        this.props.toggle();
     }
 
     toggleUtility(utility: UtilityType){
@@ -132,28 +121,6 @@ class AddExistingContractDialog extends React.Component<AddExistingContractDialo
             eligibleSuppliers,
             supplier: newSelected
         });
-    }
-
-    getSelectedUtilityCardClass(utility: UtilityType){
-        if(this.state.utility == utility){
-            return "uk-card-primary";
-        }
-
-        return "uk-card-default";
-    }
-
-    renderCheckIfMatches<T>(checkedValue: T, actualValue: T, useLargeIcon: boolean = true): JSX.Element {
-        if(checkedValue == actualValue) {
-            return (<i className={`fas fa-check-circle${useLargeIcon ? ' fa-lg' : ''}`} style={{color: '#ffffff'}}/>);
-        }
-        return null;
-    }
-
-    getSelectedClassIfMatches<T>(activeValue: T, actualValue: T): string {
-        if(actualValue == activeValue){
-            return "uk-card-primary";
-        }
-        return "uk-card-default";
     }
 
     handleFormChange(attribute: string, event: React.ChangeEvent<any>){
@@ -176,111 +143,102 @@ class AddExistingContractDialog extends React.Component<AddExistingContractDialo
 
     render() {
         if(this.props.suppliers == null){
-            return (<Spinner />);
+            return (<LoadingIndicator />);
         }
+
+        let supplierOptions = this.state.eligibleSuppliers.map(s => {
+            return (<option key={s.supplierId} value={s.supplierId}>{s.name}</option>)
+        });
+
         return (
-            <div>
-                <div className="uk-modal-header">
-                    <h2 className="uk-modal-title"><i className="fas fa-file-signature uk-margin-right"></i>Add existing contract</h2>
-                </div>
-                <div className="uk-modal-body">
-                    <form>
-                        <fieldset className='uk-fieldset'>
-                            <p>Please choose which utility that the existing contract covers:</p>
-                            <div className="uk-grid uk-grid-small">
-                                <div className="uk-width-1-2">
-                                    <div className={`uk-card uk-card-small ${this.getSelectedClassIfMatches(UtilityType.Electricity, this.state.utility)} uk-card-hover uk-card-body`} onClick={() => this.toggleUtility(UtilityType.Electricity)} style={{cursor: 'pointer'}}>
-                                        <div className="uk-grid uk-grid-collapse">
-                                            <div className="uk-width-expand uk-flex uk-flex-middle">
-                                                <h4><i className="fas fa-bolt uk-margin-right fa-lg"></i>Electricity</h4>
-                                            </div>
-                                            <div className="uk-width-auto uk-flex uk-flex-middle">
-                                                {this.renderCheckIfMatches(UtilityType.Electricity, this.state.utility)}
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="uk-width-1-2">
-                                    <div className={`uk-card uk-card-small ${this.getSelectedClassIfMatches(UtilityType.Gas, this.state.utility)} uk-card-hover uk-card-body`} onClick={() => this.toggleUtility(UtilityType.Gas)} style={{cursor: 'pointer'}}>
-                                        <div className="uk-grid uk-grid-collapse">
-                                            <div className="uk-width-expand uk-flex uk-flex-middle">
-                                                <h4><i className="fas fa-fire uk-margin-right fa-lg"></i>Gas</h4>
-                                            </div>
-                                            <div className="uk-width-auto uk-flex uk-flex-middle">
-                                            {this.renderCheckIfMatches(UtilityType.Gas, this.state.utility)}
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+            <div className="modal-content">
+            <ModalHeader toggle={this.props.toggle}><i className="fas fa-file-signature mr-1"></i>Add Existing Contract</ModalHeader>
+            <ModalBody>
+                <Form>
+                    <p className="mb-1">Please choose which utility that the existing contract covers:</p>
+                    <Row noGutters className="pb-2">
+                        <Col xs={6} className="pr-1">
+                            <Card className="card-small" style={{cursor: "pointer"}} onClick={() => this.toggleUtility(UtilityType.Electricity)}>
+                                <CardBody className={cn("d-flex align-items-center", { "bg-primary text-white" : this.state.utility == UtilityType.Electricity })}>
+                                    <h4 className={cn("flex-grow-1 mb-0", { "text-white" : this.state.utility == UtilityType.Electricity })}><i className="fas fa-bolt mr-2"></i>Electricity</h4>
+                                    {this.state.utility === UtilityType.Electricity && (<i className="fas fa-check-circle fa-lg mx-1" />)}
+                                </CardBody>
+                            </Card>
+                        </Col>
+                        <Col xs={6} className="pl-1">
+                            <Card className="card-small" style={{cursor: "pointer"}} onClick={() => this.toggleUtility(UtilityType.Gas)}>
+                                <CardBody className={cn("d-flex align-items-center", { "bg-primary text-white" : this.state.utility == UtilityType.Gas })}>
+                                    <h4  className={cn("flex-grow-1 mb-0", { "text-white" : this.state.utility == UtilityType.Gas })}><i className="fas fa-fire mr-2"></i>Gas</h4>
+                                    {this.state.utility === UtilityType.Gas && (<i className="fas fa-check-circle fa-lg mx-1" />)}
+                                </CardBody>
+                            </Card>
+                        </Col>
+                    </Row>
 
-                            { this.state.utility == UtilityType.Electricity && 
-                            <div className="uk-margin">
-                                <label className='uk-form-label'>Meter Type</label>
-                                <div className="uk-grid uk-grid-small">
-                                    <div className="uk-width-1-2">
-                                        <div className={`uk-card uk-card-small ${this.getSelectedClassIfMatches(true, this.state.isHalfHourly)} uk-card-body`} onClick={() => this.handleChange("isHalfHourly", true)} style={{cursor: 'pointer', padding: '10px 20px'}}>
-                                            <div className="uk-grid uk-grid-collapse">
-                                                <div className="uk-width-expand uk-flex uk-flex-middle">
-                                                    <h5><i className="fas fa-clock uk-margin-right"></i>Half-Hourly</h5>
-                                                </div>
-                                                <div className="uk-width-auto uk-flex uk-flex-middle">
-                                                    {this.renderCheckIfMatches(true, this.state.isHalfHourly, false)}
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div className="uk-width-1-2">
-                                        <div className={`uk-card uk-card-small ${this.getSelectedClassIfMatches(false, this.state.isHalfHourly)} uk-card-body`} onClick={() => this.handleChange("isHalfHourly", false)} style={{cursor: 'pointer', padding: '10px 20px'}}>
-                                            <div className="uk-grid uk-grid-collapse">
-                                                <div className="uk-width-expand uk-flex uk-flex-middle">
-                                                    <h5><i className="fas fa-times uk-margin-right"></i>Non Half-hourly</h5>
-                                                </div>
-                                                <div className="uk-width-auto uk-flex uk-flex-middle">
-                                                    {this.renderCheckIfMatches(false, this.state.isHalfHourly, false)}
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div> }
+                    {this.state.utility === UtilityType.Electricity && (
+                        <Row noGutters className="pb-2">
+                            <Col xs={6} className="pr-1">
+                                <Card className="card-small" style={{cursor: "pointer"}} onClick={() => this.handleChange("isHalfHourly", true)}>
+                                    <CardBody className={cn("d-flex align-items-center", { "bg-primary text-white" : this.state.isHalfHourly })}>
+                                        <h6 className={cn("flex-grow-1 mb-0", { "text-white" : this.state.isHalfHourly})}>Half-hourly</h6>
+                                        {this.state.isHalfHourly && (<i className="fas fa-check-circle fa-lg mx-1" />)}
+                                    </CardBody>
+                                </Card>
+                            </Col>
+                            <Col xs={6} className="pl-1">
+                                <Card className="card-small" style={{cursor: "pointer"}} onClick={() => this.handleChange("isHalfHourly", false)}>
+                                    <CardBody className={cn("d-flex align-items-center", { "bg-primary text-white" : !this.state.isHalfHourly })}>
+                                        <h6 className={cn("flex-grow-1 mb-0", { "text-white" : !this.state.isHalfHourly})}>Non Half-hourly</h6>
+                                        {!this.state.isHalfHourly && (<i className="fas fa-check-circle fa-lg mx-1" />)}
+                                    </CardBody>
+                                </Card>
+                            </Col>
+                        </Row>)}
 
-                            <div className='uk-margin'>
-                                <label className='uk-form-label'>Contract Reference</label>
-                                <input className='uk-input' 
-                                    value={this.state.contractRef}
-                                    onChange={(e) => this.handleFormChange("contractRef", e)}/>
-                            </div>
-                            <div className='uk-margin'>
-                                <label className='uk-form-label'>Product</label>
-                                <select className='uk-select' 
-                                    value={this.state.product}
-                                    onChange={(e) => this.handleFormChange("product", e)}>
-                                    <option value="" disabled>Select</option>
-                                    <option>Fixed</option>
-                                    <option>Flexi</option>
-                                </select>
-                            </div>
-
-                            <div className='uk-margin'>
-                                <label className='uk-form-label'>Supplier</label>
-                                {this.renderSupplierSelect()}
-                            </div>
-                        </fieldset>
-                        </form>
-                </div>
-                <div className="uk-modal-footer uk-text-right">
-                    <button className="uk-button uk-button-default uk-margin-right" type="button"  onClick={() => this.props.closeModalDialog()}><i className="fas fa-times uk-margin-small-right"></i>Cancel</button>
-                    <button className="uk-button uk-button-primary" type="button" onClick={() => this.addExistingContract()} disabled={!this.canSubmit()}><i className="fas fa-plus-circle uk-margin-small-right"></i>Add</button>
-                </div>
-            </div>)
+                    <FormGroup>
+                        <Label for="add-contract-ref">Contract Reference</Label>
+                        <Input id="add-contract-ref"
+                                value={this.state.contractRef}
+                                onChange={(e) => this.handleFormChange("contractRef", e)} />
+                    </FormGroup>
+                    <FormGroup>
+                        <Label for="add-contract-product">Product</Label>
+                        <CustomInput type="select" name="add-contract-product-picker" id="add-contract-product"
+                                value={this.state.product}
+                                onChange={(e) => this.handleFormChange("product", e)}>
+                            <option value="" disabled>Select</option>
+                            <option>Fixed</option>
+                            <option>Flexi</option>
+                        </CustomInput>
+                    </FormGroup>   
+                    <FormGroup>
+                        <Label for="add-contract-supplier">Supplier</Label>
+                        <CustomInput type="select" name="add-contract-supplier-picker" id="add-contract-supplier"
+                                value={this.state.supplier}
+                                onChange={(e) => this.handleFormChange("supplier", e)}>
+                            <option value="" disabled>Supplier</option>
+                            {supplierOptions}
+                        </CustomInput>
+                    </FormGroup>         
+                </Form>
+            </ModalBody>
+            <ModalFooter>
+                <Button onClick={this.props.toggle}>
+                    <i className="fas fa-times mr-1"></i>Cancel
+                </Button>
+                <Button color="accent" 
+                        disabled={!this.canSubmit()}
+                        onClick={() => this.addExistingContract()}>
+                    <i className="fas fa-plus-circle mr-1"></i>Add
+                </Button>
+            </ModalFooter>
+        </div>);
     }
 }
 
 const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, AddExistingContractDialogProps> = (dispatch) => {
     return {
         addExistingContract: (accountId: string, contract: TenderContract) => dispatch(createAccountContract(accountId, contract)),
-        closeModalDialog: () => dispatch(closeModalDialog()) 
     };
 };
   
@@ -293,4 +251,9 @@ const mapStateToProps: MapStateToProps<StateProps, AddExistingContractDialogProp
     };
 };
   
-export default connect(mapStateToProps, mapDispatchToProps)(AddExistingContractDialog);
+export default asModalDialog(
+{ 
+    name: ModalDialogNames.CreateAccountContract, 
+    centered: true, 
+    backdrop: true
+}, mapStateToProps, mapDispatchToProps)(AddExistingContractDialog)

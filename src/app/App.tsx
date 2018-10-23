@@ -16,17 +16,14 @@ import AuthenticatedRoute from "./components/auth/AuthenticatedRoute";
 import LoginComplete from "./components/auth/LoginComplete";
 import NotFound from "./components/NotFound";
 
-import * as moment from 'moment';
-moment.locale('en-GB');
-
-import 'react-table/react-table.css'
-import 'react-day-picker/lib/style.css';
-import 'react-toastify/dist/ReactToastify.css';
-
 import { ApplicationState } from "./applicationState";
 import { createNotificationService } from "./services/SignalRService";
 import { NotificationListener } from "./services/NotificationListener";
-require('./styles/styles.scss');
+
+import * as moment from 'moment';
+moment.locale('en-GB');
+
+import './styles/styles.scss';
 
 const history: History = createBrowserHistory();
 

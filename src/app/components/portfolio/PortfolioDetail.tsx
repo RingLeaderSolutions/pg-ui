@@ -1,29 +1,26 @@
 import * as React from "react";
-import Header from "../common/Header";
-import ErrorMessage from "../common/ErrorMessage";
+import * as cn from "classnames";
+
 import { RouteComponentProps } from 'react-router';
 import { MapDispatchToPropsFunction, connect, MapStateToProps } from 'react-redux';
 import { ApplicationState } from '../../applicationState';
 import { Portfolio, PortfolioDetails, ApplicationTab } from '../../model/Models';
-import Spinner from '../common/Spinner';
+import { Nav, NavItem, NavLink, Button, UncontrolledTooltip, Navbar, Col } from "reactstrap";
+import { ModalDialogNames } from "../common/modal/ModalDialogNames";
 
+import { LoadingIndicator } from "../common/LoadingIndicator";
 import PortfolioSummary from "./summary/PortfolioSummary";
 import PortfolioMeters from "./mpan/PortfolioMeters";
+import ErrorMessage from "../common/ErrorMessage";
+import Tenders from "./tender/Tenders";
+import { PageHeader } from "../common/PageHeader";
+import UpdatePortfolioDialog, { UpdatePortfolioDialogData } from "./creation/UpdatePortfolioDialog";
 
 import { getSinglePortfolio, getPortfolioDetails } from '../../actions/portfolioActions';
+import { selectPortfolioTab, openDialog, selectApplicationTab } from "../../actions/viewActions";
 import { getTenderSuppliers } from '../../actions/tenderActions';
 
-import TenderSummary from "./tender/TenderSummary";
-import { Link } from "react-router-dom";
-import { selectPortfolioTab, openModalDialog } from "../../actions/viewActions";
-import { selectApplicationTab } from "../../actions/viewActions";
-import TenderOffersView from "./tender/offers/TenderOffersView";
-import TenderRecommendationsView from "./tender/recommendations/TenderRecommendationsView";
-import ModalDialog from "../common/ModalDialog";
-import UpdatePortfolioDialog from "./creation/UpdatePortfolioDialog";
-
-interface PortfolioDetailProps extends RouteComponentProps<void> {
-}
+interface PortfolioDetailProps extends RouteComponentProps<void> { }
 
 interface StateProps {
   portfolio: Portfolio;
@@ -38,15 +35,18 @@ interface DispatchProps {
     getPortfolio: (portfolioId: string) => void;
     getPortfolioDetails: (portfolioId: string) => void;
     getTenderSuppliers: () => void;        
+
     selectPortfolioTab: (index: number) => void;
     selectApplicationTab: (tab: ApplicationTab) => void;
-    openModalDialog: (dialogId: string) => void;
+
+    openUpdatePortfolioDialog: (data: UpdatePortfolioDialogData) => void;
 }
 
 class PortfolioDetail extends React.Component<PortfolioDetailProps & StateProps & DispatchProps, {}> {
     componentDidMount(){
         this.props.getTenderSuppliers();
         this.props.selectApplicationTab(ApplicationTab.Portfolios);
+
         var portfolioId = this.props.location.pathname.split('/')[2];        
         this.props.getPortfolio(portfolioId);
         this.props.getPortfolioDetails(portfolioId);
@@ -65,51 +65,63 @@ class PortfolioDetail extends React.Component<PortfolioDetailProps & StateProps 
             case 1:
                 return (<PortfolioMeters portfolio={portfolio}/>);
             case 2:
-                return (<TenderSummary portfolio={portfolio}/>);
-            case 3:
-                return (<TenderOffersView portfolio={portfolio}/>)
-            case 4:
-                return (<TenderRecommendationsView portfolio={portfolio}/>)
+                return (<Tenders portfolio={portfolio}/>);
             default:
                 return (<p>No tab selected</p>);
         }
     }
 
-    renderActiveTabStyle(index: number){
-        return this.props.selectedTab == index ? "uk-active" : null;
-    }
-
     render() {
-        
         if(this.props.error){
             return (<ErrorMessage content={this.props.errorMessage} />);
         }
         if(this.props.working || this.props.portfolio == null){
-            return (<Spinner />);
+            return (<LoadingIndicator />);
         }
         var { portfolio, detail } = this.props;
-        var headerTitle = `Portfolio: ${portfolio.title}`;
-        var accountLink = `/account/${detail.portfolio.accountId}`;
+        // <Link to={accountLink}><button className='uk-button uk-button-default uk-button-small'><i className="fa fa-external-link-alt uk-margin-small-right"></i> Jump to Account</button></Link>
         return (
-            <div className="content-inner">
-                <Header title={headerTitle} icon="fas fa-layer-group"> 
-                    <button className='uk-button uk-button-default uk-button-small uk-margin-large-right borderless-button' data-uk-tooltip="title: Edit portfolio" onClick={() => this.props.openModalDialog('update_portfolio')}><i className="fas fa-edit"></i> </button>
-                    <Link to={accountLink}><button className='uk-button uk-button-default uk-button-small'><i className="fa fa-external-link-alt uk-margin-small-right"></i> Jump to Account</button></Link>
-                </Header>
-                <ul className="uk-tab">
-                    <li className={this.renderActiveTabStyle(0)} onClick={() => this.selectTab(0)}><a href="#"><i className="fa fa-list uk-margin-small-right fa-lg"></i> Summary</a></li>
-                    <li className={this.renderActiveTabStyle(1)} onClick={() => this.selectTab(1)}><a href="#"><i className="fas fa-tachometer-alt uk-margin-small-right fa-lg"></i> Meters</a></li>
-                    <li className={this.renderActiveTabStyle(2)} onClick={() => this.selectTab(2)}><a href="#"><i className="fas fa-shopping-cart uk-margin-small-right fa-lg"></i> Tenders</a></li>
-                    <li className={this.renderActiveTabStyle(3)} onClick={() => this.selectTab(3)}><a href="#"><i className="fas fa-handshake uk-margin-small-right fa-lg"></i> Offers</a></li>
-                    <li className={this.renderActiveTabStyle(4)} onClick={() => this.selectTab(4)}><a href="#"><i className="fas fa-bullhorn uk-margin-small-right fa-lg"></i> Recommendations</a></li>
-                </ul>
-            
-                <div>
-                    {this.renderContent()}
-                </div>
-                <ModalDialog dialogId="update_portfolio">
-                    <UpdatePortfolioDialog portfolio={portfolio} detail={detail}/>
-                </ModalDialog>
+            <div className="w-100">
+                <Col className="d-flex justify-content-center justify-content-lg-start">
+                    <PageHeader title={portfolio.title} subtitle="Portfolio" icon="fas fa-layer-group" className="px-2">
+                        <Button color="accent" outline className="ml-auto btn-grey-outline" id="edit-portfolio-button"
+                                onClick={() => this.props.openUpdatePortfolioDialog({ portfolio, detail })}>
+                            <i className="material-icons">mode_edit</i>
+                        </Button>
+                        <UncontrolledTooltip target="edit-portfolio-button" placement="bottom">
+                            <strong>Edit Portfolio</strong>
+                        </UncontrolledTooltip>
+                    </PageHeader>
+                </Col>
+                    <Navbar className="p-0 bg-white border-top">
+                        <Nav tabs className="justify-content-center flex-grow-1">
+                            <NavItem>
+                                <NavLink className={cn({ active: this.props.selectedTab == 0})}
+                                            onClick={() => this.selectTab(0)}
+                                            href="#">
+                                    <i className="fa fa-list"></i>Summary
+                                </NavLink>
+                            </NavItem>
+                            <NavItem className="ml-md-3 ml-sm-1">
+                                <NavLink className={cn({ active: this.props.selectedTab == 1})}
+                                            onClick={() => this.selectTab(1)}
+                                            href="#">
+                                    <i className="fas fa-tachometer-alt"></i>Meters
+                                </NavLink>
+                            </NavItem>
+                            <NavItem className="ml-md-3 ml-sm-1">
+                                <NavLink className={cn({ active: this.props.selectedTab == 2}, "mr-0")}
+                                            onClick={() => this.selectTab(2)}
+                                            href="#">
+                                    <i className="fas fa-shopping-cart"></i>Tenders
+                                </NavLink>
+                            </NavItem>
+                        </Nav>
+                    </Navbar>
+                    <div>
+                        {this.renderContent()}
+                    </div>
+                    <UpdatePortfolioDialog />
             </div>)
     }
 }
@@ -121,7 +133,7 @@ const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, PortfolioDet
         getTenderSuppliers: () => dispatch(getTenderSuppliers()),   
         selectPortfolioTab: (index: number) => dispatch(selectPortfolioTab(index)),
         selectApplicationTab: (tab: ApplicationTab) => dispatch(selectApplicationTab(tab)),
-        openModalDialog: (dialogId: string) => dispatch(openModalDialog(dialogId))
+        openUpdatePortfolioDialog: (data: UpdatePortfolioDialogData) => dispatch(openDialog(ModalDialogNames.UpdatePortfolio, data))
     };
 };
   
@@ -129,11 +141,12 @@ const mapStateToProps: MapStateToProps<StateProps, PortfolioDetailProps, Applica
     return {
         portfolio: state.portfolio.selected.value,
         detail: state.portfolio.details.value,
+        
         working: state.portfolio.selected.working || state.portfolio.details.working,
         error: state.portfolio.selected.error || state.portfolio.details.error,
         errorMessage: state.portfolio.selected.errorMessage || state.portfolio.details.errorMessage,
 
-        selectedTab: state.view.portfolio.selectedIndex
+        selectedTab: state.view.portfolio.selectedTabIndex
     };
 };
   

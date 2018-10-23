@@ -1,21 +1,11 @@
 import * as types from '../../actions/actionTypes';
 import { reduceReducers } from '../common';
-import { initialSelectedTabState } from './ViewState';
 
 export interface PortfolioViewState {
-    selectedIndex: number;
-    tender: TenderViewState;
-    meter: MeterViewState;
-    offers: OffersViewState;
-    recommendations: RecommendationsViewState;
-}
-
-export interface RecommendationsViewState {
-    selectedIndex: number;
-}
-
-export interface OffersViewState {
-    selectedIndex: number;
+    selectedTabIndex: number;
+    selectedTenderIndex: number;
+    selectedTenderTabIndex: number;
+    selectedMeterUtilityIndex: number;
 }
 
 export interface TenderViewState {
@@ -27,11 +17,10 @@ export interface MeterViewState {
 }
 
 const initialPortfolioViewState : PortfolioViewState = {
-    ...initialSelectedTabState,
-    tender: initialSelectedTabState,
-    meter: initialSelectedTabState,
-    offers: initialSelectedTabState,
-    recommendations: initialSelectedTabState
+    selectedTabIndex: 0,
+    selectedTenderIndex: 0,
+    selectedTenderTabIndex: 0,
+    selectedMeterUtilityIndex: 0
 }
 
 const selectPortfolioTabReducer = (state: PortfolioViewState, action: any): PortfolioViewState => {
@@ -39,35 +28,22 @@ const selectPortfolioTabReducer = (state: PortfolioViewState, action: any): Port
         case types.SELECT_PORTFOLIO_TAB:
             return {
                 ...state,
-                selectedIndex: action.data
+                selectedTabIndex: action.data
             };
         case types.SELECT_PORTFOLIO_METER_TAB:
             return {
                 ...state,
-                meter: {
-                    selectedIndex: action.data
-                }
+                selectedMeterUtilityIndex: action.data
             };
-        case types.SELECT_PORTFOLIO_TENDER_TAB:
+        case types.UPDATE_SELECTED_TENDER:
             return {
                 ...state,
-                tender: {
-                    selectedIndex: action.data
-                }
+                selectedTenderIndex: action.data
             };
-        case types.SELECT_TENDER_OFFERS_TAB:
+        case types.SELECT_TENDER_TAB:
             return {
                 ...state,
-                offers: {
-                    selectedIndex: action.data
-                }
-            };
-        case types.SELECT_TENDER_RECOMMENDATIONS_TAB:
-            return {
-                ...state,
-                recommendations: {
-                    selectedIndex: action.data
-                }
+                selectedTenderTabIndex: action.data
             };
         default:
             return state;

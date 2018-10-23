@@ -1,23 +1,27 @@
 import * as React from "react";
-import { UtilityType } from '../../../../model/Models';
+import { UtilityType, decodeUtilityType } from '../../../../model/Models';
 import { MapDispatchToPropsFunction, connect, MapStateToProps } from 'react-redux';
 import { ApplicationState } from '../../../../applicationState';
-import Spinner from '../../../common/Spinner';
 import * as moment from 'moment';
+import * as cn from "classnames";
 
 import { fetchTariffs } from '../../../../actions/portfolioActions';
 import { createTender } from '../../../../actions/tenderActions';
 import { Tender, TenderRequirements, Tariff, TenderOfferType } from "../../../../model/Tender";
-import { closeModalDialog } from "../../../../actions/viewActions";
 import { TenthYearFuture, DayPickerWithMonthYear, Today } from "../../../common/DayPickerHelpers";
+import asModalDialog, { ModalDialogProps } from "../../../common/modal/AsModalDialog";
+import { ModalDialogNames } from "../../../common/modal/ModalDialogNames";
+import { LoadingIndicator } from "../../../common/LoadingIndicator";
+import { Strings } from "../../../../helpers/Utils";
+import { ModalHeader, ModalBody, ModalFooter, Form, FormGroup, Label, Input, Button, Navbar, Nav, NavItem, NavLink, Col, Row, InputGroup, InputGroupAddon, CustomInput } from "reactstrap";
 
-
-interface CreateTenderDialogProps {
+export interface CreateTenderDialogData {
     portfolioId: string;
-    utilityDescription: string;
     utility: UtilityType;
     isHalfHourly: boolean;
 }
+
+interface CreateTenderDialogProps extends ModalDialogProps<CreateTenderDialogData> { }
 
 interface StateProps {
     working: boolean;
@@ -27,9 +31,8 @@ interface StateProps {
 }
   
 interface DispatchProps {
-    createTender: (portfolioId: string, tender: Tender, utilityTypE: UtilityType, isHalfHourly: boolean) => void;
+    createTender: (portfolioId: string, tender: Tender, utility: UtilityType, isHalfHourly: boolean) => void;
     fetchTariffs: () => void;    
-    closeModalDialog: () => void;
 }
 
 interface CreateTenderState {
@@ -45,11 +48,13 @@ interface CreateTenderState {
     durations: number[];
     paymentMethod: string;
     commissionPerMonth: string;
+
+    selectedTabIndex: number;
 }
 
 class CreateTenderDialog extends React.Component<CreateTenderDialogProps & StateProps & DispatchProps, CreateTenderState> {
     constructor(props: CreateTenderDialogProps & StateProps & DispatchProps){
-        super();
+        super(props);
         this.state = {
             deadline: null,
             title: '',
@@ -62,7 +67,8 @@ class CreateTenderDialog extends React.Component<CreateTenderDialogProps & State
             greenPercentage: '',
             durations: [ 12 ],
             paymentMethod: '',
-            commissionPerMonth: ''
+            commissionPerMonth: '',
+            selectedTabIndex: 0
         };
 
         this.stateHasDuration = this.stateHasDuration.bind(this);
@@ -127,24 +133,22 @@ class CreateTenderDialog extends React.Component<CreateTenderDialogProps & State
     renderDurationOptions(...durations: number[]){
         return durations.map(d => {
             return (
-                <div className="uk-width-1-3 uk-margin-small" key={d}>
-                    <label>
-                        <input 
-                            className='uk-checkbox'
-                            type='checkbox' 
+                <Col xs={4} key={`new-tender-duration-col-${d}`}>
+                    <CustomInput type="checkbox" className="my-1"
+                            id={`new-tender-duration-check-${d}`}
                             checked={this.stateHasDuration(d)}
                             onChange={(e) => this.handleOfferTypeChange(d, e)}
-                            /> {d} months
-                    </label>
-                </div>
-            )
+                            label={`${d} months`}
+                            inline/>
+                </Col>);
         })
     }
 
     createTender(){
+        let { portfolioId, utility, isHalfHourly } = this.props.data;
         let requirements: TenderRequirements = {
             id: "",
-            portfolioId: this.props.portfolioId,
+            portfolioId,
             tenderId: "",
 
             paymentTerms: Number(this.state.paymentTerms),
@@ -164,8 +168,8 @@ class CreateTenderDialog extends React.Component<CreateTenderDialogProps & State
         });
 
         var tender: Tender = {
-            portfolioId: this.props.portfolioId,
-            utility: this.props.utility == UtilityType.Electricity ? "ELECTRICITY" : "GAS",
+            portfolioId,
+            utility: utility == UtilityType.Electricity ? "ELECTRICITY" : "GAS",
 
             tenderTitle: this.state.title,
             billingMethod: this.state.billingMethod,
@@ -174,237 +178,275 @@ class CreateTenderDialog extends React.Component<CreateTenderDialogProps & State
             commission: Number(this.state.commission),
             commissionPerMonth: Number(this.state.commissionPerMonth),
             paymentMethod: this.state.paymentMethod,
-            halfHourly: this.props.isHalfHourly,
+            halfHourly: isHalfHourly,
             allInclusive: this.state.ebInclusive,
             offerTypes,
             requirements
         }
 
-        this.props.createTender(this.props.portfolioId, tender, this.props.utility, this.props.isHalfHourly);
-        this.props.closeModalDialog();
+        this.props.createTender(portfolioId, tender, utility, isHalfHourly);
+        this.props.toggle();
+    }
+
+    selectTab(tabIndex: number){
+        this.setState({
+            ...this.state,
+            selectedTabIndex: tabIndex
+        });
     }
 
     renderRequirementsEditForm(){
-        var isGasTender = this.props.utility == UtilityType.Gas;
-        var isHalfhourly = this.props.isHalfHourly;
+        var isGasTender = this.props.data.utility == UtilityType.Gas;
+        var isHalfhourly = this.props.data.isHalfHourly;
         return (
-            <form>
-                <fieldset className='uk-fieldset'>
-                    <div className="uk-grid" data-uk-grid>
-                        <div className="uk-width-1-2">
-                            <div className="uk-margin">
-                                <label className="uk-form-label" data-for="payment-terms-select">Payment Terms</label>
-                                <div className="uk-form-controls">
-                                    <select className="uk-select" id="payment-terms-select" 
-                                        value={this.state.paymentTerms}
-                                        onChange={(e) => this.handleFormChange("paymentTerms", e)}>
-                                        <option value="0" disabled>Select terms</option>
-                                        <option value={7}>7 days</option>
-                                        <option value={14}>14 days</option>
-                                        <option value={21}>21 days</option>
-                                        <option value={28}>28 days</option>
-                                    </select>
-                                </div>
-                            </div>
-
-                            { !isGasTender && isHalfhourly ? (
-                            <div className="uk-margin">
-                                <label className="uk-form-label" data-for="tariff-select">Tariff</label>
-                                <div className="uk-form-controls">
-                                    <select className="uk-select" id="tariff-select"
-                                        value={this.state.tariff}
-                                        onChange={(e) => this.handleFormChange("tariff", e)}>
-                                        <option value="" disabled>Select tariff</option>                                            
-                                        {this.renderTariffOptions()}
-                                    </select>
-                                </div>
-                            </div>) : null}
-                        </div>
-
-                        <div className="uk-width-1-2">
-                            <div className="uk-margin">
-                                <label className="uk-form-label" data-for="green-perc-input">Green %</label>
-                                <div className="uk-form-controls">
-                                    <input className="uk-input" id="green-perc-input" type="text" placeholder="e.g. 20" 
-                                        value={this.state.greenPercentage}
-                                        onChange={(e) => this.handleFormChange("greenPercentage", e)}/>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <hr />
+            <Form>
+                <Row>
+                    <Col xs={6} className={cn({'pr-1' : !isGasTender && isHalfhourly })}>
+                        <FormGroup>
+                            <Label for="new-tender-payment-terms">Payment Terms</Label>
+                            <CustomInput type="select" name="payment-terms-picker" id="new-tender-payment-terms"
+                                   value={this.state.paymentTerms}
+                                   onChange={(e) => this.handleFormChange("paymentTerms", e)}>
+                                <option value="0" disabled>Select</option>
+                                <option value={7}>7 days</option>
+                                <option value={14}>14 days</option>
+                                <option value={21}>21 days</option>
+                                <option value={28}>28 days</option>
+                            </CustomInput>
+                        </FormGroup>
+                    </Col>
+                    { (!isGasTender && isHalfhourly) && (
+                        <Col xs={6} className="pl-1">
+                            <FormGroup>
+                                <Label for="new-tender-tariff">Tariff</Label>
+                                <CustomInput type="select" name="tariff-picker" id="new-tender-tariff"
+                                       value={this.state.tariff}
+                                       onChange={(e) => this.handleFormChange("tariff", e)}>
+                                    <option value="" disabled>Select</option>                                            
+                                    {this.renderTariffOptions()}
+                                </CustomInput>
+                            </FormGroup>
+                        </Col>)}          
+                    <Col xs={6} className={cn({'pr-1' : isGasTender || !isHalfhourly })}>
+                        <FormGroup>
+                            <Label for="new-tender-green-perc">Green Percentage</Label>
+                            <InputGroup name="green-percentage-amount" id="new-tender-green-perc">
+                                <Input type="number" 
+                                    step="1"
+                                    min="0"
+                                    max="100"
+                                    placeholder="e.g. 50"
+                                    value={this.state.greenPercentage}
+                                   onChange={(e) => this.handleFormChange("greenPercentage", e)}/>
+                                <InputGroupAddon addonType="append">%</InputGroupAddon>
+                            </InputGroup>
+                        </FormGroup>
+                    </Col>          
+                </Row>
+                <hr />
+                {!isGasTender && (
                     <div>
-                        { !isGasTender ? (
-                            <div>
-                                <div className='uk-margin'>
-                                    <label className='uk-form-label'>Embedded Benefits</label>
-                                    <div className="uk-margin-small">
-                                        <label><input className="uk-radio" type="radio" name="ebChoice" checked={this.state.ebInclusive} onChange={(e) => this.handleInclusiveChange(false, e)}/> Inclusive</label>
-                                        <label><input className="uk-radio uk-margin-large-left" type="radio" name="ebChoice" checked={!this.state.ebInclusive} onChange={(e) => this.handleInclusiveChange(true, e)} /> Pass-Through</label>
-                                    </div>
-                                </div>
-                                <hr />
-                            </div>)
-                        : null}
-                        <label className="uk-form-label">Requested Offer Durations</label>
-                        <div className="uk-grid uk-margin" data-uk-grid>
-                            <div className='uk-width-1-3 uk-margin-small uk-margin-small-top'>
-                                <label>
-                                    <input 
-                                        className='uk-checkbox'
-                                        type='checkbox' 
-                                        checked={this.stateHasDuration(0)}
-                                        onChange={(e) => this.handleOfferTypeChange(0, e)}
-                                        /> 0 (Flexi)
-                                </label>
-                            </div>
-                            {this.renderDurationOptions(6, 12, 18, 24, 36, 48, 60)}
-                        </div>
-
+                        <Label>Embedded Benefits</Label>
+                        <Row noGutters>
+                            <FormGroup className="mb-0">
+                                <CustomInput type="radio" className="ml-3"
+                                        id="new-tender-eb-inclusive"
+                                        checked={this.state.ebInclusive} 
+                                        onChange={(e) => this.handleInclusiveChange(false, e)}
+                                        label="Inclusive"
+                                        inline/>
+                                <CustomInput type="radio" className="ml-3"
+                                        id="new-tender-eb-passthru"
+                                        checked={!this.state.ebInclusive}
+                                        onChange={(e) => this.handleInclusiveChange(true, e)}
+                                        label="Pass Through"
+                                        inline/>
+                            </FormGroup>
+                        </Row>
+                        <hr />
                     </div>
-                </fieldset>
-            </form>
-        );
+                )}
+
+                <FormGroup>
+                    <Label for="new-tender-durations">Requested Offer Durations</Label>
+                    <Row>
+                        <Col xs={4}>
+                            <CustomInput type="checkbox" className="my-1"
+                                    id="new-tender-duration-check-0"
+                                    checked={this.stateHasDuration(0)}
+                                    onChange={(e) => this.handleOfferTypeChange(0, e)}
+                                    label="0 (Flexi)"
+                                    inline/>
+                        </Col>
+                        {this.renderDurationOptions(6, 12, 18, 24, 36, 48, 60)}
+                    </Row>
+                </FormGroup>
+            </Form>);
     }
 
     renderGeneralEditForm(){ 
         return (
-            <form>
-                <fieldset className='uk-fieldset'>
-                    <div className='uk-margin'>
-                        <label className='uk-form-label'>Title</label>
-                        <input className='uk-input' 
+            <Form>
+                <FormGroup>
+                    <Label for="new-tender-title">Title</Label>
+                    <Input id="new-tender-title"
                             value={this.state.title}
-                            onChange={(e) => this.handleFormChange("title", e)}/>
-                    </div>
-                    
-                    <div className="uk-margin uk-width-1-2">
-                        <label className="uk-form-label" data-for="deadline-input">Deadline</label>
-                        <div className="uk-form-controls">
+                            onChange={(e) => this.handleFormChange("title", e)} />
+                </FormGroup>
+
+                <Row noGutters>
+                    <Col xs={6}>
+                        <FormGroup>
+                            <Label>Deadline</Label>
                             <DayPickerWithMonthYear 
                                 disablePast={true} 
                                 fromMonth={Today} 
                                 toMonth={TenthYearFuture} 
                                 onDayChange={(d: moment.Moment) => this.handleDeadlineChange(d)}
                                 selectedDay={this.state.deadline} />
-                        </div>
-                    </div>
+                        </FormGroup>       
+                    </Col>
+                </Row>
 
-                    <div className='uk-margin'>
-                        <label className='uk-form-label'>Deadline notes</label>
-                        <textarea className='uk-textarea' 
-                            rows={4}
-                            value={this.state.deadlineNotes}
-                            onChange={(e) => this.handleFormChange("deadlineNotes", e)}/>
-                    </div>
+                <FormGroup>
+                    <Label for="new-tender-deadline-notes">Deadline Notes</Label>
+                    <Input id="new-tender-deadline-notes"
+                           type="textarea"
+                           value={this.state.deadlineNotes}
+                           onChange={(e) => this.handleFormChange("deadlineNotes", e)} />
+                </FormGroup>
 
-                    <div className="uk-margin">
-                        <label className='uk-form-label'>Commission</label>
-                        <div className="uk-grid">
-                            <div className="uk-grid uk-grid-collapse uk-width-1-2">
-                                <div className="uk-width-expand uk-flex uk-flex-middle">
-                                    <input className='uk-input' 
-                                        placeholder="e.g. 0.1"
-                                        value={this.state.commission}
-                                        onChange={(e) => this.handleFormChange("commission", e)}/>
-                                </div>
-                                <div className="uk-width-auto uk-flex uk-flex-middle">
-                                    <p className="uk-margin-small-left">p/kWh</p>
-                                </div>
-                            </div>
+                <Label>Commission</Label>
+                <Row noGutters>    
+                    <Col className="pr-1">
+                        <FormGroup>
+                            <InputGroup>
+                                <Input type="number"
+                                    step="0.1"
+                                    placeholder="e.g. 0.1"
+                                    value={this.state.commission}
+                                    onChange={(e) => this.handleFormChange("commission", e)} />
+                                <InputGroupAddon addonType="append">p/kWh</InputGroupAddon>
+                            </InputGroup>
+                        </FormGroup>
+                    </Col>
+                    <Col className="pl-1">
+                        <FormGroup>
+                            <InputGroup>
+                                <InputGroupAddon addonType="prepend">£</InputGroupAddon>
+                                <Input type="number"
+                                    step="0.01"
+                                    placeholder="e.g. 11.89"
+                                    value={this.state.commissionPerMonth}
+                                    onChange={(e) => this.handleFormChange("commissionPerMonth", e)} />
+                                <InputGroupAddon addonType="append">/month</InputGroupAddon>
+                            </InputGroup>
+                        </FormGroup>
+                    </Col>
+                </Row>
 
-                            <div className="uk-grid uk-grid-collapse uk-width-1-2">
-                                <div className="uk-width-expand uk-flex uk-flex-middle">
-                                    <input className='uk-input' 
-                                        placeholder="e.g. 11.50"
-                                        value={this.state.commissionPerMonth}
-                                        onChange={(e) => this.handleFormChange("commissionPerMonth", e)}/>
-                                </div>
-                                <div className="uk-width-auto uk-flex uk-flex-middle">
-                                    <p className="uk-margin-small-left">£/month</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div className="uk-grid">
-                        <div className="uk-width-1-2">
-                            <div className="uk-margin">
-                                <label className='uk-form-label'>Billing Method</label>
-                                <select className='uk-select'
-                                    value={this.state.billingMethod}
-                                    onChange={(e) => this.handleFormChange("billingMethod", e)}>
-                                    <option value="" disabled>Select</option>
-                                    <option>Paper</option>
-                                    <option>Electronic</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div className="uk-width-1-2">
-                            <div className="uk-margin">
-                                <label className='uk-form-label'>Payment Method</label>
-                                <select className='uk-select'
-                                    value={this.state.paymentMethod}
-                                    onChange={(e) => this.handleFormChange("paymentMethod", e)}>
-                                    <option value="" disabled>Select</option>
-                                    <option>BACS</option>
-                                    <option>Direct Debit</option>
-                                    <option>Cheque</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                </fieldset>        
-            </form>
+                <Row noGutters>
+                    <Col className="pr-1">
+                        <FormGroup>
+                            <Label for="new-tender-billing-method">Billing Method</Label>
+                            <CustomInput type="select" 
+                                         name="billing-method-picker" 
+                                         id="new-tender-billing-method"
+                                         value={this.state.billingMethod}
+                                         onChange={(e) => this.handleFormChange("billingMethod", e)}>
+                                <option value="" disabled>Select</option>
+                                <option>Paper</option>
+                                <option>Electronic</option>
+                            </CustomInput>
+                        </FormGroup>
+                    </Col>
+                    <Col className="pl-1">
+                        <FormGroup>
+                            <Label for="new-tender-payment-method">Payment Method</Label>
+                            <CustomInput type="select"
+                                            name="payment-method-picker"
+                                            id="new-tender-payment-method"
+                                            value={this.state.paymentMethod}
+                                            onChange={(e) => this.handleFormChange("paymentMethod", e)}>
+                                <option value="" disabled>Select</option>
+                                <option>BACS</option>
+                                <option>Direct Debit</option>
+                                <option>Cheque</option>
+                            </CustomInput>
+                        </FormGroup>
+                    </Col>
+                </Row>     
+            </Form>
         );
     }
+
+    canSubmit(){
+        return Strings.AreNotNullOrEmpty(this.state.title) && this.state.deadline;
+    }
+
     render() {
         if(this.props.working || this.props.tariffs == null){
-            return (<div> <Spinner hasMargin={true}/> </div>);
+            return (<LoadingIndicator />);
         }
         return (
-            <div>
-                <div className="uk-modal-header">
-                    <h2 className="uk-modal-title"><i className="fas fa-shopping-cart uk-margin-right"></i>Add {this.props.utilityDescription} Tender</h2>
-                </div>
-                <div className="uk-modal-body">
-                    <div>
-                        <ul data-uk-switcher="connect: +.uk-switcher" className="uk-tab">
-                            <li><a href="#">General</a></li>
-                            <li><a href="#">Requirements</a></li>
-                        </ul>
-                        <ul className='uk-switcher'>
-                            {this.renderGeneralEditForm()}
-                            {this.renderRequirementsEditForm()}
-                        </ul>
-                    </div>
-                    <div>
-                                       
-                    </div>
-                </div>
-                <div className="uk-modal-footer uk-text-right">
-                    <button className="uk-button uk-button-default uk-margin-right" type="button" onClick={() => this.props.closeModalDialog()}><i className="fas fa-times uk-margin-small-right"></i>Cancel</button>
-                    <button className="uk-button uk-button-primary" type="button" onClick={() => this.createTender()}><i className="fas fa-plus-circle uk-margin-small-right"></i>Add</button>
-                </div>
-            </div>)
+            <div className="modal-content">
+                <ModalHeader toggle={this.props.toggle}><i className="fas fa-shopping-cart mr-2"></i>Add {decodeUtilityType(this.props.data.utility)} Tender</ModalHeader>
+                <Navbar className="p-0 bg-white">
+                    <Nav tabs className="justify-content-center flex-grow-1">
+                        <NavItem>
+                            <NavLink className={cn({ active: this.state.selectedTabIndex === 0})}
+                                    onClick={() => this.selectTab(0)}
+                                    href="#">
+                                <i className="fa fa-list-alt"></i>Details
+                            </NavLink>
+                        </NavItem>
+                        <NavItem>
+                            <NavLink className={cn({ active: this.state.selectedTabIndex === 1}, "ml-2")}
+                                        onClick={() => this.selectTab(1)}
+                                        href="#">
+                                <i className="fas fa-clipboard-list"></i>Requirements
+                            </NavLink>
+                        </NavItem>
+                    </Nav>
+                </Navbar>
+                <ModalBody>
+                    {this.state.selectedTabIndex === 0 && this.renderGeneralEditForm()}
+                    {this.state.selectedTabIndex === 1 && this.renderRequirementsEditForm()}
+                </ModalBody>
+                <ModalFooter>
+                    <Button onClick={this.props.toggle}>
+                        <i className="fas fa-times mr-1"></i>Cancel
+                    </Button>
+                    <Button color="accent" 
+                            disabled={!this.canSubmit()}
+                            onClick={() => this.createTender()}>
+                        <i className="fas fa-plus-circle mr-1"></i>Add
+                    </Button>
+                </ModalFooter>
+            </div>);
     }
 }
 
 const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, CreateTenderDialogProps> = (dispatch) => {
     return {
         createTender: (portfolioId, tender, utilityType, isHalfHourly) => dispatch(createTender(portfolioId, tender, utilityType, isHalfHourly)),
-        fetchTariffs: () => dispatch(fetchTariffs()),
-        closeModalDialog: () => dispatch(closeModalDialog()) 
+        fetchTariffs: () => dispatch(fetchTariffs())
     };
 };
   
 const mapStateToProps: MapStateToProps<StateProps, CreateTenderDialogProps, ApplicationState> = (state: ApplicationState) => {
     return {
-        working: state.portfolio.tender.update_tender.working || state.portfolio.tender.tariffs.working,
-        error: state.portfolio.tender.update_tender.error  ||  state.portfolio.tender.tariffs.error,
-        errorMessage: state.portfolio.tender.update_tender.errorMessage  || state.portfolio.tender.tariffs.errorMessage,
-        tariffs: state.portfolio.tender.tariffs.value        
+        tariffs: state.portfolio.tender.tariffs.value,
+
+        working: state.portfolio.tender.tariffs.working,
+        error: state.portfolio.tender.tariffs.error,
+        errorMessage: state.portfolio.tender.tariffs.errorMessage
     };
 };
   
-export default connect(mapStateToProps, mapDispatchToProps)(CreateTenderDialog);
+export default asModalDialog(
+{ 
+    name: ModalDialogNames.CreateTender, 
+    centered: true, 
+    backdrop: true,
+}, mapStateToProps, mapDispatchToProps)(CreateTenderDialog)

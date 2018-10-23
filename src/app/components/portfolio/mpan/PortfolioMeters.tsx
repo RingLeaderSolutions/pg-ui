@@ -1,18 +1,21 @@
 import * as React from "react";
 import { MapDispatchToPropsFunction, connect, MapStateToProps } from 'react-redux';
 import { ApplicationState } from '../../../applicationState';
-import { Portfolio, PortfolioDetails, UtilityType, decodeUtilityType } from '../../../model/Models';
+import { Portfolio, PortfolioDetails, UtilityType } from '../../../model/Models';
 import { MeterConsumptionSummary } from '../../../model/Meter';
 import Spinner from '../../common/Spinner';
-import UploadHistoricDialog from './UploadHistoricDialog';
+import UploadHistoricDialog, { UploadHistoricDialogData } from './UploadHistoricDialog';
 
 import { fetchMeterConsumption, excludeMeters, exportMeterConsumption } from '../../../actions/meterActions';
-import IncludeMetersDialog from "./IncludeMetersDialog";
-import ExcludeAllMetersDialog from "./ExcludeAllMetersDialog";
+import IncludeMetersDialog, { IncludeMetersDialogData } from "./IncludeMetersDialog";
+import ExcludeAllMetersDialog, { ExcludeAllMetersDialogData } from "./ExcludeAllMetersDialog";
 import ReactTable, { Column } from "react-table";
-import { selectPortfolioMeterTab, openModalDialog } from "../../../actions/viewActions";
-import ModalDialog from "../../common/ModalDialog";
-import * as UIkit from 'uikit';
+import { selectPortfolioMeterTab, openDialog, openAlertConfirmDialog } from "../../../actions/viewActions";
+import * as cn from "classnames";
+import { ButtonGroup, InputGroup, InputGroupAddon, Input, Button, Row, InputGroupText, Card, CardBody, UncontrolledTooltip, Alert } from "reactstrap";
+import { ReactTablePagination, NoMatchesComponent, SortFirstColumn } from "../../common/TableHelpers";
+import { ModalDialogNames } from "../../common/modal/ModalDialogNames";
+import { AlertConfirmDialogData } from "../../common/modal/AlertConfirmDialog";
 
 interface PortfolioMetersProps {
     portfolio: Portfolio;
@@ -33,7 +36,10 @@ interface DispatchProps {
     exportMeterConsumption: (portfolioId: string) => void;
     selectPortfolioMeterTab: (index: number) => void;
 
-    openModalDialog: (dialogId: string) => void;
+    openAlertConfirmDialog: (data: AlertConfirmDialogData) => void;
+    openIncludeMetersDialog: (data: IncludeMetersDialogData) => void;
+    openExcludeAllMetersDialog: (data: ExcludeAllMetersDialogData) => void;
+    openUploadHistoricDialog: (data: UploadHistoricDialogData) => void;
 }
 
 interface MeterTableEntry {
@@ -48,8 +54,8 @@ interface PortfolioMetersState{
 }
 
 class PortfolioMeters extends React.Component<PortfolioMetersProps & StateProps & DispatchProps, PortfolioMetersState> {
-    constructor(){
-        super();
+    constructor(props: PortfolioMetersProps & StateProps & DispatchProps){
+        super(props);
         this.state = {
             searchText: '',
             utility: UtilityType.Electricity,
@@ -68,29 +74,27 @@ class PortfolioMeters extends React.Component<PortfolioMetersProps & StateProps 
         this.props.exportMeterConsumption(this.props.portfolio.id);
     }
 
-    componentWillReceiveProps(nextProps: PortfolioMetersProps & StateProps & DispatchProps){
-        if(nextProps.consumption == null){
-            return;
+    static getDerivedStateFromProps(props: PortfolioMetersProps & StateProps & DispatchProps, state: PortfolioMetersState) : PortfolioMetersState {
+        if(props.working || !props.consumption){
+            return state;
         }
 
-        var utility = nextProps.selectedTab == 0 ? UtilityType.Electricity : UtilityType.Gas;
-        var searchText = this.props.selectedTab == nextProps.selectedTab ? this.state.searchText : "";
+        let utility = props.selectedTab == 0 ? UtilityType.Electricity : UtilityType.Gas;
 
-        var tableColumns = this.createTableColumns(nextProps.consumption, utility);
-        var tableData = this.filterMeters(nextProps.consumption, utility, searchText)
+        let tableColumns = PortfolioMeters.createTableColumns(props.consumption, utility);
+        let tableData = PortfolioMeters.filterMeters(props.consumption, utility, state.searchText)
 
-        this.setState({
-            ...this.state,
-            searchText,
+        return {
+            ...state,
             utility,
             tableColumns,
             tableData
-        })
+        };
     }
 
-    filterMeters(consumption: MeterConsumptionSummary, utility: UtilityType, searchText: string){
+    static filterMeters(consumption: MeterConsumptionSummary, utility: UtilityType, searchText: string){
         var rawData = utility == UtilityType.Electricity ? consumption.electrictyConsumptionEntries : consumption.gasConsumptionEntries;
-        var tableData : MeterTableEntry[] = this.createTableData(rawData)
+        var tableData : MeterTableEntry[] = PortfolioMeters.createTableData(rawData)
         if(searchText == null || searchText == ""){
             return tableData;
         }
@@ -112,7 +116,7 @@ class PortfolioMeters extends React.Component<PortfolioMetersProps & StateProps 
         return filtered;
     }
 
-    createTableColumns(consumption: MeterConsumptionSummary, utility: UtilityType): Column[] {
+    static createTableColumns(consumption: MeterConsumptionSummary, utility: UtilityType): Column[] {
         var headers = utility == UtilityType.Electricity ? consumption.electricityHeaders : consumption.gasHeaders;
         return headers.map((c, index) => {
             return {
@@ -122,7 +126,7 @@ class PortfolioMeters extends React.Component<PortfolioMetersProps & StateProps 
         });
     }
 
-    createTableData(values: string[][]): MeterTableEntry[] {
+    static createTableData(values: string[][]): MeterTableEntry[] {
         return values.map(rowArray => {
             var rowObject: MeterTableEntry = {};
             for(var i = 0; i < rowArray.length; i++){
@@ -140,7 +144,7 @@ class PortfolioMeters extends React.Component<PortfolioMetersProps & StateProps 
             return;
         }
 
-        var tableData: MeterTableEntry[] = this.filterMeters(this.props.consumption, this.state.utility, raw);
+        var tableData: MeterTableEntry[] = PortfolioMeters.filterMeters(this.props.consumption, this.state.utility, raw);
 
         this.setState({
             ...this.state,
@@ -152,44 +156,14 @@ class PortfolioMeters extends React.Component<PortfolioMetersProps & StateProps 
     excludeMeter(event: any, mpanCore: string){
         event.stopPropagation();
 
-        UIkit.modal.confirm(`Are you sure you want to exclude the "${mpanCore}" meter from this portfolio?`).then(
-            () => {
-                this.props.excludeMeters(this.props.portfolio.id,  [mpanCore]); 
-            }
-        );
+        this.props.openAlertConfirmDialog({
+            title: "Confirm",
+            body: `Are you sure you want to exclude the "${mpanCore}" meter from this portfolio?`,
+            confirmText: "Yes",
+            confirmIcon: "check",
+            onConfirm: () => this.props.excludeMeters(this.props.portfolio.id,  [mpanCore])
+        });
     }
-    
-    renderActionList(hasAssignedMeters: boolean, utilityType: string){
-        var options = [];
-        var divider = (key: number) => (<li key={key} className="uk-nav-divider"></li>);
-        
-        var includeDialogId = `include_meters_${utilityType}`;
-        options.push(
-            (<li key="inc"><a href="#" onClick={() => this.props.openModalDialog(includeDialogId)}>
-                <i className="fas fa-folder-plus uk-margin-small-right"></i>
-                Include Meters
-            </a></li>));
-
-        if(!hasAssignedMeters){
-            return options;
-        }
-
-        var excludeDialogId = `exclude_meters_${utilityType}`;
-        options.push(
-            divider(0),
-            (<li key="exc"><a href="#" onClick={() => this.props.openModalDialog(excludeDialogId)}>
-                <i className="fas fa-minus-circle uk-margin-small-right"></i>
-                Exclude All Meters
-            </a></li>),
-            divider(1),
-            (<li key="exp"><a href="#" onClick={() => this.exportMeterConsumption()}>
-                <i className="fa fa-file-excel uk-margin-small-right"></i>
-                Export (.XLS)
-            </a></li>));
-
-        return options;
-    }
-
 
     renderDynamicTable(values: string[][], utilityType: UtilityType){
         // Immediate check to see if the server has returned any meters of this type to us at all
@@ -198,73 +172,87 @@ class PortfolioMeters extends React.Component<PortfolioMetersProps & StateProps 
         var tableContent;
         if(!hasAssignedMeters){
             tableContent = (
-                <div className="uk-alert-default uk-margin-small-top uk-margin-small-bottom" data-uk-alert>
-                    <p><i className="fas fa-info-circle uk-margin-small-right"></i>No meters of this type have been included in this portfolio yet. Click on the menu above to include some.</p>
-                </div>);
-        }
-        // Check to see if there is an active search
-        else if(this.state.searchText != "" && this.state.tableData.length == 0){
-            tableContent = (
-                <div className="uk-alert-default uk-margin-small-top uk-margin-small-bottom" data-uk-alert>
-                    <p><i className="fas fa-info-circle uk-margin-small-right"></i>No results for search term: <i>{this.state.searchText}</i></p>
-                </div>);
+                <Alert color="light" className="mt-2">
+                    <div className="d-flex align-items-center flex-column">
+                        <i className="fas fa-exclamation-triangle mr-2"></i>
+                        <p className="m-0 pt-2">No meters of this type have been included in this portfolio yet.</p>
+                        <p className="m-0 pt-1">Click on the button above to include some!</p>
+                    </div>
+                </Alert>);
         }
         else {
             tableContent = (
                 <ReactTable 
-                    showPagination={false}
+                    NoDataComponent={NoMatchesComponent}
+                    PaginationComponent={ReactTablePagination}
+                    showPagination={true}
                     columns={this.state.tableColumns}
                     data={this.state.tableData}
-                    style={{maxHeight: `${window.innerHeight - 320}px`}}
-                    minRows={0}/>
-            )
+                    defaultSorted={SortFirstColumn(this.state.tableColumns)}
+                    minRows={0}/>);
         }
 
         var hasHHMeters = hasAssignedMeters && values.filter(arr => arr[2] == "HH").length > 0;
-        var decodedUtilityType = decodeUtilityType(utilityType);
+        let includedMeters = utilityType === UtilityType.Electricity ? 
+            this.props.consumption.electrictyConsumptionEntries.map(r => r[1]) : 
+            this.props.consumption.gasConsumptionEntries.map(r => r[1]);
+
         return (
-            <div>
-                <div>
-                    <div className="uk-grid uk-grid-small" data-uk-grid>
-                        <div className="uk-width-expand uk-flex uk-flex-middle">
-                            <div className="uk-inline uk-width-1-1">
-                                <div className="icon-input-container uk-grid uk-grid-collapse icon-left">
-                                    <div tabIndex={-1} className="uk-width-auto uk-flex uk-flex-middle">
-                                        <i className="fas fa-search"></i>
-                                    </div>
-                                    <input className="uk-input uk-width-expand" placeholder="Search..." value={this.state.searchText} onChange={(e) => this.handleSearch(e)}/>
-                                </div>                                
-                            </div>
+            <Card className="w-100">
+                <CardBody className="p-0">
+                    <div className="d-flex p-2 justify-content-between">
+                        <div className="d-flex">
+                        <Button color="accent" outline className="btn-grey-outline"
+                                onClick={() => this.props.openIncludeMetersDialog({ includedMeters, utility: utilityType, portfolio: this.props.details})}>
+                            <i className="fas fa-folder-plus mr-2"></i>
+                            Include
+                        </Button>
+                        <div className="d-flex">
+                            <Button color="danger" outline className="ml-1 btn-grey-outline"
+                                    onClick={() => this.props.openExcludeAllMetersDialog({includedMeters, portfolio: this.props.details})} disabled={!hasAssignedMeters}>
+                                <i className="fas fa-minus-circle mr-2"></i>
+                                Exclude all
+                            </Button>
                         </div>
-                        { utilityType == UtilityType.Electricity ?
-                            (<div className="uk-width-auto uk-flex uk-flex-middle">
-                                <button className='uk-button uk-button-primary uk-margin-small-left uk-margin-small-right' onClick={() => this.props.openModalDialog('upload_consumption')} disabled={!hasHHMeters}><i className="fa fa-file-upload uk-margin-small-right fa-lg"></i>Upload Historic Consumption</button>
-                            </div>) : null }
-                        <div className="uk-width-auto uk-flex uk-flex-middle">
-                            <div className="uk-inline">
-                                <button className="uk-button uk-button-default uk-margin-small-right borderless-button" type="button">
-                                    <i className="fa fa-ellipsis-v"></i>
-                                </button>
-                                <div data-uk-dropdown="pos:bottom-justify;mode:click">
-                                    <ul className="uk-nav uk-dropdown-nav">
-                                        {this.renderActionList(hasAssignedMeters, decodedUtilityType)}
-                                    </ul>
-                                </div>
-                            </div>
+                        </div>
+                        { utilityType == UtilityType.Electricity &&
+                            (<Button color="accent"
+                                        disabled={!hasHHMeters}
+                                        onClick={() => this.props.openUploadHistoricDialog({ details: this.props.details})} >
+                                        <i className="fas fa-file-upload mr-2"></i>Upload Historic Consumption
+                                </Button>)}
+                        <div className="d-flex">
+                            <InputGroup className="input-group-seamless">
+                                <InputGroupAddon addonType="prepend">
+                                    <InputGroupText>
+                                        <i className="fas fa-search"></i>
+                                    </InputGroupText>
+                                </InputGroupAddon>
+                                <Input placeholder="Search..."
+                                    value={this.state.searchText} onChange={(e) => this.handleSearch(e)} />
+                            </InputGroup>
+                            <Button color="success" outline className="ml-1 btn-grey-outline"
+                                        onClick={() => this.exportMeterConsumption()}
+                                        id="export-meter-data-button">
+                                <i className="fas fa-file-excel"></i>
+                            </Button>
+                            <UncontrolledTooltip target="export-meter-data-button" placement="top">
+                                Export (.XLS)
+                            </UncontrolledTooltip>
                         </div>
                     </div>
-                </div>
-                <hr />
-                {tableContent}                
-            </div>);
+                    {tableContent}
+                </CardBody>
+            </Card>
+        )
     }
     
     selectTab(index: number){
         this.props.selectPortfolioMeterTab(index);
-    }
-
-    renderActiveTabStyle(index: number){
-        return this.props.selectedTab == index ? "uk-active" : null;
+        this.setState({
+            ...this.state,
+            searchText: ""
+        });
     }
 
     renderSelectedTable(){
@@ -279,45 +267,33 @@ class PortfolioMeters extends React.Component<PortfolioMetersProps & StateProps 
     }
 
     render() {
-        if(this.props.working || this.props.consumption == null){
+        if(this.props.working || !this.props.consumption){
             return (<Spinner />);
         }
 
-        var includedElecMeters = this.props.consumption.electrictyConsumptionEntries.map(r => r[1]);
-        var includedGasMeters = this.props.consumption.gasConsumptionEntries.map(r => r[1]);
         return (
-            <div>
-                <div className='uk-flex uk-flex-column portfolio-meters'>
-                    <ul className="uk-tab">
-                        <li className={this.renderActiveTabStyle(0)} onClick={() => this.selectTab(0)}><a href="#"><i className="fa fa-bolt uk-margin-small-right fa-lg"></i>Electricity</a></li>
-                        <li className={this.renderActiveTabStyle(1)} onClick={() => this.selectTab(1)}><a href="#"><i className="fa fa-fire uk-margin-small-right fa-lg"></i>Gas</a></li>
-                    </ul>
-                    <div>
-                        {this.renderSelectedTable()}
-                    </div>
-                </div>
-
-                <ModalDialog dialogId="include_meters_Electricity">
-                    <IncludeMetersDialog portfolio={this.props.details} includedMeters={includedElecMeters} utility={UtilityType.Electricity}/>
-                </ModalDialog>
-
-                <ModalDialog dialogId="include_meters_Gas">
-                    <IncludeMetersDialog portfolio={this.props.details} includedMeters={includedGasMeters} utility={UtilityType.Gas}/>
-                </ModalDialog>
-                
-                <ModalDialog dialogId="exclude_meters_Electricity">
-                    <ExcludeAllMetersDialog portfolio={this.props.details} includedMeters={includedElecMeters} />
-                </ModalDialog>
-
-                <ModalDialog dialogId="exclude_meters_Gas">
-                    <ExcludeAllMetersDialog portfolio={this.props.details} includedMeters={includedGasMeters} />
-                </ModalDialog>
-
-                <ModalDialog dialogId="upload_consumption">
-                    <UploadHistoricDialog details={this.props.details} />
-                </ModalDialog>
-            </div>
-        );
+            <div className="w-100 p-3">
+                <Row className="d-flex justify-content-center" noGutters>
+                    <ButtonGroup>
+                        <Button color="white active-warning" className={cn({ active: this.props.selectedTab == 0})}
+                                onClick={() => this.selectTab(0)}>
+                            <i className="fa fa-bolt mr-2" />
+                            Electricity
+                        </Button>
+                        <Button color="white active-orange" className={cn({ active: this.props.selectedTab == 1})}
+                                onClick={() => this.selectTab(1)}>
+                            <i className="fas fa-fire mr-2" />
+                            Gas
+                        </Button>
+                    </ButtonGroup>
+                </Row>
+                <Row noGutters className="mt-3">
+                    {this.renderSelectedTable()}
+                </Row>
+                <IncludeMetersDialog />
+                <ExcludeAllMetersDialog />
+                <UploadHistoricDialog />
+            </div>)
     }
 }
 
@@ -327,7 +303,11 @@ const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, PortfolioMet
         excludeMeters: (portfolioId: string, meters: string[]) => dispatch(excludeMeters(portfolioId, meters)),
         exportMeterConsumption: (portfolioId: string) => dispatch(exportMeterConsumption(portfolioId)),
         selectPortfolioMeterTab: (index: number) => dispatch(selectPortfolioMeterTab(index)),
-        openModalDialog: (dialogId: string) => dispatch(openModalDialog(dialogId))
+
+        openAlertConfirmDialog: (data: AlertConfirmDialogData) => dispatch(openAlertConfirmDialog(data)),
+        openIncludeMetersDialog: (data: IncludeMetersDialogData) => dispatch(openDialog(ModalDialogNames.IncludeMeters, data)),
+        openExcludeAllMetersDialog: (data: ExcludeAllMetersDialogData) => dispatch(openDialog(ModalDialogNames.ExcludeAllMeters, data)),
+        openUploadHistoricDialog: (data: UploadHistoricDialogData) => dispatch(openDialog(ModalDialogNames.UploadHistoric, data))
     };
 };
   
@@ -340,7 +320,7 @@ const mapStateToProps: MapStateToProps<StateProps, PortfolioMetersProps, Applica
         error: state.meters.consumption.error,
         errorMessage: state.meters.consumption.errorMessage,
 
-        selectedTab: state.view.portfolio.meter.selectedIndex
+        selectedTab: state.view.portfolio.selectedMeterUtilityIndex
     };
 };
   
