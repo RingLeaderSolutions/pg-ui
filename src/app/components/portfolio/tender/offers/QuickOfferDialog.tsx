@@ -38,7 +38,14 @@ interface UploadOfferState {
     selectedSupplierId: string;
     unitsOfMeasurement: string;
     duration: string;
-    quoteEntries: QuickQuoteEntry[];
+    quoteEntries: QuoteEntryItem[];
+}
+
+interface QuoteEntryItem {
+    meterNumber: string;
+    rate: string;
+    standingCharge: string;
+    [index: string]: any;
 }
 
 class QuickOfferDialog extends React.Component<QuickOfferDialogProps & StateProps & DispatchProps, UploadOfferState> {
@@ -47,7 +54,7 @@ class QuickOfferDialog extends React.Component<QuickOfferDialogProps & StateProp
 
         let { tender, consumption } = props.data;
         let lowerUtility = tender.utility.toLowerCase();
-        let quoteEntries: QuickQuoteEntry[] = [];
+        let quoteEntries: QuoteEntryItem[] = [];
         
         if(lowerUtility === "electricity"){
             quoteEntries = consumption.electrictyConsumptionEntries
@@ -67,13 +74,11 @@ class QuickOfferDialog extends React.Component<QuickOfferDialogProps & StateProp
         };
     }
 
-    createQuoteEntryFromConsumption(consumption: string[]): QuickQuoteEntry {
+    createQuoteEntryFromConsumption(consumption: string[]): QuoteEntryItem {
         return {
             meterNumber: consumption[1],
-            duration: 0,
-            rate: 0,
-            standingCharge: 0,
-            standingChargeUOM: ""
+            rate: "",
+            standingCharge: "",
         };
     }
 
@@ -83,7 +88,15 @@ class QuickOfferDialog extends React.Component<QuickOfferDialogProps & StateProp
         let quote: QuickQuote = {
             supplierId: this.state.selectedSupplierId,
             prices: this.state.quoteEntries.map(qe => {
-                return { ...qe, standingChargeUOM: this.state.unitsOfMeasurement, duration: Number(this.state.duration) };
+                let entry: QuickQuoteEntry = 
+                    {
+                        standingChargeUOM: this.state.unitsOfMeasurement, 
+                        duration: Number(this.state.duration), 
+                        rate: Number(qe.rate), 
+                        standingCharge: Number(qe.standingCharge), 
+                        meterNumber: qe.meterNumber 
+                    };
+                return entry;
             })
         };
 
@@ -93,7 +106,7 @@ class QuickOfferDialog extends React.Component<QuickOfferDialogProps & StateProp
 
     canSubmit(){
         return !this.state.selectedSupplierId.IsNullOrEmpty()
-            && this.state.quoteEntries.every(qe => qe.rate > 0 && qe.standingCharge > 0);
+            && this.state.quoteEntries.every(qe => Number(qe.rate) > 0 && Number(qe.standingCharge) > 0);
     }
     
     handleEntryChange(meterNumber: string, attribute: string, value: any) {
@@ -119,7 +132,7 @@ class QuickOfferDialog extends React.Component<QuickOfferDialogProps & StateProp
         let entryValue = entry[attribute];
         let entriesToUpdate = this.state.quoteEntries.slice(entryIndex + 1);
         let updatedEntries = entriesToUpdate.map(qe => {
-            let copy: QuickQuoteEntry = { ... qe };
+            let copy: QuoteEntryItem = { ... qe };
             copy[attribute] = entryValue;
             return copy;
         });

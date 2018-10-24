@@ -365,5 +365,4 @@ export interface QuickQuoteEntry {
     rate: number;
     standingCharge: number;
     standingChargeUOM: string;
-    [index: string]: any;
 }
