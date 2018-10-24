@@ -81,7 +81,7 @@ class PortfolioMeters extends React.Component<PortfolioMetersProps & StateProps 
 
         let utility = props.selectedTab == 0 ? UtilityType.Electricity : UtilityType.Gas;
 
-        let tableColumns = PortfolioMeters.createTableColumns(props.consumption, utility);
+        let tableColumns = PortfolioMeters.createTableColumns(props, utility);
         let tableData = PortfolioMeters.filterMeters(props.consumption, utility, state.searchText)
 
         return {
@@ -116,14 +116,31 @@ class PortfolioMeters extends React.Component<PortfolioMetersProps & StateProps 
         return filtered;
     }
 
-    static createTableColumns(consumption: MeterConsumptionSummary, utility: UtilityType): Column[] {
+    static createTableColumns(props: PortfolioMetersProps & StateProps & DispatchProps, utility: UtilityType): Column[] {
+        let { consumption } = props;
         var headers = utility == UtilityType.Electricity ? consumption.electricityHeaders : consumption.gasHeaders;
-        return headers.map((c, index) => {
+        let columns: Column[] = headers.map((c, index) => {
             return {
                 Header: c,
                 accessor: String(index)
             }
         });
+
+        columns.push({
+            Header: 'Exclude',
+            accessor: 'core',
+            sortable: false,
+            Cell: row => {
+                var mpanCore = row.value;
+                return (
+                <Button color="danger" outline className="btn-grey-outline" 
+                    onClick={(ev: any) => PortfolioMeters.excludeMeter(props, ev, mpanCore)}>
+                        <i className="fas fa-folder-minus"></i>
+                </Button>)   
+            }
+        });
+
+        return columns;
     }
 
     static createTableData(values: string[][]): MeterTableEntry[] {
@@ -153,15 +170,15 @@ class PortfolioMeters extends React.Component<PortfolioMetersProps & StateProps 
         });
     }
 
-    excludeMeter(event: any, mpanCore: string){
+    static excludeMeter(props: DispatchProps & PortfolioMetersProps, event: any, mpanCore: string){
         event.stopPropagation();
 
-        this.props.openAlertConfirmDialog({
+        props.openAlertConfirmDialog({
             title: "Confirm",
             body: `Are you sure you want to exclude the "${mpanCore}" meter from this portfolio?`,
             confirmText: "Yes",
             confirmIcon: "check",
-            onConfirm: () => this.props.excludeMeters(this.props.portfolio.id,  [mpanCore])
+            onConfirm: () => props.excludeMeters(props.portfolio.id,  [mpanCore])
         });
     }
 
