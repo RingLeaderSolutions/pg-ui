@@ -86,5 +86,5 @@ export default asModalDialog(
     name: ModalDialogNames.ContractRates, 
     centered: true, 
     backdrop: true,
-    size: "lg"
+    size: "full"
 }, mapStateToProps, null)(ContractRatesDialog)
