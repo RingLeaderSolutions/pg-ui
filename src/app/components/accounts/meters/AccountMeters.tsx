@@ -9,6 +9,7 @@ import { fetchTariffs } from "../../../actions/portfolioActions";
 import { ApplicationState } from "../../../applicationState";
 import { LoadingIndicator } from "../../common/LoadingIndicator";
 import * as cn from "classnames";
+import { selectAccountMeterTab } from "../../../actions/viewActions";
 
 interface AccountMetersProps {
     accountId: string;
@@ -21,33 +22,17 @@ interface StateProps {
     error: boolean;
     errorMessage: string;
     tariffs: Tariff[];
+    selectedUtility: UtilityType;
 }
 
 interface DispatchProps {
     fetchTariffs: () => void;
+    selectUtility: (utility: UtilityType) => void;
 }
 
-interface AccountMetersState {
-    selectedUtility: UtilityType;
-}
-
-class AccountMeters extends React.Component<AccountMetersProps & StateProps & DispatchProps, AccountMetersState> {
-    constructor(props: AccountMetersProps & StateProps & DispatchProps){
-        super(props);
-
-        this.state = {
-            selectedUtility: UtilityType.Electricity
-        }
-    }
-
+class AccountMeters extends React.Component<AccountMetersProps & StateProps & DispatchProps, {}> {
     componentDidMount(){
         this.props.fetchTariffs();
-    }
-
-    selectUtility(utility: UtilityType): void{
-        this.setState({
-            selectedUtility: utility
-        })
     }
 
     filterSites(utility: UtilityType): SiteDetail[]{
@@ -72,7 +57,7 @@ class AccountMeters extends React.Component<AccountMetersProps & StateProps & Di
     }
 
     renderMeterTable(): JSX.Element{
-        let utility = this.state.selectedUtility;
+        let utility = this.props.selectedUtility;
         let sites = this.filterSites(utility);
 
         switch(utility){
@@ -94,13 +79,13 @@ class AccountMeters extends React.Component<AccountMetersProps & StateProps & Di
             <div className="w-100 p-3">
                 <Row className="d-flex justify-content-center" noGutters>
                     <ButtonGroup>
-                        <Button color="white active-warning" className={cn({ active: this.state.selectedUtility == UtilityType.Electricity})}
-                                onClick={() => this.selectUtility(UtilityType.Electricity)}>
+                        <Button color="white active-warning" className={cn({ active: this.props.selectedUtility == UtilityType.Electricity})}
+                                onClick={() => this.props.selectUtility(UtilityType.Electricity)}>
                             <i className="fa fa-bolt mr-2" />
                             Electricity
                         </Button>
-                        <Button color="white active-orange" className={cn({ active: this.state.selectedUtility == UtilityType.Gas})}
-                                onClick={() => this.selectUtility(UtilityType.Gas)}>
+                        <Button color="white active-orange" className={cn({ active: this.props.selectedUtility == UtilityType.Gas})}
+                                onClick={() => this.props.selectUtility(UtilityType.Gas)}>
                             <i className="fas fa-fire mr-2" />
                             Gas
                         </Button>
@@ -116,7 +101,8 @@ class AccountMeters extends React.Component<AccountMetersProps & StateProps & Di
 
 const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, AccountMetersProps> = (dispatch) => {
     return {
-        fetchTariffs: () => dispatch(fetchTariffs())
+        fetchTariffs: () => dispatch(fetchTariffs()),
+        selectUtility: (utility: UtilityType) => dispatch(selectAccountMeterTab(utility))
     };
 };
   
@@ -126,7 +112,8 @@ const mapStateToProps: MapStateToProps<StateProps, AccountMetersProps, Applicati
         error:  state.portfolio.tender.tariffs.error,
         errorMessage: state.portfolio.tender.tariffs.errorMessage,
 
-        tariffs: state.portfolio.tender.tariffs.value        
+        tariffs: state.portfolio.tender.tariffs.value,
+        selectedUtility: state.view.account.selectedMeterTab
     };
 };
   

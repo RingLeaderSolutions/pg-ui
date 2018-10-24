@@ -1,7 +1,7 @@
 import * as types from "./actionTypes";
 
 import { Dispatch } from 'redux';
-import { ApplicationTab } from "../model/Models";
+import { ApplicationTab, UtilityType } from "../model/Models";
 
 import { push } from 'connected-react-router';
 import { ModalDialogNames } from "../components/common/modal/ModalDialogNames";
@@ -21,6 +21,12 @@ export function selectApplicationTab(tab: ApplicationTab){
 export function selectAccountTab(index: number){
     return (dispatch: Dispatch<any>) => {
         dispatch( { type: types.SELECT_ACCOUNT_TAB, data: index });
+    };
+}
+
+export function selectAccountMeterTab(utility: UtilityType){
+    return (dispatch: Dispatch<any>) => {
+        dispatch( { type: types.SELECT_ACCOUNT_METER_TAB, data: utility });
     };
 }
 
