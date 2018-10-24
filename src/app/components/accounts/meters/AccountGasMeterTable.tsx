@@ -48,6 +48,9 @@ class AccountGasMeterTable extends React.Component<AccountGasMeterTableProps & D
         Header: 'Meter',
         accessor: 'meter'
     },{
+        Header: 'AQ',
+        accessor: 'aq'
+    },{
         Header: 'Tariff',
         accessor: 'tariff'
     },{
@@ -62,9 +65,6 @@ class AccountGasMeterTable extends React.Component<AccountGasMeterTableProps & D
     },{
         Header: 'Size',
         accessor: 'size'
-    },{
-        Header: 'AQ',
-        accessor: 'aq'
     },{
         Header: 'Change of Use',
         accessor: 'changeOfUse',
