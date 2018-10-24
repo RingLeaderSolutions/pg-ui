@@ -8,11 +8,13 @@ import { UploadPanel } from "../../../common/UploadPanel";
 import { getWellFormattedUtilityName } from "../../../common/UtilityIcon";
 import asModalDialog, { ModalDialogProps } from "../../../common/modal/AsModalDialog";
 import { ModalDialogNames } from "../../../common/modal/ModalDialogNames";
-import { ModalFooter, ModalHeader, ModalBody, Form, FormGroup, Label, CustomInput, Button, Table, Input, ButtonGroup } from "reactstrap";
+import { ModalFooter, ModalHeader, ModalBody, Form, FormGroup, Label, CustomInput, Button, Table, Input, ButtonGroup, Row, Col, UncontrolledTooltip } from "reactstrap";
 import { fetchMeterConsumption } from "../../../../actions/meterActions";
 import { LoadingIndicator } from "../../../common/LoadingIndicator";
 import { MeterConsumptionSummary } from "../../../../model/Meter";
 import * as cn from "classnames";
+import InputGroup from "reactstrap/lib/InputGroup";
+import InputGroupAddon from "reactstrap/lib/InputGroupAddon";
 
 export interface QuickOfferDialogData {
     supplierId?: string;
@@ -100,16 +102,35 @@ class QuickOfferDialog extends React.Component<QuickOfferDialogProps & StateProp
         const entryCopy = {...this.state.quoteEntries[entryIndex]};
         entryCopy[attribute] = value;
 
-        let entries = [
-            ...this.state.quoteEntries.slice(0, entryIndex),
-            entryCopy,
-            ...this.state.quoteEntries.slice(entryIndex + 1),
-        ];
+        this.setState({
+            ...this.state,
+            quoteEntries: [
+                ...this.state.quoteEntries.slice(0, entryIndex),
+                entryCopy,
+                ...this.state.quoteEntries.slice(entryIndex + 1),
+            ]
+        })
+    }
+
+    copyDown(meterNumber: string, attribute: string){
+        let entryIndex = this.state.quoteEntries.findIndex(qe => qe.meterNumber === meterNumber);
+        let entry = this.state.quoteEntries[entryIndex];
+
+        let entryValue = entry[attribute];
+        let entriesToUpdate = this.state.quoteEntries.slice(entryIndex + 1);
+        let updatedEntries = entriesToUpdate.map(qe => {
+            let copy: QuickQuoteEntry = { ... qe };
+            copy[attribute] = entryValue;
+            return copy;
+        });
 
         this.setState({
             ...this.state,
-            quoteEntries: entries
-        })
+            quoteEntries: [
+                ...this.state.quoteEntries.slice(0, entryIndex + 1),
+                ...updatedEntries
+            ]
+        });
     }
 
     handleFormChange(attribute: string, event: React.ChangeEvent<any>) {
@@ -149,41 +170,47 @@ class QuickOfferDialog extends React.Component<QuickOfferDialogProps & StateProp
                             </CustomInput>
                         </FormGroup>
                         
-                        <Label for="units-switcher-button">Unit of Measurement:</Label>
-                        <FormGroup>
-                            <ButtonGroup id="units-switcher-button">
-                                <Button color="white" className={cn({ active: this.state.unitsOfMeasurement === "POUNDS_PER_MONTH"})}
-                                        onClick={() => this.handleUnitChange("POUNDS_PER_MONTH")}>
-                                    £/month
-                                </Button>
-                                <Button color="white" className={cn({ active: this.state.unitsOfMeasurement === "PENCE_PER_KWH"})}
-                                        onClick={() => this.handleUnitChange("PENCE_PER_KWH")}>
-                                    p/kWh
-                                </Button>
-                                <Button color="white" className={cn({ active: this.state.unitsOfMeasurement === "PENCE_PER_DAY"})}
-                                        onClick={() => this.handleUnitChange("PENCE_PER_DAY")}>
-                                    p/day
-                                </Button>
-                            </ButtonGroup>
-                        </FormGroup>
+                        <Row>
+                            <Col xs={6}>
+                                <FormGroup>
+                                    <Label for="quick-offer-duration-select">Duration</Label>
+                                    <CustomInput type="select" 
+                                                name="quick-offer-duration-picker" 
+                                                id="quick-offer-duration-select"
+                                                value={this.state.duration}
+                                                onChange={(e) => this.handleFormChange("duration", e)}>
+                                        <option value={0} disabled>Select</option>
+                                        <option value={6}>6 Months</option>
+                                        <option value={12}>12 Months</option>
+                                        <option value={18}>18 Months</option>
+                                        <option value={24}>24 Months</option>
+                                        <option value={36}>36 Months</option>
+                                        <option value={48}>48 Months</option>
+                                        <option value={60}>60 Months</option>
+                                    </CustomInput>
+                                </FormGroup>
+                            </Col>
+                            <Col xs={6}>
+                                <Label for="units-switcher-button">Standing Charge U.O.M.</Label>
+                                <FormGroup>
+                                    <ButtonGroup id="units-switcher-button">
+                                        <Button color="white" className={cn({ active: this.state.unitsOfMeasurement === "POUNDS_PER_MONTH"})}
+                                                onClick={() => this.handleUnitChange("POUNDS_PER_MONTH")}>
+                                            £/month
+                                        </Button>
+                                        <Button color="white" className={cn({ active: this.state.unitsOfMeasurement === "PENCE_PER_KWH"})}
+                                                onClick={() => this.handleUnitChange("PENCE_PER_KWH")}>
+                                            p/kWh
+                                        </Button>
+                                        <Button color="white" className={cn({ active: this.state.unitsOfMeasurement === "PENCE_PER_DAY"})}
+                                                onClick={() => this.handleUnitChange("PENCE_PER_DAY")}>
+                                            p/day
+                                        </Button>
+                                    </ButtonGroup>
+                                </FormGroup>
+                            </Col>
+                        </Row>
 
-                        <FormGroup>
-                            <Label for="quick-offer-duration-select">Duration:</Label>
-                            <CustomInput type="select" 
-                                         name="quick-offer-duration-picker" 
-                                         id="quick-offer-duration-select"
-                                         value={this.state.duration}
-                                         onChange={(e) => this.handleFormChange("duration", e)}>
-                                <option value={0} disabled>Select</option>
-                                <option value={6}>6 Months</option>
-                                <option value={12}>12 Months</option>
-                                <option value={18}>18 Months</option>
-                                <option value={24}>24 Months</option>
-                                <option value={36}>36 Months</option>
-                                <option value={48}>48 Months</option>
-                                <option value={60}>60 Months</option>
-                            </CustomInput>
-                        </FormGroup>
                         <div style={{overflowY: "auto", maxHeight: "300px"}}>
                             <Table borderless>
                                 <thead>
@@ -194,21 +221,45 @@ class QuickOfferDialog extends React.Component<QuickOfferDialogProps & StateProp
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {this.state.quoteEntries.map(qe => {
+                                    {this.state.quoteEntries.map((qe, index) => {
                                         return (
                                             <tr key={qe.meterNumber}>
                                                 <td className="border-right">{qe.meterNumber}</td>
                                                 <td>
-                                                    <Input value={qe.rate}
-                                                        type="number"
-                                                        step="0.001"
-                                                        onChange={(e) => this.handleEntryChange(qe.meterNumber, "rate", Number(e.target.value))} />
+                                                    <InputGroup>    
+                                                        <Input value={qe.rate}
+                                                            type="number"
+                                                            step="0.001"
+                                                            onChange={(e) => this.handleEntryChange(qe.meterNumber, "rate", Number(e.target.value))} />
+                                                        <InputGroupAddon addonType="append">
+                                                            <Button color="white" 
+                                                                    id={`copy-down-rate-${qe.meterNumber}`}
+                                                                    onClick={() => this.copyDown(qe.meterNumber, "rate")}>
+                                                                <i className="fas fa-angle-double-down"></i>
+                                                            </Button>
+                                                            { index == 0 && <UncontrolledTooltip target={`copy-down-rate-${qe.meterNumber}`} placement="bottom" autohide={false}>
+                                                                <strong>Copy this rate value to the below meters</strong>
+                                                            </UncontrolledTooltip> }
+                                                        </InputGroupAddon>
+                                                    </InputGroup>
                                                 </td>
                                                 <td>
-                                                    <Input value={qe.standingCharge}
-                                                        type="number"
-                                                        step="0.01"
-                                                        onChange={(e) => this.handleEntryChange(qe.meterNumber, "standingCharge", Number(e.target.value))} />
+                                                    <InputGroup>    
+                                                        <Input value={qe.standingCharge}
+                                                            type="number"
+                                                            step="0.01"
+                                                            onChange={(e) => this.handleEntryChange(qe.meterNumber, "standingCharge", Number(e.target.value))} />
+                                                        <InputGroupAddon addonType="append">
+                                                            <Button color="white" 
+                                                                    id={`copy-down-standing-charge-${qe.meterNumber}`}
+                                                                    onClick={() => this.copyDown(qe.meterNumber, "standingCharge")}>
+                                                                <i className="fas fa-angle-double-down"></i>
+                                                            </Button>
+                                                            { index == 0 && <UncontrolledTooltip target={`copy-down-standing-charge-${qe.meterNumber}`} placement="bottom" autohide={false}>
+                                                                <strong>Copy this standing charge value to the below meters</strong>
+                                                            </UncontrolledTooltip> }
+                                                        </InputGroupAddon>
+                                                    </InputGroup>
                                                 </td>
                                             </tr>);
                                     })}
