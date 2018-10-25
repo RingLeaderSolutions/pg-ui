@@ -6,7 +6,7 @@ import { TenderSupplier } from "../../../../model/Tender";
 import { uploadElectricityOffer, uploadGasOffer } from '../../../../actions/tenderActions';
 import { UploadPanel } from "../../../common/UploadPanel";
 import { getWellFormattedUtilityName } from "../../../common/UtilityIcon";
-import asModalDialog, { ModalDialogProps } from "../../../common/modal/AsModalDialog";
+import AsModalDialog, { ModalDialogProps } from "../../../common/modal/AsModalDialog";
 import { ModalDialogNames } from "../../../common/modal/ModalDialogNames";
 import { ModalFooter, ModalHeader, ModalBody, Form, FormGroup, Label, CustomInput, Button } from "reactstrap";
 
@@ -15,8 +15,6 @@ export interface UploadOfferDialogData {
     assignedSuppliers: TenderSupplier[];
     utilityType: string;
 }
-
-interface UploadOfferDialogProps extends ModalDialogProps<UploadOfferDialogData> { }
 
 interface StateProps {
   working: boolean;
@@ -34,8 +32,8 @@ interface UploadOfferState {
     supplierId: string;
 }
 
-class UploadOfferDialog extends React.Component<UploadOfferDialogProps & StateProps & DispatchProps, UploadOfferState> {
-    constructor(props: UploadOfferDialogProps & StateProps & DispatchProps){
+class UploadOfferDialog extends React.Component<ModalDialogProps<UploadOfferDialogData> & StateProps & DispatchProps, UploadOfferState> {
+    constructor(props: ModalDialogProps<UploadOfferDialogData> & StateProps & DispatchProps){
         super(props);
         this.state = {
             file: null,
@@ -118,14 +116,14 @@ class UploadOfferDialog extends React.Component<UploadOfferDialogProps & StatePr
     }
 }
 
-const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, UploadOfferDialogProps> = (dispatch) => {
+const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, {}> = (dispatch) => {
     return {
         uploadElectricityOffer: (tenderId: string, supplierId: string, file: Blob) => dispatch(uploadElectricityOffer(tenderId, supplierId, file)),
         uploadGasOffer: (tenderId: string, supplierId: string,  file: Blob) => dispatch(uploadGasOffer(tenderId, supplierId, file))
     };
 };
   
-const mapStateToProps: MapStateToProps<StateProps, UploadOfferDialogProps, ApplicationState> = (state: ApplicationState) => {
+const mapStateToProps: MapStateToProps<StateProps, {}, ApplicationState> = (state: ApplicationState) => {
     return {
         working: state.portfolio.details.working,
         error: state.portfolio.details.error,
@@ -134,7 +132,7 @@ const mapStateToProps: MapStateToProps<StateProps, UploadOfferDialogProps, Appli
     };
 };
   
-export default asModalDialog<UploadOfferDialogProps, StateProps, DispatchProps>(
+export default AsModalDialog<UploadOfferDialogData, StateProps, DispatchProps>(
 { 
     name: ModalDialogNames.UploadOffer, 
     centered: true, 

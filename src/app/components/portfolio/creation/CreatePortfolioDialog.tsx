@@ -9,11 +9,9 @@ import { fetchUsers, createPortfolio } from '../../../actions/portfolioActions';
 import { PortfolioCreationRequest } from "../../../model/Portfolio";
 import { Strings } from "../../../helpers/Utils";
 import { LoadingIndicator } from "../../common/LoadingIndicator";
-import asModalDialog, { ModalDialogProps } from "../../common/modal/AsModalDialog";
+import AsModalDialog, { ModalDialogProps } from "../../common/modal/AsModalDialog";
 import { ModalHeader, ModalBody, ModalFooter, Form, FormGroup, Label, Input, Button, CustomInput } from "reactstrap";
 import { ModalDialogNames } from "../../common/modal/ModalDialogNames";
-
-interface CreatePortfolioDialogProps extends ModalDialogProps {}
 
 interface StateProps {
     accounts: Account[];
@@ -37,7 +35,7 @@ interface CreatePortfolioDialogState {
 }
 
 class CreatePortfolioDialog extends React.Component<ModalDialogProps & StateProps & DispatchProps, CreatePortfolioDialogState> {
-    constructor(props: CreatePortfolioDialogProps & StateProps & DispatchProps){
+    constructor(props: ModalDialogProps & StateProps & DispatchProps){
         super(props);
         this.state = {
             title: "",
@@ -154,7 +152,7 @@ class CreatePortfolioDialog extends React.Component<ModalDialogProps & StateProp
     }
 }
 
-const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, CreatePortfolioDialogProps> = (dispatch) => {
+const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, {}> = (dispatch) => {
     return {
         createPortfolio: (portfolio: PortfolioCreationRequest) => dispatch(createPortfolio(portfolio)),
         fetchUsers: () => dispatch(fetchUsers()),
@@ -162,7 +160,7 @@ const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, CreatePortfo
     };
 };
   
-const mapStateToProps: MapStateToProps<StateProps, CreatePortfolioDialogProps, ApplicationState> = (state: ApplicationState) => {
+const mapStateToProps: MapStateToProps<StateProps, {}, ApplicationState> = (state: ApplicationState) => {
     return {
         accounts: state.hierarchy.accounts.value,
         users: state.users.value,
@@ -172,7 +170,7 @@ const mapStateToProps: MapStateToProps<StateProps, CreatePortfolioDialogProps, A
     };
 };
   
-export default asModalDialog<CreatePortfolioDialogProps, StateProps, DispatchProps>(
+export default AsModalDialog<{}, StateProps, DispatchProps>(
 { 
     name: ModalDialogNames.CreatePortfolio, 
     centered: true, 

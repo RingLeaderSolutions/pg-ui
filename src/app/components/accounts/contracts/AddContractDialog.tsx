@@ -1,14 +1,13 @@
 import * as React from "react";
 import { MapDispatchToPropsFunction, connect, MapStateToProps, DispatchProp } from 'react-redux';
 import { ApplicationState } from '../../../applicationState';
-import Spinner from '../../common/Spinner';
 import * as cn from "classnames";
 import { createAccountContract } from '../../../actions/tenderActions';
 import { TenderContract, TenderSupplier } from "../../../model/Tender";
 import { getWellFormattedUtilityType } from "../../common/UtilityIcon";
 import { UtilityType } from "../../../model/Models";
 import { Strings } from "../../../helpers/Utils";
-import asModalDialog, { ModalDialogProps } from "../../common/modal/AsModalDialog";
+import AsModalDialog, { ModalDialogProps } from "../../common/modal/AsModalDialog";
 import { ModalDialogNames } from "../../common/modal/ModalDialogNames";
 import { Button, ModalHeader, ModalBody, Form, Row, Col, Card, CardBody, FormGroup, Label, Input, CustomInput, ModalFooter } from "reactstrap";
 import { LoadingIndicator } from "../../common/LoadingIndicator";
@@ -16,8 +15,6 @@ import { LoadingIndicator } from "../../common/LoadingIndicator";
 export interface AddExistingContractDialogData {
     accountId: string;
 }
-
-interface AddExistingContractDialogProps extends ModalDialogProps<AddExistingContractDialogData> { }
 
 interface StateProps {
     working: boolean;
@@ -39,8 +36,8 @@ interface AddExistingContractDialogState {
     isHalfHourly: boolean;
 }
 
-class AddExistingContractDialog extends React.Component<AddExistingContractDialogProps & StateProps & DispatchProps, AddExistingContractDialogState> {
-    constructor(props: AddExistingContractDialogProps & StateProps & DispatchProps) {
+class AddExistingContractDialog extends React.Component<ModalDialogProps<AddExistingContractDialogData> & StateProps & DispatchProps, AddExistingContractDialogState> {
+    constructor(props: ModalDialogProps<AddExistingContractDialogData> & StateProps & DispatchProps) {
         super(props);
         
         var eligibleSuppliers = props.suppliers != null && props.suppliers.length > 0 ? this.getEligibleSuppliers(UtilityType.Electricity, props.suppliers) : [];
@@ -54,7 +51,7 @@ class AddExistingContractDialog extends React.Component<AddExistingContractDialo
         }
     }
 
-    componentWillReceiveProps(nextProps: AddExistingContractDialogProps & StateProps & DispatchProps){
+    componentWillReceiveProps(nextProps: ModalDialogProps<AddExistingContractDialogData> & StateProps & DispatchProps){
         if(nextProps.suppliers != null && nextProps.suppliers.length > 0){
             var eligibleSuppliers = this.getEligibleSuppliers(this.state.utility, nextProps.suppliers);
             var newSelected = this.getSelectedSupplierFromEligible(this.state.supplier, eligibleSuppliers);
@@ -236,13 +233,13 @@ class AddExistingContractDialog extends React.Component<AddExistingContractDialo
     }
 }
 
-const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, AddExistingContractDialogProps> = (dispatch) => {
+const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, {}> = (dispatch) => {
     return {
         addExistingContract: (accountId: string, contract: TenderContract) => dispatch(createAccountContract(accountId, contract)),
     };
 };
   
-const mapStateToProps: MapStateToProps<StateProps, AddExistingContractDialogProps, ApplicationState> = (state: ApplicationState) => {
+const mapStateToProps: MapStateToProps<StateProps, {}, ApplicationState> = (state: ApplicationState) => {
     return {
         suppliers: state.suppliers.value,
         working: state.portfolio.tender.addExistingContract.working || state.suppliers.working,
@@ -251,7 +248,7 @@ const mapStateToProps: MapStateToProps<StateProps, AddExistingContractDialogProp
     };
 };
   
-export default asModalDialog<AddExistingContractDialogProps, StateProps, DispatchProps>(
+export default AsModalDialog<AddExistingContractDialogData, StateProps, DispatchProps>(
 { 
     name: ModalDialogNames.CreateAccountContract, 
     centered: true, 

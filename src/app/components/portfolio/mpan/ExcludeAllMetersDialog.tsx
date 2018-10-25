@@ -4,7 +4,7 @@ import { PortfolioDetails } from '../../../model/Models';
 
 import { excludeMeters } from '../../../actions/meterActions';
 import { ModalDialogNames } from "../../common/modal/ModalDialogNames";
-import asModalDialog, { ModalDialogProps } from "../../common/modal/AsModalDialog";
+import AsModalDialog, { ModalDialogProps } from "../../common/modal/AsModalDialog";
 import { ModalHeader, ModalBody, ModalFooter, Button } from "reactstrap";
 
 export interface ExcludeAllMetersDialogData {
@@ -12,13 +12,11 @@ export interface ExcludeAllMetersDialogData {
     includedMeters: string[];
 }
 
-interface ExcludeAllMetersDialogProps extends ModalDialogProps<ExcludeAllMetersDialogData> { }
-
 interface DispatchProps {
     excludeMeters: (portfolioId: string, meters: string[]) => void;
 }
 
-class ExcludeAllMetersDialog extends React.Component<ExcludeAllMetersDialogProps  & DispatchProps, {}> {
+class ExcludeAllMetersDialog extends React.Component<ModalDialogProps<ExcludeAllMetersDialogData>  & DispatchProps, {}> {
     completeExclusion(){
         this.props.excludeMeters(this.props.data.portfolio.portfolio.id, this.props.data.includedMeters);
         this.props.toggle();
@@ -47,13 +45,13 @@ class ExcludeAllMetersDialog extends React.Component<ExcludeAllMetersDialogProps
     }
 }
 
-const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, ExcludeAllMetersDialogProps> = (dispatch) => {
+const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, {}> = (dispatch) => {
     return {
         excludeMeters: (portfolioId: string, meters: string[]) => dispatch(excludeMeters(portfolioId, meters))
     };
 };
   
-export default asModalDialog<ExcludeAllMetersDialogProps, {}, DispatchProps>(
+export default AsModalDialog<ExcludeAllMetersDialogData, {}, DispatchProps>(
 { 
     name: ModalDialogNames.ExcludeAllMeters, 
     centered: true, 

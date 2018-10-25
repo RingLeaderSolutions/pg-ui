@@ -5,14 +5,12 @@ import * as cn from "classnames";
 import { ImportReportDetail } from "../../../model/Models";
 import { TemplateResult, FieldAction } from "../../../model/Uploads";
 import ErrorMessage from "../../common/ErrorMessage";
-import asModalDialog, { ModalDialogProps } from "../../common/modal/AsModalDialog";
+import AsModalDialog, { ModalDialogProps } from "../../common/modal/AsModalDialog";
 import { ModalDialogNames } from "../../common/modal/ModalDialogNames";
 import { LoadingIndicator } from "../../common/LoadingIndicator";
 import ModalFooter from "reactstrap/lib/ModalFooter";
 import { Button, ModalHeader, Navbar, Nav, NavItem, NavLink, ModalBody, UncontrolledTooltip } from "reactstrap";
 import { IsNullOrEmpty } from "../../../helpers/extensions/ArrayExtensions";
-
-interface RatesImportReportDialogProps extends ModalDialogProps { }
 
 interface StateProps {
     working: boolean;
@@ -25,8 +23,8 @@ interface RatesImportDialogState {
     selectedTabIndex: number;
 }
 
-class RatesImportReportDialog extends React.Component<RatesImportReportDialogProps & StateProps, RatesImportDialogState> {
-    constructor(props: RatesImportReportDialogProps & StateProps) {
+class RatesImportReportDialog extends React.Component<ModalDialogProps & StateProps, RatesImportDialogState> {
+    constructor(props: ModalDialogProps & StateProps) {
         super(props);
         this.state = {
             selectedTabIndex: 0
@@ -186,7 +184,7 @@ class RatesImportReportDialog extends React.Component<RatesImportReportDialogPro
     }
 }
   
-const mapStateToProps: MapStateToProps<StateProps, RatesImportReportDialogProps, ApplicationState> = (state: ApplicationState) => {
+const mapStateToProps: MapStateToProps<StateProps, {}, ApplicationState> = (state: ApplicationState) => {
     return {
         uploadReport: state.selected_upload_report.value as ImportReportDetail,
         working: state.selected_upload_report.working,
@@ -195,7 +193,7 @@ const mapStateToProps: MapStateToProps<StateProps, RatesImportReportDialogProps,
     };
 };
 
-export default asModalDialog<RatesImportReportDialogProps, StateProps>(
+export default AsModalDialog<{}, StateProps>(
 { 
     name: ModalDialogNames.RatesImportReport, 
     centered: true, 

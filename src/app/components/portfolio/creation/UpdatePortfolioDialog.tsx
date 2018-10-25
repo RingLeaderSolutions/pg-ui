@@ -8,7 +8,7 @@ import { fetchUsers, editPortfolio } from '../../../actions/portfolioActions';
 import { PortfolioCreationRequest, Portfolio } from "../../../model/Portfolio";
 import { openDialog } from "../../../actions/viewActions";
 import { Strings } from "../../../helpers/Utils";
-import asModalDialog, { ModalDialogProps } from "../../common/modal/AsModalDialog";
+import AsModalDialog, { ModalDialogProps } from "../../common/modal/AsModalDialog";
 import { LoadingIndicator } from "../../common/LoadingIndicator";
 import { ModalFooter, ModalHeader, ModalBody, Form, FormGroup, Label, Input, Button, CustomInput } from "reactstrap";
 import { ModalDialogNames } from "../../common/modal/ModalDialogNames";
@@ -18,8 +18,6 @@ export interface UpdatePortfolioDialogData {
     portfolio: Portfolio;   
     detail: PortfolioDetails;
 }
-
-interface UpdatePortfolioDialogProps extends ModalDialogProps<UpdatePortfolioDialogData> { }
 
 interface StateProps {
     users: User[];
@@ -40,8 +38,8 @@ interface UpdatePortfolioDialogState {
     salesLeadId: string;
 }
 
-class UpdatePortfolioDialog extends React.Component<UpdatePortfolioDialogProps & StateProps & DispatchProps, UpdatePortfolioDialogState> {
-    constructor(props: UpdatePortfolioDialogProps & StateProps & DispatchProps){
+class UpdatePortfolioDialog extends React.Component<ModalDialogProps<UpdatePortfolioDialogData> & StateProps & DispatchProps, UpdatePortfolioDialogState> {
+    constructor(props: ModalDialogProps<UpdatePortfolioDialogData> & StateProps & DispatchProps){
         super(props);
         this.state = {
             title: props.data.portfolio.title,
@@ -152,7 +150,7 @@ class UpdatePortfolioDialog extends React.Component<UpdatePortfolioDialogProps &
     }
 }
 
-const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, UpdatePortfolioDialogProps> = (dispatch) => {
+const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, {}> = (dispatch) => {
     return {
         editPortfolio: (portfolio: PortfolioCreationRequest) => dispatch(editPortfolio(portfolio)),
         fetchUsers: () => dispatch(fetchUsers()),
@@ -161,7 +159,7 @@ const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, UpdatePortfo
     };
 };
   
-const mapStateToProps: MapStateToProps<StateProps, UpdatePortfolioDialogProps, ApplicationState> = (state: ApplicationState) => {
+const mapStateToProps: MapStateToProps<StateProps, {}, ApplicationState> = (state: ApplicationState) => {
     return {
         users: state.users.value,
         working: state.users.working,
@@ -170,7 +168,7 @@ const mapStateToProps: MapStateToProps<StateProps, UpdatePortfolioDialogProps, A
     };
 };
   
-export default asModalDialog<UpdatePortfolioDialogProps, StateProps, DispatchProps>(
+export default AsModalDialog<UpdatePortfolioDialogData, StateProps, DispatchProps>(
 { 
     name: ModalDialogNames.UpdatePortfolio, 
     centered: true, 

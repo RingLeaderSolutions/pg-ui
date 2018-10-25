@@ -7,12 +7,10 @@ import { selectCompanySearchMethod, selectManualMethod, clearAccountCreation } f
 import { AccountCreationStage } from "../../../model/app/AccountCreationStage";
 import CompanySearch from "./CompanySearch";
 import CreateAccountDialog from "./CreateAccountDialog";
-import asModalDialog, { ModalDialogProps } from "../../common/modal/AsModalDialog";
+import AsModalDialog, { ModalDialogProps } from "../../common/modal/AsModalDialog";
 import { ModalDialogNames } from "../../common/modal/ModalDialogNames";
 import { ModalHeader, ModalBody, Card, CardHeader, CardBody, ModalFooter, Button } from "reactstrap";
 import { LoadingIndicator } from "../../common/LoadingIndicator";
-
-interface NewAccountDialogProps extends ModalDialogProps { }
 
 interface StateProps {
     stage: AccountCreationStage;
@@ -24,8 +22,8 @@ interface DispatchProps {
     clearAccountCreation: () => void;
 }
 
-class NewAccountDialog extends React.Component<NewAccountDialogProps & StateProps & DispatchProps, {}> {
-    constructor(props: NewAccountDialogProps & StateProps & DispatchProps) {
+class NewAccountDialog extends React.Component<ModalDialogProps & StateProps & DispatchProps, {}> {
+    constructor(props: ModalDialogProps & StateProps & DispatchProps) {
         super(props);
         
         this.selectCompanySearch = this.selectCompanySearch.bind(this);
@@ -117,7 +115,7 @@ class NewAccountDialog extends React.Component<NewAccountDialogProps & StateProp
     }
 }
 
-const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, NewAccountDialogProps> = (dispatch) => {
+const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, {}> = (dispatch) => {
     return {
         selectCompanySearchMethod: () => dispatch(selectCompanySearchMethod()),
         selectManualMethod: () => dispatch(selectManualMethod()),
@@ -125,13 +123,13 @@ const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, NewAccountDi
     };
 };
   
-const mapStateToProps: MapStateToProps<StateProps, NewAccountDialogProps, ApplicationState> = (state: ApplicationState) => {
+const mapStateToProps: MapStateToProps<StateProps, {}, ApplicationState> = (state: ApplicationState) => {
     return {
         stage: state.hierarchy.create_account.stage.stage,
     };
 };
   
-export default asModalDialog<NewAccountDialogProps, StateProps, DispatchProps>(
+export default AsModalDialog<{}, StateProps, DispatchProps>(
 { 
     name: ModalDialogNames.CreateAccount, 
     centered: true, 

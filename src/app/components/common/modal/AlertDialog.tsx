@@ -1,6 +1,6 @@
 import * as React from "react";
 
-import asModalDialog, { ModalDialogProps } from "../../common/modal/AsModalDialog";
+import AsModalDialog, { ModalDialogProps } from "../../common/modal/AsModalDialog";
 import { ModalHeader, ModalBody, ModalFooter, Button } from "reactstrap";
 import { ModalDialogNames } from "../../common/modal/ModalDialogNames";
 
@@ -9,9 +9,7 @@ interface AlertDialogData {
     title: string;
 }
 
-interface AlertDialogProps extends ModalDialogProps<AlertDialogData> {}
-
-class AlertDialog extends React.Component<AlertDialogProps> {
+class AlertDialog extends React.Component<ModalDialogProps<AlertDialogData>> {
     render() {
         return (
             <div className="modal-content">
@@ -29,7 +27,7 @@ class AlertDialog extends React.Component<AlertDialogProps> {
     }
 }
   
-export default asModalDialog(
+export default AsModalDialog<AlertDialogData>(
 { 
     name: ModalDialogNames.Alert, 
     centered: true, 

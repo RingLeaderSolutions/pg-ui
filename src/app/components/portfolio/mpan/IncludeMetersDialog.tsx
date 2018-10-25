@@ -7,7 +7,7 @@ import { UtilityType, AccountDetail, PortfolioDetails, HierarchyMpan, HierarchyM
 import { retrieveAccountDetail } from '../../../actions/hierarchyActions';
 import { includeMeters } from '../../../actions/meterActions';
 import { Link } from "react-router-dom";
-import asModalDialog, { ModalDialogProps } from "../../common/modal/AsModalDialog";
+import AsModalDialog, { ModalDialogProps } from "../../common/modal/AsModalDialog";
 import { ModalDialogNames } from "../../common/modal/ModalDialogNames";
 import { ModalHeader, ModalBody, ModalFooter, Button, Alert, Col, CustomInput, Row } from "reactstrap";
 import { LoadingIndicator } from "../../common/LoadingIndicator";
@@ -17,7 +17,6 @@ export interface IncludeMetersDialogData {
     portfolio: PortfolioDetails;
     includedMeters: string[];
 }
-interface IncludeMetersDialogProps extends ModalDialogProps<IncludeMetersDialogData> { }
 
 interface StateProps {
     account: AccountDetail;
@@ -38,8 +37,8 @@ interface IncludedMetersDialogState {
     excludedMprns: HierarchyMprn[];
 }
 
-class IncludeMetersDialog extends React.Component<IncludeMetersDialogProps & StateProps & DispatchProps, IncludedMetersDialogState> {
-    constructor(props: IncludeMetersDialogProps & StateProps & DispatchProps) {
+class IncludeMetersDialog extends React.Component<ModalDialogProps<IncludeMetersDialogData> & StateProps & DispatchProps, IncludedMetersDialogState> {
+    constructor(props: ModalDialogProps<IncludeMetersDialogData> & StateProps & DispatchProps) {
         super(props);
         this.state = {
             includedMeters: [],
@@ -57,7 +56,7 @@ class IncludeMetersDialog extends React.Component<IncludeMetersDialogProps & Sta
         this.props.toggle();
     }
 
-    componentWillReceiveProps(nextProps: IncludeMetersDialogProps & StateProps & DispatchProps){
+    componentWillReceiveProps(nextProps: ModalDialogProps<IncludeMetersDialogData> & StateProps & DispatchProps){
         if(nextProps.account != null){
             if(nextProps.data.utility == UtilityType.Electricity){
                 var excludedMpans =  this.getExcludedMpans(nextProps.account);
@@ -251,14 +250,14 @@ class IncludeMetersDialog extends React.Component<IncludeMetersDialogProps & Sta
     }
 }
 
-const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, IncludeMetersDialogProps> = (dispatch) => {
+const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, {}> = (dispatch) => {
     return {
         retrieveAccountDetail: (accountId: string) => dispatch(retrieveAccountDetail(accountId)),   
         includeMeters: (portfolioId: string, meters: string[]) => dispatch(includeMeters(portfolioId, meters))
     };
 };
   
-const mapStateToProps: MapStateToProps<StateProps, IncludeMetersDialogProps, ApplicationState> = (state: ApplicationState) => {
+const mapStateToProps: MapStateToProps<StateProps, {}, ApplicationState> = (state: ApplicationState) => {
     return {
         account: state.hierarchy.selected.value,
         working: state.hierarchy.selected.working,
@@ -267,7 +266,7 @@ const mapStateToProps: MapStateToProps<StateProps, IncludeMetersDialogProps, App
     };
 };
 
-export default asModalDialog<IncludeMetersDialogProps, StateProps, DispatchProps>(
+export default AsModalDialog<IncludeMetersDialogData, StateProps, DispatchProps>(
 { 
     name: ModalDialogNames.IncludeMeters, 
     centered: true, 

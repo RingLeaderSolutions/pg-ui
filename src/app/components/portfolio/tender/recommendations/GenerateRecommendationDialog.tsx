@@ -9,7 +9,7 @@ import { generateSummaryReport } from '../../../../actions/tenderActions';
 import { Tender, TenderSupplier, TenderQuote, TenderIssuance } from "../../../../model/Tender";
 import { format } from 'currency-formatter';
 import { Strings } from "../../../../helpers/Utils";
-import asModalDialog, { ModalDialogProps } from "../../../common/modal/AsModalDialog";
+import AsModalDialog, { ModalDialogProps } from "../../../common/modal/AsModalDialog";
 import { ModalDialogNames } from "../../../common/modal/ModalDialogNames";
 import { ModalHeader, Alert, ModalBody, ModalFooter, Button, Form, FormGroup, Label, CustomInput, Input } from "reactstrap";
 import { LoadingIndicator } from "../../../common/LoadingIndicator";
@@ -18,8 +18,6 @@ export interface GenerateRecommendationDialogData {
     tender: Tender;
     issuance: TenderIssuance;
 }
-
-interface GenerateRecommendationDialogProps extends ModalDialogProps<GenerateRecommendationDialogData> { }
 
 interface StateProps {
     working: boolean;
@@ -37,8 +35,8 @@ interface GenerateRecommendationDialogState {
     selectionCommentary: string
     marketCommentary: string;
 }
-class GenerateRecommendationDialog extends React.Component<GenerateRecommendationDialogProps & StateProps & DispatchProps, GenerateRecommendationDialogState> {    
-    constructor(props: GenerateRecommendationDialogProps & StateProps & DispatchProps){
+class GenerateRecommendationDialog extends React.Component<ModalDialogProps<GenerateRecommendationDialogData> & StateProps & DispatchProps, GenerateRecommendationDialogState> {    
+    constructor(props: ModalDialogProps<GenerateRecommendationDialogData> & StateProps & DispatchProps){
         super(props);
         this.state = {
             selectedQuoteId: "",
@@ -161,13 +159,13 @@ class GenerateRecommendationDialog extends React.Component<GenerateRecommendatio
     }
 }
 
-const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, GenerateRecommendationDialogProps> = (dispatch) => {
+const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, {}> = (dispatch) => {
     return {
         generateSummaryReport: (tenderId: string, quoteId: string, marketCommentary: string, selectionCommentary: string) =>  dispatch(generateSummaryReport(tenderId, quoteId, marketCommentary, selectionCommentary))
     };
 };
   
-const mapStateToProps: MapStateToProps<StateProps, GenerateRecommendationDialogProps, ApplicationState> = (state: ApplicationState) => {
+const mapStateToProps: MapStateToProps<StateProps, {}, ApplicationState> = (state: ApplicationState) => {
     return {
         suppliers: state.suppliers.value,
         working: state.portfolio.tender.generate_summary.working,
@@ -176,7 +174,7 @@ const mapStateToProps: MapStateToProps<StateProps, GenerateRecommendationDialogP
     };
 };
   
-export default asModalDialog<GenerateRecommendationDialogProps, StateProps, DispatchProps>(
+export default AsModalDialog<GenerateRecommendationDialogData, StateProps, DispatchProps>(
 { 
     name: ModalDialogNames.GenerateRecommendation, 
     centered: true, 

@@ -5,7 +5,7 @@ import { uploadElectricityBackingSheet, uploadGasBackingSheet } from '../../../a
 import { UploadPanel } from "../../common/UploadPanel";
 import { TenderSupplier, TenderContract } from "../../../model/Tender";
 import { getWellFormattedUtilityName } from "../../common/UtilityIcon";
-import asModalDialog, { ModalDialogProps } from "../../common/modal/AsModalDialog";
+import AsModalDialog, { ModalDialogProps } from "../../common/modal/AsModalDialog";
 import { ModalDialogNames } from "../../common/modal/ModalDialogNames";
 import { ModalHeader, ModalBody, Form, ModalFooter, Button } from "reactstrap";
 
@@ -13,8 +13,6 @@ export interface UploadContractRatesDialogData {
     contract: TenderContract;   
     supplier: TenderSupplier; 
 }
-
-interface UploadContractRatesDialogProps extends ModalDialogProps<UploadContractRatesDialogData> { }
 
 interface DispatchProps {
     uploadElectricityBackingSheet: (contractId: string, file: Blob) => void;
@@ -25,8 +23,8 @@ interface UploadContractRatesDialogState {
     file: File;
 }
 
-class UploadContractRatesDialog extends React.Component<UploadContractRatesDialogProps & DispatchProps, UploadContractRatesDialogState> {
-    constructor(props: UploadContractRatesDialogProps & DispatchProps){
+class UploadContractRatesDialog extends React.Component<ModalDialogProps<UploadContractRatesDialogData> & DispatchProps, UploadContractRatesDialogState> {
+    constructor(props: ModalDialogProps<UploadContractRatesDialogData> & DispatchProps){
         super(props);
         this.state = {
             file: null
@@ -96,7 +94,7 @@ class UploadContractRatesDialog extends React.Component<UploadContractRatesDialo
     }
 }
 
-const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, UploadContractRatesDialogProps> = (dispatch) => {
+const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, {}> = (dispatch) => {
     return {
         uploadElectricityBackingSheet: (contractId: string, file: Blob) => dispatch(uploadElectricityBackingSheet(contractId, file)),
         uploadGasBackingSheet: (contractId: string, file: Blob) => dispatch(uploadGasBackingSheet(contractId, file))
@@ -104,7 +102,7 @@ const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, UploadContra
 };
   
   
-export default asModalDialog<UploadContractRatesDialogProps, {}, DispatchProps>(
+export default AsModalDialog<UploadContractRatesDialogData, {}, DispatchProps>(
 { 
     name: ModalDialogNames.UploadAccountContractRates, 
     centered: true, 

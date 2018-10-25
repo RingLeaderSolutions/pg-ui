@@ -1,7 +1,7 @@
 import * as React from "react";
 
 import { TenderQuoteCollateral } from "../../../../model/Tender";
-import asModalDialog, { ModalDialogProps } from "../../../common/modal/AsModalDialog";
+import AsModalDialog, { ModalDialogProps } from "../../../common/modal/AsModalDialog";
 import { ModalDialogNames } from "../../../common/modal/ModalDialogNames";
 import { ModalFooter, Button, ModalHeader, ModalBody } from "reactstrap";
 import { IsNullOrEmpty } from "../../../../helpers/extensions/ArrayExtensions";
@@ -10,9 +10,7 @@ export interface OfferCollateralDialogData {
     collateral: TenderQuoteCollateral[];
 }
 
-interface OfferCollateralDialogProps extends ModalDialogProps<OfferCollateralDialogData> {}
- 
-class OfferCollateralDialog extends React.Component<OfferCollateralDialogProps, {}> {
+class OfferCollateralDialog extends React.Component<ModalDialogProps<OfferCollateralDialogData>, {}> {
     renderTableContent(){
         return this.props.data.collateral.map(p => {
             var fileName = p.documentBlobId.substring(p.documentBlobId.lastIndexOf('/') + 1)
@@ -61,7 +59,7 @@ class OfferCollateralDialog extends React.Component<OfferCollateralDialogProps, 
     }
 }
 
-export default asModalDialog(
+export default AsModalDialog<OfferCollateralDialogData>(
 { 
     name: ModalDialogNames.ViewOfferCollateral, 
     centered: true, 

@@ -4,15 +4,13 @@ import { ApplicationState } from '../../../applicationState';
 
 import { uploadAccountDocument } from '../../../actions/hierarchyActions';
 import { UploadPanel } from "../../common/UploadPanel";
-import asModalDialog, { ModalDialogProps } from "../../common/modal/AsModalDialog";
+import AsModalDialog, { ModalDialogProps } from "../../common/modal/AsModalDialog";
 import { ModalHeader, ModalBody, Form, FormGroup, Label, CustomInput, ModalFooter, Button } from "reactstrap";
 import { ModalDialogNames } from "../../common/modal/ModalDialogNames";
 
 export interface UploadAccountDocumentDialogData {
     accountId: string;
 }
-
-interface UploadAccountDocumentDialogProps extends ModalDialogProps<UploadAccountDocumentDialogData> { }
 
 interface StateProps {
   working: boolean;
@@ -29,8 +27,8 @@ interface UploadAccountDocumentDialogState {
     documentType: string;
 }
 
-class UploadAccountDocumentDialog extends React.Component<UploadAccountDocumentDialogProps & StateProps & DispatchProps, UploadAccountDocumentDialogState> {
-    constructor(props: UploadAccountDocumentDialogProps & StateProps & DispatchProps){
+class UploadAccountDocumentDialog extends React.Component<ModalDialogProps<UploadAccountDocumentDialogData> & StateProps & DispatchProps, UploadAccountDocumentDialogState> {
+    constructor(props: ModalDialogProps<UploadAccountDocumentDialogData> & StateProps & DispatchProps){
         super(props);
         this.state = {
             file: null,
@@ -103,13 +101,13 @@ class UploadAccountDocumentDialog extends React.Component<UploadAccountDocumentD
     }
 }
 
-const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, UploadAccountDocumentDialogProps> = (dispatch) => {
+const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, {}> = (dispatch) => {
     return {
         uploadAccountDocument: (accountId: string, documentType: string, file: Blob) => dispatch(uploadAccountDocument(accountId, documentType, file))
     };
 };
   
-const mapStateToProps: MapStateToProps<StateProps, UploadAccountDocumentDialogProps, ApplicationState> = (state: ApplicationState) => {
+const mapStateToProps: MapStateToProps<StateProps, {}, ApplicationState> = (state: ApplicationState) => {
     return {
         working: state.hierarchy.selected.working,
         error: state.hierarchy.selected.error,
@@ -117,7 +115,7 @@ const mapStateToProps: MapStateToProps<StateProps, UploadAccountDocumentDialogPr
     };
 };
   
-export default asModalDialog<UploadAccountDocumentDialogProps, StateProps, DispatchProps>(
+export default AsModalDialog<UploadAccountDocumentDialogData, StateProps, DispatchProps>(
 { 
     name: ModalDialogNames.UploadAccountDocument, 
     centered: true, 

@@ -5,7 +5,7 @@ import { ApplicationState } from '../../../applicationState';
 
 import { updateTenderSuppliers } from '../../../actions/tenderActions';
 import { TenderSupplier } from "../../../model/Tender";
-import asModalDialog, { ModalDialogProps } from "../../common/modal/AsModalDialog";
+import AsModalDialog, { ModalDialogProps } from "../../common/modal/AsModalDialog";
 import { LoadingIndicator } from "../../common/LoadingIndicator";
 import { ModalDialogNames } from "../../common/modal/ModalDialogNames";
 import { ModalHeader, ModalBody, ModalFooter, Label, Button } from "reactstrap";
@@ -15,8 +15,6 @@ export interface ManageTenderSuppliersDialogData {
     assignedSuppliers: TenderSupplier[];
     utility: UtilityType;
 }
-
-interface ManageTenderSuppliersDialogProps extends ModalDialogProps<ManageTenderSuppliersDialogData> { }
 
 interface StateProps {
     suppliers: TenderSupplier[];    
@@ -33,8 +31,8 @@ interface SupplierSelectState {
     selected: string[];
 }
 
-class ManageTenderSuppliersDialog extends React.Component<ManageTenderSuppliersDialogProps & StateProps & DispatchProps, SupplierSelectState> {
-    constructor(props: ManageTenderSuppliersDialogProps & StateProps & DispatchProps) {
+class ManageTenderSuppliersDialog extends React.Component<ModalDialogProps<ManageTenderSuppliersDialogData> & StateProps & DispatchProps, SupplierSelectState> {
+    constructor(props: ModalDialogProps<ManageTenderSuppliersDialogData> & StateProps & DispatchProps) {
         super(props);
         var selected = props.data.assignedSuppliers.map(s => s.supplierId);
         this.state = {
@@ -162,13 +160,13 @@ class ManageTenderSuppliersDialog extends React.Component<ManageTenderSuppliersD
     }
 }
 
-const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, ManageTenderSuppliersDialogProps> = (dispatch) => {
+const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, {}> = (dispatch) => {
     return {            
         updateTenderSuppliers: (tenderId, supplierIds) => dispatch(updateTenderSuppliers(tenderId, supplierIds))
     };
 };
   
-const mapStateToProps: MapStateToProps<StateProps, ManageTenderSuppliersDialogProps, ApplicationState> = (state: ApplicationState) => {
+const mapStateToProps: MapStateToProps<StateProps, {}, ApplicationState> = (state: ApplicationState) => {
     return {
         suppliers: state.suppliers.value,
         working: state.suppliers.working,
@@ -177,7 +175,7 @@ const mapStateToProps: MapStateToProps<StateProps, ManageTenderSuppliersDialogPr
     };
 };
   
-export default asModalDialog<ManageTenderSuppliersDialogProps, StateProps, DispatchProps>(
+export default AsModalDialog<ManageTenderSuppliersDialogData, StateProps, DispatchProps>(
 { 
     name: ModalDialogNames.ManageTenderSuppliers, 
     centered: true, 

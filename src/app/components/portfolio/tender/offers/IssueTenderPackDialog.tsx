@@ -6,7 +6,7 @@ import * as moment from 'moment';
 
 import { issueTenderPack, fetchTenderIssuanceEmail } from '../../../../actions/tenderActions';
 import { Tender, TenderSupplier, TenderIssuanceEmail } from "../../../../model/Tender";
-import asModalDialog, { ModalDialogProps } from "../../../common/modal/AsModalDialog";
+import AsModalDialog, { ModalDialogProps } from "../../../common/modal/AsModalDialog";
 import { LoadingIndicator } from "../../../common/LoadingIndicator";
 import TenderDeadlineWarning from "../warnings/TenderDeadlineWarning";
 import { ModalHeader, ModalBody, ModalFooter, Form, FormGroup, Label, Input, Button, Navbar, Nav, NavItem, NavLink, Col, Row, InputGroup, InputGroupAddon, CustomInput } from "reactstrap";
@@ -15,8 +15,6 @@ import { ModalDialogNames } from "../../../common/modal/ModalDialogNames";
 export interface IssueTenderPackDialogData {
     tender: Tender;
 }
-
-interface IssueTenderPackDialogProps extends ModalDialogProps<IssueTenderPackDialogData> { }
 
 interface StateProps {
     working: boolean;
@@ -38,8 +36,8 @@ interface IssueTenderPackDialogState {
     body: string;
 }
 
-class IssueTenderPackDialog extends React.Component<IssueTenderPackDialogProps & StateProps & DispatchProps, IssueTenderPackDialogState> {
-    constructor(props: IssueTenderPackDialogProps & StateProps & DispatchProps) {
+class IssueTenderPackDialog extends React.Component<ModalDialogProps<IssueTenderPackDialogData> & StateProps & DispatchProps, IssueTenderPackDialogState> {
+    constructor(props: ModalDialogProps<IssueTenderPackDialogData> & StateProps & DispatchProps) {
         super(props);
         this.state = {
             deadline: null,
@@ -49,7 +47,7 @@ class IssueTenderPackDialog extends React.Component<IssueTenderPackDialogProps &
         }
     }
 
-    static getDerivedStateFromProps(props: IssueTenderPackDialogProps & StateProps & DispatchProps, state: IssueTenderPackDialogState) : IssueTenderPackDialogState {
+    static getDerivedStateFromProps(props: ModalDialogProps<IssueTenderPackDialogData> & StateProps & DispatchProps, state: IssueTenderPackDialogState) : IssueTenderPackDialogState {
         let dialogEmpty = state.subject.IsNullOrWhitespace() || state.body.IsNullOrWhitespace();
         if(!props.email || !dialogEmpty){
             return null;
@@ -143,14 +141,14 @@ class IssueTenderPackDialog extends React.Component<IssueTenderPackDialogProps &
     }
 }
 
-const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, IssueTenderPackDialogProps> = (dispatch) => {
+const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, {}> = (dispatch) => {
     return {
         fetchIssuanceEmail: (tenderId: string) => dispatch(fetchTenderIssuanceEmail(tenderId)),
         issueTenderPack: (tenderId: string, subject: string, body: string) => dispatch(issueTenderPack(tenderId, subject, body))
     };
 };
   
-const mapStateToProps: MapStateToProps<StateProps, IssueTenderPackDialogProps, ApplicationState> = (state: ApplicationState) => {
+const mapStateToProps: MapStateToProps<StateProps, {}, ApplicationState> = (state: ApplicationState) => {
     return {
         suppliers: state.suppliers.value,
         email: state.portfolio.tender.issuance_email.value,
@@ -160,7 +158,7 @@ const mapStateToProps: MapStateToProps<StateProps, IssueTenderPackDialogProps, A
     };
 };
   
-export default asModalDialog<IssueTenderPackDialogProps, StateProps, DispatchProps>(
+export default AsModalDialog<IssueTenderPackDialogData, StateProps, DispatchProps>(
 { 
     name: ModalDialogNames.IssueTenderPack, 
     centered: true, 

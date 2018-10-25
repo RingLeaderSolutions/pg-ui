@@ -1,6 +1,6 @@
 import * as React from "react";
 
-import asModalDialog, { ModalDialogProps } from "./AsModalDialog";
+import AsModalDialog, { ModalDialogProps } from "./AsModalDialog";
 import { ModalHeader, ModalBody, ModalFooter, Button } from "reactstrap";
 import { ModalDialogNames } from "./ModalDialogNames";
 
@@ -14,9 +14,7 @@ export interface AlertConfirmDialogData {
     confirmButtonColor?: string;
 }
 
-interface AlertConfirmDialogProps extends ModalDialogProps<AlertConfirmDialogData> {}
-
-class AlertConfirmDialog extends React.Component<AlertConfirmDialogProps> {
+class AlertConfirmDialog extends React.Component<ModalDialogProps<AlertConfirmDialogData>> {
     confirmAndClose(){
         this.props.toggle();
         this.props.data.onConfirm();
@@ -45,7 +43,7 @@ class AlertConfirmDialog extends React.Component<AlertConfirmDialogProps> {
     }
 }
   
-export default asModalDialog(
+export default AsModalDialog<AlertConfirmDialogData>(
 { 
     name: ModalDialogNames.AlertConfirm, 
     centered: true, 

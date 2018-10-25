@@ -8,7 +8,7 @@ import * as cn from "classnames";
 import { updateTender } from '../../../../actions/tenderActions';
 import { Tender, TenderRequirements, Tariff, TenderOfferType } from "../../../../model/Tender";
 import { DayPickerWithMonthYear, Today, TenthYearFuture } from "../../../common/DayPickerHelpers";
-import asModalDialog, { ModalDialogProps } from "../../../common/modal/AsModalDialog";
+import AsModalDialog, { ModalDialogProps } from "../../../common/modal/AsModalDialog";
 import { Strings } from "../../../../helpers/Utils";
 import { LoadingIndicator } from "../../../common/LoadingIndicator";
 import { ModalHeader, ModalBody, ModalFooter, Form, FormGroup, Label, Input, Button, Navbar, Nav, NavItem, NavLink, Col, Row, InputGroup, InputGroupAddon, CustomInput } from "reactstrap";
@@ -19,8 +19,6 @@ export interface UpdateTenderDialogData {
     utility: UtilityType;
     selectedTabIndex: number;
 }
-
-interface UpdateTenderDialogProps extends ModalDialogProps<UpdateTenderDialogData> { }
 
 interface StateProps {
     working: boolean;
@@ -50,8 +48,8 @@ interface UpdateTenderState {
     selectedTabIndex: number;
 }
 
-class UpdateTenderDialog extends React.Component<UpdateTenderDialogProps & StateProps & DispatchProps, UpdateTenderState> {
-    constructor(props: UpdateTenderDialogProps & StateProps & DispatchProps){
+class UpdateTenderDialog extends React.Component<ModalDialogProps<UpdateTenderDialogData> & StateProps & DispatchProps, UpdateTenderState> {
+    constructor(props: ModalDialogProps<UpdateTenderDialogData> & StateProps & DispatchProps){
         super(props);
         let { tender, selectedTabIndex } = this.props.data;
 
@@ -422,13 +420,13 @@ class UpdateTenderDialog extends React.Component<UpdateTenderDialogProps & State
     }
 }
 
-const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, UpdateTenderDialogProps> = (dispatch) => {
+const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, {}> = (dispatch) => {
     return {
         updateTender: (portfolioId, tender) => dispatch(updateTender(portfolioId, tender)),
     };
 };
   
-const mapStateToProps: MapStateToProps<StateProps, UpdateTenderDialogProps, ApplicationState> = (state: ApplicationState) => {
+const mapStateToProps: MapStateToProps<StateProps, {}, ApplicationState> = (state: ApplicationState) => {
     return {
         working: state.portfolio.tender.update_tender.working || state.portfolio.tender.tariffs.working,
         error: state.portfolio.tender.update_tender.error  ||  state.portfolio.tender.tariffs.error,
@@ -437,7 +435,7 @@ const mapStateToProps: MapStateToProps<StateProps, UpdateTenderDialogProps, Appl
     };
 };
   
-export default asModalDialog<UpdateTenderDialogProps, StateProps, DispatchProps>(
+export default AsModalDialog<UpdateTenderDialogData, StateProps, DispatchProps>(
 { 
     name: ModalDialogNames.UpdateTender, 
     centered: true, 

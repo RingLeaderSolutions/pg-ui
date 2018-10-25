@@ -6,7 +6,7 @@ import { UtilityType } from '../../../model/Models';
 import { uploadSupplyMeterData } from '../../../actions/portfolioActions';
 import { UploadPanel } from "../../common/UploadPanel";
 import { getWellFormattedUtilityType } from "../../common/UtilityIcon";
-import asModalDialog, { ModalDialogProps } from "../../common/modal/AsModalDialog";
+import AsModalDialog, { ModalDialogProps } from "../../common/modal/AsModalDialog";
 import { ModalFooter, ModalHeader, ModalBody, Form, Button } from "reactstrap";
 import { ModalDialogNames } from "../../common/modal/ModalDialogNames";
 
@@ -14,8 +14,6 @@ export interface UploadSupplyDataDialogData {
     accountId: string;
     type: UtilityType;
 }
-
-interface UploadSupplyDataDialogProps extends ModalDialogProps<UploadSupplyDataDialogData> { }
 
 interface StateProps {
   working: boolean;
@@ -31,8 +29,8 @@ interface UploadHistoricState {
     file: File;
 }
 
-class UploadSupplyDataDialog extends React.Component<UploadSupplyDataDialogProps & StateProps & DispatchProps, UploadHistoricState> {
-    constructor(props: UploadSupplyDataDialogProps & StateProps & DispatchProps){
+class UploadSupplyDataDialog extends React.Component<ModalDialogProps<UploadSupplyDataDialogData> & StateProps & DispatchProps, UploadHistoricState> {
+    constructor(props: ModalDialogProps<UploadSupplyDataDialogData> & StateProps & DispatchProps){
         super(props);
         this.state = {
             file: null
@@ -83,13 +81,13 @@ class UploadSupplyDataDialog extends React.Component<UploadSupplyDataDialogProps
     }
 }
 
-const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, UploadSupplyDataDialogProps> = (dispatch) => {
+const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, {}> = (dispatch) => {
     return {
         uploadSupplyData: (accountId: string, file: Blob, type: UtilityType) => dispatch(uploadSupplyMeterData(accountId, file, type))
     };
 };
   
-const mapStateToProps: MapStateToProps<StateProps, UploadSupplyDataDialogProps, ApplicationState> = (state: ApplicationState) => {
+const mapStateToProps: MapStateToProps<StateProps, {}, ApplicationState> = (state: ApplicationState) => {
     return {
         working: state.portfolio.details.working,
         error: state.portfolio.details.error,
@@ -97,7 +95,7 @@ const mapStateToProps: MapStateToProps<StateProps, UploadSupplyDataDialogProps, 
     };
 };
   
-export default asModalDialog<UploadSupplyDataDialogProps, StateProps, DispatchProps>(
+export default AsModalDialog<UploadSupplyDataDialogData, StateProps, DispatchProps>(
 { 
     name: ModalDialogNames.UploadSupplyData, 
     centered: true, 

@@ -8,15 +8,13 @@ import { updateAccount } from '../../../actions/hierarchyActions';
 import { DayPickerWithMonthYear, TwoHundredthYearPast, Today } from "../../common/DayPickerHelpers";
 import { Strings } from "../../../helpers/Utils";
 import { ModalFooter, ModalHeader, ModalBody, Form, FormGroup, Label, Input, CustomInput, Button, Row } from "reactstrap";
-import asModalDialog, { ModalDialogProps } from "../../common/modal/AsModalDialog";
+import AsModalDialog, { ModalDialogProps } from "../../common/modal/AsModalDialog";
 import { ModalDialogNames } from "../../common/modal/ModalDialogNames";
 import Col from "reactstrap/lib/Col";
 
 export interface UpdateAccountDialogData {
     account: Account;
 }
-
-interface UpdateAccountDialogProps extends ModalDialogProps<UpdateAccountDialogData> { }
 
 interface StateProps {
     working: boolean;
@@ -43,8 +41,8 @@ interface UpdateAccountDialogState {
     incorporationDate: moment.Moment;
 }
 
-class UpdateAccountDialog extends React.Component<UpdateAccountDialogProps & StateProps & DispatchProps, UpdateAccountDialogState> {
-    constructor(props: UpdateAccountDialogProps & StateProps & DispatchProps){
+class UpdateAccountDialog extends React.Component<ModalDialogProps<UpdateAccountDialogData> & StateProps & DispatchProps, UpdateAccountDialogState> {
+    constructor(props: ModalDialogProps<UpdateAccountDialogData> & StateProps & DispatchProps){
         super(props);
         let { account } = props.data;
         this.state = {
@@ -229,13 +227,13 @@ class UpdateAccountDialog extends React.Component<UpdateAccountDialogProps & Sta
     }
 }
 
-const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, UpdateAccountDialogProps> = (dispatch) => {
+const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, {}> = (dispatch) => {
     return {
         updateAccount: (account: Account) =>  dispatch(updateAccount(account))
     };
 };
   
-const mapStateToProps: MapStateToProps<StateProps, UpdateAccountDialogProps, ApplicationState> = (state: ApplicationState) => {
+const mapStateToProps: MapStateToProps<StateProps, {}, ApplicationState> = (state: ApplicationState) => {
     return {
         working: state.portfolio.details.working,
         error: state.portfolio.details.error,
@@ -243,7 +241,7 @@ const mapStateToProps: MapStateToProps<StateProps, UpdateAccountDialogProps, App
     };
 };
 
-export default asModalDialog<UpdateAccountDialogProps, StateProps, DispatchProps>(
+export default AsModalDialog<UpdateAccountDialogData, StateProps, DispatchProps>(
 { 
     name: ModalDialogNames.UpdateAccount, 
     centered: true, 

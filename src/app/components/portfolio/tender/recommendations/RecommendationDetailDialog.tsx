@@ -8,7 +8,7 @@ import { fetchRecommendationsSites, deleteRecommendation, fetchRecommendationsSu
 
 import * as cn from "classnames";
 import { Tender, RecommendationSite, RecommendationSupplier, RecommendationSummary, TenderRecommendation, TenderSupplier } from "../../../../model/Tender";
-import asModalDialog, { ModalDialogProps } from "../../../common/modal/AsModalDialog";
+import AsModalDialog, { ModalDialogProps } from "../../../common/modal/AsModalDialog";
 import { ModalDialogNames } from "../../../common/modal/ModalDialogNames";
 import { LoadingIndicator } from "../../../common/LoadingIndicator";
 import { ModalHeader, Navbar, Nav, NavItem, NavLink, ModalBody, ModalFooter, Button, Col, Row, Card, CardHeader, CardBody } from "reactstrap";
@@ -19,8 +19,6 @@ export interface RecommendationDetailDialogData {
     tender: Tender;
     recommendation: TenderRecommendation;
 }
-
-interface RecommendationDetailDialogProps extends ModalDialogProps<RecommendationDetailDialogData> { }
 
 interface StateProps {
     recommendation_summary: RecommendationSummary;
@@ -50,8 +48,8 @@ interface RecommendationDetailDialogState {
     currentSiteEnd: number;
 }
 
-class RecommendationDetailDialog extends React.Component<RecommendationDetailDialogProps & StateProps & DispatchProps, RecommendationDetailDialogState> {
-    constructor(props: RecommendationDetailDialogProps & StateProps & DispatchProps){
+class RecommendationDetailDialog extends React.Component<ModalDialogProps<RecommendationDetailDialogData> & StateProps & DispatchProps, RecommendationDetailDialogState> {
+    constructor(props: ModalDialogProps<RecommendationDetailDialogData> & StateProps & DispatchProps){
         super(props);
         this.state = {
             selectedTabIndex: 0,
@@ -700,7 +698,7 @@ class RecommendationDetailDialog extends React.Component<RecommendationDetailDia
     }
 }
 
-const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, RecommendationDetailDialogProps> = (dispatch) => {
+const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, {}> = (dispatch) => {
     return {
         deleteRecommendation: (tenderId: string, recommendationId: string) => dispatch(deleteRecommendation(tenderId, recommendationId)),
         
@@ -712,7 +710,7 @@ const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, Recommendati
     };
 };
   
-const mapStateToProps: MapStateToProps<StateProps, RecommendationDetailDialogProps, ApplicationState> = (state: ApplicationState) => {
+const mapStateToProps: MapStateToProps<StateProps, {}, ApplicationState> = (state: ApplicationState) => {
     return {
         recommendation_summary: state.portfolio.tender.selected_recommendation_summary.value,
         recommendation_suppliers: state.portfolio.tender.selected_recommendation_suppliers.value,
@@ -725,7 +723,7 @@ const mapStateToProps: MapStateToProps<StateProps, RecommendationDetailDialogPro
     };
 };
 
-export default asModalDialog<RecommendationDetailDialogProps, StateProps, DispatchProps>(
+export default AsModalDialog<RecommendationDetailDialogData, StateProps, DispatchProps>(
 { 
     name: ModalDialogNames.RecommendationDetail, 
     centered: true, 

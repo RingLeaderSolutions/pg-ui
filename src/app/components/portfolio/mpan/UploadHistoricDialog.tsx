@@ -5,15 +5,13 @@ import { PortfolioDetails } from '../../../model/Models';
 
 import { uploadHistoric } from '../../../actions/portfolioActions';
 import { MultiUploadPanel } from "../../common/UploadPanel";
-import asModalDialog, { ModalDialogProps } from "../../common/modal/AsModalDialog";
+import AsModalDialog, { ModalDialogProps } from "../../common/modal/AsModalDialog";
 import { ModalHeader, ModalBody, ModalFooter, Button, Form, FormGroup, Label, Input } from "reactstrap";
 import { ModalDialogNames } from "../../common/modal/ModalDialogNames";
 
 export interface UploadHistoricDialogData {
     details: PortfolioDetails;
 }
-
-interface UploadHistoricDialogProps extends ModalDialogProps<UploadHistoricDialogData> { }
 
 interface StateProps {
   working: boolean;
@@ -30,8 +28,8 @@ interface UploadHistoricState {
     historicalType: string;
 }
 
-class UploadHistoricDialog extends React.Component<UploadHistoricDialogProps & StateProps & DispatchProps, UploadHistoricState> {
-    constructor(props: UploadHistoricDialogProps & StateProps & DispatchProps){
+class UploadHistoricDialog extends React.Component<ModalDialogProps<UploadHistoricDialogData> & StateProps & DispatchProps, UploadHistoricState> {
+    constructor(props: ModalDialogProps<UploadHistoricDialogData> & StateProps & DispatchProps){
         super(props);
         this.state = {
             files: null,
@@ -108,13 +106,13 @@ class UploadHistoricDialog extends React.Component<UploadHistoricDialogProps & S
     }
 }
 
-const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, UploadHistoricDialogProps> = (dispatch) => {
+const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, {}> = (dispatch) => {
     return {
         uploadHistoric: (portfolioId: string, files: Blob[], historicalType: string) => dispatch(uploadHistoric(portfolioId, files, historicalType))
     };
 };
   
-const mapStateToProps: MapStateToProps<StateProps, UploadHistoricDialogProps, ApplicationState> = (state: ApplicationState) => {
+const mapStateToProps: MapStateToProps<StateProps, {}, ApplicationState> = (state: ApplicationState) => {
     return {
         working: state.portfolio.details.working,
         error: state.portfolio.details.error,
@@ -122,7 +120,7 @@ const mapStateToProps: MapStateToProps<StateProps, UploadHistoricDialogProps, Ap
     };
 };
   
-export default asModalDialog<UploadHistoricDialogProps, StateProps, DispatchProps>(
+export default AsModalDialog<UploadHistoricDialogData, StateProps, DispatchProps>(
 { 
     name: ModalDialogNames.UploadHistoric, 
     centered: true, 

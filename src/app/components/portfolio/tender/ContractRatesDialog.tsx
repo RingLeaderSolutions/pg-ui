@@ -3,12 +3,10 @@ import { MapStateToProps } from 'react-redux';
 import { ApplicationState } from '../../../applicationState';
 
 import { ContractRatesResponse } from "../../../model/Tender";
-import asModalDialog, { ModalDialogProps } from "../../common/modal/AsModalDialog";
+import AsModalDialog, { ModalDialogProps } from "../../common/modal/AsModalDialog";
 import { ModalDialogNames } from "../../common/modal/ModalDialogNames";
 import { LoadingIndicator } from "../../common/LoadingIndicator";
 import { ModalHeader, ModalBody, ModalFooter, Button } from "reactstrap";
-
-interface ContractRatesDialogProps extends ModalDialogProps { }
 
 interface StateProps {
     working: boolean;
@@ -17,7 +15,7 @@ interface StateProps {
     contract_rates: ContractRatesResponse;
 }
  
-class ContractRatesDialog extends React.Component<ContractRatesDialogProps & StateProps, {}> {
+class ContractRatesDialog extends React.Component<ModalDialogProps & StateProps, {}> {
 
     renderDynamicTable(columns: string[], values: string[][]){
         var rows = values
@@ -72,7 +70,7 @@ class ContractRatesDialog extends React.Component<ContractRatesDialogProps & Sta
     }
 }
 
-const mapStateToProps: MapStateToProps<StateProps, ContractRatesDialogProps, ApplicationState> = (state: ApplicationState) => {
+const mapStateToProps: MapStateToProps<StateProps, {}, ApplicationState> = (state: ApplicationState) => {
     return {
         contract_rates: state.portfolio.tender.backing_sheets.value,
         working: state.portfolio.tender.backing_sheets.working,
@@ -81,7 +79,7 @@ const mapStateToProps: MapStateToProps<StateProps, ContractRatesDialogProps, App
     };
 };
   
-export default asModalDialog<ContractRatesDialogProps, StateProps>(
+export default AsModalDialog<{}, StateProps>(
 { 
     name: ModalDialogNames.ContractRates, 
     centered: true, 

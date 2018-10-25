@@ -4,15 +4,13 @@ import { MapDispatchToPropsFunction } from 'react-redux';
 import { createContact } from '../../../actions/hierarchyActions';
 import { AccountContact } from "../../../model/HierarchyObjects";
 import { Strings } from "../../../helpers/Utils";
-import asModalDialog, { ModalDialogProps } from "../../common/modal/AsModalDialog";
+import AsModalDialog, { ModalDialogProps } from "../../common/modal/AsModalDialog";
 import { ModalHeader, ModalBody, Form, FormGroup, Label, Input, ModalFooter, Button } from "reactstrap";
 import { ModalDialogNames } from "../../common/modal/ModalDialogNames";
 
 export interface CreateContactDialogData {
     accountId: string;   
 }
-
-interface CreateContactDialogProps extends ModalDialogProps<CreateContactDialogData> { }
 
 interface DispatchProps {
     createContact: (contact: AccountContact) => void;
@@ -26,8 +24,8 @@ interface CreateAccountDialogState {
     role: string;
 }
 
-class CreateContactDialog extends React.Component<CreateContactDialogProps & DispatchProps, CreateAccountDialogState> {
-    constructor(props: CreateContactDialogProps & DispatchProps){
+class CreateContactDialog extends React.Component<ModalDialogProps<CreateContactDialogData> & DispatchProps, CreateAccountDialogState> {
+    constructor(props: ModalDialogProps<CreateContactDialogData> & DispatchProps){
         super(props);
         this.state = {
             firstName: '',
@@ -122,13 +120,13 @@ class CreateContactDialog extends React.Component<CreateContactDialogProps & Dis
     }
 }
 
-const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, CreateContactDialogProps> = (dispatch) => {
+const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, {}> = (dispatch) => {
     return {
         createContact: (contact: AccountContact) =>  dispatch(createContact(contact))
     };
 };
 
-export default asModalDialog<CreateContactDialogProps, {}, DispatchProps>(
+export default AsModalDialog<CreateContactDialogData, {}, DispatchProps>(
 { 
     name: ModalDialogNames.CreateAccountContact, 
     centered: true, 

@@ -1,6 +1,6 @@
 import * as React from "react";
 import { MapDispatchToPropsFunction } from 'react-redux';
-import asModalDialog, { ModalDialogProps } from "../../common/modal/AsModalDialog";
+import AsModalDialog, { ModalDialogProps } from "../../common/modal/AsModalDialog";
 import { ModalDialogNames } from "../../common/modal/ModalDialogNames";
 import { ModalHeader, ModalBody, ModalFooter, Button } from "reactstrap";
 
@@ -11,14 +11,12 @@ export interface DeletePortfolioDialogData {
     portfolioId: string;
 }
 
-interface DeletePortfolioDialogProps extends ModalDialogProps<DeletePortfolioDialogData> { }
-
 interface DispatchProps {
     deletePortfolio: (portfolioId: string) => void;
     closePortfolioUpdateDialog: () => void;
 }
 
-class DeletePortfolioDialog extends React.Component<DeletePortfolioDialogProps & DispatchProps, {}> {
+class DeletePortfolioDialog extends React.Component<ModalDialogProps<DeletePortfolioDialogData> & DispatchProps, {}> {
     completeDeletion(){
         this.props.deletePortfolio(this.props.data.portfolioId);
         this.props.closePortfolioUpdateDialog();
@@ -49,14 +47,14 @@ class DeletePortfolioDialog extends React.Component<DeletePortfolioDialogProps &
     }
 }
 
-const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, DeletePortfolioDialogProps> = (dispatch) => {
+const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, {}> = (dispatch) => {
     return {
         deletePortfolio: (portfolioId: string) => dispatch(deletePortfolio(portfolioId)),
         closePortfolioUpdateDialog: () => dispatch(closeDialog(ModalDialogNames.UpdatePortfolio))
     };
 };
   
-export default asModalDialog<DeletePortfolioDialogProps, {}, DispatchProps>(
+export default AsModalDialog<DeletePortfolioDialogData, {}, DispatchProps>(
 { 
     name: ModalDialogNames.DeletePortfolio, 
     centered: true, 

@@ -9,7 +9,7 @@ import { fetchTariffs } from '../../../../actions/portfolioActions';
 import { createTender } from '../../../../actions/tenderActions';
 import { Tender, TenderRequirements, Tariff, TenderOfferType } from "../../../../model/Tender";
 import { TenthYearFuture, DayPickerWithMonthYear, Today } from "../../../common/DayPickerHelpers";
-import asModalDialog, { ModalDialogProps } from "../../../common/modal/AsModalDialog";
+import AsModalDialog, { ModalDialogProps } from "../../../common/modal/AsModalDialog";
 import { ModalDialogNames } from "../../../common/modal/ModalDialogNames";
 import { LoadingIndicator } from "../../../common/LoadingIndicator";
 import { Strings } from "../../../../helpers/Utils";
@@ -20,8 +20,6 @@ export interface CreateTenderDialogData {
     utility: UtilityType;
     isHalfHourly: boolean;
 }
-
-interface CreateTenderDialogProps extends ModalDialogProps<CreateTenderDialogData> { }
 
 interface StateProps {
     working: boolean;
@@ -52,8 +50,8 @@ interface CreateTenderState {
     selectedTabIndex: number;
 }
 
-class CreateTenderDialog extends React.Component<CreateTenderDialogProps & StateProps & DispatchProps, CreateTenderState> {
-    constructor(props: CreateTenderDialogProps & StateProps & DispatchProps){
+class CreateTenderDialog extends React.Component<ModalDialogProps<CreateTenderDialogData> & StateProps & DispatchProps, CreateTenderState> {
+    constructor(props: ModalDialogProps<CreateTenderDialogData> & StateProps & DispatchProps){
         super(props);
         this.state = {
             deadline: null,
@@ -427,14 +425,14 @@ class CreateTenderDialog extends React.Component<CreateTenderDialogProps & State
     }
 }
 
-const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, CreateTenderDialogProps> = (dispatch) => {
+const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, {}> = (dispatch) => {
     return {
         createTender: (portfolioId, tender, utilityType, isHalfHourly) => dispatch(createTender(portfolioId, tender, utilityType, isHalfHourly)),
         fetchTariffs: () => dispatch(fetchTariffs())
     };
 };
   
-const mapStateToProps: MapStateToProps<StateProps, CreateTenderDialogProps, ApplicationState> = (state: ApplicationState) => {
+const mapStateToProps: MapStateToProps<StateProps, {}, ApplicationState> = (state: ApplicationState) => {
     return {
         tariffs: state.portfolio.tender.tariffs.value,
 
@@ -444,7 +442,7 @@ const mapStateToProps: MapStateToProps<StateProps, CreateTenderDialogProps, Appl
     };
 };
   
-export default asModalDialog<CreateTenderDialogProps, StateProps, DispatchProps>(
+export default AsModalDialog<CreateTenderDialogData, StateProps, DispatchProps>(
 { 
     name: ModalDialogNames.CreateTender, 
     centered: true, 

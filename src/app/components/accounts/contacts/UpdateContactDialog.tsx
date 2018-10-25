@@ -5,14 +5,12 @@ import { updateContact } from '../../../actions/hierarchyActions';
 import { AccountContact } from "../../../model/HierarchyObjects";
 import { Strings } from "../../../helpers/Utils";
 import { FormGroup, ModalHeader, ModalBody, Form, Label, Input, ModalFooter, Button } from "reactstrap";
-import asModalDialog, { ModalDialogProps } from "../../common/modal/AsModalDialog";
+import AsModalDialog, { ModalDialogProps } from "../../common/modal/AsModalDialog";
 import { ModalDialogNames } from "../../common/modal/ModalDialogNames";
 
 export interface UpdateContactDialogData {
     contact: AccountContact;
 }
-
-interface UpdateContactDialogProps extends ModalDialogProps<UpdateContactDialogData> { }
 
 interface DispatchProps {
     updateContact: (contact: AccountContact) => void;
@@ -26,8 +24,8 @@ interface UpdateContactDialogState {
     role: string;
 }
 
-class UpdateContactDialog extends React.Component<UpdateContactDialogProps & DispatchProps, UpdateContactDialogState> {
-    constructor(props: UpdateContactDialogProps & DispatchProps){
+class UpdateContactDialog extends React.Component<ModalDialogProps<UpdateContactDialogData> & DispatchProps, UpdateContactDialogState> {
+    constructor(props: ModalDialogProps<UpdateContactDialogData> & DispatchProps){
         super(props);
         var { contact } = props.data;
         this.state = {
@@ -123,13 +121,13 @@ class UpdateContactDialog extends React.Component<UpdateContactDialogProps & Dis
     }
 }
 
-const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, UpdateContactDialogProps> = (dispatch) => {
+const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, {}> = (dispatch) => {
     return {
         updateContact: (contact: AccountContact) =>  dispatch(updateContact(contact))
     };
 };
 
-export default asModalDialog<UpdateContactDialogProps, {}, DispatchProps>(
+export default AsModalDialog<UpdateContactDialogData, {}, DispatchProps>(
 { 
     name: ModalDialogNames.UpdateAccountContact, 
     centered: true, 

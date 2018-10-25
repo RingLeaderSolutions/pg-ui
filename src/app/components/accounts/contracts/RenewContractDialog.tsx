@@ -7,7 +7,7 @@ import { TenderContract, TenderSupplier, ContractRenewalResponse } from "../../.
 import { redirectToPortfolio } from "../../../actions/viewActions";
 import ErrorMessage from "../../common/ErrorMessage";
 import { ContractRenewalStage } from "../../../model/app/ContractRenewalStage";
-import asModalDialog, { ModalDialogProps } from "../../common/modal/AsModalDialog";
+import AsModalDialog, { ModalDialogProps } from "../../common/modal/AsModalDialog";
 import { ModalDialogNames } from "../../common/modal/ModalDialogNames";
 import ModalFooter from "reactstrap/lib/ModalFooter";
 import { LoadingIndicator } from "../../common/LoadingIndicator";
@@ -16,8 +16,6 @@ import { ModalBody, Button, ModalHeader } from "reactstrap";
 export interface RenewContractDialogData {
     contract: TenderContract;
 }
-
-interface RenewContractDialogProps extends ModalDialogProps<RenewContractDialogData> { }
 
 interface StateProps {
     suppliers_working: boolean;
@@ -36,7 +34,7 @@ interface DispatchProps {
     redirectToPortfolio: (portfolioId: string) => void;
 }
 
-class RenewContractDialog extends React.Component<RenewContractDialogProps & StateProps & DispatchProps, {}> {
+class RenewContractDialog extends React.Component<ModalDialogProps<RenewContractDialogData> & StateProps & DispatchProps, {}> {
     componentDidMount(){
         if(this.props.suppliers == null){
             this.props.getSuppliers();
@@ -157,7 +155,7 @@ class RenewContractDialog extends React.Component<RenewContractDialogProps & Sta
     }
 }
 
-const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, RenewContractDialogProps> = (dispatch) => {
+const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, {}> = (dispatch) => {
     return {
         getSuppliers: () => dispatch(getTenderSuppliers()),
         renewContract: (contractId: string) => dispatch(createContractRenewal(contractId)),
@@ -166,7 +164,7 @@ const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, RenewContrac
     };
 };
   
-const mapStateToProps: MapStateToProps<StateProps, RenewContractDialogProps, ApplicationState> = (state: ApplicationState) => {
+const mapStateToProps: MapStateToProps<StateProps, {}, ApplicationState> = (state: ApplicationState) => {
     return {
         suppliers: state.suppliers.value,
         suppliers_working: state.suppliers.working,
@@ -178,7 +176,7 @@ const mapStateToProps: MapStateToProps<StateProps, RenewContractDialogProps, App
     };
 };
   
-export default asModalDialog<RenewContractDialogProps, StateProps, DispatchProps>(
+export default AsModalDialog<RenewContractDialogData, StateProps, DispatchProps>(
 { 
     name: ModalDialogNames.RenewAccountContract, 
     centered: true, 

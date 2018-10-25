@@ -1,15 +1,13 @@
 import * as React from "react";
-import { MapDispatchToPropsFunction, connect, MapStateToProps } from 'react-redux';
+import { MapDispatchToPropsFunction, MapStateToProps } from 'react-redux';
 import { ApplicationState } from '../../../../applicationState';
-import { TenderSupplier, Tender, QuickQuoteEntry, QuickQuote } from "../../../../model/Tender";
+import { Tender, QuickQuoteEntry, QuickQuote } from "../../../../model/Tender";
 
-import { uploadElectricityOffer, uploadGasOffer, submitQuickQuote } from '../../../../actions/tenderActions';
-import { UploadPanel } from "../../../common/UploadPanel";
+import { submitQuickQuote } from '../../../../actions/tenderActions';
 import { getWellFormattedUtilityName } from "../../../common/UtilityIcon";
-import asModalDialog, { ModalDialogProps } from "../../../common/modal/AsModalDialog";
+import AsModalDialog, { ModalDialogProps } from "../../../common/modal/AsModalDialog";
 import { ModalDialogNames } from "../../../common/modal/ModalDialogNames";
 import { ModalFooter, ModalHeader, ModalBody, Form, FormGroup, Label, CustomInput, Button, Table, Input, ButtonGroup, Row, Col, UncontrolledTooltip } from "reactstrap";
-import { fetchMeterConsumption } from "../../../../actions/meterActions";
 import { LoadingIndicator } from "../../../common/LoadingIndicator";
 import { MeterConsumptionSummary } from "../../../../model/Meter";
 import * as cn from "classnames";
@@ -21,8 +19,6 @@ export interface QuickOfferDialogData {
     tender: Tender;
     consumption: MeterConsumptionSummary;
 }
-
-interface QuickOfferDialogProps extends ModalDialogProps<QuickOfferDialogData> { }
 
 interface StateProps {
     working: boolean;
@@ -48,8 +44,8 @@ interface QuoteEntryItem {
     [index: string]: any;
 }
 
-class QuickOfferDialog extends React.Component<QuickOfferDialogProps & StateProps & DispatchProps, UploadOfferState> {
-    constructor(props: QuickOfferDialogProps & StateProps & DispatchProps){
+class QuickOfferDialog extends React.Component<ModalDialogProps<QuickOfferDialogData> & StateProps & DispatchProps, UploadOfferState> {
+    constructor(props: ModalDialogProps<QuickOfferDialogData> & StateProps & DispatchProps){
         super(props);
 
         let { tender, consumption } = props.data;
@@ -295,13 +291,13 @@ class QuickOfferDialog extends React.Component<QuickOfferDialogProps & StateProp
     }
 }
 
-const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, QuickOfferDialogProps> = (dispatch) => {
+const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, {}> = (dispatch) => {
     return {
         submitQuickQuote: (tenderId: string, quote: QuickQuote) => dispatch(submitQuickQuote(tenderId, quote))
     };
 };
   
-const mapStateToProps: MapStateToProps<StateProps, QuickOfferDialogProps, ApplicationState> = (state: ApplicationState) => {
+const mapStateToProps: MapStateToProps<StateProps, {}, ApplicationState> = (state: ApplicationState) => {
     return {
         consumption: state.meters.consumption.value,
         
@@ -311,7 +307,7 @@ const mapStateToProps: MapStateToProps<StateProps, QuickOfferDialogProps, Applic
     };
 };
   
-export default asModalDialog<QuickOfferDialogProps, StateProps, DispatchProps>(
+export default AsModalDialog<QuickOfferDialogData, StateProps, DispatchProps>(
 { 
     name: ModalDialogNames.QuickOffer, 
     centered: true, 

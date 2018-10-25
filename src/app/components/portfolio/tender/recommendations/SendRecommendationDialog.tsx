@@ -12,7 +12,7 @@ import { PortfolioDetails, Portfolio, User, AccountDetail } from "../../../../mo
 import { retrieveAccountDetail } from "../../../../actions/hierarchyActions";
 import { AccountContact } from "../../../../model/HierarchyObjects";
 import { ModalDialogNames } from "../../../common/modal/ModalDialogNames";
-import asModalDialog, { ModalDialogProps } from "../../../common/modal/AsModalDialog";
+import AsModalDialog, { ModalDialogProps } from "../../../common/modal/AsModalDialog";
 import { LoadingIndicator } from "../../../common/LoadingIndicator";
 import ModalHeader from "reactstrap/lib/ModalHeader";
 import ModalBody from "reactstrap/lib/ModalBody";
@@ -28,8 +28,6 @@ export interface SendRecommendationDialogData {
     tender: Tender;
     recommendation: TenderRecommendation;
 }
-
-interface SendRecommendationDialogProps extends ModalDialogProps<SendRecommendationDialogData> {}
 
 interface StateProps {
     working: boolean;
@@ -50,8 +48,8 @@ interface SendRecommendationDialogState {
     selectedEmails: string[];
 }
 
-class SendRecommendationDialog extends React.Component<SendRecommendationDialogProps & StateProps & DispatchProps, SendRecommendationDialogState> {
-    constructor(props: SendRecommendationDialogProps & StateProps & DispatchProps){
+class SendRecommendationDialog extends React.Component<ModalDialogProps<SendRecommendationDialogData>  & StateProps & DispatchProps, SendRecommendationDialogState> {
+    constructor(props: ModalDialogProps<SendRecommendationDialogData>  & StateProps & DispatchProps){
         super(props);
 
         this.renderAccountContact = this.renderAccountContact.bind(this);
@@ -209,14 +207,14 @@ class SendRecommendationDialog extends React.Component<SendRecommendationDialogP
     }
 }
 
-const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, SendRecommendationDialogProps> = (dispatch) => {
+const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, {}> = (dispatch) => {
     return {
         retrieveAccountDetail: (accountId: string) => dispatch(retrieveAccountDetail(accountId)),
         issueSummaryReport: (tenderId: string, reportId: string, emails: string[]) => dispatch(issueSummaryReport(tenderId, reportId, emails))
     };
 };
   
-const mapStateToProps: MapStateToProps<StateProps, SendRecommendationDialogProps, ApplicationState> = (state: ApplicationState) => {
+const mapStateToProps: MapStateToProps<StateProps, {}, ApplicationState> = (state: ApplicationState) => {
     return {
         portfolio_details: state.portfolio.details.value,
         portfolio: state.portfolio.selected.value,
@@ -227,7 +225,7 @@ const mapStateToProps: MapStateToProps<StateProps, SendRecommendationDialogProps
     };
 };
   
-export default asModalDialog<SendRecommendationDialogProps, StateProps, DispatchProps>(
+export default AsModalDialog<SendRecommendationDialogData, StateProps, DispatchProps>(
 { 
     name: ModalDialogNames.SendRecommendation, 
     centered: true, 

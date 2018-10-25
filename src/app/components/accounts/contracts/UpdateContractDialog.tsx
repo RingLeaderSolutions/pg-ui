@@ -7,7 +7,7 @@ import { updateAccountContract } from '../../../actions/tenderActions';
 import { TenderContract, TenderSupplier } from "../../../model/Tender";
 import { UtilityType } from "../../../model/Models";
 import { Strings } from "../../../helpers/Utils";
-import asModalDialog, { ModalDialogProps } from "../../common/modal/AsModalDialog";
+import AsModalDialog, { ModalDialogProps } from "../../common/modal/AsModalDialog";
 import { ModalDialogNames } from "../../common/modal/ModalDialogNames";
 import { LoadingIndicator } from "../../common/LoadingIndicator";
 import { Button, ModalHeader, ModalBody, Form, FormGroup, Label, Input, CustomInput, ModalFooter } from "reactstrap";
@@ -15,8 +15,6 @@ import { Button, ModalHeader, ModalBody, Form, FormGroup, Label, Input, CustomIn
 export interface UpdateContractDialogData {
     contract: TenderContract;
 }
-
-interface UpdateContractDialogProps extends ModalDialogProps<UpdateContractDialogData> { }
 
 interface StateProps {
     working: boolean;
@@ -36,8 +34,8 @@ interface UpdateContractDialogState {
     eligibleSuppliers: TenderSupplier[];
 }
 
-class UpdateContractDialog extends React.Component<UpdateContractDialogProps & StateProps & DispatchProps, UpdateContractDialogState> {
-    constructor(props: UpdateContractDialogProps & StateProps & DispatchProps) {
+class UpdateContractDialog extends React.Component<ModalDialogProps<UpdateContractDialogData> & StateProps & DispatchProps, UpdateContractDialogState> {
+    constructor(props: ModalDialogProps<UpdateContractDialogData> & StateProps & DispatchProps) {
         super(props);
 
         let { contract } = props.data;
@@ -167,13 +165,13 @@ class UpdateContractDialog extends React.Component<UpdateContractDialogProps & S
     }
 }
 
-const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, UpdateContractDialogProps> = (dispatch) => {
+const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, {}> = (dispatch) => {
     return {
         updateExistingContract: (contract: TenderContract) => dispatch(updateAccountContract(contract))
     };
 };
   
-const mapStateToProps: MapStateToProps<StateProps, UpdateContractDialogProps, ApplicationState> = (state: ApplicationState) => {
+const mapStateToProps: MapStateToProps<StateProps, {}, ApplicationState> = (state: ApplicationState) => {
     return {
         suppliers: state.suppliers.value,
         working: state.portfolio.tender.addExistingContract.working || state.suppliers.working,
@@ -182,7 +180,7 @@ const mapStateToProps: MapStateToProps<StateProps, UpdateContractDialogProps, Ap
     };
 };
   
-export default asModalDialog<UpdateContractDialogProps, StateProps, DispatchProps>(
+export default AsModalDialog<UpdateContractDialogData, StateProps, DispatchProps>(
 { 
     name: ModalDialogNames.UpdateAccountContract, 
     centered: true, 

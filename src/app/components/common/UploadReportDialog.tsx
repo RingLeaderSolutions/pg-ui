@@ -1,17 +1,12 @@
 import * as React from "react";
-import { MapDispatchToPropsFunction, connect, MapStateToProps } from 'react-redux';
+import { MapStateToProps } from 'react-redux';
 import { ApplicationState } from '../../applicationState';
 
-import Spinner from './Spinner';
-
 import { UploadReportDetail } from "../../model/Models";
-import asModalDialog, { ModalDialogProps } from "./modal/AsModalDialog";
+import AsModalDialog, { ModalDialogProps } from "./modal/AsModalDialog";
 import { ModalDialogNames } from "./modal/ModalDialogNames";
 import { ModalFooter, ModalHeader, ModalBody, Button } from "reactstrap";
 import { LoadingIndicator } from "./LoadingIndicator";
-
-interface UploadReportDialogProps extends ModalDialogProps {
-}
 
 interface StateProps {
     working: boolean;
@@ -20,7 +15,7 @@ interface StateProps {
     uploadReport: UploadReportDetail;
 }
 
-class UploadReportDialog extends React.Component<UploadReportDialogProps & StateProps, {}> {
+class UploadReportDialog extends React.Component<ModalDialogProps & StateProps, {}> {
     renderTableRows(){
         return this.props.uploadReport.uploadFiles.map(f => {
             return f.activity.map( (a, index) => {
@@ -78,7 +73,7 @@ class UploadReportDialog extends React.Component<UploadReportDialogProps & State
     }
 }
 
-const mapStateToProps: MapStateToProps<StateProps, UploadReportDialogProps, ApplicationState> = (state: ApplicationState) => {
+const mapStateToProps: MapStateToProps<StateProps, {}, ApplicationState> = (state: ApplicationState) => {
     return {
         uploadReport: state.selected_upload_report.value as UploadReportDetail,
         working: state.selected_upload_report.working,
@@ -87,7 +82,7 @@ const mapStateToProps: MapStateToProps<StateProps, UploadReportDialogProps, Appl
     };
 };
 
-export default asModalDialog<UploadReportDialogProps, StateProps>(
+export default AsModalDialog<{}, StateProps>(
 { 
     name: ModalDialogNames.UploadReport, 
     centered: true, 
