@@ -3,6 +3,7 @@
   "version": "0.2.3",
   "description": "UI for the Portfolio Generation project",
   "main": "src/server/server.js",
+  "private": true,
   "scripts": {
     "build": "webpack -p --config src/app/webpack.production.config.js",
     "build-dev": "webpack --config src/app/webpack.config.js",
