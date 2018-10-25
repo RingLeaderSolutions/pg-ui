@@ -1,6 +1,5 @@
 import * as types from '../../actions/actionTypes';
 import { reduceReducers } from '../common';
-import { initialSelectedTabState } from './ViewState';
 import { UtilityType } from '../../model/Models';
 
 export interface AccountViewState {
