@@ -1,4 +1,5 @@
 import { User } from './User';
+import { Client } from './Client';
 
 export interface Portfolio {
     id: string;
@@ -25,12 +26,6 @@ export interface PortfolioCreationRequest {
     ownerId: number;
     supportOwner: number;
     accountId: string;
-}
-
-export interface Client {
-    id: string;
-    name: string;
-    contact: User;
 }
 
 export interface  PortfolioHistoryEntry {
