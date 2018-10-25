@@ -108,7 +108,8 @@ class IssueTenderPackDialog extends React.Component<IssueTenderPackDialogProps &
                     <Input id="issue-packs-email-body"
                         type="textarea"
                         value={this.state.body}
-                        onChange={(e) => this.handleFormChange("body", e)}/>
+                        onChange={(e) => this.handleFormChange("body", e)}
+                        style={{height: '300px'}}/>
                 </FormGroup>
             </Form>);
     }
