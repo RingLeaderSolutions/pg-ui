@@ -90,7 +90,7 @@ class NewAccountDialog extends React.Component<NewAccountDialogProps & StateProp
                     <p>Select a way to create your account:</p>
                     <Card className="card-small" onClick={this.selectCompanySearch} style={{cursor: "pointer"}}>
                         <CardHeader className="border-bottom d-flex align-items-center">
-                            <img className="rounded-circle " width="40" height="40" src={require('../../../images/companies-house.jpg')} />
+                            <img className="rounded-circle " width="40" height="40" src={require('../../../assets/img/companies-house.jpg')} />
                             <h6 className="ml-2 mb-0">Company Search</h6>
                         </CardHeader>
                         <CardBody>
@@ -100,7 +100,7 @@ class NewAccountDialog extends React.Component<NewAccountDialogProps & StateProp
 
                     <Card className="card-small mt-3" onClick={this.selectManualMethod} style={{cursor: "pointer"}}>
                         <CardHeader className="border-bottom d-flex align-items-center">
-                            <img className="rounded-circle " width="40" height="40" src={require('../../../images/manual-icon.png')} />
+                            <img className="rounded-circle " width="40" height="40" src={require('../../../assets/img/manual-icon.png')} />
                             <h6 className="ml-2 mb-0">Manual</h6>
                         </CardHeader>
                         <CardBody>

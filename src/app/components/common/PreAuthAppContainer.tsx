@@ -10,7 +10,7 @@ interface PreAuthAppContainerProps {
 export default class PreAuthAppContainer extends React.Component<PreAuthAppContainerProps, {}> {
     render(){
         let imageName = this.props.image || "panels";
-        let image = require(`../../images/${imageName}.png`);
+        let image = require(`../../assets/img/${imageName}.png`);
         
         return (
             <Container fluid className="h-100 w-100" style={{backgroundImage: `url(${image})`}}>
@@ -18,7 +18,7 @@ export default class PreAuthAppContainer extends React.Component<PreAuthAppConta
                 <Row className="align-items-center">
                     <Card className={cn('mx-auto', { 'text-center' : this.props.centerText })}>
                         <CardBody>
-                            <img src={require('../../images/tpi-flow-logo.png')} alt="TPI Flow" />
+                            <img src={require('../../assets/img/tpi-flow-logo.png')} alt="TPI Flow" />
                             {this.props.children}
                         </CardBody>
                     </Card>

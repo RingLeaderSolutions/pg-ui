@@ -73,8 +73,8 @@ var config = {
         new webpack.HotModuleReplacementPlugin(),
         new HtmlWebpackPlugin({
             title: 'TPI Flow',
-            template: './src/app/index.ejs',
-            favicon: './src/app/favicon.ico'
+            template: './src/app/assets/index.html',
+            favicon: './src/app/assets/favicon.ico'
         }),
         new MiniCssExtractPlugin({
             filename: '[name].css' //[name].[hash].css
