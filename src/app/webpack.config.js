@@ -1,7 +1,6 @@
 var path = require('path');
 var webpack = require('webpack');
 var HtmlWebpackPlugin = require('html-webpack-plugin');
-var MiniCssExtractPlugin  = require('mini-css-extract-plugin');
 
 var config = {
   mode: 'development',
@@ -31,9 +30,6 @@ var config = {
       { 
         test: /\.s?css$/, 
         use: [
-        // {
-        //     loader: MiniCssExtractPlugin.loader
-        // },
         {
             // Adds CSS to the DOM via <link /> or inline <style /> elements
             loader: "style-loader",
@@ -75,10 +71,6 @@ var config = {
             title: 'TPI Flow',
             template: './src/app/assets/index.html',
             favicon: './src/app/assets/favicon.ico'
-        }),
-        new MiniCssExtractPlugin({
-            filename: '[name].css' //[name].[hash].css
-            // chunkFilename: '[id].css' //[id].[hash].css
         })]
 };
 
