@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Row, Col } from "reactstrap";
+import { Row } from "reactstrap";
 import * as cn from "classnames";
 
 interface PageHeaderProps {

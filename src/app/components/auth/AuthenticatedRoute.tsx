@@ -1,5 +1,5 @@
 import * as React from "react";
-import { RouteComponentProps, RouteProps, Redirect, Route } from "react-router-dom";
+import { RouteProps, Redirect, Route } from "react-router-dom";
 import { History } from 'history';
 import { LocalStorageRepository } from "../../services/LocalStorageRepository";
 

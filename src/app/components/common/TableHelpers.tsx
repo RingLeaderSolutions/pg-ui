@@ -74,11 +74,6 @@ interface PaginationState {
     page: number;
 }
 
-const defaultButton = (props: any) => (
-    <button type="button" {...props} className="-btn">
-      {props.children}
-    </button>
-  )
 
 export function SortFirstColumn(columns: Column[], order: "desc" | "asc" = "desc"): SortingRule[] {
     if(IsNullOrEmpty(columns)){
@@ -199,17 +194,9 @@ export class ReactTablePagination extends React.Component<Partial<PaginationProp
         const {
           // Computed
           pages,
-          // Props
-          showPageSizeOptions,
-          pageSizeOptions,
-          pageSize,
-          showPageJump,
           canPrevious,
           canNext,
-          onPageSizeChange,
           className,
-          PreviousComponent = defaultButton,
-          NextComponent = defaultButton,
         } = this.props
     
         const page = Number(this.props.page);

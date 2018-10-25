@@ -6,7 +6,7 @@ import { PortfolioDetails } from '../../../model/Models';
 import { uploadHistoric } from '../../../actions/portfolioActions';
 import { MultiUploadPanel } from "../../common/UploadPanel";
 import AsModalDialog, { ModalDialogProps } from "../../common/modal/AsModalDialog";
-import { ModalHeader, ModalBody, ModalFooter, Button, Form, FormGroup, Label, Input } from "reactstrap";
+import { ModalHeader, ModalBody, ModalFooter, Button, Form, FormGroup, Input } from "reactstrap";
 import { ModalDialogNames } from "../../common/modal/ModalDialogNames";
 
 export interface UploadHistoricDialogData {

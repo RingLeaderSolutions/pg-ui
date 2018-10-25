@@ -1,5 +1,5 @@
 import * as React from "react";
-import { MapDispatchToPropsFunction, connect, MapStateToProps } from 'react-redux';
+import { MapDispatchToPropsFunction, MapStateToProps } from 'react-redux';
 import { ApplicationState } from '../../../../applicationState';
 import ErrorMessage from "../../../common/ErrorMessage";
 import * as moment from 'moment';
@@ -9,7 +9,7 @@ import { Tender, TenderSupplier, TenderIssuanceEmail } from "../../../../model/T
 import AsModalDialog, { ModalDialogProps } from "../../../common/modal/AsModalDialog";
 import { LoadingIndicator } from "../../../common/LoadingIndicator";
 import TenderDeadlineWarning from "../warnings/TenderDeadlineWarning";
-import { ModalHeader, ModalBody, ModalFooter, Form, FormGroup, Label, Input, Button, Navbar, Nav, NavItem, NavLink, Col, Row, InputGroup, InputGroupAddon, CustomInput } from "reactstrap";
+import { ModalHeader, ModalBody, ModalFooter, Form, FormGroup, Label, Input, Button } from "reactstrap";
 import { ModalDialogNames } from "../../../common/modal/ModalDialogNames";
 
 export interface IssueTenderPackDialogData {

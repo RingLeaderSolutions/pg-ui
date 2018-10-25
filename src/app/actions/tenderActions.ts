@@ -1,6 +1,6 @@
 import ApiService from "../services/apiService";
 
-import { Tender, TenderContract, TenderSupplier, TenderIssuanceEmail, ContractRatesResponse, RecommendationSite, RecommendationSupplier, RecommendationSummary, TenderRecommendation, ContractRenewalResponse, QuickQuote } from "../model/Tender";
+import { Tender, TenderContract, TenderSupplier, TenderIssuanceEmail, ContractRatesResponse, RecommendationSite, RecommendationSupplier, RecommendationSummary, ContractRenewalResponse, QuickQuote } from "../model/Tender";
 import { UploadResponse, UtilityType, ExportResponse } from "../model/Models";
 
 import * as types from "./actionTypes";

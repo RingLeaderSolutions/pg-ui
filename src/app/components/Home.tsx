@@ -5,7 +5,7 @@ import { Route} from 'react-router-dom';
 import { ApplicationState } from '../applicationState';
 import { fetchBackendVersion, fetchInstanceDetails } from '../actions/authActions';
 
-import { InstanceDetail, ApplicationTab } from "../model/Models";
+import { InstanceDetail } from "../model/Models";
 import Dashboard from "./dashboard/Dashboard";
 import Portfolios from "./portfolio/Portfolios";
 import Accounts from "./accounts/Accounts";
@@ -23,7 +23,6 @@ interface StateProps {
     backendVersion: string;
     instance_detail: InstanceDetail;
     working: boolean;
-    selectedTab: ApplicationTab;
     error: boolean;
     errorMessage: string;
 }
@@ -62,7 +61,7 @@ class Home extends React.Component<StateProps & DispatchProps, {}> {
                 </PreAuthAppContainer>)
         }
 
-        let { backendVersion, instance_detail, selectedTab } = this.props;
+        let { backendVersion, instance_detail } = this.props;
 
         return (
             <Container fluid>
@@ -123,8 +122,7 @@ const mapStateToProps: MapStateToProps<StateProps, {}, ApplicationState> = (stat
         instance_detail: state.instance_detail.value,
         working: state.backend_version.working || state.instance_detail.working,
         error: state.backend_version.error || state.instance_detail.error,
-        errorMessage: state.backend_version.errorMessage || state.backend_version.errorMessage,
-        selectedTab: state.view.app.selectedTab
+        errorMessage: state.backend_version.errorMessage || state.backend_version.errorMessage
     };
 };
   

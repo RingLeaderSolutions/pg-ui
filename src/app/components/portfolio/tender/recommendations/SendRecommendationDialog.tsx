@@ -1,7 +1,6 @@
 import * as React from "react";
 import { MapDispatchToPropsFunction, MapStateToProps } from 'react-redux';
 import { ApplicationState } from '../../../../applicationState';
-import Spinner from '../../../common/Spinner';
 import ErrorMessage from "../../../common/ErrorMessage";
 import * as moment from 'moment';
 import * as cn from 'classnames';

@@ -5,8 +5,8 @@ import { MapDispatchToPropsFunction, connect, MapStateToProps } from 'react-redu
 import { getDashboardTimeline } from '../../actions/dashboardActions';
 import { ApplicationState } from '../../applicationState';
 import { DashboardPortfolioTimeline } from '../../model/Models';
-import { Col, Card, CardHeader, CardBody, CardFooter, Row, ListGroup, Alert } from "reactstrap";
-import { Pie, Doughnut } from "react-chartjs-2";
+import { Col, Card, CardHeader, CardBody, ListGroup, Alert } from "reactstrap";
+import { Doughnut } from "react-chartjs-2";
 import { Link } from "react-router-dom";
 
 // ListGroupItem doesn't appear to work with option #1 of passing `tag={Link}`

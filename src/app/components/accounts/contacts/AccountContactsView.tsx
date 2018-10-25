@@ -4,8 +4,6 @@ import { MapDispatchToPropsFunction, connect, MapStateToProps } from 'react-redu
 import { ApplicationState } from '../../../applicationState';
 import { AccountDetail } from '../../../model/Models';
 import { AccountContact } from '../../../model/HierarchyObjects';
-import Spinner from '../../common/Spinner';
-
 
 import { deleteContact } from '../../../actions/hierarchyActions';
 import CreateContactDialog, { CreateContactDialogData } from "./CreateContactDialog";

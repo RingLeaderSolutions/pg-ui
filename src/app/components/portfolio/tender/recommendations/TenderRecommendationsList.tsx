@@ -2,20 +2,18 @@ import * as React from "react";
 import { MapDispatchToPropsFunction, connect, MapStateToProps } from 'react-redux';
 import { ApplicationState } from '../../../../applicationState';
 
-import Spinner from '../../../common/Spinner';
 import ErrorMessage from "../../../common/ErrorMessage";
 import * as moment from 'moment';
 
-import { fetchRecommendationsSuppliers, fetchRecommendationsSites, fetchRecommendationSummary, acceptQuote } from '../../../../actions/tenderActions';
+import { acceptQuote } from '../../../../actions/tenderActions';
 import { Tender, TenderSupplier, TenderRecommendation, TenderIssuance, isComplete } from "../../../../model/Tender";
 import { AccountDetail, PortfolioDetails } from "../../../../model/Models";
 import { retrieveAccount } from "../../../../actions/portfolioActions";
 import GenerateRecommendationDialog, { GenerateRecommendationDialogData } from "./GenerateRecommendationDialog";
 import RecommendationDetailDialog, { RecommendationDetailDialogData } from "./RecommendationDetailDialog";
 import SendRecommendationDialog, { SendRecommendationDialogData } from "./SendRecommendationDialog";
-import { TenderCompleteWarning } from "../warnings/TenderCompleteWarning";
 import { LoadingIndicator } from "../../../common/LoadingIndicator";
-import { ButtonGroup, DropdownItem, InputGroup, InputGroupAddon, Input, Button, UncontrolledDropdown, DropdownToggle, Row, InputGroupText, DropdownMenu, UncontrolledTooltip, Navbar, NavItem, Nav, NavLink, Col, Alert, Card, CardHeader, CardBody } from "reactstrap";
+import { ButtonGroup, Button, Row, UncontrolledTooltip, Col, Alert, Card, CardHeader, CardBody } from "reactstrap";
 import { openDialog } from "../../../../actions/viewActions";
 import { ModalDialogNames } from "../../../common/modal/ModalDialogNames";
 import { IsNullOrEmpty } from "../../../../helpers/extensions/ArrayExtensions";

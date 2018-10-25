@@ -7,6 +7,8 @@ export * from './Dashboard';
 export * from './Client';
 export * from './CompanyInfo';
 export * from './Uploads';
+export * from './Tender';
+export * from './Meter';
 
 export enum UtilityType {
     Gas,

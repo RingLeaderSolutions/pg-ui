@@ -1,7 +1,6 @@
 import { combineReducers, Reducer } from 'redux';
 import { ApplicationState } from '../applicationState';
 import { reduceReducers } from './common';
-import { initialRequestState } from './RequestState';
 
 // Combine dashboard reducers to form the DashboardState
 import { DashboardState } from './dashboard/DashboardState';

@@ -20,13 +20,17 @@
     "alwaysStrict": true,
     "strictFunctionTypes": true,
 
-    // To do, and then toggle "strict": true
+    // TODO: and then toggle "strict": true
     //"strictNullChecks": true,    
     //"strictPropertyInitialization": true,
     
     "noFallthroughCasesInSwitch": true,
     "noImplicitReturns": true,
-    "forceConsistentCasingInFileNames": true
+    "forceConsistentCasingInFileNames": true,
+
+    // Explicitly turned off with reason
+    // See: AuthenticationService.ts / (https://github.com/Microsoft/TypeScript/issues/13965#issuecomment-278570200)
+    "noUnusedLocals": false
   },
   "exclude": [
     "node_modules",

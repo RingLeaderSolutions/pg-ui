@@ -1,34 +1,12 @@
 import { AxiosResponse } from 'axios';
 
-import { CompanyInfo } from '../../model/CompanyInfo';
-import { MeterConsumptionSummary } from '../../model/Meter';
-import {
-    Account,
-    AccountCompanyStatusFlags,
-    DashboardPortfolioStatus,
-    DashboardPortfolioSummary,
-    DashboardPortfolioTimeline,
-    Portfolio,
-    PortfolioContact,
-    PortfolioHistoryEntry,
-    PortfolioRequirements,
-    User,
-    UtilityType,
-    AccountDetail,
-    SiteDetail,
-    AccountDocument,
-    InstanceDetail
-} from '../../model/Models';
-import { PortfolioDetails } from '../../model/PortfolioDetails';
-import { BackingSheet, Tender, TenderContract, TenderSupplier, TenderIssuanceEmail, Tariff, QuickQuote } from '../../model/Tender';
+import * as Model from  '../../model/Models';
 import { IApiService } from '../apiService';
-import { AccountContact } from '../../model/HierarchyObjects';
-import { PortfolioCreationRequest } from '../../model/Portfolio';
 
 const responseDelay = 1000;
-const defer = (callback: () => void) => new Promise((resolve, reject) => setTimeout(() => callback(), responseDelay));
+const defer = (callback: () => void) => new Promise((_resolve, _reject) => setTimeout(() => callback(), responseDelay));
 const respondWithSuccess = (statusCode: number, data: any) => {
-  return new Promise<AxiosResponse>((resolve:(data:any) => void, reject:() => void) => {
+  return new Promise<AxiosResponse>((resolve:(data:any) => void, _reject:() => void) => {
     defer(() => resolve({
       status: statusCode,
       data: data
@@ -37,12 +15,12 @@ const respondWithSuccess = (statusCode: number, data: any) => {
   );
 };
 const OK = (data: any = null) => respondWithSuccess(200, data);
-const Created = (data: any) => respondWithSuccess(201, data);
-const BadRequest = (data: any) => respondWithSuccess(400, data);
+// const Created = (data: any) => respondWithSuccess(201, data);
+// const BadRequest = (data: any) => respondWithSuccess(400, data);
 
 export class FakeApiService implements IApiService {
     getAllPortfolios() {
-        var portfolios: Portfolio[] = [
+        var portfolios: Model.Portfolio[] = [
             {
                 id: "1",
                 title: "Fake portfolio",
@@ -90,7 +68,7 @@ export class FakeApiService implements IApiService {
     }
 
     getDashboardSummary(){
-        var summary: DashboardPortfolioSummary = {
+        var summary: Model.DashboardPortfolioSummary = {
             context: "team",
             value: "1",
             portfolioCount: 24,
@@ -102,7 +80,7 @@ export class FakeApiService implements IApiService {
     }
 
     getDashboardTimeline(){
-        var timeline: DashboardPortfolioTimeline = {
+        var timeline: Model.DashboardPortfolioTimeline = {
             context: "team",
             value: "1",
             timelineList: [ {
@@ -119,7 +97,7 @@ export class FakeApiService implements IApiService {
     }
 
     getDashboardStatus(){
-        var status: DashboardPortfolioStatus = {
+        var status: Model.DashboardPortfolioStatus = {
             context: "team",
             value: "1",
         
@@ -142,8 +120,8 @@ export class FakeApiService implements IApiService {
         return OK(status);
     }
     
-    getPortfolioHistory(portfolioId: string) {
-        var history: PortfolioHistoryEntry[] = [
+    getPortfolioHistory(_portfolioId: string) {
+        var history: Model.PortfolioHistoryEntry[] = [
             {
                 id: "1",
                 parent: null,
@@ -177,8 +155,8 @@ export class FakeApiService implements IApiService {
         return OK(history);
     }
 
-    searchCompany(companyNumber: string){
-        var company: CompanyInfo = {
+    searchCompany(_companyNumber: string){
+        var company: Model.CompanyInfo = {
             companyName: "ZENITH PRINT (UK) LIMITED",
             companyNumber: "02050399",
             addressLine1: "15 LON UCHAF",
@@ -194,7 +172,7 @@ export class FakeApiService implements IApiService {
         return OK(company);
     }
 
-    createAccount(account: Account){
+    createAccount(_account: Model.Account){
         var response = {
             id: "4dbd3fb8-c598-4d33-a0f6-b12da7b8b0d0"
         };
@@ -202,7 +180,7 @@ export class FakeApiService implements IApiService {
         return OK(response);
     }
 
-    createAccountFromCompany(company:CompanyInfo){
+    createAccountFromCompany(_company: Model.CompanyInfo){
         var response = {
             id: "4dbd3fb8-c598-4d33-a0f6-b12da7b8b0d0"
         };
@@ -211,7 +189,7 @@ export class FakeApiService implements IApiService {
     }
 
     retrieveAccount(accountId: string){
-        var account: Account = {
+        var account: Model.Account = {
             id: accountId,
             accountNumber: "1",
             address: "123 Fake St",
@@ -232,8 +210,8 @@ export class FakeApiService implements IApiService {
         return OK(account);
     }
 
-    updateAccountFlags(accountId: string, accountFlags: AccountCompanyStatusFlags){
-        var account: Account = {
+    updateAccountFlags(accountId: string, _accountFlags: Model.AccountCompanyStatusFlags){
+        var account: Model.Account = {
             id: accountId,
             accountNumber: "1",
             address: "123 Fake St",
@@ -254,7 +232,7 @@ export class FakeApiService implements IApiService {
         return OK(account);
     }
 
-    createPortfolioFromCompany(accountId: string, company: CompanyInfo){
+    createPortfolioFromCompany(accountId: string, company: Model.CompanyInfo){
         var response = {
             id: "a1b01d44-5971-4be0-a197-0226c44372ea",
             title: company.companyName,
@@ -272,19 +250,8 @@ export class FakeApiService implements IApiService {
         return OK(response);
     }
 
-    getPortfolioDetails(portfolioId: string) {
-        var contact: PortfolioContact = {
-            id: "ca49abcc-c483-427b-9adb-47a7d08d1d9a",
-            firstName: "Bertie",
-            lastName: "Basset",
-            email: "bertie.basset@wherever.com",
-            role: "procurement",
-            phoneNumber: "+44 2020202222",
-            accountId: "493e1708-2457-48ba-8925-09856d6e9732",
-            portfolioId: "4d584e81-91c2-47b4-85f9-411db125af51"
-        };
-
-        var portfolioDetails: PortfolioDetails = {
+    getPortfolioDetails(_portfolioId: string) {
+        var portfolioDetails: Model.PortfolioDetails = {
             portfolio: {
                 id: "4d584e81-91c2-47b4-85f9-411db125af51",
                 title: "Portfolio for testing",
@@ -339,40 +306,40 @@ export class FakeApiService implements IApiService {
         return OK(portfolioDetails);
     }
 
-    updatePortfolioContact(contact: PortfolioContact){
+    updatePortfolioContact(_contact: Model.PortfolioContact){
         return OK();
     }
 
-    updatePortfolioRequirements(requirements: PortfolioRequirements){
+    updatePortfolioRequirements(_requirements: Model.PortfolioRequirements){
         return OK();
     }
 
-    uploadLoa(portfolioId: string, file: Blob){
+    uploadLoa(_portfolioId: string, _file: Blob){
         return OK();
     }
         
-    uploadSupplyMeterData(accountId: string, file: Blob, utility: UtilityType){
+    uploadSupplyMeterData(_accountId: string, _file: Blob, _utility: Model.UtilityType){
         return OK();
     }
 
-    uploadHistorical(portfolioId: string, files: Blob[]){
+    uploadHistorical(_portfolioId: string, _files: Blob[]){
         return OK();
     }
 
-    uploadSiteList(portfolioId: string, file: Blob){
+    uploadSiteList(_portfolioId: string, _file: Blob){
         return OK();
     }
 
-    uploadGasBackingSheet(contractId: string, file: Blob){
+    uploadGasBackingSheet(_contractId: string, _file: Blob){
         return OK();
     }
 
-    uploadElectricityBackingSheet(contractId: string, file: Blob){
+    uploadElectricityBackingSheet(_contractId: string, _file: Blob){
         return OK();
     }
 
-    getPortfolioTenders(portfolioId: string){
-        var data: Tender[] = [
+    getPortfolioTenders(_portfolioId: string){
+        var data: Model.Tender[] = [
             {
                 tenderId: "5122951b-b942-4f25-8ee0-5f2e255a5f50",
                 tenderTitle: "Best tender",
@@ -537,7 +504,7 @@ export class FakeApiService implements IApiService {
     }
 
     getTenderSuppliers(){
-        var data: TenderSupplier[] = [
+        var data: Model.TenderSupplier[] = [
             {
                 supplierId: "1",
                 name: "Haven Power",
@@ -585,42 +552,42 @@ export class FakeApiService implements IApiService {
         return OK(data);
     }
 
-    addExistingContract(contract: TenderContract, portfolioId: string, tenderId: string) {
+    addExistingContract(_contract: Model.TenderContract, _portfolioId: string, _tenderId: string) {
         return OK();
     }
 
-    updateExistingContract(contract: TenderContract, portfolioId: string, tenderId: string) {
+    updateExistingContract(_contract: Model.TenderContract, _portfolioId: string, _tenderId: string) {
         return OK();
     }
 
-    deleteTender(portfolioId: string, tenderId: string){
+    deleteTender(_portfolioId: string, _tenderId: string){
         return OK();
     }
 
-    createTender(portfolioId: string, tender: Tender, utilityType: UtilityType, halfHourly?: boolean){
+    createTender(_portfolioId: string, _tender: Model.Tender, _utilityType: Model.UtilityType, _halfHourly?: boolean){
         return OK();
     }
 
-    updateTenderSuppliers(tenderId: string, supplierIds: string[]){
+    updateTenderSuppliers(_tenderId: string, _supplierIds: string[]){
         return OK();
     }
 
-    updateTender(tenderId: string, tender: Tender){
+    updateTender(_tenderId: string, _tender: Model.Tender){
         return OK();
     }
 
-    getContractBackingSheets(tenderId: string, contractId: string){
+    getContractBackingSheets(_tenderId: string, _contractId: string){
         var backing = this.getBackingSheets();
         return OK(backing);
     }
 
-    getQuoteBackingSheets(tenderId: string, quoteId: string){
+    getQuoteBackingSheets(_tenderId: string, _quoteId: string){
         var backing = this.getBackingSheets();
         return OK(backing);        
     }
 
-    getBackingSheets(){
-        var bs: BackingSheet[] = [
+    getBackingSheets(): Model.BackingSheet[]{
+        return [
             {
                 sheetType: null,
                 parentId: "b004832f-ac3b-4138-adfa-8d8bc29ae526",
@@ -695,20 +662,20 @@ export class FakeApiService implements IApiService {
         ];
     }
 
-    generateTenderPack(tenderId: string, portfolioId: string){
+    generateTenderPack(_tenderId: string, _portfolioId: string){
         return OK();
     }
 
-    issueTenderPack(tenderPackId: string, subject: string, body: string){
+    issueTenderPack(_tenderPackId: string, _subject: string, _body: string){
         return OK();
     }
     
-    generateSummaryReport(tenderId: string, quoteId: string, marketCommentary: string, selectionCommentary: string){
+    generateSummaryReport(_tenderId: string, _quoteId: string, _marketCommentary: string, _selectionCommentary: string){
         return OK();        
     }
   
     getActiveUsers(){
-        var users: User[] = [
+        var users: Model.User[] = [
             {
                 id: '1',
                 firstName: 'Fake',
@@ -722,11 +689,11 @@ export class FakeApiService implements IApiService {
         return OK(users);
     }
 
-    assignPortfolioUsers(portfolioId: string, users: User[]){
+    assignPortfolioUsers(_portfolioId: string, _users: Model.User[]){
         return OK();        
     }
 
-    issueSummaryReport(tenderId: string, reportId: string, emails: string[]){
+    issueSummaryReport(_tenderId: string, _reportId: string, _emails: string[]){
         return OK();
     }
     
@@ -736,8 +703,8 @@ export class FakeApiService implements IApiService {
         });
     }
 
-    fetchTenderIssuanceEmail(tenderId: string){
-        var email: TenderIssuanceEmail = {
+    fetchTenderIssuanceEmail(_tenderId: string){
+        var email: Model.TenderIssuanceEmail = {
             subject: "hello",
             body: "test"
         };
@@ -745,60 +712,60 @@ export class FakeApiService implements IApiService {
         return OK(email);
     }
 
-    exportContractRates(tenderId: string, quoteId: string){
+    exportContractRates(_tenderId: string, _quoteId: string){
         var rateLink = "http://test.com/test.csv";
 
         return OK( { exportUri: rateLink });
     }
 
-    exportMeterConsumption(portfolioId: string){
+    exportMeterConsumption(_portfolioId: string){
         var rateLink = "http://test.com/test.csv";
 
         return OK( { exportUri: rateLink });
     }
 
-    excludeMeters(portfolioId: string, meters: string[]){
+    excludeMeters(_portfolioId: string, _meters: string[]){
         return OK();
     }
 
-    includeMeters(portfolioId: string, meters: string[]){
+    includeMeters(_portfolioId: string, _meters: string[]){
         return OK();
     }
 
-    uploadOffer(tenderId: string, supplierId: string, file: Blob) {
+    uploadOffer(_tenderId: string, _supplierId: string, _file: Blob) {
         return OK();
     }
 
-    reportSuccessfulLoaUpload(portfolioId: string, accountId: string, files: string[]) {
+    reportSuccessfulLoaUpload(_portfolioId: string, _accountId: string, _files: string[]) {
         return OK();
     }
 
-    reportSuccessfulSupplyMeterDataUpload(accountId: string, files: string[], utility: UtilityType) {
+    reportSuccessfulSupplyMeterDataUpload(_accountId: string, _files: string[], _utility: Model.UtilityType) {
         return OK();
     }
 
-    reportSuccessfulSiteListUpload(portfolioId: string, accountId: string, files: string[]) {
+    reportSuccessfulSiteListUpload(_portfolioId: string, _accountId: string, _files: string[]) {
         return OK();
     }
 
-    reportSuccessfulHistoricalUpload(portfolioId: string, files: string[], historicalType: string) {
+    reportSuccessfulHistoricalUpload(_portfolioId: string, _files: string[], _historicalType: string) {
         return OK();
     }
 
-    reportSuccessfulBackingSheetUpload(contractId: string, files: string[], utility: UtilityType) {
+    reportSuccessfulBackingSheetUpload(_contractId: string, _files: string[], _utility: Model.UtilityType) {
         return OK();
     }
 
-    reportSuccessfulOfferUpload(tenderId: string, supplierId: string, files: string[], utility: UtilityType) {
+    reportSuccessfulOfferUpload(_tenderId: string, _supplierId: string, _files: string[], _utility: Model.UtilityType) {
         return OK();
     }
 
-    deleteQuote(tenderId: string, quoteId: string){
+    deleteQuote(_tenderId: string, _quoteId: string){
         return OK();
     }
 
     getTariffs(){
-        var tariffs: Tariff[] = [
+        var tariffs: Model.Tariff[] = [
             { id: "1",  name: "day/night"},
             { id: "2",  name: "summer/winter"}
         ];
@@ -806,7 +773,7 @@ export class FakeApiService implements IApiService {
     }
 
     retrieveAccounts(){
-     var accounts: Account[] = [
+     var accounts: Model.Account[] = [
         {
             id: "1",
             accountNumber: "1",
@@ -828,8 +795,8 @@ export class FakeApiService implements IApiService {
      return OK(accounts);
     }
 
-    retrieveAccountDetail(accountId: string) {
-        var sites: SiteDetail[] = 
+    retrieveAccountDetail(_accountId: string) {
+        var sites: Model.SiteDetail[] = 
         [
             {
                 tenancyStart: "2018-04-21T07:25:26.327Z",
@@ -894,7 +861,7 @@ export class FakeApiService implements IApiService {
             }
         ];
         
-        var contacts: AccountContact[] = [{
+        var contacts: Model.AccountContact[] = [{
             id: "2",
             accountId: "1",
             firstName: "Daniel",
@@ -904,7 +871,7 @@ export class FakeApiService implements IApiService {
             role: "Administrator"
         }]
 
-        var accountDetail: AccountDetail = {
+        var accountDetail: Model.AccountDetail = {
             id: "1",
             accountNumber: "1",
             address: "123 Fake St",
@@ -926,11 +893,11 @@ export class FakeApiService implements IApiService {
         return OK(accountDetail);
     }
 
-    fetchPortfolioUploads(portfolioId: string){
+    fetchPortfolioUploads(_portfolioId: string){
         return OK();
     }
 
-    fetchUploadReport(uri: string){
+    fetchUploadReport(_uri: string){
         return OK();
     }
 
@@ -938,8 +905,8 @@ export class FakeApiService implements IApiService {
         return OK();
     }
 
-    fetchMeterConsumption(portfolioId: string){
-        var consumption: MeterConsumptionSummary = {
+    fetchMeterConsumption(_portfolioId: string){
+        var consumption: Model.MeterConsumptionSummary = {
             summaryFields: [],
             summaryValues: [],
             electricityHeaders: [ "site", "mpan", "meterType", "total Units", "Day", "Night"],
@@ -950,24 +917,24 @@ export class FakeApiService implements IApiService {
         return OK(consumption);
     }
 
-    updateAccount(account: Account){
+    updateAccount(_account: Model.Account){
         return OK();
     }
 
-    createContact(contact: AccountContact){
+    createContact(_contact: Model.AccountContact){
         return OK();
     }
 
-    updateContact(contact: AccountContact){
+    updateContact(_contact: Model.AccountContact){
         return OK();   
     }
 
-    deleteContact(accountContactId: string){
+    deleteContact(_accountContactId: string){
         return OK();     
     }
 
-    fetchAccountDocumentation(accountId: string){
-        var documentation: AccountDocument[] = [{
+    fetchAccountDocumentation(_accountId: string){
+        var documentation: Model.AccountDocument[] = [{
             id: "d7b3ae3d-5b65-4e6b-87c1-d68e9b9d8be7",
             blobFileName: "loa_rls_20171121.pdf",
             accountId: "493e1708-2457-48ba-8925-09856d6e9732",
@@ -979,15 +946,15 @@ export class FakeApiService implements IApiService {
         return OK(documentation);
     }
 
-    fetchAccountUploads(accountId: string){
+    fetchAccountUploads(_accountId: string){
         return OK();  
     }
 
-    uploadAccountDocument(accountId: string, file: Blob){
+    uploadAccountDocument(_accountId: string, _file: Blob){
         return OK();
     }
 
-    reportSuccessfulAccountDocumentUpload(accountId: string, documentType: string, files: string[]){
+    reportSuccessfulAccountDocumentUpload(_accountId: string, _documentType: string, _files: string[]){
         return OK();        
     }
 
@@ -995,7 +962,7 @@ export class FakeApiService implements IApiService {
         return OK(); 
     }
     
-    createPortfolio(portfolio: PortfolioCreationRequest){
+    createPortfolio(_portfolio: Model.PortfolioCreationRequest){
         var response = {
             id: "a1b01d44-5971-4be0-a197-0226c44372ea",
             title: "X",
@@ -1012,20 +979,20 @@ export class FakeApiService implements IApiService {
         return OK(response)
     }
 
-    fetchAccountPortfolios(accountId: string){
+    fetchAccountPortfolios(_accountId: string){
         return OK();
     }
 
-    editPortfolio(portfolio: PortfolioCreationRequest){       
+    editPortfolio(_portfolio: Model.PortfolioCreationRequest){       
         return OK();        
     }
 
-    deletePortfolio(portfolioId: string){       
+    deletePortfolio(_portfolioId: string){       
         return OK();
     }
 
     fetchInstanceDetails(){
-        var data: InstanceDetail = {
+        var data: Model.InstanceDetail = {
             contactus: '01 111 111111',
             address: 'HQ',
             buildType: null,
@@ -1041,59 +1008,59 @@ export class FakeApiService implements IApiService {
         return OK(data);
     }
 
-    fetchTenderOffers(portfolioId: string){
+    fetchTenderOffers(_portfolioId: string){
         return OK();       
     }
 
-    fetchTenderRecommendations(portfolioId: string){
+    fetchTenderRecommendations(_portfolioId: string){
         return OK(); 
     }
 
-    fetchRecommendationSuppliers(tenderId: string, summaryId: string){
+    fetchRecommendationSuppliers(_tenderId: string, _summaryId: string){
         return OK();             
     }
 
-    fetchRecommendationSites(tenderId: string, summaryId: string, siteStart: number, siteEnd: number){
+    fetchRecommendationSites(_tenderId: string, _summaryId: string, _siteStart: number, _siteEnd: number){
         return OK();
     }
 
-    fetchRecommendationSummary(tenderId: string, summaryId: string){
+    fetchRecommendationSummary(_tenderId: string, _summaryId: string){
         return OK();
     }
 
-    deleteRecommendation(tenderId: string, recommendationId: string){
+    deleteRecommendation(_tenderId: string, _recommendationId: string){
         return OK();
     }
 
-    fetchAccountContracts(accountId: string){
+    fetchAccountContracts(_accountId: string){
         return OK();
     }
 
-    createAccountContract(accountId: string, contract: TenderContract){
+    createAccountContract(_accountId: string, _contract: Model.TenderContract){
         return OK();
     }
     
-    updateAccountContract(contract: TenderContract){
+    updateAccountContract(_contract: Model.TenderContract){
         return OK();
     }
 
-    deleteAccountContract(contractId: string){
+    deleteAccountContract(_contractId: string){
         return OK();
     }
 
-    fetchAccountContractRates(contractId: string){
+    fetchAccountContractRates(_contractId: string){
         return OK();
     }
 
-    acceptQuote(tenderId: string, quoteId: string){
+    acceptQuote(_tenderId: string, _quoteId: string){
         return OK();
     }
 
-    createContractRenewal(contractId: string){
+    createContractRenewal(_contractId: string){
         return OK();
     }
 
-    submitQuickQuote(tenderId: string, quote: QuickQuote) {
+    submitQuickQuote(_tenderId: string, _quote: Model.QuickQuote) {
         return OK();
     }
 }

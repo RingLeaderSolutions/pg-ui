@@ -5,8 +5,8 @@ import { ApplicationState } from '../applicationState';
 import { InstanceDetail, ApplicationTab } from "../model/Models";
 import { NotificationService } from "../App";
 import { SignalRConnectionState } from "../services/SignalRService";
-import { Navbar, NavbarBrand, Form, InputGroup, Input, InputGroupAddon, InputGroupText, Nav, NavItem } from "reactstrap";
-import { RoutedNavLink, RoutedNavbarBrand } from "./common/RoutedLinkHelpers";
+import { Navbar, NavbarBrand, Nav, NavItem } from "reactstrap";
+import { RoutedNavLink } from "./common/RoutedLinkHelpers";
 import * as cn from 'classnames';
 import { toggleSidebarOpen } from "../actions/viewActions";
 

@@ -1,6 +1,6 @@
 import * as React from "react";
 import * as cn from "classnames";
-import { Card, CardBody, Row, Col, Button } from "reactstrap";
+import { Card, CardBody, Row, Button } from "reactstrap";
 
 interface FileViewProps {
     file: File;

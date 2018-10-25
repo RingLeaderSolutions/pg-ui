@@ -1,5 +1,5 @@
 import * as React from "react";
-import { MapDispatchToPropsFunction, connect, MapStateToProps } from 'react-redux';
+import { MapDispatchToPropsFunction, connect } from 'react-redux';
 import { SiteDetail } from '../../../model/HierarchyObjects';
 import { Link } from "react-router-dom";
 import ReactTable, { Column } from "react-table";
@@ -198,7 +198,6 @@ class AccountGasMeterTable extends React.Component<AccountGasMeterTableProps & D
                     minRows={0}/>);
         }    
 
-        var portfolioButtons = this.renderPortfolioButtons();
         return (
             <Card className="w-100">
                 <CardBody className="p-0">

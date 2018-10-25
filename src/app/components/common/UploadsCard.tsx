@@ -8,7 +8,7 @@ import * as moment from 'moment';
 import { fetchPortfolioUploads, fetchUploadReport } from '../../actions/portfolioActions';
 import UploadReportDialog from "./UploadReportDialog";
 import RatesImportReportDialog from "../portfolio/upload/RatesImportReportDialog";
-import { Col, Card, CardHeader, CardBody, Table, Button, Nav, NavItem, NavLink, Tooltip, Alert } from "reactstrap";
+import { Card, CardHeader, CardBody, Table, Button, Nav, NavItem, NavLink, Alert } from "reactstrap";
 import * as cn from "classnames";
 import { UncontrolledTooltip } from "reactstrap/lib/Uncontrolled";
 import { ModalDialogNames } from "./modal/ModalDialogNames";

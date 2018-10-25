@@ -1,7 +1,6 @@
 import { AxiosResponse } from 'axios';
 import axios from 'axios';
 import { CompanyInfo, PortfolioContact, PortfolioRequirements, Account, AccountCompanyStatusFlags, UtilityType, User } from "../model/Models";
-import { FakeApiService } from './fake/fakeApiService';
 import { Tender, TenderContract, QuickQuote } from '../model/Tender';
 import * as moment from 'moment';
 import { AccountContact } from '../model/HierarchyObjects';
@@ -655,5 +654,6 @@ export class ApiService implements IApiService {
     }
 }
 
+//import { FakeApiService } from './fake/fakeApiService';
 //export default new FakeApiService();
 export default new ApiService();

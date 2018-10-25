@@ -1,7 +1,6 @@
 import * as React from "react";
-import { MapDispatchToPropsFunction, connect, MapStateToProps } from 'react-redux';
+import { MapDispatchToPropsFunction, MapStateToProps } from 'react-redux';
 import { ApplicationState } from '../../../applicationState';
-import Spinner from '../../common/Spinner';
 
 import { selectCompanySearchMethod, selectManualMethod, clearAccountCreation } from '../../../actions/hierarchyActions';
 import { AccountCreationStage } from "../../../model/app/AccountCreationStage";

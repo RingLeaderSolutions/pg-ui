@@ -1,9 +1,8 @@
 import * as React from "react";
 import ErrorMessage from "../../common/ErrorMessage";
-import { MapDispatchToPropsFunction, connect, MapStateToProps } from 'react-redux';
+import { MapDispatchToPropsFunction, MapStateToProps } from 'react-redux';
 import { ApplicationState } from '../../../applicationState';
 import { User, PortfolioDetails } from '../../../model/Models';
-import Spinner from '../../common/Spinner';
 import { fetchUsers, editPortfolio } from '../../../actions/portfolioActions';
 import { PortfolioCreationRequest, Portfolio } from "../../../model/Portfolio";
 import { openDialog } from "../../../actions/viewActions";

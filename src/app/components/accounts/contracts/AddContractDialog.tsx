@@ -1,5 +1,5 @@
 import * as React from "react";
-import { MapDispatchToPropsFunction, connect, MapStateToProps, DispatchProp } from 'react-redux';
+import { MapDispatchToPropsFunction, MapStateToProps } from 'react-redux';
 import { ApplicationState } from '../../../applicationState';
 import * as cn from "classnames";
 import { createAccountContract } from '../../../actions/tenderActions';

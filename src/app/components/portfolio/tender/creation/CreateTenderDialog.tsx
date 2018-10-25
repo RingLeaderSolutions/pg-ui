@@ -1,6 +1,6 @@
 import * as React from "react";
 import { UtilityType, decodeUtilityType } from '../../../../model/Models';
-import { MapDispatchToPropsFunction, connect, MapStateToProps } from 'react-redux';
+import { MapDispatchToPropsFunction, MapStateToProps } from 'react-redux';
 import { ApplicationState } from '../../../../applicationState';
 import * as moment from 'moment';
 import * as cn from "classnames";

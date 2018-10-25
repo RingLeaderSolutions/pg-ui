@@ -1,4 +1,4 @@
-import { HubConnectionBuilder, HubConnection, LogLevel, IHttpConnectionOptions, HttpError, TimeoutError } from "@aspnet/signalr";
+import { HubConnectionBuilder, HubConnection, LogLevel, IHttpConnectionOptions, HttpError } from "@aspnet/signalr";
 import { PrefixedConsoleLogger, ILogger } from "./Logger";
 import { Arg, Wait } from "../helpers/Utils";
 import { LocalStorageRepository } from "./LocalStorageRepository";
