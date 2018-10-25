@@ -33,14 +33,8 @@ class DashboardSummary extends React.Component<TimelineProps & StateProps & Disp
 
     renderTimelineTable(){
         let listItems = this.props.timeline.timelineList.map(item => {
-            let remainingPercentage = item.workload / (item.totalMpans * 2);
+            let remainingPercentage = item.totalMpans === 0 ? 1 : item.workload / (item.totalMpans * 2);
             let completedPercentage = 1 - remainingPercentage;
-
-            // guard against NaN
-            if(item.workload === 0 || item.totalMpans === 0){
-                remainingPercentage = 0;
-                completedPercentage = 0;
-            }
 
             let color = "#c4183c" // Danger
             
