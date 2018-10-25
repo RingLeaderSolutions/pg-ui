@@ -177,7 +177,7 @@ const mapStateToProps: MapStateToProps<StateProps, ManageTenderSuppliersDialogPr
     };
 };
   
-export default asModalDialog(
+export default asModalDialog<ManageTenderSuppliersDialogProps, StateProps, DispatchProps>(
 { 
     name: ModalDialogNames.ManageTenderSuppliers, 
     centered: true, 

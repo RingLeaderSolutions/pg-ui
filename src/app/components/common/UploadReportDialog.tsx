@@ -19,11 +19,8 @@ interface StateProps {
     errorMessage: string;
     uploadReport: UploadReportDetail;
 }
-  
-interface DispatchProps {
-}
 
-class UploadReportDialog extends React.Component<UploadReportDialogProps & StateProps & DispatchProps, {}> {
+class UploadReportDialog extends React.Component<UploadReportDialogProps & StateProps, {}> {
     renderTableRows(){
         return this.props.uploadReport.uploadFiles.map(f => {
             return f.activity.map( (a, index) => {
@@ -90,7 +87,7 @@ const mapStateToProps: MapStateToProps<StateProps, UploadReportDialogProps, Appl
     };
 };
 
-export default asModalDialog(
+export default asModalDialog<UploadReportDialogProps, StateProps>(
 { 
     name: ModalDialogNames.UploadReport, 
     centered: true, 

@@ -110,7 +110,7 @@ class UploadHistoricDialog extends React.Component<UploadHistoricDialogProps & S
 
 const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, UploadHistoricDialogProps> = (dispatch) => {
     return {
-        uploadHistoric: (portfolioId: string, files: File[], historicalType: string) => dispatch(uploadHistoric(portfolioId, files, historicalType))
+        uploadHistoric: (portfolioId: string, files: Blob[], historicalType: string) => dispatch(uploadHistoric(portfolioId, files, historicalType))
     };
 };
   
@@ -122,7 +122,7 @@ const mapStateToProps: MapStateToProps<StateProps, UploadHistoricDialogProps, Ap
     };
 };
   
-export default asModalDialog(
+export default asModalDialog<UploadHistoricDialogProps, StateProps, DispatchProps>(
 { 
     name: ModalDialogNames.UploadHistoric, 
     centered: true, 

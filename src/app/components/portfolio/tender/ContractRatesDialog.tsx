@@ -81,7 +81,7 @@ const mapStateToProps: MapStateToProps<StateProps, ContractRatesDialogProps, App
     };
 };
   
-export default asModalDialog(
+export default asModalDialog<ContractRatesDialogProps, StateProps>(
 { 
     name: ModalDialogNames.ContractRates, 
     centered: true, 

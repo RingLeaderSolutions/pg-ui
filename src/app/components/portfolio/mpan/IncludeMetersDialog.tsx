@@ -267,7 +267,7 @@ const mapStateToProps: MapStateToProps<StateProps, IncludeMetersDialogProps, App
     };
 };
 
-export default asModalDialog(
+export default asModalDialog<IncludeMetersDialogProps, StateProps, DispatchProps>(
 { 
     name: ModalDialogNames.IncludeMeters, 
     centered: true, 

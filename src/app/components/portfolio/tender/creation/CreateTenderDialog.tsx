@@ -444,7 +444,7 @@ const mapStateToProps: MapStateToProps<StateProps, CreateTenderDialogProps, Appl
     };
 };
   
-export default asModalDialog(
+export default asModalDialog<CreateTenderDialogProps, StateProps, DispatchProps>(
 { 
     name: ModalDialogNames.CreateTender, 
     centered: true, 

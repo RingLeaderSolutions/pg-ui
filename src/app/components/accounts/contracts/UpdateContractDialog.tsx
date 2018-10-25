@@ -182,7 +182,7 @@ const mapStateToProps: MapStateToProps<StateProps, UpdateContractDialogProps, Ap
     };
 };
   
-export default asModalDialog(
+export default asModalDialog<UpdateContractDialogProps, StateProps, DispatchProps>(
 { 
     name: ModalDialogNames.UpdateAccountContract, 
     centered: true, 

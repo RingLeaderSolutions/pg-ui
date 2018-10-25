@@ -117,7 +117,7 @@ const mapStateToProps: MapStateToProps<StateProps, UploadAccountDocumentDialogPr
     };
 };
   
-export default asModalDialog(
+export default asModalDialog<UploadAccountDocumentDialogProps, StateProps, DispatchProps>(
 { 
     name: ModalDialogNames.UploadAccountDocument, 
     centered: true, 

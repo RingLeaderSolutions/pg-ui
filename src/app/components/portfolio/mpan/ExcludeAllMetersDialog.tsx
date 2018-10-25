@@ -53,7 +53,7 @@ const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, ExcludeAllMe
     };
 };
   
-export default asModalDialog(
+export default asModalDialog<ExcludeAllMetersDialogProps, {}, DispatchProps>(
 { 
     name: ModalDialogNames.ExcludeAllMeters, 
     centered: true, 

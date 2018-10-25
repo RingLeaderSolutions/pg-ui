@@ -178,7 +178,7 @@ const mapStateToProps: MapStateToProps<StateProps, RenewContractDialogProps, App
     };
 };
   
-export default asModalDialog(
+export default asModalDialog<RenewContractDialogProps, StateProps, DispatchProps>(
 { 
     name: ModalDialogNames.RenewAccountContract, 
     centered: true, 

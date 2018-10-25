@@ -131,7 +131,7 @@ const mapStateToProps: MapStateToProps<StateProps, NewAccountDialogProps, Applic
     };
 };
   
-export default asModalDialog(
+export default asModalDialog<NewAccountDialogProps, StateProps, DispatchProps>(
 { 
     name: ModalDialogNames.CreateAccount, 
     centered: true, 

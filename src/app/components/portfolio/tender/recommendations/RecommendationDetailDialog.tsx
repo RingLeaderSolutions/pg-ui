@@ -725,7 +725,7 @@ const mapStateToProps: MapStateToProps<StateProps, RecommendationDetailDialogPro
     };
 };
 
-export default asModalDialog(
+export default asModalDialog<RecommendationDetailDialogProps, StateProps, DispatchProps>(
 { 
     name: ModalDialogNames.RecommendationDetail, 
     centered: true, 

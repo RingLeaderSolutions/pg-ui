@@ -97,7 +97,7 @@ const mapStateToProps: MapStateToProps<StateProps, UploadSupplyDataDialogProps, 
     };
 };
   
-export default asModalDialog(
+export default asModalDialog<UploadSupplyDataDialogProps, StateProps, DispatchProps>(
 { 
     name: ModalDialogNames.UploadSupplyData, 
     centered: true, 

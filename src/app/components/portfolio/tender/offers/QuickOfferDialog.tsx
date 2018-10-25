@@ -311,7 +311,7 @@ const mapStateToProps: MapStateToProps<StateProps, QuickOfferDialogProps, Applic
     };
 };
   
-export default asModalDialog(
+export default asModalDialog<QuickOfferDialogProps, StateProps, DispatchProps>(
 { 
     name: ModalDialogNames.QuickOffer, 
     centered: true, 

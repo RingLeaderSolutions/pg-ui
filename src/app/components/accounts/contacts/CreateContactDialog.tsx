@@ -26,8 +26,8 @@ interface CreateAccountDialogState {
     role: string;
 }
 
-class CreateContactDialog extends React.Component<CreateContactDialogProps  & DispatchProps, CreateAccountDialogState> {
-    constructor(props: CreateContactDialogProps  & DispatchProps){
+class CreateContactDialog extends React.Component<CreateContactDialogProps & DispatchProps, CreateAccountDialogState> {
+    constructor(props: CreateContactDialogProps & DispatchProps){
         super(props);
         this.state = {
             firstName: '',
@@ -128,7 +128,7 @@ const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, CreateContac
     };
 };
 
-export default asModalDialog(
+export default asModalDialog<CreateContactDialogProps, {}, DispatchProps>(
 { 
     name: ModalDialogNames.CreateAccountContact, 
     centered: true, 

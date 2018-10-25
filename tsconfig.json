@@ -11,18 +11,19 @@
         "./src/types"
     ],
 
-    // TODO: Enable this and fix the results
-    //"strictNullChecks": true,
-
-    // TODO: Enable, requires TS v2.6
-    //"strictFunctionTypes": true,
-
-    // TODO: Enable, requires TS v2.7
-    //"strictPropertyInitialization": true,
+    // Where we're trying to get to:
+    //"strict": true,
     
-    "alwaysStrict": true,
+    // What we have now:
     "noImplicitAny": true,
     "noImplicitThis": true,
+    "alwaysStrict": true,
+    "strictFunctionTypes": true,
+
+    // To do, and then toggle "strict": true
+    //"strictNullChecks": true,    
+    //"strictPropertyInitialization": true,
+    
     "noFallthroughCasesInSwitch": true,
     "noImplicitReturns": true,
     "forceConsistentCasingInFileNames": true

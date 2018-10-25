@@ -56,7 +56,7 @@ const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, DeletePortfo
     };
 };
   
-export default asModalDialog(
+export default asModalDialog<DeletePortfolioDialogProps, {}, DispatchProps>(
 { 
     name: ModalDialogNames.DeletePortfolio, 
     centered: true, 

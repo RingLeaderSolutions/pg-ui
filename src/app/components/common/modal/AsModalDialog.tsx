@@ -17,14 +17,14 @@ export interface ModalDialogSettings extends ModalProps {
 }
 
 /* Higher Order Component (HOC) for managing a modal dialog and ensuring it is appropriately connected to our application state  */
-export default function asModalDialog<TModalProps extends ModalDialogProps<any>>(
+export default function asModalDialog<TModalProps extends ModalDialogProps<any>, TStateProps = {}, TDispatchProps = {}>(
         settings: ModalDialogSettings, 
         mapComponentStateToProps?: MapStateToProps<any, TModalProps, ApplicationState>, 
         mapComponentDispatchToProps?: MapDispatchToPropsFunction<any, TModalProps>){
 
     const { name } = settings;
 
-    return (WrappedComponent: React.ComponentType<TModalProps>) => {
+    return (WrappedComponent: React.ComponentType<TModalProps & TDispatchProps & TStateProps>) => {
         const ReduxReactstrapModalContainer = (props: TModalProps) => {
             return (
                 <Modal {...settings} isOpen={props.isOpen}>

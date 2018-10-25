@@ -129,7 +129,7 @@ const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, UpdateContac
     };
 };
 
-export default asModalDialog(
+export default asModalDialog<UpdateContactDialogProps, {}, DispatchProps>(
 { 
     name: ModalDialogNames.UpdateAccountContact, 
     centered: true, 

@@ -195,7 +195,7 @@ const mapStateToProps: MapStateToProps<StateProps, RatesImportReportDialogProps,
     };
 };
 
-export default asModalDialog(
+export default asModalDialog<RatesImportReportDialogProps, StateProps>(
 { 
     name: ModalDialogNames.RatesImportReport, 
     centered: true, 

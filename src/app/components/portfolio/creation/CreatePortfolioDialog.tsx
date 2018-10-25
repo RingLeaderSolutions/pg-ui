@@ -172,7 +172,7 @@ const mapStateToProps: MapStateToProps<StateProps, CreatePortfolioDialogProps, A
     };
 };
   
-export default asModalDialog(
+export default asModalDialog<CreatePortfolioDialogProps, StateProps, DispatchProps>(
 { 
     name: ModalDialogNames.CreatePortfolio, 
     centered: true, 

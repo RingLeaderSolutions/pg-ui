@@ -1,5 +1,5 @@
 import * as React from "react";
-import { MapDispatchToPropsFunction, connect, MapStateToProps } from 'react-redux';
+import { MapDispatchToPropsFunction, connect, MapStateToProps, DispatchProp } from 'react-redux';
 import { ApplicationState } from '../../../applicationState';
 import Spinner from '../../common/Spinner';
 import * as cn from "classnames";
@@ -251,7 +251,7 @@ const mapStateToProps: MapStateToProps<StateProps, AddExistingContractDialogProp
     };
 };
   
-export default asModalDialog(
+export default asModalDialog<AddExistingContractDialogProps, StateProps, DispatchProps>(
 { 
     name: ModalDialogNames.CreateAccountContract, 
     centered: true, 

@@ -134,7 +134,7 @@ const mapStateToProps: MapStateToProps<StateProps, UploadOfferDialogProps, Appli
     };
 };
   
-export default asModalDialog(
+export default asModalDialog<UploadOfferDialogProps, StateProps, DispatchProps>(
 { 
     name: ModalDialogNames.UploadOffer, 
     centered: true, 

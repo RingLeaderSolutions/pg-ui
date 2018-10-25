@@ -104,7 +104,7 @@ const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, UploadContra
 };
   
   
-export default asModalDialog(
+export default asModalDialog<UploadContractRatesDialogProps, {}, DispatchProps>(
 { 
     name: ModalDialogNames.UploadAccountContractRates, 
     centered: true, 

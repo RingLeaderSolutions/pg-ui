@@ -160,7 +160,7 @@ const mapStateToProps: MapStateToProps<StateProps, IssueTenderPackDialogProps, A
     };
 };
   
-export default asModalDialog(
+export default asModalDialog<IssueTenderPackDialogProps, StateProps, DispatchProps>(
 { 
     name: ModalDialogNames.IssueTenderPack, 
     centered: true, 
