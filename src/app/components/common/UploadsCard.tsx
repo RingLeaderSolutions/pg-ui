@@ -15,6 +15,7 @@ import { ModalDialogNames } from "./modal/ModalDialogNames";
 import { openDialog } from "../../actions/viewActions";
 import { LoadingIndicator } from "./LoadingIndicator";
 import { fetchAccountUploads } from "../../actions/hierarchyActions";
+import AlertDialog, { AlertDialogData } from "./modal/AlertDialog";
 
 interface UploadsCardProps {
     entityId: string;
@@ -36,6 +37,7 @@ interface DispatchProps {
 
     openRatesImportReportDialog: () => void;
     openUploadReportDialog: () => void;
+    openAlertDialog: (data: AlertDialogData) => void;
 }
 
 interface PortfolioUploadsState {
@@ -62,6 +64,14 @@ class UploadsCard extends React.Component<UploadsCardProps & StateProps & Dispat
     }
 
     fetchAndDisplayReport(uri: string, isImport: boolean){
+        if(!uri || uri.IsWhitespace()){
+            this.props.openAlertDialog({
+                body: "Sorry, there appears to be a problem with this upload report. Please get in touch with the TPI Flow support team.",
+                title: "Error"
+            });
+            return;
+        }
+        
         this.props.fetchUploadReport(uri);
         if(isImport){
             this.props.openRatesImportReportDialog();
@@ -205,6 +215,7 @@ class UploadsCard extends React.Component<UploadsCardProps & StateProps & Dispat
                 </CardBody>
                 <RatesImportReportDialog />
                 <UploadReportDialog />
+                <AlertDialog />
             </Card>);
     }
 }
@@ -216,7 +227,8 @@ const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, UploadsCardP
         fetchUploadReport: (uri: string) => dispatch(fetchUploadReport(uri)),
         
         openRatesImportReportDialog: () => dispatch(openDialog(ModalDialogNames.RatesImportReport)),
-        openUploadReportDialog: () => dispatch(openDialog(ModalDialogNames.UploadReport))
+        openUploadReportDialog: () => dispatch(openDialog(ModalDialogNames.UploadReport)),
+        openAlertDialog: (data: AlertDialogData) => dispatch(openDialog(ModalDialogNames.Alert, data))
     };
 };
   

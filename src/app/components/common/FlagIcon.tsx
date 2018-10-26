@@ -7,7 +7,7 @@ interface FlagIconProps {
 export const FlagIcon: React.SFC<FlagIconProps> = (props) => {
     let { country } = props;
 
-    if(country.IsNullOrWhitespace()){
+    if(!country || country.IsWhitespace()){
         return null;
     }
 

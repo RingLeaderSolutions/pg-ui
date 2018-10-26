@@ -315,7 +315,7 @@ class TenderStatus extends React.Component<TenderStatusProps & StateProps & Disp
                         <CardBody className="p-0 d-flex flex-column">
                             <Row className="p-2 d-flex align-items-center flex-grow-1" noGutters>
                                 <Col className="text-center px-1">
-                                    {tender.deadlineNotes.IsNullOrWhitespace() ? 
+                                    {!tender.deadlineNotes || tender.deadlineNotes.IsWhitespace() ? 
                                         (<h4 className="m-0">{this.props.tender.deadline ? deadline.local().format("DD/MM/YYYY") : "-"}</h4>) : 
                                         (
                                             <div>

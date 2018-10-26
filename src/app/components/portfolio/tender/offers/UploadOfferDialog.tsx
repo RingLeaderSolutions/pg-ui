@@ -72,7 +72,7 @@ class UploadOfferDialog extends React.Component<ModalDialogProps<UploadOfferDial
     }
 
     canSubmit(){
-        return this.state.file != null && !this.state.supplierId.IsNullOrEmpty();
+        return this.state.file && this.state.supplierId && !this.state.supplierId.IsEmpty();
     }
     
     render() {  

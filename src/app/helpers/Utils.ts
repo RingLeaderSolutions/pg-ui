@@ -7,7 +7,7 @@ export class Arg {
 
     public static isRequiredNotEmpty(val: string, name: string) : void {
         this.isRequired(val, name);
-        if(val.IsNullOrWhitespace()){
+        if(!val || val.IsWhitespace()){
             throw new Error(`The '${name}' argument cannot be empty or whitespace.`);
         }
     }
@@ -23,7 +23,7 @@ export class Arg {
 export class Strings {
     public static AreNotNullOrEmpty(...values: string[]): boolean {
         return values.every(s => {
-            return !s.IsNullOrEmpty();
+            return s && !s.IsEmpty();
         });
     }
 }

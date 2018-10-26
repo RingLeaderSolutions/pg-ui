@@ -66,7 +66,7 @@ class UploadHistoricDialog extends React.Component<ModalDialogProps<UploadHistor
     }
 
     canSubmit(){
-        return this.state.files != null && !this.state.historicalType.IsNullOrEmpty();
+        return this.state.files && this.state.historicalType && !this.state.historicalType.IsEmpty();
     }
 
     render() {

@@ -48,7 +48,7 @@ class IssueTenderPackDialog extends React.Component<ModalDialogProps<IssueTender
     }
 
     static getDerivedStateFromProps(props: ModalDialogProps<IssueTenderPackDialogData> & StateProps & DispatchProps, state: IssueTenderPackDialogState) : IssueTenderPackDialogState {
-        let dialogEmpty = state.subject.IsNullOrWhitespace() || state.body.IsNullOrWhitespace();
+        let dialogEmpty = state.subject === null || state.subject.IsWhitespace() || !state.body || state.body.IsWhitespace();
         if(!props.email || !dialogEmpty){
             return null;
         }

@@ -101,7 +101,8 @@ class QuickOfferDialog extends React.Component<ModalDialogProps<QuickOfferDialog
     }
 
     canSubmit(){
-        return !this.state.selectedSupplierId.IsNullOrEmpty()
+        return this.state.selectedSupplierId && 
+            !this.state.selectedSupplierId.IsWhitespace()
             && this.state.quoteEntries.every(qe => Number(qe.rate) > 0 && Number(qe.standingCharge) > 0);
     }
     

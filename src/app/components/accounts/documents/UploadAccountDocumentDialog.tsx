@@ -60,7 +60,7 @@ class UploadAccountDocumentDialog extends React.Component<ModalDialogProps<Uploa
     }
 
     canSubmit(){
-        return this.state.file != null && !this.state.documentType.IsNullOrEmpty();
+        return this.state.file && this.state.documentType && !this.state.documentType.IsEmpty();
     }
 
     render() {
