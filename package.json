@@ -7,9 +7,10 @@
   "scripts": {
     "build": "webpack -p --config src/app/webpack.production.config.js",
     "build-dev": "webpack --config src/app/webpack.config.js",
-    "debug": "nodemon --ext js,env,json --ignore '/build/*.js' --ignore '/src/app/*.js' --verbose ./src/server/server.js",
+    "debug": "nodemon --ext js,env,json,ts --ignore '/build/*.js' --ignore '/src/app/*.js' --verbose ./src/server/server.js",
     "debug-client": "node src/server/server.js",
-    "start": "node src/server/server.js"
+    "start": "node src/server/server.js",
+    "lint": "tslint -c tslint.json 'src/**/*.{ts,tsx}"
   },
   "repository": {
     "type": "git",
@@ -46,6 +47,9 @@
     "style-loader": "^0.23.0",
     "terser-webpack-plugin": "^1.1.0",
     "ts-loader": "^4.5.0",
+    "tslint": "^5.11.0",
+    "tslint-react": "^3.6.0",
+    "tslint-sonarts": "^1.8.0",
     "typescript": "^2.8.0",
     "webpack": "^4.18.1",
     "webpack-cli": "^3.1.0",
