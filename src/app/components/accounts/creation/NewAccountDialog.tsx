@@ -60,7 +60,7 @@ class NewAccountDialog extends React.Component<ModalDialogProps & StateProps & D
             case AccountCreationStage.Creation:
                 return (
                     <div className="modal-content">
-                        <ModalHeader toggle={this.props.toggle}><i className="fas fa-building mr-2"></i>Working...</ModalHeader>
+                        <ModalHeader toggle={() => this.finishCreation()}><i className="fas fa-building mr-2"></i>Working...</ModalHeader>
                         <ModalBody>
                             <LoadingIndicator text="Creating account..." />
                         </ModalBody>
@@ -68,12 +68,12 @@ class NewAccountDialog extends React.Component<ModalDialogProps & StateProps & D
             case AccountCreationStage.Complete:
                 return (
                     <div className="modal-content">
-                        <ModalHeader toggle={this.props.toggle}><i className="fa fa-check-circle mr-2 text-success"></i>Success!</ModalHeader>
+                        <ModalHeader toggle={() => this.finishCreation()}><i className="fa fa-check-circle mr-2 text-success"></i>Success!</ModalHeader>
                         <ModalBody>
                             Your account has been created! Click below to exit this screen.
                         </ModalBody>
                         <ModalFooter>
-                            <Button onClick={this.props.toggle}>
+                            <Button onClick={() => this.finishCreation()}>
                                 <i className="fas fa-arrow-circle-right mr-1"></i>Contrinue
                             </Button>
                         </ModalFooter>
