@@ -119,7 +119,7 @@ class CompanySearch extends React.Component<CompanySearchProps & DispatchProps &
                                     </div>
                                 </div>
                             <hr />
-                            <p>If this is the company you were looking for, click the <i>Continue</i> button below.</p>
+                            <p className="mb-0">If this is the company you were looking for, click the <i>Continue</i> button below.</p>
                             </div>
                         )}
                     </Form>
