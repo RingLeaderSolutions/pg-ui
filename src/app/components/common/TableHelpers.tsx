@@ -159,9 +159,11 @@ export class ReactTablePagination extends React.Component<Partial<PaginationProp
               this.renderPageItem(1, isActivePage(1))
           ];
 
-          if(currentPage == maxPage || currentPage > maxPage - 5){
+
+          let minPage = (maxPage - 5) >= 2 ? maxPage - 5 : 2;
+          if(currentPage == maxPage || currentPage > minPage){
               pageOptions.push(this.renderEllipsisPageItem("previous-ellipsis"));
-              for (let index = maxPage - 5; index < maxPage; index++) {
+              for (let index = minPage; index < maxPage; index++) {
                   let latePage = this.renderPageItem(index, isActivePage(index))
                   pageOptions.push(latePage);
               }
