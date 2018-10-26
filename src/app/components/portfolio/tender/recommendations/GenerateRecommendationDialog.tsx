@@ -111,9 +111,7 @@ class GenerateRecommendationDialog extends React.Component<ModalDialogProps<Gene
 
     canSubmit(){
         return Strings.AreNotNullOrEmpty(
-            this.state.selectedQuoteId,
-             this.state.marketCommentary,
-              this.state.selectionCommentary);
+            this.state.selectedQuoteId);
     }
 
     render() {
