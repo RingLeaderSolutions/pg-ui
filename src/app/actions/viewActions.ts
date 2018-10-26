@@ -59,9 +59,49 @@ export function redirectToPortfolio(portfolioId: string){
     return redirect(portfolioPath);
 }
 
-export function redirectToAccount(accountId: string){
-    let portfolioPath = `/account/${accountId}`;
-    return redirect(portfolioPath);
+export function redirectToAccount(accountId: string, selectedTab?: "summary" | "meters" | "contracts" | "documentation" | "contacts"){
+    return (dispatch: Dispatch<any>) => {
+        if(selectedTab){
+            let selectedIndex: number;
+            switch(selectedTab){
+                case "summary":
+                    selectedIndex = 0;
+                    break;
+                case "meters":
+                    selectedIndex = 1;
+                    break;
+                case "contracts":
+                    selectedIndex = 2;
+                    break;
+                case"documentation":
+                    selectedIndex = 3;
+                    break;
+                case "contacts":
+                    selectedIndex = 4;
+                    break;
+            }
+            dispatch( { type: types.SELECT_ACCOUNT_TAB, data: selectedIndex });
+        }
+        
+        let accountPath = `/account/${accountId}`;
+        dispatch(push(accountPath))
+    }
+}
+
+export function redirectToAccountContracts(accountId: string){
+    let accountPath = `/account/${accountId}`;
+    return (dispatch: Dispatch<any>) => {
+        dispatch( { type: types.SELECT_ACCOUNT_TAB, data: 2 });
+        dispatch(push(accountPath))
+    };
+}
+
+export function redirectToAccountMeters(accountId: string){
+    let accountPath = `/account/${accountId}`;
+    return (dispatch: Dispatch<any>) => {
+        dispatch( { type: types.SELECT_ACCOUNT_TAB, data: 1 });
+        dispatch(push(accountPath))
+    };
 }
 
 function redirect(path: string){

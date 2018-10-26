@@ -7,11 +7,10 @@ import { Tender, TenderSupplier } from "../../../model/Tender";
 import ContractRatesDialog from './ContractRatesDialog';
 import Spinner from "../../common/Spinner";
 import { format } from 'currency-formatter';
-import { Link } from "react-router-dom";
 import { PortfolioSummary } from "../../../model/PortfolioDetails";
 import { Col, Row, Card, CardBody, CardHeader, Button, Alert } from "reactstrap";
 import { ModalDialogNames } from "../../common/modal/ModalDialogNames";
-import { openDialog } from "../../../actions/viewActions";
+import { openDialog, redirectToAccount } from "../../../actions/viewActions";
 
 interface TenderContractViewProps {
     tender: Tender;
@@ -26,6 +25,7 @@ interface StateProps {
 interface DispatchProps {
     fetchContractBackingSheets: (tenderId: string, contractId: string) => void;
     openContractRatesDialog: () => void;
+    redirectToAccountContracts: (accountId: string) => void;
 }
 
 class TenderContractView extends React.Component<TenderContractViewProps & DispatchProps & StateProps, {}> { 
@@ -84,7 +84,7 @@ class TenderContractView extends React.Component<TenderContractViewProps & Dispa
                                 We couldn't match this portfolio's included meters to a valid existing contract on its account.
                             </p>
                             <p className="mt-1 mb-0 pl-3">
-                                <Link to={`/account/${this.props.portfolio.accountId}`}><Button color="secondary"><i className="fas fa-building mr-1"></i>Click here</Button></Link> to visit the account and add one.
+                                <Button color="secondary" onClick={() => this.props.redirectToAccountContracts(this.props.portfolio.accountId)}><i className="fas fa-building mr-1"></i>Click here</Button> to visit the account and add one.
                             </p>
                         </div>
                     </div>
@@ -105,7 +105,7 @@ class TenderContractView extends React.Component<TenderContractViewProps & Dispa
                             This contract does not yet have any rates associated with it.
                             </p>
                             <p className="mt-1 mb-0 pl-3">
-                                <Link to={`/account/${this.props.portfolio.accountId}`}><Button color="secondary"><i className="fas fa-building mr-2"></i>Click here</Button></Link> to visit the account where you can upload some.
+                                <Button color="secondary" onClick={() => this.props.redirectToAccountContracts(this.props.portfolio.accountId)}><i className="fas fa-building mr-2"></i>Click here</Button> to visit the account where you can upload some.
                             </p>
                         </div>
                     </div>
@@ -145,7 +145,9 @@ class TenderContractView extends React.Component<TenderContractViewProps & Dispa
 const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, TenderContractViewProps> = (dispatch) => {
     return {
         fetchContractBackingSheets: (tenderId: string, contractId: string) => dispatch(fetchContractBackingSheets(tenderId, contractId)),
-        openContractRatesDialog: () => dispatch(openDialog(ModalDialogNames.ContractRates))
+        openContractRatesDialog: () => dispatch(openDialog(ModalDialogNames.ContractRates)),
+
+        redirectToAccountContracts: (accountId: string) => dispatch(redirectToAccount(accountId, "contracts")),
     };
 };
   
