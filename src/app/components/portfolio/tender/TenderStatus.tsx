@@ -142,6 +142,7 @@ class TenderStatus extends React.Component<TenderStatusProps & StateProps & Disp
         let tariff = this.props.tariffs.find(t => t.id == tender.requirements.tariffId);
         var eligibleSupplierCount = this.getSupplierCount();
         var totalCommission = (tender.commission / 100) * tender.annualConsumption;
+        totalCommission = totalCommission + (tender.commissionPerMonth * 12);
 
         let offerTypeCount = tender.offerTypes.length;
         var durationsString = tender.offerTypes
