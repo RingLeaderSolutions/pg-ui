@@ -105,7 +105,7 @@ class TenderOffersTable extends React.Component<TenderOffersTableProps & StatePr
                 case "EMAIL":
                     return this.renderIndicator(`fas fa-envelope ${margin}`, index, quoteId, "This offer was uploaded via email.");
                 case "UPLOAD":
-                    return this.renderIndicator(`fas fa-cloud-upload-alt ${margin}`, index, quoteId, "This offer was uploaded manually.");
+                    return this.renderIndicator(`fas fa-cloud-upload-alt ${margin}`, index, quoteId, "This offer was uploaded manually from a supplier file.");
                 case "METER_ERROR":
                     return this.renderIndicator(`fas fa-tachometer-alt text-danger ${margin}`, index, quoteId, "This offer has missing meters or are in an error state.");
                 case "DATE_ERROR":
@@ -113,7 +113,9 @@ class TenderOffersTable extends React.Component<TenderOffersTableProps & StatePr
                 case "CONSUMPTION_VARIATION":
                     return this.renderIndicator(`fas fa-chart-line text-orange ${margin}`, index, quoteId, "This offer's consumption varies by more than 10%.");
                 case "TARIFF_VARIATION":
-                    return this.renderIndicator(`fas fa-exclamation-triangle ${margin}`, index, quoteId, "This offer has meters with tariffs that do not match the previously accepted periods.");
+                    return this.renderIndicator(`fas fa-exclamation-triangle text-orange ${margin}`, index, quoteId, "This offer has meters with tariffs that do not match the previously accepted periods.");
+                case "MANUAL":
+                    return this.renderIndicator(`fas fa-keyboard ${margin}`, index, quoteId, "This offer was entered manually through the quick offer screen.");
                 default:
                     return this.renderIndicator(`fas fa-info-circle ${margin}`, index, quoteId, i.detail);
             }
