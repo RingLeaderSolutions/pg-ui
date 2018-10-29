@@ -14,6 +14,7 @@ import { ModalDialogNames } from "../../../common/modal/ModalDialogNames";
 import { LoadingIndicator } from "../../../common/LoadingIndicator";
 import { Strings } from "../../../../helpers/Utils";
 import { ModalHeader, ModalBody, ModalFooter, Form, FormGroup, Label, Input, Button, Navbar, Nav, NavItem, NavLink, Col, Row, InputGroup, InputGroupAddon, CustomInput } from "reactstrap";
+import { selectTenderTab } from "../../../../actions/viewActions";
 
 export interface CreateTenderDialogData {
     portfolioId: string;
@@ -31,6 +32,7 @@ interface StateProps {
 interface DispatchProps {
     createTender: (portfolioId: string, tender: Tender, utility: UtilityType, isHalfHourly: boolean) => void;
     fetchTariffs: () => void;    
+    selectTenderSummaryTab: () => void;
 }
 
 interface CreateTenderState {
@@ -183,6 +185,7 @@ class CreateTenderDialog extends React.Component<ModalDialogProps<CreateTenderDi
         }
 
         this.props.createTender(portfolioId, tender, utility, isHalfHourly);
+        this.props.selectTenderSummaryTab();
         this.props.toggle();
     }
 
@@ -428,7 +431,8 @@ class CreateTenderDialog extends React.Component<ModalDialogProps<CreateTenderDi
 const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, {}> = (dispatch) => {
     return {
         createTender: (portfolioId, tender, utilityType, isHalfHourly) => dispatch(createTender(portfolioId, tender, utilityType, isHalfHourly)),
-        fetchTariffs: () => dispatch(fetchTariffs())
+        fetchTariffs: () => dispatch(fetchTariffs()),
+        selectTenderSummaryTab: () => dispatch(selectTenderTab(0))
     };
 };
   
