@@ -186,7 +186,7 @@ class Accounts extends React.Component<AccountsProps & StateProps & DispatchProp
         return (
             <div className="w-100 px-4">
                 <PageHeader title="All" subtitle="Accounts" icon="fas fa-building"/>
-                <Card>
+                <Card className="mb-4">
                     <CardBody className="p-0">
                         <div className="d-flex p-2 justify-content-between">
                             <div className="d-flex">
