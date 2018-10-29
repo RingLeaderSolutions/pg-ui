@@ -132,11 +132,10 @@ class PortfolioMeters extends React.Component<PortfolioMetersProps & StateProps 
             sortable: false,
             Cell: row => {
                 var mpanCore = row.value;
-                return (
-                <Button color="danger" outline className="btn-grey-outline" 
-                    onClick={(ev: any) => PortfolioMeters.excludeMeter(props, ev, mpanCore)}>
-                        <i className="fas fa-folder-minus"></i>
-                </Button>)   
+
+                return (<a href="#" onClick={(ev: any) => PortfolioMeters.excludeMeter(props, ev, mpanCore)} className="d-inline-block h-100 w-100 text-danger">
+                    <i className="fas fa-trash-alt" />
+                    </a>);
             }
         });
 
@@ -177,7 +176,9 @@ class PortfolioMeters extends React.Component<PortfolioMetersProps & StateProps 
             title: "Confirm",
             body: `Are you sure you want to exclude the "${mpanCore}" meter from this portfolio?`,
             confirmText: "Yes",
-            confirmIcon: "check",
+            confirmIcon: "trash-alt",
+            headerClass: "modal-header-danger",
+            confirmButtonColor: "danger",
             onConfirm: () => props.excludeMeters(props.portfolio.id,  [mpanCore])
         });
     }
