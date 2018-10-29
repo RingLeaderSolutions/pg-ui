@@ -1,7 +1,6 @@
 import * as React from "react";
 import { MapDispatchToPropsFunction, connect } from 'react-redux';
 import { SiteDetail } from '../../../model/HierarchyObjects';
-import { Link } from "react-router-dom";
 import ReactTable, { Column } from "react-table";
 import { BooleanCellRenderer, NoMatchesComponent, ReactTablePagination, SortFirstColumn } from "../../common/TableHelpers";
 import { openDialog } from "../../../actions/viewActions";
@@ -14,7 +13,6 @@ import { UtilityType } from "../../../model/Models";
 interface AccountGasMeterTableProps {
     accountId: string;
     sites: SiteDetail[];
-    portfolios: any;
     tariffs: Tariff[];
 }
 
@@ -164,14 +162,6 @@ class AccountGasMeterTable extends React.Component<AccountGasMeterTableProps & D
                     })
                 });
         return [].concat.apply([], metersBySites);
-    }
-
-    renderPortfolioButtons(){
-        return Object.keys(this.props.portfolios).map(p => {
-            var portfolioId = this.props.portfolios[p];
-            var portfolioLink = `/portfolio/${portfolioId}`;
-            return (<Link to={portfolioLink} key={portfolioId}><button className='uk-button uk-button-default uk-button-small uk-margin-small-right' data-uk-tooltip="title: Jump to portfolio"><i className="fa fa-external-link-alt uk-margin-small-right"></i>  {p}</button></Link>)
-        })
     }
 
     render() {

@@ -4,7 +4,7 @@ import { RouteComponentProps } from 'react-router';
 import { MapDispatchToPropsFunction, connect, MapStateToProps } from 'react-redux';
 import { ApplicationState } from '../../applicationState';
 import { AccountDetail, ApplicationTab } from '../../model/Models';
-import { selectAccountTab, selectApplicationTab, openDialog } from "../../actions/viewActions";
+import { selectAccountTab, selectApplicationTab, openDialog, redirectToPortfolio } from "../../actions/viewActions";
 
 import { retrieveAccountDetail, fetchAccountPortfolios } from '../../actions/hierarchyActions';
 import AccountContactsView from "./contacts/AccountContactsView";
@@ -12,12 +12,13 @@ import AccountDocumentsView from "./documents/AccountDocumentsView";
 import AccountContractsView from "./contracts/AccountContractsView";
 import AccountSummaryView from "./AccountSummaryView";
 import * as cn from "classnames";
-import { Nav, NavItem, NavLink, Button, UncontrolledTooltip, Navbar } from "reactstrap";
+import { Nav, NavItem, NavLink, Button, UncontrolledTooltip, Navbar, UncontrolledDropdown, DropdownToggle, DropdownMenu, DropdownItem } from "reactstrap";
 import { PageHeader } from "../common/PageHeader";
 import AccountMeters from "./meters/AccountMeters";
 import { LoadingIndicator } from "../common/LoadingIndicator";
 import UpdateAccountDialog, { UpdateAccountDialogData } from "./creation/UpdateAccountDialog";
 import { ModalDialogNames } from "../common/modal/ModalDialogNames";
+import { IsNullOrEmpty } from "../../helpers/extensions/ArrayExtensions";
 
 interface AccountDetailViewProps extends RouteComponentProps<void> {
 }
@@ -39,6 +40,7 @@ interface DispatchProps {
     selectApplicationTab: (tab: ApplicationTab) => void;
 
     openUpdateAccountDialog: (data: UpdateAccountDialogData) => void;
+    redirectToPortfolio: (portfolioId: string) => void;
 }
 
 class AccountDetailView extends React.Component<AccountDetailViewProps & StateProps & DispatchProps, {}> {
@@ -59,7 +61,7 @@ class AccountDetailView extends React.Component<AccountDetailViewProps & StatePr
             case 0:
                 return (<AccountSummaryView />)
             case 1:
-                return (<AccountMeters sites={this.props.account.sites} portfolios={this.props.portfolios} accountId={this.props.account.id} />);
+                return (<AccountMeters sites={this.props.account.sites} accountId={this.props.account.id} />);
             case 2:
                 return (<AccountContractsView />)
             case 3:
@@ -79,20 +81,38 @@ class AccountDetailView extends React.Component<AccountDetailViewProps & StatePr
             return (<LoadingIndicator />);
         }
 
-        var selectedAccount = this.props.account;
-
+        const selectedAccount = this.props.account;
+        const portfolioKeys = this.props.portfolios === null ? [] : Object.keys(this.props.portfolios);
         return (
             <div className="w-100">
-                <PageHeader title={selectedAccount.companyName} subtitle="account" icon="fas fa-building" className="px-4">
-                    <Button color="accent" outline className="ml-auto btn-grey-outline" id="edit-account-button"
-                            onClick={() => this.props.openUpdateAccountDialog({ account: selectedAccount })}>
-                        <i className="material-icons">
-                            mode_edit
-                        </i>
-                    </Button>
-                    <UncontrolledTooltip target="edit-account-button" placement="bottom">
-                        <strong>Edit Account</strong>
-                    </UncontrolledTooltip>
+                <PageHeader title={selectedAccount.companyName} subtitle="account" icon="fas fa-building" className="px-4 flex-column flex-md-row">
+                    <div className="w-100 d-flex align-items-center justify-content-between justify-content-md-start">
+                        {!IsNullOrEmpty(portfolioKeys) && 
+                            (<UncontrolledDropdown>
+                                <DropdownToggle color="white" caret>
+                                    <i className="fas fa-layer-group mr-1" />
+                                    <span className="mr-1">Portfolios</span>
+                                </DropdownToggle>
+                                <DropdownMenu right>
+                                    {portfolioKeys.map(portfolioName => {
+                                        var portfolioId = this.props.portfolios[portfolioName];
+                                        return (
+                                            <DropdownItem key={portfolioId} href="#" onClick={() => this.props.redirectToPortfolio(portfolioId)}>
+                                                    <i className="fas fa-share mr-1" /> 
+                                                    {portfolioName}
+                                            </DropdownItem>)})}
+                                </DropdownMenu>
+                            </UncontrolledDropdown>)}
+                        <Button color="accent" outline className="ml-auto ml-md-3 btn-grey-outline" id="edit-account-button"
+                                onClick={() => this.props.openUpdateAccountDialog({ account: selectedAccount })}>
+                            <i className="material-icons">
+                                mode_edit
+                            </i>
+                        </Button>
+                        <UncontrolledTooltip target="edit-account-button" placement="bottom">
+                            <strong>Edit Account</strong>
+                        </UncontrolledTooltip>
+                    </div>
                 </PageHeader>
                 <Navbar className="p-0 bg-white border-top">
                     <Nav tabs className="justify-content-center flex-grow-1">
@@ -149,7 +169,9 @@ const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, AccountDetai
         selectAccountTab: (index: number) => dispatch(selectAccountTab(index)),
         selectApplicationTab: (tab: ApplicationTab) => dispatch(selectApplicationTab(tab)),
 
-        openUpdateAccountDialog: (data: UpdateAccountDialogData) => dispatch(openDialog(ModalDialogNames.UpdateAccount, data))
+        openUpdateAccountDialog: (data: UpdateAccountDialogData) => dispatch(openDialog(ModalDialogNames.UpdateAccount, data)),
+
+        redirectToPortfolio: (portfolioId: string) => dispatch(redirectToPortfolio(portfolioId))
     };
 };
   

@@ -14,7 +14,6 @@ import { selectAccountMeterTab } from "../../../actions/viewActions";
 interface AccountMetersProps {
     accountId: string;
     sites: SiteDetail[];
-    portfolios: any;
 }
 
 interface StateProps {
@@ -62,9 +61,9 @@ class AccountMeters extends React.Component<AccountMetersProps & StateProps & Di
 
         switch(utility){
             case UtilityType.Electricity:
-                return (<AccountElectricityMeterTable sites={sites} portfolios={this.props.portfolios} tariffs={this.props.tariffs} accountId={this.props.accountId} />);
+                return (<AccountElectricityMeterTable sites={sites} tariffs={this.props.tariffs} accountId={this.props.accountId} />);
             case UtilityType.Gas:
-                return (<AccountGasMeterTable sites={sites} portfolios={this.props.portfolios} tariffs={this.props.tariffs} accountId={this.props.accountId}/>);
+                return (<AccountGasMeterTable sites={sites} tariffs={this.props.tariffs} accountId={this.props.accountId}/>);
             default:
                 return (<p>Unknown utility selected</p>);
         }
