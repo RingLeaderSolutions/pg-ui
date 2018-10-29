@@ -42,8 +42,8 @@ interface AccountTableEntry {
     [key: string]: any;
     accountId: string;
     name: string;
-    regNumber: string;
-    country: string;
+    address: string;
+    postcode: string;
     status: string;
 }
 
@@ -52,16 +52,16 @@ class Accounts extends React.Component<AccountsProps & StateProps & DispatchProp
         Header: 'Name',
         accessor: 'name',
     },{
-        Header: 'Reg No.',
-        accessor: 'regNumber'
+        Header: 'Address',
+        accessor: 'address'
     },{
-        Header: 'Country',
-        accessor: 'country'
+        Header: 'Postcode',
+        accessor: 'postcode'
     },{
         Header: 'Status',
         accessor: 'status'
     }];
-    stringProperties: string[] = ["accountId", "name", "country", "regNumber", "status"];
+    stringProperties: string[] = ["accountId", "name", "postcode", "address", "status"];
 
     constructor(props: AccountsProps & StateProps & DispatchProps) {
         super(props);
@@ -130,6 +130,7 @@ class Accounts extends React.Component<AccountsProps & StateProps & DispatchProp
                 accountId: account.id,
                 name: account.companyName,
                 regNumber: account.companyRegistrationNumber,
+                address: account.address,
                 country: account.countryOfOrigin,
                 postcode: account.postcode,
                 incorporationDate: moment(account.incorporationDate).format("DD/MM/YYYY"),
