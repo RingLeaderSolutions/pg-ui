@@ -1063,6 +1063,10 @@ export class FakeApiService implements IApiService {
     submitQuickQuote(_tenderId: string, _quote: Model.QuickQuote) {
         return OK();
     }
+
+    retrieveAccountContacts(_accountId: string) {
+        return OK();
+    }
 }
 
 export default new FakeApiService();

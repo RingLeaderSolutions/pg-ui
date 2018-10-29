@@ -45,7 +45,21 @@ export function getPortfolioDetails(portfolioId: string){
             fetchPromise,
             200, 
             data => {
-                return { type: types.FETCH_PORTFOLIO_DETAILS_SUCCESSFUL, data: data as PortfolioDetails };
+                const details = data as PortfolioDetails;
+        
+                dispatch({ type: types.RETRIEVE_ACCOUNT_WORKING });
+
+                makeApiRequest(dispatch, 
+                    ApiService.retrieveAccount(details.portfolio.accountId),
+                    200,
+                    data => {
+                        return { type: types.RETRIEVE_ACCOUNT_SUCCESSFUL, data: data as Account };
+                    },
+                    error => {
+                        return { type: types.RETRIEVE_ACCOUNT_FAILED, errorMessage: error };
+                    });
+
+                return { type: types.FETCH_PORTFOLIO_DETAILS_SUCCESSFUL, data: data };
             }, 
             error => {
                 return { type: types.FETCH_PORTFOLIO_DETAILS_FAILED, errorMessage: error };
@@ -63,14 +77,14 @@ export function getSinglePortfolio(portfolioId: string){
             200, 
             data => {
                 var portfolios = data as Portfolio[];
-                for(var i = 0; i < portfolios.length; i++){
-                    var portfolio = portfolios[i];
-    
-                    if (portfolio.id == portfolioId){
-                        return { type: types.FETCH_SINGLE_PORTFOLIO_SUCCESSFUL, data: portfolio};
-                    }
+                let portfolio = portfolios.find(p => p.id === portfolioId);
+                if(!portfolio){
+                    return { type: types.FETCH_SINGLE_PORTFOLIO_FAILED, errorMessage: `Unable to find portfolio with id [${portfolioId}]` };                
                 }
-                return { type: types.FETCH_SINGLE_PORTFOLIO_FAILED, errorMessage: `Unable to find portfolio with id [${portfolioId}]` };                
+
+                
+                
+                return { type: types.FETCH_SINGLE_PORTFOLIO_SUCCESSFUL, data: portfolio };
             }, 
             error => {
                 return { type: types.FETCH_SINGLE_PORTFOLIO_FAILED, errorMessage: error };
@@ -99,14 +113,14 @@ export function getPortfolioHistory(portfolioId: string){
 
 export function retrieveAccount(accountId: string){
     return (dispatch: Dispatch<any>) => {
-        let updatePromise = ApiService.retrieveAccountDetail(accountId);
+        let retrieveAccount = ApiService.retrieveAccount(accountId);
         dispatch( { type: types.RETRIEVE_ACCOUNT_WORKING });
 
         makeApiRequest(dispatch,
-            updatePromise,
+            retrieveAccount,
             200, 
             data => {
-                return { type: types.RETRIEVE_ACCOUNT_SUCCESSFUL, data: data as AccountDetail };
+                return { type: types.RETRIEVE_ACCOUNT_SUCCESSFUL, data: data as Account };
                 
             }, 
             error => {

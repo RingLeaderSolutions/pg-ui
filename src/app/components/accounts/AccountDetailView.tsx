@@ -83,6 +83,7 @@ class AccountDetailView extends React.Component<AccountDetailViewProps & StatePr
 
         const selectedAccount = this.props.account;
         const portfolioKeys = this.props.portfolios === null ? [] : Object.keys(this.props.portfolios);
+        
         return (
             <div className="w-100">
                 <PageHeader title={selectedAccount.companyName} subtitle="account" icon="fas fa-building" className="px-4 flex-column flex-md-row">

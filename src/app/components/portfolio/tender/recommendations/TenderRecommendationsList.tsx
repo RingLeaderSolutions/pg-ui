@@ -7,8 +7,7 @@ import * as moment from 'moment';
 
 import { acceptQuote } from '../../../../actions/tenderActions';
 import { Tender, TenderSupplier, TenderRecommendation, TenderIssuance, isComplete } from "../../../../model/Tender";
-import { AccountDetail, PortfolioDetails } from "../../../../model/Models";
-import { retrieveAccount } from "../../../../actions/portfolioActions";
+import { PortfolioDetails, AccountContact } from "../../../../model/Models";
 import GenerateRecommendationDialog, { GenerateRecommendationDialogData } from "./GenerateRecommendationDialog";
 import RecommendationDetailDialog, { RecommendationDetailDialogData } from "./RecommendationDetailDialog";
 import SendRecommendationDialog, { SendRecommendationDialogData } from "./SendRecommendationDialog";
@@ -17,6 +16,7 @@ import { ButtonGroup, Button, Row, UncontrolledTooltip, Col, Alert, Card, CardHe
 import { openDialog } from "../../../../actions/viewActions";
 import { ModalDialogNames } from "../../../common/modal/ModalDialogNames";
 import { IsNullOrEmpty } from "../../../../helpers/extensions/ArrayExtensions";
+import { retrieveAccountContacts } from "../../../../actions/hierarchyActions";
 
 interface TenderRecommendationsListProps {
     tender: Tender;
@@ -27,12 +27,12 @@ interface StateProps {
     error: boolean;
     errorMessage: string;
     suppliers: TenderSupplier[];
-    account: AccountDetail;
+    contacts: AccountContact[];
     portfolio: PortfolioDetails;
 }
   
 interface DispatchProps {
-    retrieveAccount: (accountId: string) => void;
+    retrieveAccountContacts: (accountId: string) => void;
     acceptQuote: (tenderId: string, quoteId: string) => void;
 
     openRecommendationReportDialog: (data: RecommendationDetailDialogData) => void;
@@ -42,7 +42,7 @@ interface DispatchProps {
 
 class TenderRecommendationsList extends React.Component<TenderRecommendationsListProps & StateProps & DispatchProps, {}> {
     componentDidMount(){
-        this.props.retrieveAccount(this.props.portfolio.portfolio.accountId);
+        this.props.retrieveAccountContacts(this.props.portfolio.portfolio.accountId);
     }
 
     viewRecommendationReport(recommendation: TenderRecommendation){
@@ -142,7 +142,7 @@ class TenderRecommendationsList extends React.Component<TenderRecommendationsLis
     }
 
     renderSummaryTable(tenderComplete: boolean){
-        var hasContact = !IsNullOrEmpty(this.props.account.contacts);
+        var hasContact = !IsNullOrEmpty(this.props.contacts);
 
         let enableAction = !tenderComplete && hasContact;
         var tableContent = this.renderSummaryTableContent(enableAction);
@@ -255,7 +255,7 @@ class TenderRecommendationsList extends React.Component<TenderRecommendationsLis
 
 const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, TenderRecommendationsListProps> = (dispatch) => {
     return {
-        retrieveAccount: (accountId: string) => dispatch(retrieveAccount(accountId)),
+        retrieveAccountContacts: (accountId: string) => dispatch(retrieveAccountContacts(accountId)),
         acceptQuote: (tenderId: string, quoteId: string) => dispatch(acceptQuote(tenderId, quoteId)),
 
         openRecommendationReportDialog: (data: RecommendationDetailDialogData) => dispatch(openDialog(ModalDialogNames.RecommendationDetail, data)),
@@ -267,10 +267,10 @@ const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, TenderRecomm
 const mapStateToProps: MapStateToProps<StateProps, TenderRecommendationsListProps, ApplicationState> = (state: ApplicationState) => {
     return {
         suppliers: state.suppliers.value,
-        working: state.portfolio.tender.issue_summary.working || state.portfolio.account.working,
-        error: state.portfolio.tender.issue_summary.error || state.portfolio.account.error,
-        errorMessage: state.portfolio.tender.issue_summary.errorMessage || state.portfolio.account.errorMessage,
-        account: state.portfolio.account.value,
+        working: state.portfolio.tender.issue_summary.working || state.portfolio.account.contacts.working,
+        error: state.portfolio.tender.issue_summary.error || state.portfolio.account.contacts.error,
+        errorMessage: state.portfolio.tender.issue_summary.errorMessage || state.portfolio.account.contacts.errorMessage,
+        contacts: state.portfolio.account.contacts.value,
         portfolio: state.portfolio.details.value
     };
 };

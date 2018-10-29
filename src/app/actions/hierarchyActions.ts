@@ -41,6 +41,23 @@ export function retrieveAccountDetail(accountId: string){
     };
 }
 
+export function retrieveAccountContacts(accountId: string){
+    return (dispatch: Dispatch<any>) => {
+        let fetchPromise = ApiService.retrieveAccountContacts(accountId);
+        dispatch({ type: types.RETRIEVE_ACCOUNT_CONTACTS_WORKING });
+        
+        makeApiRequest(dispatch,
+            fetchPromise,
+            200, 
+            data => {
+                return { type: types.RETRIEVE_ACCOUNT_CONTACTS_SUCCESSFUL, data: data as AccountContact[] };
+            }, 
+            error => {
+                return { type: types.RETRIEVE_ACCOUNT_CONTACTS_FAILED, errorMessage: error };
+            });
+    };
+}
+
 export function createAccount(account: Account){
     return (dispatch: Dispatch<any>) => {
         let createPromise = ApiService.createAccount(account);

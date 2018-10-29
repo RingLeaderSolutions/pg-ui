@@ -68,8 +68,13 @@ const tenderReducer: Reducer<TenderState> = combineReducers<TenderState>({
 
 // Combine portfolio reducers to form the PortfolioState
 import { PortfolioState } from './portfolio/PortfolioState';
+import { PortfolioAccountState, retrieveAccountReducer, retrieveContactsReducer } from './portfolio/portfolioAccountReducer';
 
-import portfolioAccountReducer from './portfolio/portfolioAccountReducer';
+const portfolioAccountReducer: Reducer<PortfolioAccountState> = combineReducers<PortfolioAccountState>({
+    account: retrieveAccountReducer,
+    contacts: retrieveContactsReducer
+});
+
 import portfolioDetailsReducer from './portfolio/portfolioDetailsReducer';
 import selectedPortfolioReducer from './portfolio/selectedPortfolioReducer';
 import portfolioHistoryReducer from './portfolio/portfolioHistoryReducer';

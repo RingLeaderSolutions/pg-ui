@@ -26,6 +26,7 @@ export interface IApiService {
 
   retrieveAccounts(): Promise<AxiosResponse>;  
   retrieveAccount(accountId: string): Promise<AxiosResponse>;
+  retrieveAccountContacts(accountId: string): Promise<AxiosResponse>;
   retrieveAccountDetail(accountId: string): Promise<AxiosResponse>;
   createAccountFromCompany(company: CompanyInfo) : Promise<AxiosResponse>;
   createAccount(account: Account) : Promise<AxiosResponse>;
@@ -651,6 +652,10 @@ export class ApiService implements IApiService {
 
     fetchInstanceDetails(){
         return axios.get(`${this.baseApiUri}/portman-web/admin/instance`, this.getRequestConfig());
+    }
+
+    retrieveAccountContacts(accountId: string) {
+        return axios.get(`${this.hierarchyApiUri}/api/contact/account/${accountId}`, this.getRequestConfig());      
     }
 }
 

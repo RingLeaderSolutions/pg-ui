@@ -4,7 +4,7 @@ import * as cn from "classnames";
 import { RouteComponentProps } from 'react-router';
 import { MapDispatchToPropsFunction, connect, MapStateToProps } from 'react-redux';
 import { ApplicationState } from '../../applicationState';
-import { Portfolio, PortfolioDetails, ApplicationTab } from '../../model/Models';
+import { Portfolio, PortfolioDetails, ApplicationTab, Account } from '../../model/Models';
 import { Nav, NavItem, NavLink, Button, UncontrolledTooltip, Navbar, Col } from "reactstrap";
 import { ModalDialogNames } from "../common/modal/ModalDialogNames";
 
@@ -17,7 +17,7 @@ import { PageHeader } from "../common/PageHeader";
 import UpdatePortfolioDialog, { UpdatePortfolioDialogData } from "./creation/UpdatePortfolioDialog";
 
 import { getSinglePortfolio, getPortfolioDetails } from '../../actions/portfolioActions';
-import { selectPortfolioTab, openDialog, selectApplicationTab } from "../../actions/viewActions";
+import { selectPortfolioTab, openDialog, selectApplicationTab, redirectToAccount } from "../../actions/viewActions";
 import { getTenderSuppliers } from '../../actions/tenderActions';
 
 interface PortfolioDetailProps extends RouteComponentProps<void> { }
@@ -25,6 +25,8 @@ interface PortfolioDetailProps extends RouteComponentProps<void> { }
 interface StateProps {
   portfolio: Portfolio;
   detail: PortfolioDetails;
+  account: Account;
+
   working: boolean;
   error: boolean;
   errorMessage: string;
@@ -40,6 +42,7 @@ interface DispatchProps {
     selectApplicationTab: (tab: ApplicationTab) => void;
 
     openUpdatePortfolioDialog: (data: UpdatePortfolioDialogData) => void;
+    redirectToAccount: (accountId: string) => void;
 }
 
 class PortfolioDetail extends React.Component<PortfolioDetailProps & StateProps & DispatchProps, {}> {
@@ -78,19 +81,29 @@ class PortfolioDetail extends React.Component<PortfolioDetailProps & StateProps 
         if(this.props.working || this.props.portfolio == null){
             return (<LoadingIndicator />);
         }
-        var { portfolio, detail } = this.props;
-        // <Link to={accountLink}><button className='uk-button uk-button-default uk-button-small'><i className="fa fa-external-link-alt uk-margin-small-right"></i> Jump to Account</button></Link>
+        var { portfolio, detail, account } = this.props;
         return (
             <div className="w-100">
                 <Col className="d-flex justify-content-center justify-content-lg-start">
-                    <PageHeader title={portfolio.title} subtitle="Portfolio" icon="fas fa-layer-group" className="px-2">
-                        <Button color="accent" outline className="ml-auto btn-grey-outline" id="edit-portfolio-button"
+                    <PageHeader title={portfolio.title} subtitle="Portfolio" icon="fas fa-layer-group" className="px-2 flex-column flex-md-row">
+                        <div className="w-100 d-flex align-items-center justify-content-between justify-content-md-start">
+                        { account && (<div>
+                            <Button color="accent" outline className="ml-auto btn-grey-outline" id="account-link-button"
+                                onClick={() => this.props.redirectToAccount(account.id)}>
+                                <i className="fas fa-building mr-1" /> {account.companyName}
+                            </Button>
+                            <UncontrolledTooltip target="account-link-button" placement="bottom">
+                                <strong>Visit Account</strong>
+                            </UncontrolledTooltip>
+                        </div>)}
+                        <Button color="accent" outline className="ml-auto ml-md-3 btn-grey-outline" id="edit-portfolio-button"
                                 onClick={() => this.props.openUpdatePortfolioDialog({ portfolio, detail })}>
                             <i className="material-icons">mode_edit</i>
                         </Button>
                         <UncontrolledTooltip target="edit-portfolio-button" placement="bottom">
                             <strong>Edit Portfolio</strong>
                         </UncontrolledTooltip>
+                        </div>
                     </PageHeader>
                 </Col>
                     <Navbar className="p-0 bg-white border-top">
@@ -133,7 +146,8 @@ const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, PortfolioDet
         getTenderSuppliers: () => dispatch(getTenderSuppliers()),   
         selectPortfolioTab: (index: number) => dispatch(selectPortfolioTab(index)),
         selectApplicationTab: (tab: ApplicationTab) => dispatch(selectApplicationTab(tab)),
-        openUpdatePortfolioDialog: (data: UpdatePortfolioDialogData) => dispatch(openDialog(ModalDialogNames.UpdatePortfolio, data))
+        openUpdatePortfolioDialog: (data: UpdatePortfolioDialogData) => dispatch(openDialog(ModalDialogNames.UpdatePortfolio, data)),
+        redirectToAccount: (accountId: string) => dispatch(redirectToAccount(accountId))
     };
 };
   
@@ -141,10 +155,11 @@ const mapStateToProps: MapStateToProps<StateProps, PortfolioDetailProps, Applica
     return {
         portfolio: state.portfolio.selected.value,
         detail: state.portfolio.details.value,
+        account: state.portfolio.account.account.value,
         
         working: state.portfolio.selected.working || state.portfolio.details.working,
-        error: state.portfolio.selected.error || state.portfolio.details.error,
-        errorMessage: state.portfolio.selected.errorMessage || state.portfolio.details.errorMessage,
+        error: state.portfolio.selected.error || state.portfolio.details.error || state.portfolio.account.account.error,
+        errorMessage: state.portfolio.selected.errorMessage || state.portfolio.details.errorMessage || state.portfolio.account.account.errorMessage,
 
         selectedTab: state.view.portfolio.selectedTabIndex
     };

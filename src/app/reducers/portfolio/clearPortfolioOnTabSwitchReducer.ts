@@ -6,7 +6,10 @@ export const clearPortfolioOnTabSwitchReducer = (state: PortfolioState, action: 
     switch (action.type) {
         case types.SELECT_APPLICATION_TAB:
             return {
-                account: initialRequestState,
+                account: {
+                    account: initialRequestState,
+                    contacts: initialRequestState
+                },
                 details: initialRequestState,
                 history: initialRequestState,
                 selected: initialRequestState,
