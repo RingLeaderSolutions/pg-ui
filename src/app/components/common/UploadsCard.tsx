@@ -60,24 +60,35 @@ class UploadsCard extends React.Component<UploadsCardProps & StateProps & Dispat
         else {
             this.props.fetchAccountUploads(entityId);
         }
-        
     }
 
-    fetchAndDisplayReport(uri: string, isImport: boolean){
+    openAlertError(): void {
+        this.props.openAlertDialog({
+            body: "Sorry, there appears to be a problem with this upload report. Please get in touch with the TPI Flow support team.",
+            title: "Error"
+        });
+    }
+
+    fetchAndDisplayReport(uri: string, uploadType: string){
         if(!uri || uri.IsWhitespace()){
-            this.props.openAlertDialog({
-                body: "Sorry, there appears to be a problem with this upload report. Please get in touch with the TPI Flow support team.",
-                title: "Error"
-            });
+            this.openAlertError();
             return;
         }
         
         this.props.fetchUploadReport(uri);
-        if(isImport){
-            this.props.openRatesImportReportDialog();
-        }
-        else {
-            this.props.openUploadReportDialog();
+        switch(uploadType){
+            case "SUPPLYDATA":
+            case "HISTORICAL":
+                this.props.openUploadReportDialog();
+                break;
+
+            case "CONTRACT":
+            case "QUOTE":
+                this.props.openRatesImportReportDialog();
+                break;
+
+            default:
+                this.openAlertError();
         }
     }
 
@@ -99,11 +110,8 @@ class UploadsCard extends React.Component<UploadsCardProps & StateProps & Dispat
         });
     }
 
-    renderUploadsTable(reports: UploadReportsResponse, uploadsToRender: "tender" | "account"){
-        let importSelected = uploadsToRender == "tender";
-        let uploads =  importSelected ? reports.imports : reports.uploads;
-
-        var rows = uploads
+    renderUploadsTable(reports: UploadReportsResponse){
+        var rows = reports.uploads
             .sort(
                 (a, b) => {
                     if (a.requested > b.requested) return -1;
@@ -132,7 +140,7 @@ class UploadsCard extends React.Component<UploadsCardProps & StateProps & Dispat
                         </td>
                         <td>
                             <Button color="white" className="mx-auto"
-                                    onClick={() => this.fetchAndDisplayReport(r.uploadReportBlobURI, importSelected)}>
+                                    onClick={() => this.fetchAndDisplayReport(r.uploadReportBlobURI, r.dataType)}>
                                 <i className="far fa-eye"></i>
                             </Button>
                         </td>
@@ -168,10 +176,7 @@ class UploadsCard extends React.Component<UploadsCardProps & StateProps & Dispat
             return (<LoadingIndicator />);
         }
 
-        var hasTenderDataUploads = reports.imports.length > 0;
-        var hasAccountDataUploads = reports.uploads.length > 0;
-        var hasAnyUploads = hasTenderDataUploads || hasAccountDataUploads;
-
+        var hasUploads = reports.uploads.length > 0;
         var content = (
             <Alert color="light">
                 <div className="d-flex align-items-center">
@@ -179,32 +184,11 @@ class UploadsCard extends React.Component<UploadsCardProps & StateProps & Dispat
                     There haven't been any uploads for this {this.props.entity} yet.
                 </div>
             </Alert>);
-        if(hasTenderDataUploads && hasAccountDataUploads){
-            content = (
-                <div>
-                    <Nav tabs className="justify-content-center px-2">
-                        <NavItem>
-                            <NavLink className={cn({ active: this.state.selectedTab == "account"})}
-                                        onClick={() => this.selectTab("tender")}
-                                        href="#">
-                                Tender Data ({reports.imports.length})
-                            </NavLink>
-                        </NavItem>
-                        <NavItem>
-                            <NavLink className={cn({ active: this.state.selectedTab == "account"})}
-                                        onClick={() => this.selectTab("account")}
-                                        href="#">
-                                Account Data ({reports.uploads.length})
-                            </NavLink>
-                        </NavItem>
-                    </Nav>
-                    {this.renderUploadsTable(reports, this.state.selectedTab)}
-                </div>);
-        }
-        else if(hasAnyUploads) {
-            content = hasTenderDataUploads ? this.renderUploadsTable(reports, "tender") : this.renderUploadsTable(reports, "account");
-        }
 
+        if(hasUploads){
+            content = this.renderUploadsTable(reports);
+        }
+       
         return (
             <Card className="card-small h-100">
                 <CardHeader className="border-bottom">
