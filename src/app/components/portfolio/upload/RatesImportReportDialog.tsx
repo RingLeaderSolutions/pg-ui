@@ -161,7 +161,7 @@ class RatesImportReportDialog extends React.Component<ModalDialogProps & StatePr
                         </NavItem>)}
                     </Nav>
                 </Navbar>
-                <ModalBody className="p-0">
+                <ModalBody className="p-0" style={{overflowY: 'auto'}}>
                     {uploadReport.originalFileNameURI && (
                     <div className="text-right py-2 pr-2">
                         <Button color="accent" href={uploadReport.originalFileNameURI} id="download-rates-import-report-button">
@@ -198,5 +198,5 @@ export default AsModalDialog<{}, StateProps>(
     name: ModalDialogNames.RatesImportReport, 
     centered: true, 
     backdrop: true,
-    size: "lg"
+    size: "full"
 }, mapStateToProps, null)(RatesImportReportDialog)

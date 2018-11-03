@@ -46,7 +46,7 @@ class UploadReportDialog extends React.Component<ModalDialogProps & StateProps, 
         return (
             <div className="modal-content">
                 <ModalHeader toggle={this.props.toggle}><i className="fas fa-file-upload mr-2"></i>Upload Report: {this.props.uploadReport.uploadType}</ModalHeader>
-                <ModalBody className="p-0" style={{overflow: 'auto'}}>
+                <ModalBody className="p-0" style={{overflowY: 'auto'}}>
                     <table className="table">
                         <thead>
                             <tr>
@@ -87,5 +87,5 @@ export default AsModalDialog<{}, StateProps>(
     name: ModalDialogNames.UploadReport, 
     centered: true, 
     backdrop: true,
-    size: "lg"
+    size: "full"
 }, mapStateToProps, null)(UploadReportDialog)
