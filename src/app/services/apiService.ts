@@ -48,7 +48,7 @@ export interface IApiService {
   fetchMeterConsumption(portfolioId: string): Promise<AxiosResponse>;
   excludeMeters(portfolioId: string, meters: string[]): Promise<AxiosResponse>;
   includeMeters(portfolioId: string, meters: string[]): Promise<AxiosResponse>;
-  exportMeterConsumption(portfolioID: string): Promise<AxiosResponse>;
+  exportMeterConsumption(portfolioID: string, utility: UtilityType): Promise<AxiosResponse>;
 
   fetchPortfolioUploads(portfolioId: string): Promise<AxiosResponse>;
   fetchUploadReport(uri: string): Promise<AxiosResponse>;
@@ -446,8 +446,9 @@ export class ApiService implements IApiService {
         return axios.get(`${this.baseApiUri}/portman-web/meters/portfolio/consumption/${portfolioId}`, this.getRequestConfig());     
     }
 
-    exportMeterConsumption(portfolioId: string){
-        return axios.get(`${this.baseApiUri}/portman-web/export/consumption/portfolio/${portfolioId}`, this.getRequestConfig());        
+    exportMeterConsumption(portfolioId: string, utility: UtilityType){
+        var utilityString = utility == UtilityType.Electricity ? "electricity" : "gas";        
+        return axios.get(`${this.baseApiUri}/portman-web/export/consumption/portfolio/${portfolioId}?utility=${utilityString}`, this.getRequestConfig());        
     }
 
     fetchTenderOffers(portfolioId: string){

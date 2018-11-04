@@ -718,7 +718,7 @@ export class FakeApiService implements IApiService {
         return OK( { exportUri: rateLink });
     }
 
-    exportMeterConsumption(_portfolioId: string){
+    exportMeterConsumption(_portfolioId: string, utility: Model.UtilityType){
         var rateLink = "http://test.com/test.csv";
 
         return OK( { exportUri: rateLink });

@@ -33,7 +33,7 @@ interface StateProps {
 interface DispatchProps {
     fetchMeterConsumption: (portfolioId: string) => void;
     excludeMeters: (portfolioId: string, meters: string[]) => void;    
-    exportMeterConsumption: (portfolioId: string) => void;
+    exportMeterConsumption: (portfolioId: string, utility: UtilityType) => void;
     selectPortfolioMeterTab: (index: number) => void;
 
     openAlertConfirmDialog: (data: AlertConfirmDialogData) => void;
@@ -71,7 +71,8 @@ class PortfolioMeters extends React.Component<PortfolioMetersProps & StateProps 
     }
 
     exportMeterConsumption(){
-        this.props.exportMeterConsumption(this.props.portfolio.id);
+        const utility = this.props.selectedTab === 0 ? UtilityType.Electricity : UtilityType.Gas;
+        this.props.exportMeterConsumption(this.props.portfolio.id, utility);
     }
 
     static getDerivedStateFromProps(props: PortfolioMetersProps & StateProps & DispatchProps, state: PortfolioMetersState) : PortfolioMetersState {
@@ -319,7 +320,7 @@ const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, PortfolioMet
     return {
         fetchMeterConsumption: (portfolioId: string) => dispatch(fetchMeterConsumption(portfolioId)),
         excludeMeters: (portfolioId: string, meters: string[]) => dispatch(excludeMeters(portfolioId, meters)),
-        exportMeterConsumption: (portfolioId: string) => dispatch(exportMeterConsumption(portfolioId)),
+        exportMeterConsumption: (portfolioId: string, utility: UtilityType) => dispatch(exportMeterConsumption(portfolioId, utility)),
         selectPortfolioMeterTab: (index: number) => dispatch(selectPortfolioMeterTab(index)),
 
         openAlertConfirmDialog: (data: AlertConfirmDialogData) => dispatch(openAlertConfirmDialog(data)),

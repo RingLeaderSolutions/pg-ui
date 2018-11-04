@@ -6,7 +6,7 @@ import * as types from "./actionTypes";
 import { Dispatch } from 'redux';
 
 import { makeApiRequest } from "./common";
-import { ExportResponse } from "../model/Models";
+import { ExportResponse, UtilityType } from "../model/Models";
 
 
 export function includeMeters(portfolioId: string, meters: string[]){
@@ -62,9 +62,9 @@ export function fetchMeterConsumption(portfolioId: string){
     }
 };
 
-export function exportMeterConsumption(portfolioId: string){    
+export function exportMeterConsumption(portfolioId: string, utility: UtilityType){    
     return (dispatch: Dispatch<any>) => {
-        let fetchPromise = ApiService.exportMeterConsumption(portfolioId);
+        let fetchPromise = ApiService.exportMeterConsumption(portfolioId, utility);
         dispatch( { type: types.EXPORT_METER_CONSUMPTION_WORKING });
 
         makeApiRequest(dispatch,
