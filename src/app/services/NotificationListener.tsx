@@ -91,26 +91,25 @@ export class NotificationListener {
                 break;
             case "account":
                 if(currentAccount && data.entityId == currentAccount.id){
-                    if(data.category == "contract"){
-                        store.dispatch(getAccountContracts(currentAccount.id));
-                        return;
+                    switch(data.category){
+                        case "contract":
+                            store.dispatch(getAccountContracts(currentAccount.id));
+                            return;
+                        case "supplydata_upload_failed":
+                            showNotification(`Failed to upload ${data.description} supply data.`, false);
+                            break;
+                        case "supplydata_upload_successful":
+                            showNotification(`Successfully uploaded ${data.description} supply data`, true);
+                            break;
                     }
+
                     store.dispatch(retrieveAccountDetail(currentAccount.id));
                     store.dispatch(fetchAccountDocumentation(currentAccount.id));
                     store.dispatch(fetchAccountUploads(currentAccount.id));
                 }
-                switch(data.category){
-                    case "created":
-                    case "deleted":
-                    case "updated":
-                        store.dispatch(retrieveAccounts());
-                        break;
-                    case "supplydata_upload_failed":
-                        showNotification(`Failed to upload ${data.description} supply data.`, false);
-                        break;
-                    case "supplydata_upload_successful":
-                        showNotification(`Successfully uploaded ${data.description} supply data`, true);
-                        break;
+
+                if(data.category == "created" || data.category == "deleted" || data.category == "updated"){
+                    store.dispatch(retrieveAccounts())
                 }
                 break;
         }
