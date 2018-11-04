@@ -28,20 +28,27 @@ export class NotificationListener {
 
         switch(data.entityType.toLowerCase()){
             case "portfolio":
-            case "portfoliometers":
                 if(currentPortfolio && data.portfolioId == currentPortfolio.id){
-                    if(data.category == "deleted"){
-                        store.dispatch((dispatch: Dispatch<any>) => {
-                            dispatch(push('/portfolios'));
-                        });
+                    switch(data.category){
+                        case "historical_upload_successful":
+                            showNotification(`Successfully uploaded HH data: ${data.description}`, true);
+                            return;
+                        case "historical_upload_failed":
+                            showNotification(`Failed to upload HH data: ${data.description}`, false);
+                            return;
+                        case "deleted":
+                            store.dispatch((dispatch: Dispatch<any>) => {
+                                dispatch(push('/portfolios'));
+                            });
+                            return;
                     }
-                    else {
-                        store.dispatch(getSinglePortfolio(currentPortfolio.id));
-                        store.dispatch(getPortfolioDetails(currentPortfolio.id));
-                        store.dispatch(fetchMeterConsumption(currentPortfolio.id));
-                        store.dispatch(fetchPortfolioUploads(currentPortfolio.id));
-                    }
+
+                    store.dispatch(getSinglePortfolio(currentPortfolio.id));
+                    store.dispatch(getPortfolioDetails(currentPortfolio.id));
+                    store.dispatch(fetchMeterConsumption(currentPortfolio.id));
+                    store.dispatch(fetchPortfolioUploads(currentPortfolio.id));
                 }
+
                 if(data.category == "created" || data.category == "deleted" || data.category == "edited"){
                     store.dispatch(getAllPortfolios())
                 }
@@ -58,23 +65,11 @@ export class NotificationListener {
                         case "tenderpack_issue_failed":
                             showNotification(data.description, false);
                             break;
-                        case "contract_upload_successful":
-                            showNotification("Successfully uploaded existing contract", true);
-                            break;
-                        case "contract_upload_failed":
-                            showNotification("Failed to upload existing contract", false);
-                            break;
                         case "quote_upload_successful":
                             showNotification(`Successfully uploaded offer: ${data.description}`, true);
                             break;
                         case "quote_upload_failed":
                             showNotification(`Failed to upload offer: ${data.description}`, false);
-                            break;
-                        case "historical_upload_successful":
-                            showNotification(`Successfully uploaded HH data: ${data.description}`, true);
-                            break;
-                        case "historical_upload_failed":
-                            showNotification(`Failed to upload HH data: ${data.description}`, false);
                             break;
                         case "recommendation_generate_successful":
                             showNotification(`Successfully generated recommendation`, true);
@@ -95,6 +90,14 @@ export class NotificationListener {
                         case "contract":
                             store.dispatch(getAccountContracts(currentAccount.id));
                             return;
+                        case "contract_upload_successful":
+                            store.dispatch(getAccountContracts(currentAccount.id));
+                            showNotification("Successfully uploaded existing contract", true);
+                            break;
+                        case "contract_upload_failed":
+                            store.dispatch(getAccountContracts(currentAccount.id));
+                            showNotification("Failed to upload existing contract", false);
+                            break;
                         case "supplydata_upload_failed":
                             showNotification(`Failed to upload ${data.description} supply data.`, false);
                             break;
