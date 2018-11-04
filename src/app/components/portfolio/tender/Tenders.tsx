@@ -120,13 +120,17 @@ class Tenders extends React.Component<TendersProps & StateProps & DispatchProps,
     }
     
     checkHasMeters(tenderTypeIndex: number){
+        let hh = this.props.details.meterGroups.find(mg => mg.groupName === "HH");
+        let nhh = this.props.details.meterGroups.find(mg => mg.groupName === "NHH");
+        let gas = this.props.details.meterGroups.find(mg => mg.groupName === "GAS");
+
         switch(tenderTypeIndex){
             case 0:
-                return this.props.details.meterGroups.find(mg => mg.groupName === "HH").meterCount > 0;
+                return hh && hh.meterCount > 0;
             case 1:
-                return this.props.details.meterGroups.find(mg => mg.groupName === "NHH").meterCount > 0;
+                return nhh && nhh.meterCount > 0;
             case 2:
-                return this.props.details.meterGroups.find(mg => mg.groupName === "GAS").meterCount > 0;
+                return gas && gas.meterCount > 0;
             default:
                 throw new RangeError(`No valid tender type for index [${tenderTypeIndex}]`);
         }
@@ -274,9 +278,9 @@ const mapStateToProps: MapStateToProps<StateProps, TendersProps, ApplicationStat
         selectedTenderIndex: state.view.portfolio.selectedTenderIndex,
         selectedTenderTabIndex: state.view.portfolio.selectedTenderTabIndex,
 
-        working: state.portfolio.tender.tenders.working || state.portfolio.details.working || state.meters.consumption.working || state.portfolio.tender.offers.working || state.portfolio.tender.recommendations.working,
-        error: state.portfolio.tender.tenders.error || state.portfolio.details.error || state.meters.consumption.error || state.portfolio.tender.offers.error || state.portfolio.tender.recommendations.error,
-        errorMessage: state.portfolio.tender.tenders.errorMessage || state.portfolio.details.errorMessage || state.meters.consumption.errorMessage || state.portfolio.tender.offers.errorMessage || state.portfolio.tender.recommendations.errorMessage,
+        working: state.portfolio.tender.tenders.working || state.portfolio.details.working || state.portfolio.tender.offers.working || state.portfolio.tender.recommendations.working,
+        error: state.portfolio.tender.tenders.error || state.portfolio.details.error || state.portfolio.tender.offers.error || state.portfolio.tender.recommendations.error,
+        errorMessage: state.portfolio.tender.tenders.errorMessage || state.portfolio.details.errorMessage || state.portfolio.tender.offers.errorMessage || state.portfolio.tender.recommendations.errorMessage,
     };
 };
   

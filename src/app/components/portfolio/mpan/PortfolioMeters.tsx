@@ -215,52 +215,50 @@ class PortfolioMeters extends React.Component<PortfolioMetersProps & StateProps 
         let includedMeters = this.props.consumption.entries.map(r => r[1]);
 
         return (
-            <Card className="w-100">
-                <CardBody className="p-0">
-                    <div className="d-flex p-2 justify-content-between">
-                        <div className="d-flex">
-                        <Button color="accent" outline className="btn-grey-outline"
-                                onClick={() => this.props.openIncludeMetersDialog({ includedMeters, utility: utilityType, portfolio: this.props.details})}>
-                            <i className="fas fa-folder-plus mr-2"></i>
-                            Include
+            <div className="p-0">
+                <div className="d-flex p-2 justify-content-between">
+                    <div className="d-flex">
+                    <Button color="accent" outline className="btn-grey-outline"
+                            onClick={() => this.props.openIncludeMetersDialog({ includedMeters, utility: utilityType, portfolio: this.props.details})}>
+                        <i className="fas fa-folder-plus mr-2"></i>
+                        Include
+                    </Button>
+                    <div className="d-flex">
+                        <Button color="danger" outline className="ml-1 btn-grey-outline"
+                                onClick={() => this.props.openExcludeAllMetersDialog({includedMeters, portfolio: this.props.details})} disabled={!hasAssignedMeters}>
+                            <i className="fas fa-minus-circle mr-2"></i>
+                            Exclude all
                         </Button>
-                        <div className="d-flex">
-                            <Button color="danger" outline className="ml-1 btn-grey-outline"
-                                    onClick={() => this.props.openExcludeAllMetersDialog({includedMeters, portfolio: this.props.details})} disabled={!hasAssignedMeters}>
-                                <i className="fas fa-minus-circle mr-2"></i>
-                                Exclude all
-                            </Button>
-                        </div>
-                        </div>
-                        { utilityType == UtilityType.Electricity &&
-                            (<Button color="accent"
-                                        disabled={!hasHHMeters}
-                                        onClick={() => this.props.openUploadHistoricDialog({ details: this.props.details})} >
-                                        <i className="fas fa-file-upload mr-2"></i>Upload Historic Consumption
-                                </Button>)}
-                        <div className="d-flex">
-                            <InputGroup className="input-group-seamless">
-                                <InputGroupAddon addonType="prepend">
-                                    <InputGroupText>
-                                        <i className="fas fa-search"></i>
-                                    </InputGroupText>
-                                </InputGroupAddon>
-                                <Input placeholder="Search..."
-                                    value={this.state.searchText} onChange={(e) => this.handleSearch(e)} />
-                            </InputGroup>
-                            <Button color="success" outline className="ml-1 btn-grey-outline"
-                                        onClick={() => this.exportMeterConsumption()}
-                                        id="export-meter-data-button">
-                                <i className="fas fa-file-excel"></i>
-                            </Button>
-                            <UncontrolledTooltip target="export-meter-data-button" placement="top">
-                                Export (.XLS)
-                            </UncontrolledTooltip>
-                        </div>
                     </div>
-                    {tableContent}
-                </CardBody>
-            </Card>
+                    </div>
+                    { utilityType == UtilityType.Electricity &&
+                        (<Button color="accent"
+                                    disabled={!hasHHMeters}
+                                    onClick={() => this.props.openUploadHistoricDialog({ details: this.props.details})} >
+                                    <i className="fas fa-file-upload mr-2"></i>Upload Historic Consumption
+                            </Button>)}
+                    <div className="d-flex">
+                        <InputGroup className="input-group-seamless">
+                            <InputGroupAddon addonType="prepend">
+                                <InputGroupText>
+                                    <i className="fas fa-search"></i>
+                                </InputGroupText>
+                            </InputGroupAddon>
+                            <Input placeholder="Search..."
+                                value={this.state.searchText} onChange={(e) => this.handleSearch(e)} />
+                        </InputGroup>
+                        <Button color="success" outline className="ml-1 btn-grey-outline"
+                                    onClick={() => this.exportMeterConsumption()}
+                                    id="export-meter-data-button">
+                            <i className="fas fa-file-excel"></i>
+                        </Button>
+                        <UncontrolledTooltip target="export-meter-data-button" placement="top">
+                            Export (.XLS)
+                        </UncontrolledTooltip>
+                    </div>
+                </div>
+                {tableContent}
+            </div>
         )
     }
     
@@ -309,7 +307,11 @@ class PortfolioMeters extends React.Component<PortfolioMetersProps & StateProps 
                     </ButtonGroup>
                 </Row>
                 <Row noGutters className="mt-3">
-                    {content}
+                    <Card className="w-100">
+                        <CardBody className="p-0">
+                            {content}
+                        </CardBody>
+                    </Card>
                 </Row>
                 <IncludeMetersDialog />
                 <ExcludeAllMetersDialog />
