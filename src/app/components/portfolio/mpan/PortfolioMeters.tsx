@@ -16,6 +16,7 @@ import { ButtonGroup, InputGroup, InputGroupAddon, Input, Button, Row, InputGrou
 import { ReactTablePagination, NoMatchesComponent, SortFirstColumn } from "../../common/TableHelpers";
 import { ModalDialogNames } from "../../common/modal/ModalDialogNames";
 import { AlertConfirmDialogData } from "../../common/modal/AlertConfirmDialog";
+import { LoadingIndicator } from "../../common/LoadingIndicator";
 
 interface PortfolioMetersProps {
     portfolio: Portfolio;
@@ -31,7 +32,7 @@ interface StateProps {
 }
 
 interface DispatchProps {
-    fetchMeterConsumption: (portfolioId: string) => void;
+    fetchMeterConsumption: (portfolioId: string, utility: UtilityType) => void;
     excludeMeters: (portfolioId: string, meters: string[]) => void;    
     exportMeterConsumption: (portfolioId: string, utility: UtilityType) => void;
     selectPortfolioMeterTab: (index: number) => void;
@@ -66,7 +67,8 @@ class PortfolioMeters extends React.Component<PortfolioMetersProps & StateProps 
 
     componentDidMount(){
         if(this.props.portfolio != null){
-            this.props.fetchMeterConsumption(this.props.portfolio.id);      
+            const utility = this.props.selectedTab === 0 ? UtilityType.Electricity : UtilityType.Gas;
+            this.props.fetchMeterConsumption(this.props.portfolio.id, utility);      
         }
     }
 
@@ -80,10 +82,10 @@ class PortfolioMeters extends React.Component<PortfolioMetersProps & StateProps 
             return state;
         }
 
-        let utility = props.selectedTab == 0 ? UtilityType.Electricity : UtilityType.Gas;
+        let utility = props.selectedTab === 0 ? UtilityType.Electricity : UtilityType.Gas;
 
         let tableColumns = PortfolioMeters.createTableColumns(props, utility);
-        let tableData = PortfolioMeters.filterMeters(props.consumption, utility, state.searchText)
+        let tableData = PortfolioMeters.filterMeters(props.consumption, state.searchText)
 
         return {
             ...state,
@@ -93,9 +95,8 @@ class PortfolioMeters extends React.Component<PortfolioMetersProps & StateProps 
         };
     }
 
-    static filterMeters(consumption: MeterConsumptionSummary, utility: UtilityType, searchText: string){
-        var rawData = utility == UtilityType.Electricity ? consumption.electrictyConsumptionEntries : consumption.gasConsumptionEntries;
-        var tableData : MeterTableEntry[] = PortfolioMeters.createTableData(rawData)
+    static filterMeters(consumption: MeterConsumptionSummary, searchText: string){
+        var tableData : MeterTableEntry[] = PortfolioMeters.createTableData(consumption.entries);
         if(searchText == null || searchText == ""){
             return tableData;
         }
@@ -119,8 +120,7 @@ class PortfolioMeters extends React.Component<PortfolioMetersProps & StateProps 
 
     static createTableColumns(props: PortfolioMetersProps & StateProps & DispatchProps, utility: UtilityType): Column[] {
         let { consumption } = props;
-        var headers = utility == UtilityType.Electricity ? consumption.electricityHeaders : consumption.gasHeaders;
-        let columns: Column[] = headers.map((c, index) => {
+        let columns: Column[] = consumption.headers.map((c, index) => {
             return {
                 Header: c,
                 accessor: String(index)
@@ -161,7 +161,7 @@ class PortfolioMeters extends React.Component<PortfolioMetersProps & StateProps 
             return;
         }
 
-        var tableData: MeterTableEntry[] = PortfolioMeters.filterMeters(this.props.consumption, this.state.utility, raw);
+        var tableData: MeterTableEntry[] = PortfolioMeters.filterMeters(this.props.consumption, raw);
 
         this.setState({
             ...this.state,
@@ -184,9 +184,9 @@ class PortfolioMeters extends React.Component<PortfolioMetersProps & StateProps 
         });
     }
 
-    renderDynamicTable(values: string[][], utilityType: UtilityType){
+    renderDynamicTable(utilityType: UtilityType){
         // Immediate check to see if the server has returned any meters of this type to us at all
-        const hasAssignedMeters = values.length > 0;
+        const hasAssignedMeters = this.props.consumption.entries.length > 0;
         
         var tableContent;
         if(!hasAssignedMeters){
@@ -211,10 +211,8 @@ class PortfolioMeters extends React.Component<PortfolioMetersProps & StateProps 
                     minRows={0}/>);
         }
 
-        var hasHHMeters = hasAssignedMeters && values.filter(arr => arr[2] == "HH").length > 0;
-        let includedMeters = utilityType === UtilityType.Electricity ? 
-            this.props.consumption.electrictyConsumptionEntries.map(r => r[1]) : 
-            this.props.consumption.gasConsumptionEntries.map(r => r[1]);
+        var hasHHMeters = hasAssignedMeters && this.props.consumption.entries.filter(arr => arr[2] == "HH").length > 0;
+        let includedMeters = this.props.consumption.entries.map(r => r[1]);
 
         return (
             <Card className="w-100">
@@ -266,7 +264,10 @@ class PortfolioMeters extends React.Component<PortfolioMetersProps & StateProps 
         )
     }
     
-    selectTab(index: number){
+    selectTab(index: number, utility: UtilityType){
+        this.props.fetchMeterConsumption(this.props.portfolio.id, utility);  
+        this.props.selectPortfolioMeterTab
+
         this.props.selectPortfolioMeterTab(index);
         this.setState({
             ...this.state,
@@ -277,17 +278,18 @@ class PortfolioMeters extends React.Component<PortfolioMetersProps & StateProps 
     renderSelectedTable(){
         switch(this.props.selectedTab){
             case 0:
-                return this.renderDynamicTable(this.props.consumption.electrictyConsumptionEntries, UtilityType.Electricity);
+                return this.renderDynamicTable(UtilityType.Electricity);
             case 1:
-                return this.renderDynamicTable(this.props.consumption.gasConsumptionEntries, UtilityType.Gas);
+                return this.renderDynamicTable(UtilityType.Gas);
             default:
                 return (<p>No tab selected</p>);
         }
     }
 
     render() {
-        if(this.props.working || !this.props.consumption){
-            return (<Spinner />);
+        let content = (<LoadingIndicator />);
+        if(!this.props.working && this.props.consumption){
+            content = this.renderSelectedTable();
         }
 
         return (
@@ -295,19 +297,19 @@ class PortfolioMeters extends React.Component<PortfolioMetersProps & StateProps 
                 <Row className="d-flex justify-content-center" noGutters>
                     <ButtonGroup>
                         <Button color="white active-warning" className={cn({ active: this.props.selectedTab == 0})}
-                                onClick={() => this.selectTab(0)}>
+                                onClick={() => this.selectTab(0, UtilityType.Electricity)}>
                             <i className="fa fa-bolt mr-2" />
                             Electricity
                         </Button>
                         <Button color="white active-orange" className={cn({ active: this.props.selectedTab == 1})}
-                                onClick={() => this.selectTab(1)}>
+                                onClick={() => this.selectTab(1, UtilityType.Gas)}>
                             <i className="fas fa-fire mr-2" />
                             Gas
                         </Button>
                     </ButtonGroup>
                 </Row>
                 <Row noGutters className="mt-3">
-                    {this.renderSelectedTable()}
+                    {content}
                 </Row>
                 <IncludeMetersDialog />
                 <ExcludeAllMetersDialog />
@@ -318,7 +320,7 @@ class PortfolioMeters extends React.Component<PortfolioMetersProps & StateProps 
 
 const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, PortfolioMetersProps> = (dispatch) => {
     return {
-        fetchMeterConsumption: (portfolioId: string) => dispatch(fetchMeterConsumption(portfolioId)),
+        fetchMeterConsumption: (portfolioId: string, utility: UtilityType) => dispatch(fetchMeterConsumption(portfolioId, utility)),
         excludeMeters: (portfolioId: string, meters: string[]) => dispatch(excludeMeters(portfolioId, meters)),
         exportMeterConsumption: (portfolioId: string, utility: UtilityType) => dispatch(exportMeterConsumption(portfolioId, utility)),
         selectPortfolioMeterTab: (index: number) => dispatch(selectPortfolioMeterTab(index)),

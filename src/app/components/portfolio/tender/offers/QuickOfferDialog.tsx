@@ -53,12 +53,12 @@ class QuickOfferDialog extends React.Component<ModalDialogProps<QuickOfferDialog
         let quoteEntries: QuoteEntryItem[] = [];
         
         if(lowerUtility === "electricity"){
-            quoteEntries = consumption.electrictyConsumptionEntries
+            quoteEntries = consumption.entries
                 .filter(ec => ec[2] === "NHH")
                 .map(ec => this.createQuoteEntryFromConsumption(ec));
         }
         else {
-            quoteEntries = consumption.gasConsumptionEntries
+            quoteEntries = consumption.entries
                 .map(ec => this.createQuoteEntryFromConsumption(ec));
         }
 

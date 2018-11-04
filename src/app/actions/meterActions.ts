@@ -45,9 +45,9 @@ export function excludeMeters(portfolioId: string, meters: string[]){
     };
 }
 
-export function fetchMeterConsumption(portfolioId: string){    
+export function fetchMeterConsumption(portfolioId: string, utility: UtilityType){    
     return (dispatch: Dispatch<any>) => {
-        let fetchPromise = ApiService.fetchMeterConsumption(portfolioId);
+        let fetchPromise = ApiService.fetchMeterConsumption(portfolioId, utility);
         dispatch( { type: types.FETCH_METER_CONSUMPTION_WORKING });
 
         makeApiRequest(dispatch,

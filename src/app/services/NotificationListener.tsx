@@ -9,6 +9,7 @@ import { ApplicationState } from "../applicationState";
 import { Store, Dispatch } from "redux";
 import { push } from 'connected-react-router';
 import { toast, ToastType } from 'react-toastify';
+import { UtilityType } from "../model/Models";
 
 export class NotificationListener {
     private readonly store: Store<ApplicationState>;
@@ -45,8 +46,10 @@ export class NotificationListener {
 
                     store.dispatch(getSinglePortfolio(currentPortfolio.id));
                     store.dispatch(getPortfolioDetails(currentPortfolio.id));
-                    store.dispatch(fetchMeterConsumption(currentPortfolio.id));
                     store.dispatch(fetchPortfolioUploads(currentPortfolio.id));
+
+                    let utility = currentState.view.portfolio.selectedMeterUtilityIndex === 0 ? UtilityType.Electricity : UtilityType.Gas;
+                    store.dispatch(fetchMeterConsumption(currentPortfolio.id, utility));
                 }
 
                 if(data.category == "created" || data.category == "deleted" || data.category == "edited"){

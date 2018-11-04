@@ -34,7 +34,6 @@ interface StateProps {
     offers: Tender[];
     recommendations: Tender[];
     details: PortfolioDetails;
-    consumption: MeterConsumptionSummary;
     
     working: boolean;
     error: boolean;
@@ -48,7 +47,6 @@ interface DispatchProps {
     getPortfolioTenders: (portfolioId: string) => void;
     getPortfolioOffers: (portfolioId: string) => void;
     getPortfolioRecommendations: (portfolioId: string) => void;
-    fetchMeterConsumption: (portfolioId: string) => void;    
 
     selectTender: (index: number) => void;
     selectTenderTab: (index: number) => void;
@@ -62,9 +60,7 @@ class Tenders extends React.Component<TendersProps & StateProps & DispatchProps,
 
         this.props.getPortfolioTenders(portfolioId);
         this.props.getPortfolioOffers(portfolioId);
-        this.props.getPortfolioRecommendations(portfolioId);
-
-        this.props.fetchMeterConsumption(portfolioId);      
+        this.props.getPortfolioRecommendations(portfolioId);    
     }
     
     renderSelectedTender(selectedTender: Tender): JSX.Element {
@@ -124,15 +120,13 @@ class Tenders extends React.Component<TendersProps & StateProps & DispatchProps,
     }
     
     checkHasMeters(tenderTypeIndex: number){
-        var meterDetails = this.props.consumption;
-        var hasElectricityMeters = meterDetails.electrictyConsumptionEntries.length > 0;
         switch(tenderTypeIndex){
             case 0:
-                return hasElectricityMeters && meterDetails.electrictyConsumptionEntries.filter(arr => arr[2] == "HH").length > 0;
+                return this.props.details.meterGroups.find(mg => mg.groupName === "HH").meterCount > 0;
             case 1:
-                return hasElectricityMeters && meterDetails.electrictyConsumptionEntries.filter(arr => arr[2] == "NHH").length > 0;
+                return this.props.details.meterGroups.find(mg => mg.groupName === "NHH").meterCount > 0;
             case 2:
-                return meterDetails.gasConsumptionEntries.length > 0;
+                return this.props.details.meterGroups.find(mg => mg.groupName === "GAS").meterCount > 0;
             default:
                 throw new RangeError(`No valid tender type for index [${tenderTypeIndex}]`);
         }
@@ -167,7 +161,7 @@ class Tenders extends React.Component<TendersProps & StateProps & DispatchProps,
         if(this.props.error){
             return (<ErrorMessage content={this.props.errorMessage} />);
         }
-        if(this.props.working || !this.props.details || !this.props.consumption){
+        if(this.props.working || !this.props.details){
             return (<LoadingIndicator />);
         }
         if(this.props.details.portfolio.status != "tender"){
@@ -265,8 +259,6 @@ const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, TendersProps
 
         selectTender: (index: number) => dispatch(selectTender(index)),
         selectTenderTab: (index: number) => dispatch(selectTenderTab(index)),
-        
-        fetchMeterConsumption: (portfolioId: string) => dispatch(fetchMeterConsumption(portfolioId)),
 
         openCreateTenderDialog: (data: CreateTenderDialogData) => dispatch(openDialog(ModalDialogNames.CreateTender, data))
     };
@@ -278,7 +270,6 @@ const mapStateToProps: MapStateToProps<StateProps, TendersProps, ApplicationStat
         offers: state.portfolio.tender.offers.value,
         recommendations: state.portfolio.tender.recommendations.value,
         details: state.portfolio.details.value,
-        consumption: state.meters.consumption.value,
 
         selectedTenderIndex: state.view.portfolio.selectedTenderIndex,
         selectedTenderTabIndex: state.view.portfolio.selectedTenderTabIndex,

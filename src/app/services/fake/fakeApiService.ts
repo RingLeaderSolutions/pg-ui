@@ -905,14 +905,13 @@ export class FakeApiService implements IApiService {
         return OK();
     }
 
-    fetchMeterConsumption(_portfolioId: string){
+    fetchMeterConsumption(_portfolioId: string, utility: Model.UtilityType){
         var consumption: Model.MeterConsumptionSummary = {
-            summaryFields: [],
-            summaryValues: [],
-            electricityHeaders: [ "site", "mpan", "meterType", "total Units", "Day", "Night"],
-            gasHeaders: [ "site", "mprn", "total Units", "All Times"],
-            electrictyConsumptionEntries: [[ "MOONIE009", "1", "NHH", "100", "100", "100"]],
-            gasConsumptionEntries: [[ "MOONIEG", "2", "100", "100"]],
+            headers: [ "site", "mpan", "meterType", "total Units", "Day", "Night"],
+            entries: [[ "MOONIE009", "1", "NHH", "100", "100", "100"]],
+            total: 1,
+            from: 1,
+            to: 1
         }
         return OK(consumption);
     }

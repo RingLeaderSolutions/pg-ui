@@ -1,10 +1,9 @@
 export interface MeterConsumptionSummary {
-    summaryFields: string[],
-    summaryValues: string[],
-    gasHeaders: string[],
-    gasConsumptionEntries: string[][],
-    electricityHeaders: string[],
-    electrictyConsumptionEntries: string[][]
+    headers: string[];
+    entries: string[][];
+    from: number;
+    to: number;
+    total: number;
 }
 
 export const AggregatorCollectors = [
