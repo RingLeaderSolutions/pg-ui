@@ -83,6 +83,7 @@ class UploadHistoricDialog extends React.Component<ModalDialogProps<UploadHistor
                                 <option value="Generic">Generic</option>
                                 <option value="BACKWARDS">Backwards</option>
                                 <option value="UKDC">UKDC</option>
+                                <option value="STARK">STARK</option>
                             </Input>
                         </FormGroup>
                         <hr />
