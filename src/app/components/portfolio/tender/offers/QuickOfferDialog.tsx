@@ -16,10 +16,10 @@ import { UploadPanel } from "../../../common/UploadPanel";
 export interface QuickOfferDialogData {
     supplierId?: string;
     tender: Tender;
-    consumption: MeterConsumptionSummary;
 }
 
 interface StateProps {
+    consumption: MeterConsumptionSummary;    
     working: boolean;
     error: boolean;
     errorMessage: string;
@@ -47,23 +47,8 @@ interface QuoteEntryItem {
 class QuickOfferDialog extends React.Component<ModalDialogProps<QuickOfferDialogData> & StateProps & DispatchProps, QuickOfferDialogState> {
     constructor(props: ModalDialogProps<QuickOfferDialogData> & StateProps & DispatchProps){
         super(props);
-
-        let { tender, consumption } = props.data;
-        let lowerUtility = tender.utility.toLowerCase();
-        let quoteEntries: QuoteEntryItem[] = [];
-        
-        if(lowerUtility === "electricity"){
-            quoteEntries = consumption.entries
-                .filter(ec => ec[2] === "NHH")
-                .map(ec => this.createQuoteEntryFromConsumption(ec));
-        }
-        else {
-            quoteEntries = consumption.entries
-                .map(ec => this.createQuoteEntryFromConsumption(ec));
-        }
-
         this.state = {
-            quoteEntries: quoteEntries,
+            quoteEntries: [],
             duration: "0",
             selectedSupplierId: "",
             unitsOfMeasurement: "POUNDS_PER_MONTH",
@@ -71,7 +56,34 @@ class QuickOfferDialog extends React.Component<ModalDialogProps<QuickOfferDialog
         };
     }
 
-    createQuoteEntryFromConsumption(consumption: string[]): QuoteEntryItem {
+    static getDerivedStateFromProps(props: ModalDialogProps<QuickOfferDialogData> & StateProps & DispatchProps, state: QuickOfferDialogState) : QuickOfferDialogState {
+        let { tender } = props.data;
+        let { consumption } = props;
+
+        if(!consumption){
+            return state;
+        }
+
+        let lowerUtility = tender.utility.toLowerCase();
+        let quoteEntries: QuoteEntryItem[] = [];
+
+        if(lowerUtility === "electricity"){
+            quoteEntries = consumption.entries
+                .filter(ec => ec[2] === "NHH")
+                .map(ec => QuickOfferDialog.createQuoteEntryFromConsumption(ec));
+        }
+        else {
+            quoteEntries = consumption.entries
+                .map(ec => QuickOfferDialog.createQuoteEntryFromConsumption(ec));
+        }
+
+        return {
+            ...state,
+            quoteEntries
+        }
+    }
+
+    static createQuoteEntryFromConsumption(consumption: string[]): QuoteEntryItem {
         return {
             meterNumber: consumption[1],
             rate: "",

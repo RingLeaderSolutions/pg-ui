@@ -20,6 +20,8 @@ import ContractRatesDialog from "../ContractRatesDialog";
 import { IsNullOrEmpty } from "../../../../helpers/extensions/ArrayExtensions";
 import QuickOfferDialog, { QuickOfferDialogData } from "./QuickOfferDialog";
 import { MeterConsumptionSummary } from "../../../../model/Meter";
+import { UtilityType } from "../../../../model/Models";
+import { fetchMeterConsumption } from "../../../../actions/meterActions";
 
 interface TenderOffersTableProps {
     tender: Tender;
@@ -43,6 +45,7 @@ interface DispatchProps {
     openContractRatesDialog: () => void;
     openUploadOfferDialog: (data: UploadOfferDialogData) => void;
     openQuickOfferDialog: (data: QuickOfferDialogData) => void;
+    fetchMeterConsumption: (portfolioId: string, utility: UtilityType) => void;
 }
 
 enum SelectedOfferTab {
@@ -440,6 +443,11 @@ class TenderOffersTable extends React.Component<TenderOffersTableProps & StatePr
         })
     }
 
+    openQuickOffers(isElectricity: boolean){
+        this.props.fetchMeterConsumption(this.props.tender.portfolioId, isElectricity ? UtilityType.Electricity : UtilityType.Gas);
+        this.props.openQuickOfferDialog({ tender: this.props.tender });
+    }
+
     renderIssuanceOffers(issuance: TenderIssuance, tenderComplete: boolean): JSX.Element {
         var pendingQuotes = issuance.packs.filter((p: TenderPack) => {
             return p.quotes.some((q:TenderQuote) => q.status == "PENDING")
@@ -493,7 +501,7 @@ class TenderOffersTable extends React.Component<TenderOffersTableProps & StatePr
                             <div className="mr-4">
                                 <Button color="indigo" id="quick-quote-button"
                                             disabled={tenderComplete}
-                                            onClick={() => this.props.openQuickOfferDialog({ tender: this.props.tender, consumption: this.props.consumption })}>
+                                            onClick={() => this.openQuickOffers(utility.toLowerCase() === "electricity")}>
                                     <i className="fas fa-keyboard mr-1"></i>
                                     Quick Offer
                                 </Button>
@@ -657,6 +665,7 @@ class TenderOffersTable extends React.Component<TenderOffersTableProps & StatePr
 
 const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, TenderOffersTableProps> = (dispatch) => {
     return {
+        fetchMeterConsumption: (portfolioId: string, utility: UtilityType) => dispatch(fetchMeterConsumption(portfolioId, utility)),
         fetchQuoteBackingSheets: (tenderId: string, quoteId: string) => dispatch(fetchQuoteBackingSheets(tenderId, quoteId)),
         exportContractRates: (tenderId: string, quoteId: string) => dispatch(exportContractRates(tenderId, quoteId)),
         deleteQuote: (tenderId: string, quoteId: string) => dispatch(deleteQuote(tenderId, quoteId)),
