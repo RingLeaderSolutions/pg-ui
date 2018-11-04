@@ -7,12 +7,11 @@ import { submitQuickQuote } from '../../../../actions/tenderActions';
 import { getWellFormattedUtilityName } from "../../../common/UtilityIcon";
 import AsModalDialog, { ModalDialogProps } from "../../../common/modal/AsModalDialog";
 import { ModalDialogNames } from "../../../common/modal/ModalDialogNames";
-import { ModalFooter, ModalHeader, ModalBody, Form, FormGroup, Label, CustomInput, Button, Table, Input, ButtonGroup, Row, Col, UncontrolledTooltip } from "reactstrap";
+import { ModalFooter, ModalHeader, ModalBody, Form, FormGroup, Label, CustomInput, Button, Table, Input, ButtonGroup, Row, Col, UncontrolledTooltip, InputGroup, InputGroupAddon } from "reactstrap";
 import { LoadingIndicator } from "../../../common/LoadingIndicator";
 import { MeterConsumptionSummary } from "../../../../model/Meter";
 import * as cn from "classnames";
-import InputGroup from "reactstrap/lib/InputGroup";
-import InputGroupAddon from "reactstrap/lib/InputGroupAddon";
+import { UploadPanel } from "../../../common/UploadPanel";
 
 export interface QuickOfferDialogData {
     supplierId?: string;
@@ -27,14 +26,15 @@ interface StateProps {
 }
 
 interface DispatchProps {
-    submitQuickQuote: (tenderId: string, quote: QuickQuote) => void;
+    submitQuickQuote: (tenderId: string, quote: QuickQuote, collateralFile: File) => void;
 }
 
-interface UploadOfferState {
+interface QuickOfferDialogState {
     selectedSupplierId: string;
     unitsOfMeasurement: string;
     duration: string;
     quoteEntries: QuoteEntryItem[];
+    file: File;
 }
 
 interface QuoteEntryItem {
@@ -44,7 +44,7 @@ interface QuoteEntryItem {
     [index: string]: any;
 }
 
-class QuickOfferDialog extends React.Component<ModalDialogProps<QuickOfferDialogData> & StateProps & DispatchProps, UploadOfferState> {
+class QuickOfferDialog extends React.Component<ModalDialogProps<QuickOfferDialogData> & StateProps & DispatchProps, QuickOfferDialogState> {
     constructor(props: ModalDialogProps<QuickOfferDialogData> & StateProps & DispatchProps){
         super(props);
 
@@ -66,7 +66,8 @@ class QuickOfferDialog extends React.Component<ModalDialogProps<QuickOfferDialog
             quoteEntries: quoteEntries,
             duration: "0",
             selectedSupplierId: "",
-            unitsOfMeasurement: "POUNDS_PER_MONTH"
+            unitsOfMeasurement: "POUNDS_PER_MONTH",
+            file: null
         };
     }
 
@@ -83,6 +84,7 @@ class QuickOfferDialog extends React.Component<ModalDialogProps<QuickOfferDialog
 
         let quote: QuickQuote = {
             supplierId: this.state.selectedSupplierId,
+            collateralFile: null,
             prices: this.state.quoteEntries.map(qe => {
                 let entry: QuickQuoteEntry = 
                     {
@@ -96,7 +98,7 @@ class QuickOfferDialog extends React.Component<ModalDialogProps<QuickOfferDialog
             })
         };
 
-        this.props.submitQuickQuote(tender.tenderId, quote);
+        this.props.submitQuickQuote(tender.tenderId, quote, this.state.file);
         this.props.toggle();
     }
 
@@ -155,6 +157,14 @@ class QuickOfferDialog extends React.Component<ModalDialogProps<QuickOfferDialog
             ...this.state,
             unitsOfMeasurement: unit
         });
+    }
+
+    onFileSelected(file: File){
+        this.setState({...this.state, file});
+    }
+
+    onFileCleared(){
+        this.setState({...this.state, file: null});
     }
 
     render() {  
@@ -222,7 +232,7 @@ class QuickOfferDialog extends React.Component<ModalDialogProps<QuickOfferDialog
                         </Row>
 
                         <div style={{overflowY: "auto", maxHeight: "300px"}}>
-                            <Table borderless>
+                            <Table borderless className="mb-0">
                                 <thead>
                                     <tr className="border-bottom">
                                         <th className="border-right">Meter Number</th>
@@ -277,6 +287,12 @@ class QuickOfferDialog extends React.Component<ModalDialogProps<QuickOfferDialog
                             </Table>
                         </div>
                     </Form>
+                    <div className="mt-2">
+                        <UploadPanel 
+                                    file={this.state.file}
+                                    onFileSelected={(file: File) => this.onFileSelected(file)}
+                                    onFileCleared={() => this.onFileCleared()} />
+                    </div>
                 </ModalBody>
                 <ModalFooter>
                     <Button onClick={this.props.toggle}>
@@ -294,7 +310,7 @@ class QuickOfferDialog extends React.Component<ModalDialogProps<QuickOfferDialog
 
 const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, {}> = (dispatch) => {
     return {
-        submitQuickQuote: (tenderId: string, quote: QuickQuote) => dispatch(submitQuickQuote(tenderId, quote))
+        submitQuickQuote: (tenderId: string, quote: QuickQuote, collateralFile: File) => dispatch(submitQuickQuote(tenderId, quote, collateralFile))
     };
 };
   

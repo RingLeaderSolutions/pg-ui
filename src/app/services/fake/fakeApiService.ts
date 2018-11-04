@@ -1067,6 +1067,10 @@ export class FakeApiService implements IApiService {
     retrieveAccountContacts(_accountId: string) {
         return OK();
     }
+
+    uploadOfferCollateral(tenderId: string, file: Blob){
+        return OK();
+    }
 }
 
 export default new FakeApiService();

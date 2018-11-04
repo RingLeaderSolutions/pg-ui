@@ -59,6 +59,7 @@ export interface IApiService {
   uploadGasBackingSheet(contractId: string, file: Blob): Promise<AxiosResponse>;
   uploadOffer(tenderId: string, supplierId: string, file: Blob): Promise<AxiosResponse>;
   uploadAccountDocument(accountId: string, file: Blob): Promise<AxiosResponse>;
+  uploadOfferCollateral(tenderId: string, file: Blob): Promise<AxiosResponse>;
 
   reportSuccessfulSupplyMeterDataUpload(accountId: string, files: string[], utility: UtilityType): Promise<AxiosResponse>;
   reportSuccessfulHistoricalUpload(portfolioId: string, files: string[], historicalType: string): Promise<AxiosResponse>;
@@ -502,6 +503,13 @@ export class ApiService implements IApiService {
         formData.append('files', file);
 
         return axios.post(`${this.uploadApiUri}/api/upload/account/${accountId}`, formData, this.getUploadFileConfig());
+    }
+
+    uploadOfferCollateral(tenderId: string, file: Blob){
+        var formData = new FormData();
+        formData.append('files', file);
+
+        return axios.post(`${this.uploadApiUri}/api/upload/collateral/${tenderId}`, formData, this.getUploadFileConfig());
     }
 
     reportSuccessfulAccountDocumentUpload(accountId: string, documentType: string, files: string[]){

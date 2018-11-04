@@ -582,19 +582,47 @@ export function deleteQuote(tenderId: string, quoteId: string){
     };
 }
 
-export function submitQuickQuote(tenderId: string, quote: QuickQuote){
+export function submitQuickQuote(tenderId: string, quote: QuickQuote, collateralFile: File){
     return (dispatch: Dispatch<any>) => {
-        let createPromise = ApiService.submitQuickQuote(tenderId, quote);
-        dispatch({ type: types.SUBMIT_QUICKQUOTE_WORKING });
+
+        if(!collateralFile){
+            makeApiRequest(dispatch,
+                ApiService.submitQuickQuote(tenderId, quote),
+                200, 
+                () => {
+                    return { type: types.SUBMIT_QUICKQUOTE_SUCCESSFUL, data: null };
+                }, 
+                error => {
+                    return { type: types.SUBMIT_QUICKQUOTE_FAILED, errorMessage: error };
+                });
+            return;
+        }
+
+        dispatch({ type: types.UPLOAD_QUICKOFFER_COLLATERAL_WORKING });
 
         makeApiRequest(dispatch,
-            createPromise,
+            ApiService.uploadOfferCollateral(tenderId, collateralFile),
             200, 
-            () => {
+            data => {
+                dispatch({ type: types.UPLOAD_QUICKOFFER_COLLATERAL_SUCCESSFUL});
+
+                var uploadResponse = data as UploadResponse;
+                quote.collateralFile = uploadResponse.uploadedFiles[0];
+                
+                makeApiRequest(dispatch,
+                    ApiService.submitQuickQuote(tenderId, quote),
+                    200, 
+                    () => {
+                        return { type: types.SUBMIT_QUICKQUOTE_SUCCESSFUL, data: null };
+                    }, 
+                    error => {
+                        return { type: types.SUBMIT_QUICKQUOTE_FAILED, errorMessage: error };
+                    });
+
                 return { type: types.SUBMIT_QUICKQUOTE_SUCCESSFUL, data: null };
             }, 
             error => {
-                return { type: types.SUBMIT_QUICKQUOTE_FAILED, errorMessage: error };
-            });
+                return { type: types.UPLOAD_ELECTRICITY_OFFER_FAILED, errorMessage: error };
+            }); 
     };
 }

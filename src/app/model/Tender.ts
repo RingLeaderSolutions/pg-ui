@@ -368,6 +368,7 @@ export interface TariffStod {
 
 export interface QuickQuote {
     supplierId: string;
+    collateralFile: string;
     prices: QuickQuoteEntry[];
 }
 
