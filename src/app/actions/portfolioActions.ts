@@ -3,7 +3,6 @@ import { Portfolio,
          PortfolioHistoryEntry,
          CompanyInfo,
          PortfolioDetails,
-         PortfolioContact, 
          UtilityType,
          UploadResponse,
          Account,
@@ -14,8 +13,7 @@ import * as types from "./actionTypes";
 import { makeApiRequest } from "./common";
 
 import { Dispatch } from 'redux';
-import { PortfolioRequirements } from "../model/PortfolioDetails";
-import { AccountCompanyStatusFlags, AccountDetail } from "../model/HierarchyObjects";
+import { AccountCompanyStatusFlags } from "../model/HierarchyObjects";
 import { Tariff } from "../model/Tender";
 import { PortfolioCreationRequest } from "../model/Portfolio";
 
@@ -165,24 +163,6 @@ export function updateCompanyStatus(accountId: string, statusFlags: AccountCompa
     };
 }
 
-export function createPortfolioFromCompany(accountId: string, company: CompanyInfo){
-    return (dispatch: Dispatch<any>) => {
-        let createPromise = ApiService.createPortfolioFromCompany(accountId, company);
-        dispatch( { type: types.CREATE_PORTFOLIO_WORKING });
-
-        makeApiRequest(dispatch,
-            createPromise,
-            200, 
-            data => {
-                return { type: types.CREATE_PORTFOLIO_SUCCESSFUL, data: data as PortfolioDetails};
-                
-            }, 
-            error => {
-                return { type: types.CREATE_PORTFOLIO_FAILED, errorMessage: error };
-            });
-    };
-}
-
 export function createPortfolio(portfolio: PortfolioCreationRequest){
     return (dispatch: Dispatch<any>) => {
         let createPromise = ApiService.createPortfolio(portfolio);
@@ -197,82 +177,6 @@ export function createPortfolio(portfolio: PortfolioCreationRequest){
             }, 
             error => {
                 return { type: types.CREATE_PORTFOLIO_FAILED, errorMessage: error };
-            });
-    };
-}
-
-export function createPortfolioContact(contact: PortfolioContact){
-    return (dispatch: Dispatch<any>) => {
-        let createPromise = ApiService.updatePortfolioContact(contact);
-        dispatch({ type: types.CREATE_PORTFOLIO_CONTACT_WORKING });
-
-        makeApiRequest(dispatch,
-            createPromise,
-            200, 
-            data => {
-                return { type: types.CREATE_PORTFOLIO_CONTACT_SUCCESSFUL, data: null};
-                
-            }, 
-            error => {
-                return { type: types.CREATE_PORTFOLIO_CONTACT_FAILED, errorMessage: error };
-            });
-    };
-}
-
-export function updatePortfolioRequirements(requirements: PortfolioRequirements){
-    return (dispatch: Dispatch<any>) => {
-        let updatePromise = ApiService.updatePortfolioRequirements(requirements);
-        dispatch({ type: types.UPDATE_PORTFOLIO_REQUIREMENTS_WORKING });
-
-        makeApiRequest(dispatch,
-            updatePromise,
-            200, 
-            data => {
-                return { type: types.UPDATE_PORTFOLIO_REQUIREMENTS_SUCCESSFUL, data: null};
-                
-            }, 
-            error => {
-                return { type: types.UPDATE_PORTFOLIO_REQUIREMENTS_FAILED, errorMessage: error };
-            });
-    };
-}
-
-export function uploadLetterOfAuthority(portfolioId: string, accountId: string, file: Blob){
-    return (dispatch: Dispatch<any>) => {
-        let uploadPromise = ApiService.uploadLoa(portfolioId, file);
-        dispatch({ type: types.UPLOAD_LOA_WORKING });
-
-        makeApiRequest(dispatch,
-            uploadPromise,
-            200, 
-            data => {
-                var uploadResponse = data as UploadResponse;
-                ApiService.reportSuccessfulLoaUpload(portfolioId, accountId, uploadResponse.uploadedFiles);
-                return { type: types.UPLOAD_LOA_SUCCESSFUL, data: null};
-                
-            }, 
-            error => {
-                return { type: types.UPLOAD_LOA_FAILED, errorMessage: error };
-            });
-    };
-}
-
-export function uploadSiteList(portfolioId: string, accountId: string, file: Blob){
-    return (dispatch: Dispatch<any>) => {
-        let uploadPromise = ApiService.uploadSiteList(portfolioId, file);
-        dispatch({ type: types.UPLOAD_SITELIST_WORKING });
-
-        makeApiRequest(dispatch,
-            uploadPromise,
-            200, 
-            data => {
-                var uploadResponse = data as UploadResponse;
-                ApiService.reportSuccessfulSiteListUpload(portfolioId, accountId, uploadResponse.uploadedFiles);
-                return { type: types.UPLOAD_SITELIST_SUCCESSFUL, data: null};
-                
-            }, 
-            error => {
-                return { type: types.UPLOAD_SITELIST_FAILED, errorMessage: error };
             });
     };
 }
