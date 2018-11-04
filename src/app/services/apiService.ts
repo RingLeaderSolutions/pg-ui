@@ -520,7 +520,7 @@ export class ApiService implements IApiService {
     }
 
     getTariffs(){
-        return axios.get(`${this.baseApiUri}/portman-web/tariff`, this.getRequestConfig());        
+        return axios.get(`${this.baseApiUri}/portman-web/tariff/detail`, this.getRequestConfig());        
     }
 
     fetchPortfolioUploads(portfolioId: string){

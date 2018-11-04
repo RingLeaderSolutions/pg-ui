@@ -352,6 +352,18 @@ export interface BackingSheet {
 export interface Tariff {
     id: string;
     name: string;
+
+    periods: TariffPeriod[];
+}
+
+export interface TariffPeriod {
+    periodId: string;
+    name: string;
+    stods: TariffStod[];
+}
+
+export interface TariffStod {
+    description: string;
 }
 
 export interface QuickQuote {

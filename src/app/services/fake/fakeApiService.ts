@@ -766,8 +766,8 @@ export class FakeApiService implements IApiService {
 
     getTariffs(){
         var tariffs: Model.Tariff[] = [
-            { id: "1",  name: "day/night"},
-            { id: "2",  name: "summer/winter"}
+            { id: "1",  name: "day/night", periods: [{ name : "WE", periodId : "WE", stods :[ { description: "WE 0800-1600" }]}]},
+            { id: "2",  name: "summer/winter", periods: [{ name : "Winter", periodId : "WE", stods : [ { description: "WE 0800-1600" }]}]}
         ];
         return OK(tariffs);
     }
