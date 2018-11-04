@@ -5,7 +5,7 @@ import { ApplicationState } from '../../../../applicationState';
 import * as moment from 'moment';
 import * as cn from "classnames";
 
-import { updateTender } from '../../../../actions/tenderActions';
+import { updateTender, deleteTender } from '../../../../actions/tenderActions';
 import { Tender, TenderRequirements, Tariff, TenderOfferType } from "../../../../model/Tender";
 import { DayPickerWithMonthYear, Today, TenthYearFuture } from "../../../common/DayPickerHelpers";
 import AsModalDialog, { ModalDialogProps } from "../../../common/modal/AsModalDialog";
@@ -13,6 +13,8 @@ import { Strings } from "../../../../helpers/Utils";
 import { LoadingIndicator } from "../../../common/LoadingIndicator";
 import { ModalHeader, ModalBody, ModalFooter, Form, FormGroup, Label, Input, Button, Navbar, Nav, NavItem, NavLink, Col, Row, InputGroup, InputGroupAddon, CustomInput } from "reactstrap";
 import { ModalDialogNames } from "../../../common/modal/ModalDialogNames";
+import AlertConfirmDialog, { AlertConfirmDialogData } from "../../../common/modal/AlertConfirmDialog";
+import { openAlertConfirmDialog } from "../../../../actions/viewActions";
 
 export interface UpdateTenderDialogData {
     tender: Tender;
@@ -29,6 +31,9 @@ interface StateProps {
   
 interface DispatchProps {
     updateTender: (tenderId: string, details: Tender) => void;
+    deleteTender: (portfolioId: string, tenderId: string) => void;
+
+    openAlertConfirmDialog: (data: AlertConfirmDialogData) => void;
 }
 
 interface UpdateTenderState {
@@ -178,6 +183,21 @@ class UpdateTenderDialog extends React.Component<ModalDialogProps<UpdateTenderDi
 
         this.props.updateTender(tender.tenderId, tender);
         this.props.toggle();
+    }
+
+    openConfirmDeleteTender(){
+        this.props.openAlertConfirmDialog({
+            title: "Confirm",
+            body: `Are you sure you want to delete this tender from the portfolio?`,
+            confirmText: "Yes",
+            confirmIcon: "trash-alt",
+            headerClass: "modal-header-danger",
+            confirmButtonColor: "danger",
+            onConfirm: () => {
+                this.props.deleteTender(this.props.data.tender.portfolioId, this.props.data.tender.tenderId);
+                this.props.toggle();
+            }
+        });
     }
 
     selectTab(tabIndex: number){
@@ -406,7 +426,11 @@ class UpdateTenderDialog extends React.Component<ModalDialogProps<UpdateTenderDi
                     {this.state.selectedTabIndex === 0 && this.renderGeneralEditForm()}
                     {this.state.selectedTabIndex === 1 && this.renderRequirementsEditForm()}
                 </ModalBody>
-                <ModalFooter>
+                <ModalFooter className="justify-content-between">
+                    <Button color="danger"
+                            onClick={() => this.openConfirmDeleteTender()}>
+                            <i className="fas fa-trash-alt mr-1" />Delete
+                    </Button>
                     <Button onClick={this.props.toggle}>
                         <i className="fas fa-times mr-1"></i>Cancel
                     </Button>
@@ -416,6 +440,7 @@ class UpdateTenderDialog extends React.Component<ModalDialogProps<UpdateTenderDi
                         <i className="material-icons mr-1">mode_edit</i>Save
                     </Button>
                 </ModalFooter>
+                <AlertConfirmDialog />
             </div>);
     }
 }
@@ -423,6 +448,9 @@ class UpdateTenderDialog extends React.Component<ModalDialogProps<UpdateTenderDi
 const mapDispatchToProps: MapDispatchToPropsFunction<DispatchProps, {}> = (dispatch) => {
     return {
         updateTender: (portfolioId, tender) => dispatch(updateTender(portfolioId, tender)),
+        deleteTender: (portfolioId: string, tenderId: string) => dispatch(deleteTender(portfolioId, tenderId)),
+
+        openAlertConfirmDialog: (data: AlertConfirmDialogData) => dispatch(openAlertConfirmDialog(data))
     };
 };
   
