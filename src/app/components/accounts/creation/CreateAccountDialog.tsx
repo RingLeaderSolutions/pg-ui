@@ -213,7 +213,7 @@ class CreateAccountDialog extends React.Component<CreateAccountDialogProps & Sta
                                     <div className="custom-toggle custom-control">
                                         <input type="checkbox" id="new-account-vat" className="custom-control-input"
                                                 checked={this.state.vatEligible}
-                                                onChange={(e) => this.handleFormChange("vatEligible", e)} />
+                                                onChange={(e) => this.handleFormChange("vatEligible", e, true)} />
                                         <Label className="custom-control-label" for="new-account-vat">VAT Eligible</Label>
                                     </div>
                                 </FormGroup>
@@ -221,15 +221,15 @@ class CreateAccountDialog extends React.Component<CreateAccountDialogProps & Sta
                                     <div className="custom-toggle custom-control">
                                         <input type="checkbox" id="new-account-regCharity" className="custom-control-input"
                                                 checked={this.state.registeredCharity}
-                                                onChange={(e) => this.handleFormChange("registeredCharity", e)} />
+                                                onChange={(e) => this.handleFormChange("registeredCharity", e, true)} />
                                         <Label className="custom-control-label" for="new-account-regCharity">Registered Charity</Label>
                                     </div>
                                 </FormGroup>
                                 <FormGroup>
                                     <div className="custom-toggle custom-control">
                                         <input type="checkbox" id="new-account-fit" className="custom-control-input"
-                                                checked={this.state.vatEligible}
-                                                onChange={(e) => this.handleFormChange("fitEligible", e)} />
+                                                checked={this.state.fitEligible}
+                                                onChange={(e) => this.handleFormChange("fitEligible", e, true)} />
                                         <Label className="custom-control-label" for="new-account-fit">FiT Eligible</Label>
                                     </div>
                                 </FormGroup>
@@ -237,7 +237,7 @@ class CreateAccountDialog extends React.Component<CreateAccountDialogProps & Sta
                                     <div className="custom-toggle custom-control">
                                         <input type="checkbox" id="new-account-ccl" className="custom-control-input"
                                                 checked={this.state.cclEligible}
-                                                onChange={(e) => this.handleFormChange("cclEligible", e)} />
+                                                onChange={(e) => this.handleFormChange("cclEligible", e, true)} />
                                         <Label className="custom-control-label" for="new-account-ccl">CCL Eligible</Label>
                                     </div>
                                 </FormGroup>                       
