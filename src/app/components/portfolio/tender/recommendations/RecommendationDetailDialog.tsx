@@ -167,7 +167,7 @@ class RecommendationDetailDialog extends React.Component<ModalDialogProps<Recomm
                         : (<td>{`#${ru.ranking + 1}`}</td>)}
                     <td>{supplierText}</td>
                     <td>{`${ru.duration}M`}</td>
-                    <td>{format(ru.totalIncCCL, { locale: 'en-GB'})}</td>
+                    <td>{format(ru.totalExCCL, { locale: 'en-GB'})}</td>
                     <td>{format(ru.cclCost, { locale: 'en-GB'})}</td>
                     <td>{`${ru.appu.toFixed(4)}p`}</td>
                     {this.renderCostCell(ru.previousAmountDifference, format(ru.previousAmountDifference, { locale: 'en-GB'}))}
@@ -256,8 +256,8 @@ class RecommendationDetailDialog extends React.Component<ModalDialogProps<Recomm
                                     <div className="text-light pt-1"><i className="fas fa-industry mr-1 text-indigo"></i>Supplier</div>
                                 </Col>
                                 <Col xs={3} className="d-flex flex-column justify-content-center text-center border-left px-1 mt-md-0 mt-3">
-                                    <h4 className="m-0 flex-grow-1 d-flex justify-content-center"><strong>{format(recommendationSite.currentContract.totalIncCCL, { locale: 'en-GB'})}</strong></h4>
-                                    <div className="text-light pt-1"><i className="fas fa-money-check-alt mr-2 text-accent"></i>Comparative Total Inc CCL</div>
+                                    <h4 className="m-0 flex-grow-1 d-flex justify-content-center"><strong>{format(recommendationSite.currentContract.totalExCCL, { locale: 'en-GB'})}</strong></h4>
+                                    <div className="text-light pt-1"><i className="fas fa-money-check-alt mr-2 text-accent"></i>Comparative Total</div>
                                 </Col>
                                 <Col xs={3} className="d-flex flex-column justify-content-center text-center border-left px-1 mt-md-0 mt-3">
                                     <h4 className="m-0 flex-grow-1 d-flex justify-content-center"><strong>{format(recommendationSite.currentContract.ccl, { locale: 'en-GB'})} </strong></h4>
@@ -287,8 +287,8 @@ class RecommendationDetailDialog extends React.Component<ModalDialogProps<Recomm
                                     <div className="text-light pt-1"><i className="fas fa-industry mr-1 text-indigo"></i>New Supplier</div>
                                 </Col>
                                 <Col xs={3} className="d-flex flex-column justify-content-center text-center border-left px-1 mt-md-0 mt-3">
-                                    <h4 className="m-0 flex-grow-1 d-flex justify-content-center"><strong>{format(recommendationSite.recommendedSiteOffer.totalIncCCL, { locale: 'en-GB'})}</strong></h4>
-                                    <div className="text-light pt-1"><i className="fas fa-money-check-alt mr-2 text-accent"></i>Annual cost Inc CCL</div>
+                                    <h4 className="m-0 flex-grow-1 d-flex justify-content-center"><strong>{format(recommendationSite.recommendedSiteOffer.totalExCCL, { locale: 'en-GB'})}</strong></h4>
+                                    <div className="text-light pt-1"><i className="fas fa-money-check-alt mr-2 text-accent"></i>Annual cost exc. CCL</div>
                                 </Col>
                                 <Col xs={3} className="d-flex flex-column justify-content-center text-center border-left px-1 mt-md-0 mt-3">
                                     <h5 className="m-0 flex-grow-1 d-flex justify-content-center">{percentageChangeContent}</h5>
@@ -356,7 +356,7 @@ class RecommendationDetailDialog extends React.Component<ModalDialogProps<Recomm
                                         <th>Ranking</th>
                                         <th>Supplier</th>
                                         <th>Duration</th>
-                                        <th>Annual Cost inc CCL</th>
+                                        <th>Annual Cost</th>
                                         <th>CCL</th>
                                         <th>Average pence per unit</th>
                                         <th>£ Increase or Saving (-)</th>
@@ -505,7 +505,7 @@ class RecommendationDetailDialog extends React.Component<ModalDialogProps<Recomm
                         : (<td>{`#${os.ranking + 1}`}</td>)}
                     <td>{supplierText} (V{os.version})</td>
                     <td>{os.duration}M</td>
-                    <td>{format(os.totalIncCCL, { locale: 'en-GB'})}</td>
+                    <td>{format(os.totalExCCL, { locale: 'en-GB'})}</td>
                     <td>{format(os.cclCost, { locale: 'en-GB'})}</td>
                     <td>{`${summary.existingAPPU.toFixed(4)}p`}</td>
                     {this.renderCostCell(os.previousAmountDifference, format(os.previousAmountDifference, { locale: 'en-GB'}))}
@@ -573,8 +573,8 @@ class RecommendationDetailDialog extends React.Component<ModalDialogProps<Recomm
                                     <div className="text-light pt-1"><i className="fas fa-industry mr-1 text-indigo"></i>Supplier</div>
                                 </Col>
                                 <Col xs={4} className="d-flex flex-column justify-content-center text-center border-left px-1 mt-md-0 mt-3">
-                                    <h5 className="m-0 flex-grow-1 d-flex justify-content-center">{format(summary.existingtotalIncCCL, { locale: 'en-GB'})}</h5>
-                                    <div className="text-light pt-1"><i className="fas fa-money-check-alt mr-2 text-accent"></i>Total Inc CCL</div>
+                                    <h5 className="m-0 flex-grow-1 d-flex justify-content-center">{format(summary.existingtotalExCCL, { locale: 'en-GB'})}</h5>
+                                    <div className="text-light pt-1"><i className="fas fa-money-check-alt mr-2 text-accent"></i>Total exc. CCL</div>
                                 </Col>
                                 <Col xs={4} className="d-flex flex-column justify-content-center text-center border-left px-1 mt-md-0 mt-3">
                                     <h5 className="m-0 flex-grow-1 d-flex justify-content-center">{`${summary.existingAPPU.toFixed(4)}p`}</h5>
@@ -600,7 +600,7 @@ class RecommendationDetailDialog extends React.Component<ModalDialogProps<Recomm
                                         <th>Rank</th>
                                         <th></th>
                                         <th>Duration</th>
-                                        <th>Total Inc CCL</th>
+                                        <th>Total exc. CCL</th>
                                         <th>CCL</th>
                                         <th>Avg Pence / kWh</th>
                                         <th>£ Increase or Saving</th>

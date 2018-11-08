@@ -384,6 +384,7 @@ export class FakeApiService implements IApiService {
                                 utility: "GAS",
                                 supplierId: "4",
                                 totalIncCCL: 123456,
+                                totalExCCL: 123450,
                                 collateralList: [{
                                     collateralId: "c1297bdd-63f0-4a7a-8903-b329e9000b09",
                                     quoteId: "1964f31c-29b1-4a29-8532-66e1aea9e231",

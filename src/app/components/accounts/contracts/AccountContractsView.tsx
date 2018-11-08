@@ -156,7 +156,7 @@ class AccountContractsView extends React.Component<AccountContractsViewProps & S
                     <td className="align-middle">{c.product}</td>
                     <td className="align-middle">{c.contractStart != null ? moment(c.contractStart).format("DD/MM/YYYY") : "-"}</td>
                     <td className="align-middle">{c.contractEnd != null ? moment(c.contractEnd).format("DD/MM/YYYY") : "-"}</td>
-                    <td className="align-middle">{hasContractRates ? format(c.totalIncCCL, { locale: 'en-GB'}) : "-"}</td>
+                    <td className="align-middle">{hasContractRates ? format(c.totalExCCL, { locale: 'en-GB'}) : "-"}</td>
                     <td className="align-middle">{hasContractRates ? `${c.averagePPU.toFixed(4)}p` : "-"}</td>
                     <td className="align-middle">
                         <div>
@@ -213,7 +213,7 @@ class AccountContractsView extends React.Component<AccountContractsViewProps & S
                             <th>Product</th>
                             <th>Start</th>
                             <th>End</th>
-                            <th>Total inc CCL</th>
+                            <th>Contract Value</th>
                             <th>APPU</th>
                             <th>Created</th>
                             <th></th>

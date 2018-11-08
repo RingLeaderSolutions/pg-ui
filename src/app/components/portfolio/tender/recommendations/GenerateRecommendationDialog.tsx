@@ -131,7 +131,7 @@ class GenerateRecommendationDialog extends React.Component<ModalDialogProps<Gene
                 var supplierText = supplier == null ? "Unknown" : supplier.name;
                 
                 var key = `${supplierText}-${quote.quoteId}`;
-                return (<option key={key} value={quote.quoteId}>{supplierText} - {quote.quoteId.substr(0, 8)}-V{quote.version} - {format(quote.totalIncCCL, { locale: 'en-GB'})}</option>)
+                return (<option key={key} value={quote.quoteId}>{supplierText} - {quote.quoteId.substr(0, 8)}-V{quote.version} - {format(quote.totalExCCL, { locale: 'en-GB'})}</option>)
             });
 
         let hasQuoteOptions = quoteOptions.length > 0;

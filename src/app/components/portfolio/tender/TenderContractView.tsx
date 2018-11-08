@@ -50,7 +50,7 @@ class TenderContractView extends React.Component<TenderContractViewProps & Dispa
                     <div className="text-light pt-1"><i className="fas fa-cube mr-1 text-primary"></i>Product</div>
                 </Col>
                 <Col lg xs={6} className="d-flex flex-column justify-content-center text-center border-left px-1 mt-md-0 mt-sm-3">
-                    <h4 className="m-0">{format(existingContract.totalIncCCL, { locale: 'en-GB'})}</h4>
+                    <h4 className="m-0">{format(existingContract.totalExCCL, { locale: 'en-GB'})}</h4>
                     <div className="text-light pt-1"><i className="fas fa-money-check-alt mr-1 text-indigo"></i>Contract Value</div>
                 </Col>
                 <Col lg xs={6} className="d-flex flex-column justify-content-center text-center border-left px-1 mt-md-0 mt-sm-3">

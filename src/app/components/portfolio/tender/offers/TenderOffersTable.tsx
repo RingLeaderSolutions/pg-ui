@@ -130,9 +130,9 @@ class TenderOffersTable extends React.Component<TenderOffersTableProps & StatePr
         let labels = quote.bestCategories.map((bc, index) => {
             var title = bc.title;
             var lowestProperty = bc.title;
-            if(bc.title == "totalCCL"){
+            if(bc.title == "total Contract"){
                 title = "Total";
-                lowestProperty = "Total inc. CCL"
+                lowestProperty = "Total (exc. CCL)"
             }
 
             let bcId = `bc-${quote.quoteId}-${index}`;
@@ -195,7 +195,7 @@ class TenderOffersTable extends React.Component<TenderOffersTableProps & StatePr
 
                     <tr className="table-highlight-grey">
                         <th className="th-contract-value text-center align-middle text-nowrap table-highlight-grey border-right"><span><i className="fas fa-money-check-alt mr-2 text-accent"></i>Contract Value</span></th>
-                        {offers.map(o => (<td key={`contract-value-${o.quoteId}`} className="border-right text-center"><h4 className="m-0"><strong>{format(o.totalIncCCL, { locale: 'en-GB'})}</strong></h4></td>))}
+                        {offers.map(o => (<td key={`contract-value-${o.quoteId}`} className="border-right text-center"><h4 className="m-0"><strong>{format(o.totalExCCL, { locale: 'en-GB'})}</strong></h4></td>))}
                     </tr>
 
                     <tr className="table-highlight-grey">
@@ -299,7 +299,7 @@ class TenderOffersTable extends React.Component<TenderOffersTableProps & StatePr
                                             {supplierImage}
                                         </Col>
                                         <Col lg xs={6} className="d-flex flex-column justify-content-center text-center border-left px-1 mt-md-0 mt-sm-3">
-                                            <h5 className="m-0">{format(quote.totalIncCCL, { locale: 'en-GB'})}</h5>
+                                            <h5 className="m-0">{format(quote.totalExCCL, { locale: 'en-GB'})}</h5>
                                             <div className="text-light pt-1"><i className="fas fa-pound mr-1 text-success"></i>Contract Value</div>
                                         </Col>
                                         <Col lg xs={6} className="d-flex flex-column justify-content-center text-center border-left px-1 mt-md-0 mt-sm-3">

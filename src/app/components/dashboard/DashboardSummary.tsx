@@ -80,7 +80,7 @@ class DashboardSummary extends React.Component<SummaryProps & StateProps & Dispa
                                     <h6 className="stats-small__value count my-3">TPI</h6>
                                 </div>
                             </div>
-                            <Line data={{
+                            {/* <Line data={{
             labels: ["Label 1", "Label 2", "Label 3", "Label 4", "Label 5", "Label 6", "Label 7"],
             datasets: [{
                 label: 'Today',
@@ -122,7 +122,7 @@ class DashboardSummary extends React.Component<SummaryProps & StateProps & Dispa
             }],
             }
         }} 
-        height={120}/>
+        height={120}/> */}
                         </CardBody>
                     </Card>
                 </Col>

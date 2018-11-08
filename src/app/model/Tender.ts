@@ -78,6 +78,7 @@ export interface TenderQuote {
     utility: string;
     supplierId: string;
     totalIncCCL: number;
+    totalExCCL: number;
     collateralList: TenderQuoteCollateral[];
     version: number;
     contractLength: number;
@@ -144,6 +145,7 @@ export interface TenderContract {
     sheetCount: number;
     averagePPU?: number;
     totalIncCCL?: number;
+    totalExCCL?: number;
     contractStart: string;
     contractEnd: string;
     activeTenderCount: number;
@@ -181,6 +183,7 @@ export interface RecommendationSummary {
     existingSupplierName: string;
     existingSupplierId: string;
     existingtotalIncCCL: number;
+    existingtotalExCCL: number;
     existingAPPU: number;
     offerSummaries: RecommendationOfferSummary[];
 }
@@ -191,6 +194,7 @@ export interface RecommendationOfferSummary {
     duration: number;
     version: number;
     totalIncCCL: number;
+    totalExCCL: number;
     cclCost: number;
     previousAmountDifference: number;
     previousPercentageDifference: number;
@@ -240,6 +244,7 @@ export interface RecommendationContract {
     supplierName: string;
     supplierId: string;
     totalIncCCL: number;
+    totalExCCL: number;
     appu: number;
     ccl: number;
 }
@@ -248,6 +253,7 @@ export interface RecommendationOfferWinner {
     supplierName: string;
     supplierId: string;
     totalIncCCL: number;
+    totalExCCL: number;
     startDate: string;
     endDate: string;
     percentageChange: number;
@@ -261,6 +267,7 @@ export interface RecommendationSiteOffer {
     duration: number;
     version: number;
     totalIncCCL: number;
+    totalExCCL: number;
     cclCost: number;
     previousAmountDifference: number;
     previousPercentageDifference: number;
