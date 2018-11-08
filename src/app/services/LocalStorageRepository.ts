@@ -26,15 +26,19 @@ export class LocalStorageRepository {
         let isVerified = localStorage.getItem(PersistedDataKeys.IsVerified);
         let roles = localStorage.getItem(PersistedDataKeys.Roles);
 
+        if(!roles) {
+            console.warn(`User profile was not retrieved successfully [Roles=${roles}] [Verified=${isVerified}] [LastReset=${lastPasswordReset}]`);
+        }
+
         return {
             userId: localStorage.getItem(PersistedDataKeys.UserId),
             firstName: localStorage.getItem(PersistedDataKeys.FirstName),
             lastName: localStorage.getItem(PersistedDataKeys.LastName),
             email: localStorage.getItem(PersistedDataKeys.Email),
-            roles: JSON.parse(roles),
-            lastPasswordReset: new Date(lastPasswordReset),
+            roles: roles ? JSON.parse(roles) : '',
+            lastPasswordReset: lastPasswordReset ? new Date(lastPasswordReset) : new Date(),
             picture: localStorage.getItem(PersistedDataKeys.Picture),
-            isVerified: Boolean(isVerified)
+            isVerified: isVerified ? Boolean(isVerified) : false
         };
     }
 
