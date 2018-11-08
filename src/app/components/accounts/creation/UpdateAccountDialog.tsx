@@ -181,7 +181,7 @@ class UpdateAccountDialog extends React.Component<ModalDialogProps<UpdateAccount
                                     <div className="custom-toggle custom-control">
                                         <input type="checkbox" id="update-account-vat" className="custom-control-input"
                                                 checked={this.state.vatEligible}
-                                                onChange={(e) => this.handleFormChange("vatEligible", e)} />
+                                                onChange={(e) => this.handleFormChange("vatEligible", e, true)} />
                                         <Label className="custom-control-label" for="update-account-vat">VAT Eligible</Label>
                                     </div>
                                 </FormGroup>
@@ -189,7 +189,7 @@ class UpdateAccountDialog extends React.Component<ModalDialogProps<UpdateAccount
                                     <div className="custom-toggle custom-control">
                                         <input type="checkbox" id="update-account-regCharity" className="custom-control-input"
                                                 checked={this.state.registeredCharity}
-                                                onChange={(e) => this.handleFormChange("registeredCharity", e)} />
+                                                onChange={(e) => this.handleFormChange("registeredCharity", e, true)} />
                                         <Label className="custom-control-label" for="update-account-regCharity">Registered Charity</Label>
                                     </div>
                                 </FormGroup>
@@ -197,7 +197,7 @@ class UpdateAccountDialog extends React.Component<ModalDialogProps<UpdateAccount
                                     <div className="custom-toggle custom-control">
                                         <input type="checkbox" id="update-account-fit" className="custom-control-input"
                                                 checked={this.state.vatEligible}
-                                                onChange={(e) => this.handleFormChange("fitEligible", e)} />
+                                                onChange={(e) => this.handleFormChange("fitEligible", e, true)} />
                                         <Label className="custom-control-label" for="update-account-fit">FiT Eligible</Label>
                                     </div>
                                 </FormGroup>
@@ -205,7 +205,7 @@ class UpdateAccountDialog extends React.Component<ModalDialogProps<UpdateAccount
                                     <div className="custom-toggle custom-control">
                                         <input type="checkbox" id="update-account-ccl" className="custom-control-input"
                                                 checked={this.state.cclEligible}
-                                                onChange={(e) => this.handleFormChange("cclEligible", e)} />
+                                                onChange={(e) => this.handleFormChange("cclEligible", e, true)} />
                                         <Label className="custom-control-label" for="update-account-ccl">CCL Eligible</Label>
                                     </div>
                                 </FormGroup>                       
