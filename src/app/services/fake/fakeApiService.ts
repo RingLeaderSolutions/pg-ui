@@ -1009,11 +1009,11 @@ export class FakeApiService implements IApiService {
     }
 
     fetchTenderOffers(_portfolioId: string){
-        return OK();       
+        return this.getPortfolioTenders(_portfolioId);   
     }
 
     fetchTenderRecommendations(_portfolioId: string){
-        return OK(); 
+        return this.getPortfolioTenders(_portfolioId);           
     }
 
     fetchRecommendationSuppliers(_tenderId: string, _summaryId: string){

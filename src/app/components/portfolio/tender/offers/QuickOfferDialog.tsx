@@ -65,16 +65,17 @@ class QuickOfferDialog extends React.Component<ModalDialogProps<QuickOfferDialog
         }
 
         let lowerUtility = tender.utility.toLowerCase();
-        let quoteEntries: QuoteEntryItem[] = [];
-
-        if(lowerUtility === "electricity"){
-            quoteEntries = consumption.entries
-                .filter(ec => ec[2] === "NHH")
-                .map(ec => QuickOfferDialog.createQuoteEntryFromConsumption(ec));
-        }
-        else {
-            quoteEntries = consumption.entries
-                .map(ec => QuickOfferDialog.createQuoteEntryFromConsumption(ec));
+        let quoteEntries: QuoteEntryItem[] = state.quoteEntries;
+        if(!quoteEntries || quoteEntries.length == 0){
+            if(lowerUtility === "electricity"){
+                quoteEntries = consumption.entries
+                    .filter(ec => ec[2] === "NHH")
+                    .map(ec => QuickOfferDialog.createQuoteEntryFromConsumption(ec));
+            }
+            else {
+                quoteEntries = consumption.entries
+                    .map(ec => QuickOfferDialog.createQuoteEntryFromConsumption(ec));
+            }
         }
 
         return {
@@ -126,12 +127,15 @@ class QuickOfferDialog extends React.Component<ModalDialogProps<QuickOfferDialog
         const entryCopy = {...this.state.quoteEntries[entryIndex]};
         entryCopy[attribute] = value;
 
+        let before = this.state.quoteEntries.slice(0, entryIndex);
+        let after = this.state.quoteEntries.slice(entryIndex + 1);
+
         this.setState({
             ...this.state,
             quoteEntries: [
-                ...this.state.quoteEntries.slice(0, entryIndex),
+                ...before,
                 entryCopy,
-                ...this.state.quoteEntries.slice(entryIndex + 1),
+                ...after,
             ]
         })
     }
