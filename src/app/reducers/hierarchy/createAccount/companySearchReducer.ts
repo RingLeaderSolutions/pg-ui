@@ -2,9 +2,11 @@ import * as types from '../../../actions/actionTypes';
 import { reduceReducers, requestResponseReducer } from '../../common';
 import { CompanyInfo } from '../../../model/Models';
 import { RequestState, idleInitialRequestState } from '../../RequestState';
+import { IsNullOrEmpty } from '../../../helpers/extensions/ArrayExtensions';
 
 export interface CompanySearchState extends RequestState {
     value: CompanyInfo;
+    companySummaryText: string;
 }
 
 const searchCompanyReducer = requestResponseReducer(
@@ -22,14 +24,43 @@ const searchCompanyReducer = requestResponseReducer(
             }
         }
 
+        let info = action.data as CompanyInfo;
+        let summaryText = buildSummaryText(info);
         return {
             ...state,
             working: false,     
             error: false,       
-            value: action.data
+            value: info,
+            companySummaryText: summaryText
         };
     }
 );
+
+
+const buildSummaryText = (info: CompanyInfo) => {
+    let summaryText = "";
+    
+    summaryText = appendText(summaryText, info.companyNumber);
+    summaryText = appendText(summaryText, info.companyName);
+    summaryText = appendText(summaryText, info.addressLine1);
+    summaryText = appendText(summaryText, info.addressLine2);
+    summaryText = appendText(summaryText, info.postTown);
+    summaryText = appendText(summaryText, info.county);
+    summaryText = appendText(summaryText, info.countryOfOrigin);
+    summaryText = appendText(summaryText, info.postcode);
+
+    return summaryText;
+}
+
+const separator = "\r\n";
+const appendText = (base: string, toAppend: string) => {
+    if(toAppend && !toAppend.IsWhitespace()){
+        base += toAppend + separator;
+    }
+
+    return base;
+}
+
 
 const clearCompanyReducer = (state: CompanySearchState, action: any) => {
     switch(action.type){

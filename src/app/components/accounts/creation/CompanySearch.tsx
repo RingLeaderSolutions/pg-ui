@@ -7,6 +7,7 @@ import { CompanyInfo } from '../../../model/Models';
 import { searchCompany, clearCompany, selectCompany, clearAccountCreation } from '../../../actions/hierarchyActions';
 import { LoadingIndicator } from "../../common/LoadingIndicator";
 import { ModalHeader, ModalBody, Form, InputGroup, InputGroupAddon, InputGroupText, Input, Button, ModalFooter } from "reactstrap";
+import CopyToClipboard = require("react-copy-to-clipboard");
 
 interface CompanySearchProps {
     toggle: () => void;
@@ -17,6 +18,7 @@ interface StateProps {
     error: boolean;
     errorMessage: string;
     company: CompanyInfo;
+    companySummaryText: string;
 }
   
 interface DispatchProps {
@@ -54,6 +56,10 @@ class CompanySearch extends React.Component<CompanySearchProps & DispatchProps &
     close(){
         this.props.clearAccountCreation();
         this.props.toggle();
+    }
+
+    copyCompanyDetail() : void {
+
     }
 
     render(){
@@ -99,6 +105,13 @@ class CompanySearch extends React.Component<CompanySearchProps & DispatchProps &
                         )}
                         {hasSearchResult && (
                             <div>
+                                <p className="float-right mb-0">
+                                    <CopyToClipboard text={this.props.companySummaryText}>
+                                        <Button outline size="sm" color="primary" className="text-right" onClick={() => this.copyCompanyDetail()}>
+                                            <i className="far fa-copy mr-1" />Copy
+                                        </Button>
+                                    </CopyToClipboard>
+                                </p>
                                 <div>
                                     <div className="text-small">Company Name</div>
                                     <div className="pl-3">{foundCompany.companyName}</div>
@@ -153,7 +166,8 @@ const mapStateToProps: MapStateToProps<StateProps, CompanySearchProps, Applicati
         working: state.hierarchy.create_account.company.working,
         error: state.hierarchy.create_account.company.error,
         errorMessage: state.hierarchy.create_account.company.errorMessage,
-        company: state.hierarchy.create_account.company.value
+        company: state.hierarchy.create_account.company.value,
+        companySummaryText: state.hierarchy.create_account.company.companySummaryText
     };
 };
   
