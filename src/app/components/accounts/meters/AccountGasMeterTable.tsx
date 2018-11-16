@@ -145,7 +145,7 @@ class AccountGasMeterTable extends React.Component<AccountGasMeterTableProps & D
                     var siteId = site.id;
                     var siteCode = site.siteCode;
                     return site.mprns.map(gasMeter => {
-                        var tariff = tariffs.find(t => t.id == gasMeter.tariffId);
+                        var tariff = tariffs.find(t => t.tariffId == gasMeter.tariffId);
                         return {
                             siteId,
                             site: siteCode,

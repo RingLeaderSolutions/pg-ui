@@ -357,7 +357,7 @@ export interface BackingSheet {
 }
 
 export interface Tariff {
-    id: string;
+    tariffId: string;
     name: string;
 
     periods: TariffPeriod[];

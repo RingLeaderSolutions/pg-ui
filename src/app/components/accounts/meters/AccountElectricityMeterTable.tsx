@@ -181,7 +181,7 @@ class AccountElectricityMeterTable extends React.Component<AccountElectricityMet
                     var siteId = site.id;
                     var siteCode = site.siteCode;
                     return site.mpans.map(electricityMeter => {
-                        var tariff = tariffs.find(t => t.id == electricityMeter.tariffId);
+                        var tariff = tariffs.find(t => t.tariffId == electricityMeter.tariffId);
                         return {
                             siteId,
                             site: siteCode,

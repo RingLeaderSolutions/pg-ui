@@ -126,7 +126,7 @@ class CreateTenderDialog extends React.Component<ModalDialogProps<CreateTenderDi
 
     renderTariffOptions(){
         return this.props.tariffs.map(t => {
-            return (<option key={t.id} value={t.id}>{t.name}</option>)
+            return (<option key={t.tariffId} value={t.tariffId}>{t.name}</option>)
         });
     }
 
